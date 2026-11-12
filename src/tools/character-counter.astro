@@ -1,0 +1,48 @@
+---
+import Icon from '../components/Icon.astro';
+const limits = [['X / Twitter post', 280], ['Instagram caption', 2200], ['Meta description', 160], ['Page title (SEO)', 60], ['SMS message', 160], ['LinkedIn post', 3000], ['YouTube title', 100], ['TikTok caption', 2200]];
+---
+<div id="ch" class="grid gap-5 lg:grid-cols-[1fr_280px] lg:items-start">
+  <div>
+    <label for="ch-in" class="sr-only">Your text</label>
+    <textarea id="ch-in" class="textarea !min-h-[280px]" placeholder="Type or paste your text here…"></textarea>
+    <div class="mt-3 flex gap-2"><button type="button" class="btn btn-secondary btn-sm" data-copy><Icon name="Copy" size={16} /><span data-label>Copy text</span></button><button type="button" class="btn btn-ghost btn-sm" data-clear><Icon name="Trash2" size={16} />Clear</button></div>
+    <div class="card mt-5 p-4">
+      <h2 class="text-base font-semibold">Common character limits</h2>
+      <ul class="mt-3 space-y-2.5" data-limits>{limits.map(([l, n]) => (
+        <li data-limit={n}><div class="flex justify-between text-sm"><span>{l}</span><span class="tabular text-muted" data-lt>0 / {n}</span></div><div class="mt-1 h-1.5 overflow-hidden rounded-full bg-surface-2"><div class="h-full w-0 rounded-full bg-brand" data-bar></div></div></li>
+      ))}</ul>
+    </div>
+  </div>
+  <aside class="grid grid-cols-2 gap-3 lg:sticky lg:top-24 lg:grid-cols-1" aria-live="polite">
+    <div class="stat col-span-2 lg:col-span-1"><p class="stat-label">Characters</p><p class="stat-value !text-4xl" data-k="chars">0</p></div>
+    <div class="stat"><p class="stat-label">Without spaces</p><p class="stat-value" data-k="nospace">0</p></div>
+    <div class="stat"><p class="stat-label">Letters</p><p class="stat-value" data-k="letters">0</p></div>
+    <div class="stat"><p class="stat-label">Words</p><p class="stat-value" data-k="words">0</p></div>
+    <div class="stat"><p class="stat-label">Sentences</p><p class="stat-value" data-k="sent">0</p></div>
+    <div class="stat"><p class="stat-label">Lines</p><p class="stat-value" data-k="lines">0</p></div>
+    <div class="stat"><p class="stat-label">Bytes (UTF-8)</p><p class="stat-value" data-k="bytes">0</p></div>
+  </aside>
+</div>
+<script>
+  import { graphemes, words, sentences } from '../lib/text-stats';
+  import { copyText, fmt, store } from '../lib/ui';
+  const ta = document.getElementById('ch-in') as HTMLTextAreaElement, root = document.getElementById('ch')!;
+  const set = (k: string, v: number) => (root.querySelector(`[data-k=${k}]`)!.textContent = fmt(v));
+  function update() {
+    const t = ta.value; store.set('tw-chars', t.length < 100000 ? t : '');
+    const n = graphemes(t);
+    set('chars', n); set('nospace', graphemes(t.replace(/\s/g, ''))); set('letters', (t.match(/\p{L}/gu) ?? []).length);
+    set('words', words(t).length); set('sent', sentences(t).length); set('lines', t ? t.split('\n').length : 0); set('bytes', new TextEncoder().encode(t).length);
+    root.querySelectorAll<HTMLElement>('[data-limit]').forEach((li) => {
+      const max = Number(li.dataset.limit), over = n > max;
+      li.querySelector('[data-lt]')!.textContent = over ? `${fmt(n - max)} over (${fmt(max)})` : `${fmt(n)} / ${fmt(max)}`;
+      li.querySelector<HTMLElement>('[data-lt]')!.classList.toggle('!text-danger', over);
+      const bar = li.querySelector<HTMLElement>('[data-bar]')!; bar.style.width = `${Math.min(100, (n / max) * 100)}%`; bar.style.background = over ? '#dc2626' : n / max > 0.9 ? '#f59e0b' : '';
+    });
+  }
+  ta.value = store.get('tw-chars', ''); ta.addEventListener('input', update);
+  root.querySelector('[data-copy]')!.addEventListener('click', (e) => copyText(ta.value, e.currentTarget as HTMLElement));
+  root.querySelector('[data-clear]')!.addEventListener('click', () => { ta.value = ''; update(); ta.focus(); });
+  update();
+</script>

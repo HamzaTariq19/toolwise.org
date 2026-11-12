@@ -1,0 +1,49 @@
+---
+import Icon from '../components/Icon.astro';
+---
+<div id="li" class="space-y-4">
+  <div class="card grid gap-4 p-4 sm:grid-cols-3 sm:p-5">
+    <div><label for="li-n" class="label">How many</label><input id="li-n" class="input tabular" inputmode="numeric" value="3" /></div>
+    <div><label for="li-unit" class="label">Of</label><select id="li-unit" class="select"><option value="p">Paragraphs</option><option value="s">Sentences</option><option value="w">Words</option><option value="l">List items</option></select></div>
+    <div class="space-y-1">
+      <label class="flex min-h-11 items-center gap-3 text-[0.9375rem]"><input type="checkbox" id="li-start" class="h-5 w-5 accent-[var(--brand)]" checked />Start with “Lorem ipsum…”</label>
+      <label class="flex min-h-11 items-center gap-3 text-[0.9375rem]"><input type="checkbox" id="li-html" class="h-5 w-5 accent-[var(--brand)]" />Add HTML tags</label>
+    </div>
+  </div>
+  <p class="alert alert-error" data-err hidden></p>
+  <label for="li-out" class="sr-only">Generated text</label>
+  <textarea id="li-out" class="textarea !min-h-[300px] bg-surface-2" readonly></textarea>
+  <div class="flex flex-col gap-3 sm:flex-row">
+    <button type="button" class="btn btn-primary btn-lg" data-copy><Icon name="Copy" size={18} /><span data-label>Copy text</span></button>
+    <button type="button" class="btn btn-secondary btn-lg" data-new><Icon name="RefreshCw" size={18} />Generate new text</button>
+  </div>
+</div>
+<script>
+  import { randInt } from '../lib/random';
+  import { copyText, num, showError } from '../lib/ui';
+  const WORDS = 'lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor incididunt ut labore et dolore magna aliqua enim ad minim veniam quis nostrud exercitation ullamco laboris nisi aliquip ex ea commodo consequat duis aute irure in reprehenderit voluptate velit esse cillum fugiat nulla pariatur excepteur sint occaecat cupidatat non proident sunt culpa qui officia deserunt mollit anim id est laborum curabitur pretium tincidunt lacus nunc vitae augue faucibus integer quam viverra nec arcu fermentum mauris egestas porta vestibulum pellentesque habitant morbi tristique senectus netus malesuada fames turpis praesent sapien massa convallis pellentesque nec etiam erat velit scelerisque purus semper eget duis at tellus urna'.split(' ');
+  const FIRST = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.';
+  const $ = (id: string) => document.getElementById(id) as HTMLInputElement;
+  const out = $('li-out') as unknown as HTMLTextAreaElement;
+  const word = () => WORDS[randInt(WORDS.length)];
+  const sentence = () => { const n = 6 + randInt(10); const w = Array.from({ length: n }, word); if (n > 9) w[3 + randInt(4)] += ','; const s = w.join(' '); return s[0].toUpperCase() + s.slice(1) + '.'; };
+  const para = () => Array.from({ length: 4 + randInt(4) }, sentence).join(' ');
+  function gen() {
+    const n = Math.floor(num($('li-n').value)), unit = $('li-unit').value, html = $('li-html').checked, start = $('li-start').checked;
+    const limits: Record<string, number> = { p: 100, s: 500, w: 5000, l: 200 };
+    const err = document.querySelector<HTMLElement>('#li [data-err]');
+    if (!(n >= 1) || n > limits[unit]) { showError(err, `Enter a number from 1 to ${limits[unit]}.`); return; }
+    showError(err, null);
+    let text = '';
+    if (unit === 'w') { const w = Array.from({ length: n }, word); if (start) w.splice(0, Math.min(n, 5), ...'lorem ipsum dolor sit amet'.split(' ').slice(0, Math.min(n, 5))); text = w.join(' '); text = text[0].toUpperCase() + text.slice(1) + '.'; if (html) text = `<p>${text}</p>`; }
+    else if (unit === 's') { const s = Array.from({ length: n }, sentence); if (start) s[0] = FIRST; text = s.join(' '); if (html) text = `<p>${text}</p>`; }
+    else if (unit === 'l') { const items = Array.from({ length: n }, () => sentence().replace(/\.$/, '').split(' ').slice(0, 3 + randInt(5)).join(' ')); if (start) items[0] = 'Lorem ipsum dolor sit amet'; text = html ? `<ul>\n${items.map((i) => `  <li>${i}</li>`).join('\n')}\n</ul>` : items.map((i) => `• ${i}`).join('\n'); }
+    else { const p = Array.from({ length: n }, para); if (start) p[0] = FIRST + ' ' + p[0]; text = html ? p.map((x) => `<p>${x}</p>`).join('\n\n') : p.join('\n\n'); }
+    out.value = text;
+  }
+  document.getElementById('li')!.addEventListener('input', gen);
+  document.getElementById('li')!.addEventListener('change', gen);
+  document.querySelector('#li [data-new]')!.addEventListener('click', gen);
+  document.querySelector('#li [data-copy]')!.addEventListener('click', (e) => copyText(out.value, e.currentTarget as HTMLElement));
+  gen();
+</script>

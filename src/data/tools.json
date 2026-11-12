@@ -687,7 +687,7 @@
       "character limit",
       "chars"
     ],
-    "status": "planned"
+    "status": "built"
   },
   {
     "id": 43,
@@ -705,7 +705,7 @@
       "capitalize text",
       "change case"
     ],
-    "status": "planned"
+    "status": "built"
   },
   {
     "id": 44,
@@ -721,7 +721,7 @@
       "remove duplicates",
       "duplicate remover"
     ],
-    "status": "planned"
+    "status": "built"
   },
   {
     "id": 45,
@@ -737,7 +737,7 @@
       "find differences",
       "text diff"
     ],
-    "status": "planned"
+    "status": "built"
   },
   {
     "id": 46,
@@ -753,7 +753,7 @@
       "order lines",
       "a to z"
     ],
-    "status": "planned"
+    "status": "built"
   },
   {
     "id": 47,
@@ -769,7 +769,7 @@
       "remove whitespace",
       "remove blank lines"
     ],
-    "status": "planned"
+    "status": "built"
   },
   {
     "id": 48,
@@ -784,7 +784,7 @@
       "replace text",
       "substitute words"
     ],
-    "status": "planned"
+    "status": "built"
   },
   {
     "id": 49,
@@ -800,7 +800,7 @@
       "flip text",
       "reverse string"
     ],
-    "status": "planned"
+    "status": "built"
   },
   {
     "id": 50,
@@ -817,7 +817,7 @@
       "voice reader",
       "text reader"
     ],
-    "status": "planned"
+    "status": "built"
   },
   {
     "id": 51,
@@ -833,7 +833,7 @@
       "voice to text",
       "transcribe speech"
     ],
-    "status": "planned"
+    "status": "built"
   },
   {
     "id": 52,
@@ -849,7 +849,7 @@
       "filler text",
       "lorem"
     ],
-    "status": "planned"
+    "status": "built"
   },
   {
     "id": 53,
@@ -865,7 +865,7 @@
       "grade level",
       "readability score"
     ],
-    "status": "planned"
+    "status": "built"
   },
   {
     "id": 54,
@@ -881,7 +881,7 @@
       "word occurrences",
       "keyword count"
     ],
-    "status": "planned"
+    "status": "built"
   },
   {
     "id": 55,
@@ -916,7 +916,7 @@
       "small caps",
       "mini font"
     ],
-    "status": "planned"
+    "status": "built"
   },
   {
     "id": 57,
@@ -931,7 +931,7 @@
       "number of lines",
       "line count"
     ],
-    "status": "planned"
+    "status": "built"
   },
   {
     "id": 58,
@@ -947,7 +947,7 @@
       "permalink",
       "slugify"
     ],
-    "status": "planned"
+    "status": "built"
   },
   {
     "id": 59,

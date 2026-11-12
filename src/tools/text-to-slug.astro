@@ -1,0 +1,38 @@
+---
+import TextTransform from '../components/TextTransform.astro';
+---
+<TextTransform id="sg2" outLabel="Slug" placeholder="Type a title, one per line" sample={'10 Easy Tips for Better Sleep (2024 Edition)!\nCafé Crème & Crêpes: A Beginner’s Guide'}>
+  <div class="grid gap-4 sm:grid-cols-3">
+    <div><label for="sg2-sep" class="label">Separator</label><select id="sg2-sep" class="select"><option value="-">Hyphen ( - )</option><option value="_">Underscore ( _ )</option></select></div>
+    <div><label for="sg2-max" class="label">Maximum length</label><input id="sg2-max" class="input tabular" inputmode="numeric" placeholder="No limit" /></div>
+    <div class="space-y-1">
+      <label class="flex min-h-11 items-center gap-3 text-[0.9375rem]"><input type="checkbox" id="sg2-lower" class="h-5 w-5 accent-[var(--brand)]" checked />Lowercase</label>
+      <label class="flex min-h-11 items-center gap-3 text-[0.9375rem]"><input type="checkbox" id="sg2-stop" class="h-5 w-5 accent-[var(--brand)]" />Remove short words (a, the, of…)</label>
+    </div>
+  </div>
+</TextTransform>
+<script>
+  import { initTextTransform } from '../lib/text-transform';
+  import { num } from '../lib/ui';
+  const $ = (id: string) => document.getElementById(id) as HTMLInputElement;
+  const STOP = new Set('a an the and or but of to in on at for with by from is are'.split(' '));
+  const MAP: Record<string, string> = { 'ß': 'ss', 'æ': 'ae', 'œ': 'oe', 'ø': 'o', 'đ': 'd', 'ł': 'l', 'þ': 'th', '&': ' and ', '@': ' at ', '%': ' percent ' };
+  function slugify(s: string, sep: string, lower: boolean, stop: boolean, max: number) {
+    let t = s.replace(/[ßæœøđłþ&@%]/gi, (c) => { const r = MAP[c.toLowerCase()]; return c === c.toUpperCase() && /\p{L}/u.test(c) ? r.toUpperCase() : r; });
+    t = t.normalize('NFKD').replace(/[̀-ͯ]/g, '').replace(/['’]/g, '');
+    let words = t.split(/[^A-Za-z0-9]+/).filter(Boolean);
+    if (stop && words.length > 2) words = words.filter((w, i) => i === 0 || !STOP.has(w.toLowerCase()));
+    let out = words.join(sep);
+    if (lower) out = out.toLowerCase();
+    if (max > 0 && out.length > max) { out = out.slice(0, max); const cut = out.lastIndexOf(sep); if (cut > max * 0.5) out = out.slice(0, cut); }
+    return out;
+  }
+  initTextTransform('sg2', {
+    fileName: 'slugs.txt',
+    transform: (t) => {
+      const max = num($('sg2-max').value);
+      const out = t.split('\n').map((l) => (l.trim() ? slugify(l, $('sg2-sep').value, $('sg2-lower').checked, $('sg2-stop').checked, max > 0 ? max : 0) : '')).join('\n');
+      return { out, note: t.includes('\n') ? undefined : `${out.length} characters` };
+    },
+  });
+</script>

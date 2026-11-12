@@ -1,0 +1,42 @@
+---
+import TextTransform from '../components/TextTransform.astro';
+---
+<TextTransform id="fr" outLabel="Result" sample={'Dear Customer,\nThank you for your order. Your order number is 1042.\nWe will email you when your order ships.'}>
+  <div class="grid gap-3 sm:grid-cols-2">
+    <div><label for="fr-find" class="label">Find</label><input id="fr-find" class="input" autocomplete="off" spellcheck="false" placeholder="e.g. order" /></div>
+    <div><label for="fr-rep" class="label">Replace with</label><input id="fr-rep" class="input" autocomplete="off" spellcheck="false" placeholder="Leave empty to delete" /></div>
+  </div>
+  <div class="flex flex-wrap gap-x-6">
+    <label class="flex min-h-11 items-center gap-3 text-[0.9375rem]"><input type="checkbox" id="fr-case" class="h-5 w-5 accent-[var(--brand)]" />Match capital letters</label>
+    <label class="flex min-h-11 items-center gap-3 text-[0.9375rem]"><input type="checkbox" id="fr-word" class="h-5 w-5 accent-[var(--brand)]" />Whole words only</label>
+    <label class="flex min-h-11 items-center gap-3 text-[0.9375rem]"><input type="checkbox" id="fr-re" class="h-5 w-5 accent-[var(--brand)]" />Use regular expression</label>
+  </div>
+</TextTransform>
+<script>
+  import { initTextTransform } from '../lib/text-transform';
+  const $ = (id: string) => document.getElementById(id) as HTMLInputElement;
+  const escRe = (s: string) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  initTextTransform('fr', {
+    fileName: 'replaced.txt',
+    transform: (t) => {
+      const find = $('fr-find').value;
+      if (!find) return { out: t, note: 'Type a word or phrase to find' };
+      let re: RegExp;
+      try {
+        let src = $('fr-re').checked ? find : escRe(find);
+        if ($('fr-word').checked) src = `(?<![\\p{L}\\p{N}_])(?:${src})(?![\\p{L}\\p{N}_])`;
+        re = new RegExp(src, `gu${$('fr-case').checked ? '' : 'i'}`);
+      } catch (e) { return { out: '', error: `That regular expression is not valid: ${(e as Error).message.replace(/^Invalid regular expression: /, '')}` }; }
+      let n = 0;
+      const rep = $('fr-rep').value;
+      // Plain mode: the replacement is used exactly as typed. Regex mode: $1, $2… and $& insert matched text.
+      const out = t.replace(re, (...args) => {
+        n++;
+        if (!$('fr-re').checked) return rep;
+        const groups = args.slice(1, args.findIndex((x) => typeof x === 'number'));
+        return rep.replace(/\$(\$|&|\d{1,2})/g, (m, g) => (g === '$' ? '$' : g === '&' ? args[0] : groups[Number(g) - 1] ?? m));
+      });
+      return { out, note: n ? `${n} replacement${n === 1 ? '' : 's'} made` : 'No matches found' };
+    },
+  });
+</script>

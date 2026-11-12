@@ -1,0 +1,79 @@
+---
+import Icon from '../components/Icon.astro';
+---
+<div id="tts" class="space-y-4">
+  <p class="alert alert-error" data-unsupported hidden>Your browser cannot read text aloud. Please try the latest Chrome, Edge, Safari or Firefox.</p>
+  <label for="tts-in" class="label">Text to read aloud</label>
+  <textarea id="tts-in" class="textarea -mt-2 !min-h-[220px]" placeholder="Type or paste text here…">Hello! This is toolwise reading your text aloud. You can choose a different voice, and change the speed and pitch.</textarea>
+  <div class="card grid gap-4 p-4 sm:grid-cols-3 sm:p-5">
+    <div class="sm:col-span-3"><label for="tts-voice" class="label">Voice</label><select id="tts-voice" class="select"><option>Loading voices…</option></select></div>
+    <div><div class="flex justify-between"><label for="tts-rate" class="label">Speed</label><output class="text-sm font-semibold tabular" data-o="rate">1×</output></div><input id="tts-rate" type="range" min="0.5" max="2" step="0.1" value="1" class="h-11 w-full accent-[var(--brand)]" /></div>
+    <div><div class="flex justify-between"><label for="tts-pitch" class="label">Pitch</label><output class="text-sm font-semibold tabular" data-o="pitch">1</output></div><input id="tts-pitch" type="range" min="0.5" max="1.5" step="0.1" value="1" class="h-11 w-full accent-[var(--brand)]" /></div>
+    <div><div class="flex justify-between"><label for="tts-vol" class="label">Volume</label><output class="text-sm font-semibold tabular" data-o="vol">100%</output></div><input id="tts-vol" type="range" min="0" max="1" step="0.1" value="1" class="h-11 w-full accent-[var(--brand)]" /></div>
+  </div>
+  <div class="card p-4 text-[1.0625rem] leading-relaxed" data-reading hidden aria-hidden="true"></div>
+  <p class="alert alert-error" data-err hidden></p>
+  <div class="flex flex-col gap-3 sm:flex-row">
+    <button type="button" class="btn btn-primary btn-lg" data-play><Icon name="Play" size={20} /><span data-label>Read aloud</span></button>
+    <button type="button" class="btn btn-secondary btn-lg" data-pause disabled><Icon name="Pause" size={18} /><span data-label>Pause</span></button>
+    <button type="button" class="btn btn-ghost btn-lg" data-stop disabled><Icon name="Square" size={18} />Stop</button>
+  </div>
+  <p class="text-sm text-subtle">Voices come from your device, so the list differs between phones and computers. The audio is spoken by your browser and cannot be downloaded as a file.</p>
+</div>
+<script>
+  import { showError } from '../lib/ui';
+  const root = document.getElementById('tts')!;
+  const q = <T extends HTMLElement = HTMLElement>(s: string) => root.querySelector<T>(s)!;
+  const $ = (id: string) => document.getElementById(id) as HTMLInputElement;
+  const voiceSel = $('tts-voice') as unknown as HTMLSelectElement, ta = $('tts-in') as unknown as HTMLTextAreaElement;
+  const play = q<HTMLButtonElement>('[data-play]'), pause = q<HTMLButtonElement>('[data-pause]'), stop = q<HTMLButtonElement>('[data-stop]');
+  const synth = 'speechSynthesis' in window ? window.speechSynthesis : null;
+  let voices: SpeechSynthesisVoice[] = [];
+  const esc = (s: string) => s.replace(/[&<>]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' })[c]!);
+  if (!synth) { q('[data-unsupported]').hidden = false; play.disabled = true; voiceSel.innerHTML = '<option>Not available</option>'; }
+  function loadVoices() {
+    if (!synth) return;
+    voices = synth.getVoices().slice().sort((a, b) => a.lang.localeCompare(b.lang) || a.name.localeCompare(b.name));
+    if (!voices.length) return;
+    const lang = navigator.language.toLowerCase(), pref = voices.findIndex((v) => v.default) >= 0 ? voices.findIndex((v) => v.default) : Math.max(0, voices.findIndex((v) => v.lang.toLowerCase().startsWith(lang.slice(0, 2))));
+    const names = new Intl.DisplayNames([navigator.language], { type: 'language' });
+    voiceSel.innerHTML = voices.map((v, i) => { let ln = v.lang; try { ln = names.of(v.lang) ?? v.lang; } catch {} return `<option value="${i}">${esc(v.name)} (${esc(ln)})</option>`; }).join('');
+    voiceSel.value = String(pref);
+  }
+  loadVoices();
+  setTimeout(() => { if (synth && !voices.length) { voiceSel.innerHTML = '<option>Default voice</option>'; q('[data-err]').hidden = false; q('[data-err]').textContent = 'No extra voices were found on this device, so your browser\'s default voice will be used. You can add voices in your system settings (see the tips below).'; } }, 2000);
+  synth?.addEventListener?.('voiceschanged', loadVoices);
+  root.addEventListener('input', () => { q('[data-o=rate]').textContent = `${$('tts-rate').value}×`; q('[data-o=pitch]').textContent = $('tts-pitch').value; q('[data-o=vol]').textContent = `${Math.round(Number($('tts-vol').value) * 100)}%`; });
+  const reading = q('[data-reading]');
+  function ui(state: 'idle' | 'speaking' | 'paused') {
+    play.querySelector('[data-label]')!.textContent = state === 'paused' ? 'Resume' : 'Read aloud';
+    play.disabled = state === 'speaking'; pause.disabled = state !== 'speaking'; stop.disabled = state === 'idle';
+    if (state === 'idle') reading.hidden = true;
+  }
+  // Long text is spoken in sentence-sized chunks: some browsers stop after about 15 seconds of continuous speech
+  function chunks(text: string) { const parts = text.match(/[^.!?\n]+[.!?]*\s*|\n+/g) ?? [text]; const out: string[] = []; let cur = ''; for (const p of parts) { if ((cur + p).length > 220 && cur) { out.push(cur); cur = p; } else cur += p; } if (cur.trim()) out.push(cur); return out; }
+  play.addEventListener('click', () => {
+    if (!synth) return;
+    if (synth.paused) { synth.resume(); ui('speaking'); return; }
+    const text = ta.value.trim();
+    if (!text) return showError(q('[data-err]'), 'Type or paste some text first.');
+    showError(q('[data-err]'), null);
+    synth.cancel();
+    const list = chunks(text); let offset = 0;
+    reading.hidden = false;
+    list.forEach((c, idx) => {
+      const u = new SpeechSynthesisUtterance(c), v = voices[Number(voiceSel.value)];
+      if (v) { u.voice = v; u.lang = v.lang; } else u.lang = navigator.language;
+      u.rate = Number($('tts-rate').value); u.pitch = Number($('tts-pitch').value); u.volume = Number($('tts-vol').value);
+      const start = offset; offset += c.length;
+      u.onstart = () => { reading.innerHTML = `${esc(text.slice(0, start))}<mark class="rounded bg-brand-soft px-0.5 text-ink">${esc(c)}</mark>${esc(text.slice(start + c.length))}`; };
+      u.onend = () => { if (idx === list.length - 1) ui('idle'); };
+      u.onerror = (e) => { if (e.error !== 'interrupted' && e.error !== 'canceled') { showError(q('[data-err]'), 'The voice stopped unexpectedly. Try another voice or a shorter text.'); ui('idle'); } };
+      synth.speak(u);
+    });
+    ui('speaking');
+  });
+  pause.addEventListener('click', () => { synth?.pause(); ui('paused'); });
+  stop.addEventListener('click', () => { synth?.cancel(); ui('idle'); });
+  addEventListener('pagehide', () => synth?.cancel());
+</script>

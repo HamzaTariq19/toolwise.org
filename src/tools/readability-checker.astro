@@ -1,0 +1,64 @@
+---
+---
+<div id="rc2" class="grid gap-5 lg:grid-cols-[1fr_320px] lg:items-start">
+  <div>
+    <label for="rc2-in" class="label">Your text (English)</label>
+    <textarea id="rc2-in" class="textarea !min-h-[320px]" placeholder="Paste at least a few sentences of English text…"></textarea>
+    <div class="card mt-4 p-4" data-long-wrap hidden><h2 class="text-base font-semibold">Longest sentences</h2><p class="hint !mt-0">Splitting these is the quickest way to make your text easier to read.</p><ol class="mt-2 list-decimal space-y-2 pl-5 text-[0.9375rem]" data-long></ol></div>
+  </div>
+  <aside class="space-y-3 lg:sticky lg:top-24" aria-live="polite">
+    <div class="card p-5" data-main>
+      <p class="text-sm font-medium text-muted">Flesch Reading Ease</p>
+      <p class="mt-1 flex items-baseline gap-2"><span class="text-5xl font-extrabold tabular" data-fre>–</span><span class="text-muted">/ 100</span></p>
+      <p class="mt-1 font-semibold" data-level></p>
+      <div class="mt-3 h-2.5 overflow-hidden rounded-full [background:linear-gradient(90deg,#dc2626,#f59e0b,#16a34a)]"><div class="h-full border-r-4 border-ink" data-mark style="width:0"></div></div>
+      <p class="mt-2 text-sm text-muted" data-note>Add some text to see how easy it is to read.</p>
+    </div>
+    <dl class="grid grid-cols-2 gap-3">
+      <div class="stat"><dt class="stat-label">US grade level</dt><dd class="text-lg font-bold tabular" data-k="fk">–</dd></div>
+      <div class="stat"><dt class="stat-label">Gunning Fog</dt><dd class="text-lg font-bold tabular" data-k="fog">–</dd></div>
+      <div class="stat"><dt class="stat-label">SMOG index</dt><dd class="text-lg font-bold tabular" data-k="smog">–</dd></div>
+      <div class="stat"><dt class="stat-label">Coleman-Liau</dt><dd class="text-lg font-bold tabular" data-k="cli">–</dd></div>
+      <div class="stat"><dt class="stat-label">Words per sentence</dt><dd class="text-lg font-bold tabular" data-k="wps">–</dd></div>
+      <div class="stat"><dt class="stat-label">Complex words</dt><dd class="text-lg font-bold tabular" data-k="cx">–</dd></div>
+      <div class="stat"><dt class="stat-label">Words</dt><dd class="text-lg font-bold tabular" data-k="w">–</dd></div>
+      <div class="stat"><dt class="stat-label">Reading time</dt><dd class="text-lg font-bold tabular" data-k="rt">–</dd></div>
+    </dl>
+  </aside>
+</div>
+<script>
+  import { words, sentences, syllables } from '../lib/text-stats';
+  import { fmt } from '../lib/ui';
+  const root = document.getElementById('rc2')!, ta = document.getElementById('rc2-in') as HTMLTextAreaElement;
+  const set = (k: string, v: string) => (root.querySelector(`[data-k=${k}]`)!.textContent = v);
+  const esc = (s: string) => s.replace(/[&<>]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' })[c]!);
+  const LEVELS: [number, string, string][] = [[90, 'Very easy', 'Easily understood by an average 11-year-old.'], [80, 'Easy', 'Conversational English.'], [70, 'Fairly easy', 'Easy for most readers aged 12 to 13.'], [60, 'Plain English', 'Easily understood by 13 to 15-year-olds. A good target for websites.'], [50, 'Fairly difficult', 'Suitable for high school students.'], [30, 'Difficult', 'Best understood by college students.'], [-Infinity, 'Very difficult', 'Best understood by university graduates.']];
+  function update() {
+    const t = ta.value, w = words(t).filter((x) => /\p{L}/u.test(x)), s = sentences(t);
+    if (w.length < 5 || !s.length) {
+      root.querySelector('[data-fre]')!.textContent = '–'; root.querySelector('[data-level]')!.textContent = ''; root.querySelector<HTMLElement>('[data-mark]')!.style.width = '0';
+      root.querySelector('[data-note]')!.textContent = t.trim() ? 'Add a few more words and at least one full sentence.' : 'Add some text to see how easy it is to read.';
+      ['fk', 'fog', 'smog', 'cli', 'wps', 'cx', 'w', 'rt'].forEach((k) => set(k, '–')); root.querySelector<HTMLElement>('[data-long-wrap]')!.hidden = true; return;
+    }
+    const syl = w.map(syllables), totalSyl = syl.reduce((a, b) => a + b, 0), poly = syl.filter((x) => x >= 3).length;
+    const W = w.length, S = s.length, letters = w.join('').replace(/[^\p{L}]/gu, '').length;
+    const wps = W / S, spw = totalSyl / W;
+    const fre = 206.835 - 1.015 * wps - 84.6 * spw;
+    const fk = 0.39 * wps + 11.8 * spw - 15.59;
+    const fog = 0.4 * (wps + (100 * poly) / W);
+    const smog = 1.043 * Math.sqrt(poly * (30 / S)) + 3.1291;
+    const cli = 0.0588 * ((letters / W) * 100) - 0.296 * ((S / W) * 100) - 15.8;
+    const score = Math.round(Math.max(0, Math.min(100, fre))), lvl = LEVELS.find(([min]) => score >= min)!;
+    root.querySelector('[data-fre]')!.textContent = score.toFixed(0);
+    root.querySelector('[data-level]')!.textContent = lvl[1];
+    root.querySelector('[data-note]')!.textContent = lvl[2] + (S < 3 ? ' (Scores are more reliable with 100 words or more.)' : '');
+    root.querySelector<HTMLElement>('[data-mark]')!.style.width = `${score}%`;
+    const g = (x: number) => (x < 1 ? '< 1' : x.toFixed(1));
+    set('fk', g(fk)); set('fog', g(fog)); set('smog', S >= 3 ? g(smog) : 'need 3+ sentences'); set('cli', g(cli));
+    set('wps', wps.toFixed(1)); set('cx', `${((poly / W) * 100).toFixed(0)}%`); set('w', fmt(W)); set('rt', `${Math.max(1, Math.round(W / 238))} min`);
+    const long = s.map((x) => ({ x: x.trim(), n: words(x).length })).filter((x) => x.n > 25).sort((a, b) => b.n - a.n).slice(0, 5);
+    root.querySelector<HTMLElement>('[data-long-wrap]')!.hidden = !long.length;
+    root.querySelector('[data-long]')!.innerHTML = long.map((l) => `<li><span class="badge mr-1">${l.n} words</span>${esc(l.x.length > 220 ? l.x.slice(0, 220) + '…' : l.x)}</li>`).join('');
+  }
+  ta.addEventListener('input', update); update();
+</script>

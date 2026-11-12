@@ -1,0 +1,27 @@
+---
+import TextTransform from '../components/TextTransform.astro';
+const opts = [['es-multi', 'Turn double spaces into single spaces', true], ['es-trim', 'Remove spaces at the start and end of lines', true], ['es-tabs', 'Turn tabs into spaces', true], ['es-blank', 'Remove empty lines', false], ['es-collapse', 'Keep at most one empty line between paragraphs', true], ['es-join', 'Join broken lines into paragraphs (for text copied from PDFs)', false]] as const;
+---
+<TextTransform id="es" outLabel="Clean text" sample={'  This   text has    too many spaces.\t\tAnd tabs.  \n\n\n\nIt was copied from a PDF, so every\nline is broken in the middle of\na sentence.   '}>
+  <div class="grid gap-1 sm:grid-cols-2">{opts.map(([id, l, on]) => <label class="flex min-h-11 items-center gap-3 text-[0.9375rem]"><input type="checkbox" id={id} class="h-5 w-5 flex-none accent-[var(--brand)]" checked={on} />{l}</label>)}</div>
+</TextTransform>
+<script>
+  import { initTextTransform } from '../lib/text-transform';
+  import { fmt } from '../lib/ui';
+  const on = (id: string) => (document.getElementById(id) as HTMLInputElement).checked;
+  initTextTransform('es', {
+    fileName: 'clean-text.txt',
+    transform: (t) => {
+      let s = t.replace(/\r\n?/g, '\n').replace(/[  -​  　]/g, ' ');
+      if (on('es-tabs')) s = s.replace(/\t/g, ' ');
+      if (on('es-join')) s = s.split(/\n\s*\n/).map((p) => p.replace(/-\n(\p{Ll})/gu, '$1').replace(/\s*\n\s*/g, ' ')).join('\n\n');
+      if (on('es-multi')) s = s.replace(/ {2,}/g, ' ');
+      if (on('es-trim')) s = s.split('\n').map((l) => l.trim()).join('\n');
+      if (on('es-blank')) s = s.split('\n').filter((l) => l.trim()).join('\n');
+      else if (on('es-collapse')) s = s.replace(/\n{3,}/g, '\n\n');
+      if (on('es-trim')) s = s.trim();
+      const saved = t.length - s.length;
+      return { out: s, note: `${fmt(saved)} character${saved === 1 ? '' : 's'} removed` };
+    },
+  });
+</script>

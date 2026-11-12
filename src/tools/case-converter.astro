@@ -1,0 +1,30 @@
+---
+import TextTransform from '../components/TextTransform.astro';
+const modes = [['sentence', 'Sentence case'], ['lower', 'lowercase'], ['upper', 'UPPERCASE'], ['title', 'Title Case'], ['capital', 'Capitalize Each Word'], ['alt', 'aLtErNaTiNg'], ['inverse', 'iNVERSE'], ['camel', 'camelCase'], ['snake', 'snake_case'], ['kebab', 'kebab-case']];
+---
+<TextTransform id="cc" sample="the QUICK brown fox. it jumped over the lazy dog! did you see it?">
+  <fieldset><legend class="label">Convert to</legend>
+    <div class="flex flex-wrap gap-2">{modes.map(([v, l], i) => (
+      <label class="chip has-[:checked]:!border-[var(--text)] has-[:checked]:!bg-[var(--text)] has-[:checked]:!text-[var(--bg)] has-[:focus-visible]:outline has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-[var(--ring)]"><input type="radio" name="cc-mode" value={v} checked={i === 0} class="sr-only" />{l}</label>
+    ))}</div>
+  </fieldset>
+</TextTransform>
+<script>
+  import { initTextTransform } from '../lib/text-transform';
+  const SMALL = new Set('a an and as at but by en for if in nor of on or per the to v vs via with from into onto over up yet so'.split(' '));
+  const words = (s: string) => s.replace(/([a-z0-9])([A-Z])/g, '$1 $2').split(/[^\p{L}\p{N}]+/u).filter(Boolean);
+  const cap = (w: string) => w.charAt(0).toLocaleUpperCase() + w.slice(1).toLocaleLowerCase();
+  const fns: Record<string, (s: string) => string> = {
+    lower: (s) => s.toLocaleLowerCase(),
+    upper: (s) => s.toLocaleUpperCase(),
+    sentence: (s) => s.toLocaleLowerCase().replace(/(^\s*|[.!?…]\s+|\n\s*)(\p{L})/gu, (_, a, b) => a + b.toLocaleUpperCase()).replace(/\bi\b/g, 'I'),
+    capital: (s) => s.toLocaleLowerCase().replace(/(^|[\s\-("'“‘])(\p{L})/gu, (_, a, b) => a + b.toLocaleUpperCase()),
+    title: (s) => s.split('\n').map((line) => { const parts = line.toLocaleLowerCase().split(/(\s+)/); let i = 0; const n = parts.filter((p) => p.trim()).length; return parts.map((p) => { if (!p.trim()) return p; const idx = i++; const bare = p.replace(/[^\p{L}]/gu, ''); return idx > 0 && idx < n - 1 && SMALL.has(bare) ? p : p.replace(/\p{L}/u, (c) => c.toLocaleUpperCase()); }).join(''); }).join('\n'),
+    alt: (s) => { let i = 0; return [...s].map((c) => (/\p{L}/u.test(c) ? (i++ % 2 ? c.toLocaleUpperCase() : c.toLocaleLowerCase()) : c)).join(''); },
+    inverse: (s) => [...s].map((c) => (c === c.toLocaleUpperCase() ? c.toLocaleLowerCase() : c.toLocaleUpperCase())).join(''),
+    camel: (s) => s.split('\n').map((l) => words(l).map((w, i) => (i ? cap(w) : w.toLocaleLowerCase())).join('')).join('\n'),
+    snake: (s) => s.split('\n').map((l) => words(l).map((w) => w.toLocaleLowerCase()).join('_')).join('\n'),
+    kebab: (s) => s.split('\n').map((l) => words(l).map((w) => w.toLocaleLowerCase()).join('-')).join('\n'),
+  };
+  initTextTransform('cc', { fileName: 'converted.txt', transform: (t) => ({ out: fns[(document.querySelector('input[name=cc-mode]:checked') as HTMLInputElement).value](t) }) });
+</script>

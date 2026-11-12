@@ -1,0 +1,34 @@
+---
+import TextTransform from '../components/TextTransform.astro';
+---
+<TextTransform id="sl" outLabel="Sorted lines" sample={'Zebra\napple\n10 bananas\n2 cherries\nÉclair\nmango'}>
+  <div class="grid gap-4 sm:grid-cols-2">
+    <div><label for="sl-by" class="label">Sort</label>
+      <select id="sl-by" class="select"><option value="az">A to Z</option><option value="za">Z to A</option><option value="num">Numbers, smallest first</option><option value="numdesc">Numbers, largest first</option><option value="len">Shortest first</option><option value="lendesc">Longest first</option><option value="rev">Reverse current order</option><option value="random">Random shuffle</option></select></div>
+    <div class="space-y-1">
+      <label class="flex min-h-11 items-center gap-3 text-[0.9375rem]"><input type="checkbox" id="sl-case" class="h-5 w-5 accent-[var(--brand)]" checked />Ignore capital letters</label>
+      <label class="flex min-h-11 items-center gap-3 text-[0.9375rem]"><input type="checkbox" id="sl-empty" class="h-5 w-5 accent-[var(--brand)]" checked />Remove empty lines</label>
+    </div>
+  </div>
+</TextTransform>
+<script>
+  import { initTextTransform } from '../lib/text-transform';
+  import { randInt } from '../lib/random';
+  const $ = (id: string) => document.getElementById(id) as HTMLInputElement;
+  const firstNum = (s: string) => { const m = s.replace(/,/g, '').match(/-?\d+(\.\d+)?/); return m ? Number(m[0]) : Infinity; };
+  initTextTransform('sl', {
+    fileName: 'sorted.txt',
+    transform: (t) => {
+      let lines = t.split(/\r?\n/);
+      if ($('sl-empty').checked) lines = lines.filter((l) => l.trim());
+      const coll = new Intl.Collator(undefined, { sensitivity: $('sl-case').checked ? 'base' : 'variant', numeric: true, caseFirst: 'upper' });
+      const by = $('sl-by').value;
+      if (by === 'az') lines.sort(coll.compare); else if (by === 'za') lines.sort((a, b) => coll.compare(b, a));
+      else if (by === 'num') lines.sort((a, b) => firstNum(a) - firstNum(b) || coll.compare(a, b)); else if (by === 'numdesc') lines.sort((a, b) => (firstNum(b) === Infinity ? -Infinity : firstNum(b)) - (firstNum(a) === Infinity ? -Infinity : firstNum(a)) || coll.compare(a, b));
+      else if (by === 'len') lines.sort((a, b) => a.length - b.length || coll.compare(a, b)); else if (by === 'lendesc') lines.sort((a, b) => b.length - a.length || coll.compare(a, b));
+      else if (by === 'rev') lines.reverse();
+      else for (let i = lines.length - 1; i > 0; i--) { const j = randInt(i + 1); [lines[i], lines[j]] = [lines[j], lines[i]]; }
+      return { out: lines.join('\n'), note: `${lines.length} line${lines.length === 1 ? '' : 's'}` };
+    },
+  });
+</script>

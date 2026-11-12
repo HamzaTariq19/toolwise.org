@@ -1,0 +1,47 @@
+---
+import Icon from '../components/Icon.astro';
+---
+<div id="lc" class="grid gap-5 lg:grid-cols-[1fr_280px] lg:items-start">
+  <div>
+    <label for="lc-in" class="sr-only">Your text</label>
+    <textarea id="lc-in" class="textarea mono !min-h-[320px] text-sm" placeholder="Paste a list, a log file or any text…" spellcheck="false" wrap="off"></textarea>
+    <div class="mt-3 flex flex-wrap gap-2">
+      <label class="btn btn-secondary btn-sm relative cursor-pointer"><Icon name="Upload" size={16} />Open text file<input type="file" accept=".txt,.csv,.log,.md,.json,.xml,.html,.js,.ts,.py,text/*" class="absolute inset-0 cursor-pointer opacity-0" data-file /></label>
+      <button type="button" class="btn btn-secondary btn-sm" data-number><Icon name="ListOrdered" size={16} /><span data-label>Copy with line numbers</span></button>
+      <button type="button" class="btn btn-ghost btn-sm" data-clear><Icon name="Trash2" size={16} />Clear</button>
+    </div>
+    <p class="alert alert-error mt-3" data-err hidden></p>
+  </div>
+  <aside class="grid grid-cols-2 gap-3 lg:sticky lg:top-24 lg:grid-cols-1" aria-live="polite">
+    <div class="stat col-span-2 lg:col-span-1"><p class="stat-label">Total lines</p><p class="stat-value !text-4xl" data-k="total">0</p></div>
+    <div class="stat"><p class="stat-label">Lines with text</p><p class="stat-value" data-k="filled">0</p></div>
+    <div class="stat"><p class="stat-label">Empty lines</p><p class="stat-value" data-k="empty">0</p></div>
+    <div class="stat"><p class="stat-label">Unique lines</p><p class="stat-value" data-k="unique">0</p></div>
+    <div class="stat"><p class="stat-label">Longest line</p><p class="stat-value" data-k="longest">0</p></div>
+  </aside>
+</div>
+<script>
+  import { copyText, fmt, showError } from '../lib/ui';
+  const ta = document.getElementById('lc-in') as HTMLTextAreaElement, root = document.getElementById('lc')!;
+  const set = (k: string, v: string) => (root.querySelector(`[data-k=${k}]`)!.textContent = v);
+  function update() {
+    const t = ta.value, lines = t ? t.split(/\r\n|\r|\n/) : [];
+    const filled = lines.filter((l) => l.trim());
+    set('total', fmt(lines.length)); set('filled', fmt(filled.length)); set('empty', fmt(lines.length - filled.length));
+    set('unique', fmt(new Set(filled.map((l) => l.trim())).size));
+    set('longest', `${fmt(lines.reduce((m, l) => Math.max(m, [...l].length), 0))} chars`);
+  }
+  ta.addEventListener('input', update);
+  root.querySelector('[data-clear]')!.addEventListener('click', () => { ta.value = ''; update(); });
+  root.querySelector('[data-number]')!.addEventListener('click', (e) => { const lines = ta.value.split(/\r\n|\r|\n/), w = String(lines.length).length; copyText(lines.map((l, i) => `${String(i + 1).padStart(w)}  ${l}`).join('\n'), e.currentTarget as HTMLElement); });
+  const file = root.querySelector<HTMLInputElement>('[data-file]')!;
+  file.addEventListener('change', async () => {
+    const f = file.files?.[0]; file.value = ''; if (!f) return;
+    const err = root.querySelector<HTMLElement>('[data-err]');
+    if (f.size > 50e6) return showError(err, 'This file is larger than 50 MB, which is too big to open in the browser.');
+    const text = await f.text();
+    if (/\u0000/.test(text.slice(0, 2000))) return showError(err, `“${f.name}” does not look like a text file. Choose a .txt, .csv or similar file.`);
+    showError(err, null); ta.value = text; update();
+  });
+  update();
+</script>

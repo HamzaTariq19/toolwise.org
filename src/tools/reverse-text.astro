@@ -1,0 +1,30 @@
+---
+import TextTransform from '../components/TextTransform.astro';
+---
+<TextTransform id="rv" outLabel="Reversed text" sample={'Hello world!\nStressed? Have some desserts.'}>
+  <fieldset><legend class="label">Reverse</legend>
+    <div class="segmented">
+      <label><input type="radio" name="rv-m" value="chars" checked /><span>Letters</span></label>
+      <label><input type="radio" name="rv-m" value="words" /><span>Word order</span></label>
+      <label><input type="radio" name="rv-m" value="each" /><span>Each word</span></label>
+      <label><input type="radio" name="rv-m" value="lines" /><span>Line order</span></label>
+    </div>
+  </fieldset>
+</TextTransform>
+<script>
+  import { initTextTransform } from '../lib/text-transform';
+  // Grapheme-aware so emoji and accented letters are not broken apart
+  const seg = 'Segmenter' in Intl ? new (Intl as any).Segmenter(undefined, { granularity: 'grapheme' }) : null;
+  const chars = (s: string): string[] => (seg ? Array.from(seg.segment(s) as Iterable<{ segment: string }>, (x) => x.segment) : Array.from(s));
+  initTextTransform('rv', {
+    fileName: 'reversed.txt',
+    transform: (t) => {
+      const m = (document.querySelector('input[name=rv-m]:checked') as HTMLInputElement).value;
+      const out = m === 'chars' ? t.split('\n').map((l) => chars(l).reverse().join('')).join('\n')
+        : m === 'words' ? t.split('\n').map((l) => l.split(/(\s+)/).reverse().join('')).join('\n')
+        : m === 'each' ? t.replace(/[^\s]+/g, (w) => chars(w).reverse().join(''))
+        : t.split('\n').reverse().join('\n');
+      return { out };
+    },
+  });
+</script>

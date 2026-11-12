@@ -1,0 +1,32 @@
+---
+// Shared layout for text tools: your text in, result out (side by side on desktop), live as you type.
+import Icon from './Icon.astro';
+interface Props { id: string; placeholder?: string; outLabel?: string; sample?: string; copyLabel?: string }
+const { id, placeholder = 'Type or paste your text here…', outLabel = 'Result', sample, copyLabel = 'Copy result' } = Astro.props;
+---
+<div id={id} class="space-y-4">
+  <div class="card space-y-4 p-4 sm:p-5" data-options><slot /></div>
+  <div class="grid gap-4 lg:grid-cols-2">
+    <div>
+      <div class="mb-1.5 flex items-center justify-between gap-2">
+        <label for={`${id}-in`} class="label !mb-0">Your text</label>
+        <span class="flex gap-1">
+          {sample && <button type="button" class="btn btn-ghost btn-sm" data-sample>Example</button>}
+          <button type="button" class="btn btn-ghost btn-sm" data-clear><Icon name="Trash2" size={16} />Clear</button>
+        </span>
+      </div>
+      <textarea id={`${id}-in`} class="textarea !min-h-[260px]" placeholder={placeholder} spellcheck="false" data-in data-sample-text={sample}></textarea>
+      <p class="mt-1 text-sm text-subtle tabular" data-in-stats></p>
+    </div>
+    <div>
+      <div class="mb-1.5 flex items-center justify-between gap-2"><label for={`${id}-out`} class="label !mb-0">{outLabel}</label><span class="text-sm text-subtle tabular" data-out-stats></span></div>
+      <textarea id={`${id}-out`} class="textarea !min-h-[260px] bg-surface-2" readonly spellcheck="false" data-out></textarea>
+      <slot name="after-output" />
+    </div>
+  </div>
+  <p class="alert alert-error" data-error hidden role="alert"><span data-msg></span></p>
+  <div class="flex flex-col gap-3 sm:flex-row">
+    <button type="button" class="btn btn-primary btn-lg" data-copy disabled><Icon name="Copy" size={18} /><span data-label>{copyLabel}</span></button>
+    <button type="button" class="btn btn-secondary btn-lg" data-download disabled><Icon name="Download" size={18} />Download .txt</button>
+  </div>
+</div>

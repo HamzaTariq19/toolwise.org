@@ -1,0 +1,65 @@
+---
+import Icon from '../components/Icon.astro';
+const langs = [['en-US', 'English (US)'], ['en-GB', 'English (UK)'], ['en-IN', 'English (India)'], ['es-ES', 'Español'], ['fr-FR', 'Français'], ['de-DE', 'Deutsch'], ['it-IT', 'Italiano'], ['pt-BR', 'Português (Brasil)'], ['nl-NL', 'Nederlands'], ['hi-IN', 'हिन्दी'], ['ur-PK', 'اردو'], ['ar-SA', 'العربية'], ['zh-CN', '中文'], ['ja-JP', '日本語'], ['ko-KR', '한국어'], ['ru-RU', 'Русский'], ['tr-TR', 'Türkçe'], ['pl-PL', 'Polski']];
+---
+<div id="stt" class="space-y-4">
+  <div class="alert alert-error" data-unsupported hidden><Icon name="TriangleAlert" size={18} class="mt-0.5 flex-none" /><span>Your browser does not support speech recognition. Please open this page in <strong>Google Chrome</strong>, <strong>Microsoft Edge</strong> or <strong>Safari</strong> (on Mac, iPhone or iPad). Firefox does not support it yet.</span></div>
+  <div class="card flex flex-wrap items-end gap-4 p-4 sm:p-5">
+    <div class="min-w-48 flex-1"><label for="stt-lang" class="label">Language you will speak</label><select id="stt-lang" class="select">{langs.map(([v, l]) => <option value={v}>{l}</option>)}</select></div>
+    <button type="button" class="btn btn-primary btn-lg min-w-52" data-mic><Icon name="Mic" size={20} /><span data-label>Start dictation</span></button>
+  </div>
+  <p class="flex min-h-6 items-center gap-2 text-[0.9375rem] font-medium" data-status aria-live="polite">Press Start dictation and speak clearly.</p>
+  <label for="stt-out" class="sr-only">Your text</label>
+  <textarea id="stt-out" class="textarea !min-h-[260px] text-[1.0625rem]" placeholder="Your words will appear here. You can edit them at any time."></textarea>
+  <p class="text-sm text-subtle" data-interim></p>
+  <div class="flex flex-col gap-3 sm:flex-row">
+    <button type="button" class="btn btn-secondary btn-lg" data-copy><Icon name="Copy" size={18} /><span data-label>Copy text</span></button>
+    <button type="button" class="btn btn-secondary btn-lg" data-dl><Icon name="Download" size={18} />Download .txt</button>
+    <button type="button" class="btn btn-ghost btn-lg" data-clear><Icon name="Trash2" size={18} />Clear</button>
+  </div>
+  <p class="text-sm text-subtle">Privacy note: speech recognition is provided by your browser. Chrome and Edge send the audio to Google or Microsoft to turn it into text; Safari may process it on your device. toolwise itself never receives your voice or text.</p>
+</div>
+<script>
+  import { copyText, downloadBlob, store } from '../lib/ui';
+  const root = document.getElementById('stt')!;
+  const q = <T extends HTMLElement = HTMLElement>(s: string) => root.querySelector<T>(s)!;
+  const out = document.getElementById('stt-out') as HTMLTextAreaElement, lang = document.getElementById('stt-lang') as HTMLSelectElement;
+  const btn = q<HTMLButtonElement>('[data-mic]'), status = q('[data-status]'), interim = q('[data-interim]');
+  const SR = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+  lang.value = store.get('tw-stt-lang', [...lang.options].find((o) => o.value.toLowerCase() === navigator.language.toLowerCase())?.value ?? 'en-US');
+  out.value = store.get('tw-stt-text', '');
+  out.addEventListener('input', () => store.set('tw-stt-text', out.value));
+  let rec: any = null, listening = false, wanted = false;
+  if (!SR) { q('[data-unsupported]').hidden = false; btn.disabled = true; status.textContent = ''; }
+  function setUi(on: boolean) {
+    listening = on;
+    btn.querySelector('[data-label]')!.textContent = on ? 'Stop dictation' : 'Start dictation';
+    btn.classList.toggle('!bg-[#dc2626]', on);
+    status.innerHTML = on ? '<span class="h-2.5 w-2.5 animate-pulse rounded-full bg-[#dc2626]"></span>Listening… speak now.' : 'Press Start dictation and speak clearly.';
+  }
+  function start() {
+    rec = new SR();
+    rec.lang = lang.value; rec.continuous = true; rec.interimResults = true;
+    rec.onresult = (e: any) => {
+      let fin = '', mid = '';
+      for (let i = e.resultIndex; i < e.results.length; i++) { const t = e.results[i][0].transcript; if (e.results[i].isFinal) fin += t; else mid += t; }
+      if (fin) { const sep = out.value && !/\s$/.test(out.value) ? ' ' : ''; out.value += sep + fin.trim().replace(/^./, (c) => (!out.value.trim() || /[.!?]\s*$/.test(out.value) ? c.toUpperCase() : c)); store.set('tw-stt-text', out.value); out.scrollTop = out.scrollHeight; }
+      interim.textContent = mid;
+    };
+    rec.onerror = (e: any) => {
+      const msg: Record<string, string> = { 'not-allowed': 'Microphone access was blocked. Click the icon in the address bar to allow the microphone, then try again.', 'service-not-allowed': 'Speech recognition is turned off in this browser. Try Chrome or Edge.', 'no-speech': 'No speech was heard. Check that the right microphone is selected and speak a little louder.', 'audio-capture': 'No microphone was found. Connect one and try again.', network: 'Speech recognition needs an internet connection in this browser. Check your connection and try again.', 'language-not-supported': 'This language is not supported by your browser. Choose another language.' };
+      if (e.error === 'aborted') return;
+      wanted = e.error === 'no-speech' && wanted;
+      status.textContent = msg[e.error] ?? 'Dictation stopped unexpectedly. Press Start dictation to try again.';
+      if (!wanted) { setUi(false); status.textContent = msg[e.error] ?? 'Dictation stopped unexpectedly. Press Start dictation to try again.'; }
+    };
+    // Browsers stop listening after a pause; keep going until the user presses Stop
+    rec.onend = () => { interim.textContent = ''; if (wanted) { try { rec.start(); } catch { setUi(false); } } else setUi(false); };
+    try { rec.start(); setUi(true); } catch { status.textContent = 'Could not start the microphone. Please try again.'; }
+  }
+  btn.addEventListener('click', () => { if (listening) { wanted = false; rec?.stop(); setUi(false); } else { wanted = true; start(); } });
+  lang.addEventListener('change', () => { store.set('tw-stt-lang', lang.value); if (listening) { wanted = true; rec.onend = null; rec.stop(); start(); } });
+  q('[data-copy]').addEventListener('click', (e) => copyText(out.value, e.currentTarget as HTMLElement));
+  q('[data-dl]').addEventListener('click', () => downloadBlob(new Blob([out.value], { type: 'text/plain;charset=utf-8' }), 'dictation.txt'));
+  q('[data-clear]').addEventListener('click', () => { out.value = ''; store.set('tw-stt-text', ''); });
+</script>

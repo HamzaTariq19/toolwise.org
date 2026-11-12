@@ -1,0 +1,44 @@
+---
+import Icon from '../components/Icon.astro';
+---
+<div id="wf" class="space-y-4">
+  <label for="wf-in" class="label">Your text</label>
+  <textarea id="wf-in" class="textarea !min-h-[220px] -mt-2" placeholder="Paste an article, essay or any text…"></textarea>
+  <div class="card flex flex-wrap items-center gap-x-6 gap-y-1 p-4">
+    <label class="flex min-h-11 items-center gap-3 text-[0.9375rem]"><input type="checkbox" id="wf-stop" class="h-5 w-5 accent-[var(--brand)]" checked />Hide common words (the, and, of…)</label>
+    <label class="flex min-h-11 items-center gap-3 text-[0.9375rem]"><input type="checkbox" id="wf-num" class="h-5 w-5 accent-[var(--brand)]" />Include numbers</label>
+    <div class="flex items-center gap-2"><label for="wf-n" class="text-[0.9375rem]">Phrases of</label><select id="wf-n" class="select !w-auto"><option value="1">1 word</option><option value="2">2 words</option><option value="3">3 words</option></select></div>
+  </div>
+  <div class="card overflow-hidden" data-wrap hidden>
+    <div class="flex flex-wrap items-center justify-between gap-2 border-b border-line px-4 py-3"><p class="font-semibold" data-summary></p><button type="button" class="btn btn-secondary btn-sm" data-csv><Icon name="Download" size={16} />Download CSV</button></div>
+    <div class="max-h-[480px] overflow-y-auto"><table class="w-full text-[0.9375rem] tabular"><thead class="sticky top-0 bg-surface-2 text-sm text-muted"><tr><th class="w-12 px-4 py-2 text-left font-semibold">#</th><th class="px-4 py-2 text-left font-semibold">Word</th><th class="px-4 py-2 text-right font-semibold">Count</th><th class="w-2/5 px-4 py-2 text-left font-semibold">Share</th></tr></thead><tbody class="divide-y divide-[var(--border)]" data-rows></tbody></table></div>
+  </div>
+</div>
+<script>
+  import { words } from '../lib/text-stats';
+  import { downloadBlob, fmt } from '../lib/ui';
+  const STOP = new Set(`a about above after again against all am an and any are as at be because been before being below between both but by can could did do does doing down during each few for from further had has have having he her here hers herself him himself his how i if in into is it its itself just me more most my myself no nor not now of off on once only or other our ours ourselves out over own same she should so some such than that the their theirs them themselves then there these they this those through to too under until up very was we were what when where which while who whom why will with would you your yours yourself yourselves also its it's i'm don't can't won't i've you're we're they're that's there's`.split(/\s+/));
+  const root = document.getElementById('wf')!, ta = document.getElementById('wf-in') as HTMLTextAreaElement;
+  const on = (id: string) => (document.getElementById(id) as HTMLInputElement).checked;
+  const esc = (s: string) => s.replace(/[&<>]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' })[c]!);
+  let rows: [string, number][] = [];
+  function update() {
+    const all = words(ta.value).map((w) => w.toLocaleLowerCase().replace(/’/g, "'"));
+    const n = Number((document.getElementById('wf-n') as HTMLSelectElement).value);
+    const keep = (w: string) => (on('wf-num') || !/^\d[\d.,]*$/.test(w)) && (!on('wf-stop') || !STOP.has(w));
+    const m = new Map<string, number>();
+    for (let i = 0; i + n <= all.length; i++) {
+      const g = all.slice(i, i + n);
+      if (n === 1 ? !keep(g[0]) : !keep(g[0]) || !keep(g[n - 1])) continue;
+      const k = g.join(' '); m.set(k, (m.get(k) ?? 0) + 1);
+    }
+    rows = [...m].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]));
+    root.querySelector<HTMLElement>('[data-wrap]')!.hidden = !rows.length;
+    const total = all.length, max = rows[0]?.[1] ?? 1;
+    root.querySelector('[data-summary]')!.textContent = `${fmt(total)} words · ${fmt(new Set(all).size)} different words · ${fmt(rows.length)} ${n > 1 ? 'phrases' : 'words'} listed`;
+    root.querySelector('[data-rows]')!.innerHTML = rows.slice(0, 300).map(([w, c], i) => `<tr><td class="px-4 py-1.5 text-subtle">${i + 1}</td><td class="px-4 py-1.5 font-medium">${esc(w)}</td><td class="px-4 py-1.5 text-right">${c}</td><td class="px-4 py-1.5"><div class="flex items-center gap-2"><div class="h-2 rounded-full bg-[var(--cat)]" style="width:${Math.max(3, (c / max) * 100)}%"></div><span class="whitespace-nowrap text-xs text-subtle">${((c / total) * 100).toFixed(1)}%</span></div></td></tr>`).join('');
+  }
+  ta.addEventListener('input', update); root.addEventListener('change', update);
+  root.querySelector('[data-csv]')!.addEventListener('click', () => downloadBlob(new Blob(['﻿word,count\n' + rows.map(([w, c]) => `"${w.replace(/"/g, '""')}",${c}`).join('\n')], { type: 'text/csv' }), 'word-frequency.csv'));
+  update();
+</script>

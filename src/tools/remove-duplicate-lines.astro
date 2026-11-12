@@ -1,0 +1,33 @@
+---
+import TextTransform from '../components/TextTransform.astro';
+---
+<TextTransform id="rd" outLabel="Unique lines" sample={'apple\nBanana\napple\ncherry\nbanana \n\ncherry\ndate'}>
+  <div class="grid gap-1 sm:grid-cols-2">
+    <label class="flex min-h-11 items-center gap-3 text-[0.9375rem]"><input type="checkbox" id="rd-case" class="h-5 w-5 accent-[var(--brand)]" />Ignore capital letters (Apple = apple)</label>
+    <label class="flex min-h-11 items-center gap-3 text-[0.9375rem]"><input type="checkbox" id="rd-trim" class="h-5 w-5 accent-[var(--brand)]" checked />Ignore spaces at the start and end</label>
+    <label class="flex min-h-11 items-center gap-3 text-[0.9375rem]"><input type="checkbox" id="rd-empty" class="h-5 w-5 accent-[var(--brand)]" checked />Remove empty lines</label>
+    <label class="flex min-h-11 items-center gap-3 text-[0.9375rem]"><input type="checkbox" id="rd-sort" class="h-5 w-5 accent-[var(--brand)]" />Sort the result A to Z</label>
+  </div>
+</TextTransform>
+<script>
+  import { initTextTransform } from '../lib/text-transform';
+  import { fmt } from '../lib/ui';
+  const on = (id: string) => (document.getElementById(id) as HTMLInputElement).checked;
+  initTextTransform('rd', {
+    fileName: 'unique-lines.txt',
+    transform: (t) => {
+      const seen = new Set<string>(), out: string[] = [];
+      let lines = t.split(/\r?\n/), removed = 0, empties = 0;
+      for (const raw of lines) {
+        const line = on('rd-trim') ? raw.trim() : raw;
+        if (!line.trim() && on('rd-empty')) { empties++; continue; }
+        const key = on('rd-case') ? line.toLocaleLowerCase() : line;
+        if (seen.has(key)) { removed++; continue; }
+        seen.add(key); out.push(line);
+      }
+      if (on('rd-sort')) out.sort((a, b) => a.localeCompare(b, undefined, { sensitivity: on('rd-case') ? 'base' : 'variant', numeric: true }));
+      lines = out;
+      return { out: lines.join('\n'), note: `${fmt(lines.length)} unique · ${fmt(removed)} duplicate${removed === 1 ? '' : 's'} removed${empties ? ` · ${fmt(empties)} empty` : ''}` };
+    },
+  });
+</script>
