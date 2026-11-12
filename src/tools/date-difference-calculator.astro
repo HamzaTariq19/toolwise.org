@@ -1,0 +1,74 @@
+---
+import CalcLayout from '../components/CalcLayout.astro';
+---
+<CalcLayout id="dd2">
+  <Fragment slot="inputs">
+    <fieldset><legend class="label">I want to</legend>
+      <div class="segmented"><label><input type="radio" name="dd2-m" value="diff" checked /><span>Count days between dates</span></label><label><input type="radio" name="dd2-m" value="add" /><span>Add or subtract days</span></label></div>
+    </fieldset>
+    <div><label for="dd2-a" class="label">Start date</label><input id="dd2-a" type="date" class="input" /></div>
+    <div data-m="diff" class="space-y-4">
+      <div><label for="dd2-b" class="label">End date</label><input id="dd2-b" type="date" class="input" /></div>
+      <label class="flex min-h-11 items-center gap-3 text-[0.9375rem]"><input type="checkbox" id="dd2-inc" class="h-5 w-5 accent-[var(--brand)]" />Include the end date (count both days)</label>
+    </div>
+    <div data-m="add" class="grid grid-cols-[auto_1fr_auto] items-end gap-2" hidden>
+      <div><label for="dd2-op" class="label">&nbsp;<span class="sr-only">Add or subtract</span></label><select id="dd2-op" class="select !w-auto"><option value="1">Add</option><option value="-1">Subtract</option></select></div>
+      <div><label for="dd2-n" class="label">Amount</label><input id="dd2-n" class="input tabular" inputmode="numeric" value="30" /></div>
+      <div><label for="dd2-u" class="label">&nbsp;<span class="sr-only">Unit</span></label><select id="dd2-u" class="select !w-auto"><option value="d">days</option><option value="bd">working days</option><option value="w">weeks</option><option value="m">months</option><option value="y">years</option></select></div>
+    </div>
+  </Fragment>
+  <Fragment slot="results">
+    <div data-ok hidden>
+      <p class="text-sm font-medium text-muted" data-r="head"></p>
+      <p class="mt-1 text-4xl font-extrabold tracking-tight tabular" data-r="main"></p>
+      <p class="mt-1 text-[0.9375rem] text-muted" data-r="sub"></p>
+      <dl class="mt-5 grid grid-cols-2 gap-3" data-r="grid"></dl>
+    </div>
+    <div data-empty class="py-8 text-center text-muted">Choose the dates.</div>
+    <p class="alert alert-error" data-msg hidden role="alert"></p>
+  </Fragment>
+</CalcLayout>
+<script>
+  import { live, resultsUi, val } from '../lib/calc';
+  import { num, fmt } from '../lib/ui';
+  const root = document.getElementById('dd2')!, ui = resultsUi(root);
+  const iso = (d: Date) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+  const parse = (s: string) => { const [y, m, d] = s.split('-').map(Number); return new Date(y, m - 1, d); };
+  const utc = (d: Date) => Date.UTC(d.getFullYear(), d.getMonth(), d.getDate());
+  const long = (d: Date) => d.toLocaleDateString(undefined, { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+  const t = new Date(); (document.getElementById('dd2-a') as HTMLInputElement).value = iso(t);
+  const t2 = new Date(t); t2.setMonth(t2.getMonth() + 3); (document.getElementById('dd2-b') as HTMLInputElement).value = iso(t2);
+  const pl = (n: number, w: string) => `${fmt(n)} ${w}${n === 1 ? '' : 's'}`;
+  function workdays(a: Date, b: Date) { let n = 0; const d = new Date(a); while (d <= b) { const w = d.getDay(); if (w && w !== 6) n++; d.setDate(d.getDate() + 1); } return n; }
+  function calc() {
+    const mode = (root.querySelector('input[name=dd2-m]:checked') as HTMLInputElement).value;
+    root.querySelectorAll<HTMLElement>('[data-m]').forEach((e) => (e.hidden = e.dataset.m !== mode));
+    if (!val('dd2-a')) return ui.empty();
+    const a = parse(val('dd2-a'));
+    if (mode === 'diff') {
+      if (!val('dd2-b')) return ui.empty();
+      let b = parse(val('dd2-b')), sign = '';
+      let s = a; if (b < a) { [s, b] = [b, a]; sign = '−'; }
+      const inc = (document.getElementById('dd2-inc') as HTMLInputElement).checked ? 1 : 0;
+      const days = Math.round((utc(b) - utc(s)) / 86400000) + inc;
+      let y = b.getFullYear() - s.getFullYear(), m = b.getMonth() - s.getMonth(), d = b.getDate() - s.getDate() + inc;
+      if (d < 0) { m--; d += new Date(b.getFullYear(), b.getMonth(), 0).getDate(); } if (m < 0) { y--; m += 12; }
+      const span = days > 3660 ? null : workdays(s, inc ? b : new Date(b.getTime() - 86400000));
+      ui.show(); ui.set('head', 'Time between the dates'); ui.set('main', `${sign}${pl(days, 'day')}`);
+      ui.set('sub', [y && pl(y, 'year'), m && pl(m, 'month'), d && pl(d, 'day')].filter(Boolean).join(', ') || 'Same day');
+      ui.html('grid', [['Weeks', `${fmt(Math.floor(days / 7))} wk ${days % 7} d`], ['Working days (Mon–Fri)', span === null ? 'Too long to count' : fmt(span)], ['Hours', fmt(days * 24)], ['Minutes', fmt(days * 1440)]].map(([k, v]) => `<div class="stat"><dt class="stat-label">${k}</dt><dd class="text-lg font-bold tabular">${v}</dd></div>`).join(''));
+    } else {
+      const n = num(val('dd2-n')), op = Number(val('dd2-op')), u = val('dd2-u');
+      if (!Number.isInteger(n) || n < 0 || n > 100000) return ui.fail('Enter a whole number, for example 30.');
+      const r = new Date(a);
+      if (u === 'd') r.setDate(r.getDate() + op * n); else if (u === 'w') r.setDate(r.getDate() + op * n * 7);
+      else if (u === 'm' || u === 'y') { const day = r.getDate(); r.setDate(1); r.setMonth(r.getMonth() + op * n * (u === 'y' ? 12 : 1)); r.setDate(Math.min(day, new Date(r.getFullYear(), r.getMonth() + 1, 0).getDate())); }
+      else { let left = n; while (left > 0) { r.setDate(r.getDate() + op); if (r.getDay() % 6) left--; } }
+      if (isNaN(r.getTime()) || r.getFullYear() > 9999 || r.getFullYear() < 1) return ui.fail('That date is out of range.');
+      ui.show(); ui.set('head', `${long(a)} ${op > 0 ? '+' : '−'} ${pl(n, { d: 'day', bd: 'working day', w: 'week', m: 'month', y: 'year' }[u]!)} is`);
+      ui.set('main', r.toLocaleDateString(undefined, { day: 'numeric', month: 'short', year: 'numeric' })); ui.set('sub', r.toLocaleDateString(undefined, { weekday: 'long' }));
+      ui.html('grid', '');
+    }
+  }
+  live(root.querySelector('[data-inputs]')!, calc);
+</script>

@@ -44,3 +44,28 @@ export function live(form: HTMLElement, fn: () => void) {
 
 export function addMonths(d: Date, n: number) { const x = new Date(d); x.setMonth(x.getMonth() + n); return x; }
 export const monthYear = (d: Date) => d.toLocaleDateString(undefined, { month: 'long', year: 'numeric' });
+
+/**
+ * Small helper for calculator result panels. Expects inside root:
+ * [data-ok] (results), optional [data-empty] (placeholder) and [data-msg] (error message).
+ */
+export function resultsUi(root: HTMLElement) {
+  const ok = root.querySelector<HTMLElement>('[data-ok]'), empty = root.querySelector<HTMLElement>('[data-empty]'), msg = root.querySelector<HTMLElement>('[data-msg]');
+  return {
+    set(key: string, value: string) { const el = root.querySelector(`[data-r="${key}"]`); if (el) el.textContent = value; },
+    html(key: string, value: string) { const el = root.querySelector(`[data-r="${key}"]`); if (el) el.innerHTML = value; },
+    show() { if (ok) ok.hidden = false; if (empty) empty.hidden = true; if (msg) msg.hidden = true; },
+    empty() { if (ok) ok.hidden = true; if (empty) empty.hidden = false; if (msg) msg.hidden = true; },
+    fail(text: string) { if (ok) ok.hidden = true; if (empty) empty.hidden = true; if (msg) { msg.hidden = false; msg.textContent = text; } },
+  };
+}
+export const val = (id: string) => (document.getElementById(id) as HTMLInputElement).value;
+
+/** Read BodyInputs: returns height in cm, weight in kg, age, sex and unit system */
+export function body(id: string) {
+  const r = (n: string) => (document.querySelector(`input[name="${id}-${n}"]:checked`) as HTMLInputElement).value;
+  const v = (k: string) => { const el = document.getElementById(`${id}-${k}`) as HTMLInputElement | null; return el ? Number(el.value.replace(/,/g, '.').trim() || NaN) : NaN; };
+  const us = r('u') === 'us';
+  document.querySelectorAll<HTMLElement>(`#${id} [data-u]`).forEach((e) => (e.hidden = e.dataset.u !== r('u')));
+  return { us, sex: r('sex') as 'f' | 'm', age: v('age'), cm: us ? ((v('ft') || 0) * 12 + (v('in') || 0)) * 2.54 : v('cm'), kg: us ? v('lb') * 0.45359237 : v('kg') };
+}

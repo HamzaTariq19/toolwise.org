@@ -1,0 +1,43 @@
+---
+import CalcLayout from '../components/CalcLayout.astro';
+import CurrencySelect from '../components/CurrencySelect.astro';
+import Field from '../components/Field.astro';
+import ResultPanel from '../components/ResultPanel.astro';
+---
+<CalcLayout id="roi">
+  <Fragment slot="inputs">
+    <CurrencySelect id="roi-cur" />
+    <Field id="roi-in" label="Amount invested" value="10,000" sym />
+    <Field id="roi-out" label="Amount returned (final value)" value="13,500" sym hint="Include dividends or income you received." />
+    <Field id="roi-years" label="Investment period (optional)" value="3" suffix="years" hint="Add this to see the annualized return." />
+  </Fragment>
+  <Fragment slot="results">
+    <ResultPanel label="Return on investment (ROI)">
+      <dl class="mt-5 grid grid-cols-2 gap-3">
+        <div class="stat"><dt class="stat-label">Profit or loss</dt><dd class="text-lg font-bold tabular" data-r="gain"></dd></div>
+        <div class="stat"><dt class="stat-label">Annualized return</dt><dd class="text-lg font-bold tabular" data-r="cagr"></dd></div>
+        <div class="stat col-span-2"><dt class="stat-label">Value multiple</dt><dd class="text-lg font-bold tabular" data-r="mult"></dd></div>
+      </dl>
+    </ResultPanel>
+  </Fragment>
+</CalcLayout>
+<script>
+  import { bindCurrency, live, resultsUi, val } from '../lib/calc';
+  import { num, money, fmt } from '../lib/ui';
+  const root = document.getElementById('roi')!, ui = resultsUi(root);
+  const cur = bindCurrency(document.getElementById('roi-cur') as HTMLSelectElement, () => calc());
+  function calc() {
+    const c = cur(); root.querySelectorAll('[data-sym]').forEach((e) => (e.textContent = c || '#'));
+    const a = num(val('roi-in')), b = num(val('roi-out')), y = num(val('roi-years'));
+    if (!(a > 0) || Number.isNaN(b)) return ui.empty();
+    if (b < 0) return ui.fail('The final value cannot be negative. Enter 0 if the whole investment was lost.');
+    const roi = ((b - a) / a) * 100;
+    ui.show(); ui.set('main', `${roi >= 0 ? '+' : ''}${fmt(roi, 2)}%`);
+    (root.querySelector('[data-r=main]') as HTMLElement).classList.toggle('text-danger', roi < 0);
+    ui.set('sub', roi >= 0 ? `You gained ${money(b - a, c)} on ${money(a, c)}.` : `You lost ${money(a - b, c)} of ${money(a, c)}.`);
+    ui.set('gain', `${b - a >= 0 ? '+' : '-'}${money(Math.abs(b - a), c)}`);
+    ui.set('cagr', y > 0 ? (b === 0 ? '-100%' : `${fmt((Math.pow(b / a, 1 / y) - 1) * 100, 2)}% per year`) : 'Add the period');
+    ui.set('mult', `${fmt(b / a, 3)}×`);
+  }
+  live(root.querySelector('[data-inputs]')!, calc);
+</script>

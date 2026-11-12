@@ -1,0 +1,51 @@
+---
+import CalcLayout from '../components/CalcLayout.astro';
+import CurrencySelect from '../components/CurrencySelect.astro';
+import Field from '../components/Field.astro';
+import ResultPanel from '../components/ResultPanel.astro';
+---
+<CalcLayout id="tp">
+  <Fragment slot="inputs">
+    <CurrencySelect id="tp-cur" />
+    <Field id="tp-bill" label="Bill amount" value="64.50" sym />
+    <fieldset><legend class="label">Tip</legend>
+      <div class="flex flex-wrap gap-2">{[10, 12.5, 15, 18, 20, 25].map((p) => <label class="chip has-[:checked]:!border-[var(--text)] has-[:checked]:!bg-[var(--text)] has-[:checked]:!text-[var(--bg)] has-[:focus-visible]:outline has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-[var(--ring)]"><input type="radio" name="tp-p" value={p} checked={p === 18} class="sr-only" />{p}%</label>)}
+        <label class="chip has-[:checked]:!border-[var(--text)] has-[:checked]:!bg-[var(--text)] has-[:checked]:!text-[var(--bg)]"><input type="radio" name="tp-p" value="custom" class="sr-only" />Custom</label></div>
+    </fieldset>
+    <div data-custom hidden><Field id="tp-custom" label="Custom tip" value="22" suffix="%" /></div>
+    <Field id="tp-people" label="Split between" value="2" suffix="people" mode="numeric" />
+    <label class="flex min-h-11 items-center gap-3 text-[0.9375rem]"><input type="checkbox" id="tp-round" class="h-5 w-5 accent-[var(--brand)]" />Round each person's share up to a whole amount</label>
+  </Fragment>
+  <Fragment slot="results">
+    <ResultPanel label="Each person pays">
+      <dl class="mt-5 grid grid-cols-2 gap-3">
+        <div class="stat"><dt class="stat-label">Tip</dt><dd class="text-lg font-bold tabular" data-r="tip"></dd></div>
+        <div class="stat"><dt class="stat-label">Total with tip</dt><dd class="text-lg font-bold tabular" data-r="tot"></dd></div>
+        <div class="stat"><dt class="stat-label">Tip per person</dt><dd class="text-lg font-bold tabular" data-r="tipp"></dd></div>
+        <div class="stat"><dt class="stat-label">Bill per person</dt><dd class="text-lg font-bold tabular" data-r="billp"></dd></div>
+      </dl>
+    </ResultPanel>
+  </Fragment>
+</CalcLayout>
+<script>
+  import { bindCurrency, live, resultsUi, val } from '../lib/calc';
+  import { num, money } from '../lib/ui';
+  const root = document.getElementById('tp')!, ui = resultsUi(root);
+  const cur = bindCurrency(document.getElementById('tp-cur') as HTMLSelectElement, () => calc());
+  function calc() {
+    const c = cur(); root.querySelectorAll('[data-sym]').forEach((e) => (e.textContent = c || '#'));
+    const choice = (root.querySelector('input[name=tp-p]:checked') as HTMLInputElement).value;
+    (root.querySelector('[data-custom]') as HTMLElement).hidden = choice !== 'custom';
+    const bill = num(val('tp-bill')), pct = choice === 'custom' ? num(val('tp-custom')) : Number(choice), n = num(val('tp-people'));
+    if (!(bill > 0)) return ui.empty();
+    if (!(pct >= 0 && pct <= 100)) return ui.fail('Enter a tip between 0% and 100%.');
+    if (!(n >= 1) || !Number.isInteger(n) || n > 100) return ui.fail('Enter the number of people as a whole number, for example 2.');
+    const tip = (bill * pct) / 100;
+    let each = (bill + tip) / n;
+    const round = (document.getElementById('tp-round') as HTMLInputElement).checked;
+    if (round) each = Math.ceil(each);
+    ui.show(); ui.set('main', money(each, c)); ui.set('sub', round ? `rounded up; total paid ${money(each * n, c)}, tip ${money(each * n - bill, c)}` : `${pct}% tip, split ${n} way${n > 1 ? 's' : ''}`);
+    ui.set('tip', money(round ? each * n - bill : tip, c)); ui.set('tot', money(round ? each * n : bill + tip, c)); ui.set('tipp', money((round ? each * n - bill : tip) / n, c)); ui.set('billp', money(bill / n, c));
+  }
+  live(root.querySelector('[data-inputs]')!, calc);
+</script>

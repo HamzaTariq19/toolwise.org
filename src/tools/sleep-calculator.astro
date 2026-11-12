@@ -1,0 +1,47 @@
+---
+import CalcLayout from '../components/CalcLayout.astro';
+---
+<CalcLayout id="sl2">
+  <Fragment slot="inputs">
+    <fieldset><legend class="label">I want to</legend>
+      <div class="segmented"><label><input type="radio" name="sl2-m" value="wake" checked /><span>Wake up at</span></label><label><input type="radio" name="sl2-m" value="bed" /><span>Go to bed at</span></label><label><input type="radio" name="sl2-m" value="now" /><span>Sleep now</span></label></div>
+    </fieldset>
+    <div data-time><label for="sl2-t" class="label" data-tl>Wake-up time</label><input id="sl2-t" type="time" class="input" value="07:00" /></div>
+    <div><label for="sl2-fall" class="label">Time it takes you to fall asleep</label><select id="sl2-fall" class="select"><option value="5">About 5 minutes</option><option value="15" selected>About 15 minutes</option><option value="30">About 30 minutes</option></select></div>
+  </Fragment>
+  <Fragment slot="results">
+    <div data-ok hidden>
+      <p class="text-sm font-medium text-muted" data-r="head"></p>
+      <ul class="mt-3 grid gap-2" data-r="list"></ul>
+      <p class="mt-4 text-sm text-muted">Each sleep cycle lasts about 90 minutes. Waking at the end of a cycle, rather than in the middle of deep sleep, helps you feel less groggy. Most adults need 7 to 9 hours (5 to 6 cycles).</p>
+    </div>
+    <div data-empty class="py-8 text-center text-muted">Choose a time.</div>
+    <p class="alert alert-error" data-msg hidden role="alert"></p>
+  </Fragment>
+</CalcLayout>
+<script>
+  import { live, resultsUi, val } from '../lib/calc';
+  const root = document.getElementById('sl2')!, ui = resultsUi(root), CYCLE = 90;
+  const fmtT = (min: number) => { const d = new Date(2000, 0, 1, 0, 0); d.setMinutes(((min % 1440) + 1440) % 1440); return d.toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit' }); };
+  const hrs = (c: number) => `${(c * CYCLE) / 60} hours`;
+  function calc() {
+    const m = (root.querySelector('input[name=sl2-m]:checked') as HTMLInputElement).value;
+    (root.querySelector('[data-time]') as HTMLElement).hidden = m === 'now';
+    root.querySelector('[data-tl]')!.textContent = m === 'wake' ? 'Wake-up time' : 'Bedtime';
+    const fall = Number(val('sl2-fall'));
+    let base: number;
+    if (m === 'now') { const n = new Date(); base = n.getHours() * 60 + n.getMinutes(); }
+    else { if (!val('sl2-t')) return ui.empty(); const [h, mi] = val('sl2-t').split(':').map(Number); base = h * 60 + mi; }
+    const rec = (c: number) => (c === 6 || c === 5 ? '<span class="badge !bg-success-soft !text-success">Recommended</span>' : '');
+    ui.show();
+    if (m === 'wake') {
+      ui.set('head', `To wake up refreshed at ${fmtT(base)}, go to bed at one of these times:`);
+      ui.html('list', [6, 5, 4, 3].map((c) => `<li class="stat flex items-center justify-between gap-2"><span><span class="text-2xl font-bold tabular">${fmtT(base - c * CYCLE - fall)}</span><span class="ml-2 text-sm text-muted">${c} cycles · ${hrs(c)} sleep</span></span>${rec(c)}</li>`).join(''));
+    } else {
+      ui.set('head', m === 'now' ? `If you go to bed now (${fmtT(base)}), try to wake up at:` : `If you go to bed at ${fmtT(base)}, try to wake up at:`);
+      ui.html('list', [3, 4, 5, 6].map((c) => `<li class="stat flex items-center justify-between gap-2"><span><span class="text-2xl font-bold tabular">${fmtT(base + fall + c * CYCLE)}</span><span class="ml-2 text-sm text-muted">${c} cycles · ${hrs(c)} sleep</span></span>${rec(c)}</li>`).join(''));
+    }
+  }
+  live(root.querySelector('[data-inputs]')!, calc);
+  setInterval(() => { if ((root.querySelector('input[name=sl2-m]:checked') as HTMLInputElement).value === 'now') calc(); }, 30000);
+</script>

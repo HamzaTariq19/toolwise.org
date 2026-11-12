@@ -1,0 +1,45 @@
+---
+import CalcLayout from '../components/CalcLayout.astro';
+import CurrencySelect from '../components/CurrencySelect.astro';
+import Field from '../components/Field.astro';
+---
+<CalcLayout id="sh">
+  <Fragment slot="inputs">
+    <CurrencySelect id="sh-cur" />
+    <div class="grid grid-cols-[1fr_auto] gap-3">
+      <Field id="sh-amt" label="Pay" value="52,000" sym />
+      <div><label for="sh-per" class="label">per</label><select id="sh-per" class="select"><option value="year">year</option><option value="month">month</option><option value="biweek">2 weeks</option><option value="week">week</option><option value="day">day</option><option value="hour">hour</option></select></div>
+    </div>
+    <div class="grid grid-cols-2 gap-3"><Field id="sh-hours" label="Hours per week" value="40" /><Field id="sh-days" label="Days per week" value="5" /></div>
+    <Field id="sh-weeks" label="Paid weeks per year" value="52" hint="Use 52 if you have paid holidays. For unpaid leave, subtract those weeks." />
+  </Fragment>
+  <Fragment slot="results">
+    <div data-ok hidden>
+      <p class="text-sm font-medium text-muted">Hourly pay</p>
+      <p class="mt-1 text-4xl font-extrabold tracking-tight tabular" data-r="main"></p>
+      <table class="mt-5 w-full text-[0.9375rem] tabular"><tbody class="divide-y divide-[var(--border)]" data-r="table"></tbody></table>
+      <p class="mt-3 text-sm text-muted">Before tax and deductions.</p>
+    </div>
+    <div data-empty class="py-8 text-center text-muted">Enter your pay to see it per hour, day, week, month and year.</div>
+    <p class="alert alert-error" data-msg hidden role="alert"></p>
+  </Fragment>
+</CalcLayout>
+<script>
+  import { bindCurrency, live, resultsUi, val } from '../lib/calc';
+  import { num, money } from '../lib/ui';
+  const root = document.getElementById('sh')!, ui = resultsUi(root);
+  const cur = bindCurrency(document.getElementById('sh-cur') as HTMLSelectElement, () => calc());
+  function calc() {
+    const c = cur(); root.querySelectorAll('[data-sym]').forEach((e) => (e.textContent = c || '#'));
+    const amt = num(val('sh-amt')), per = val('sh-per'), h = num(val('sh-hours')), d = num(val('sh-days')), w = num(val('sh-weeks'));
+    if (!(amt > 0)) return ui.empty();
+    if (!(h > 0 && h <= 168)) return ui.fail('Enter hours per week between 1 and 168.');
+    if (!(d > 0 && d <= 7)) return ui.fail('Enter days per week between 1 and 7.');
+    if (!(w > 0 && w <= 52.18)) return ui.fail('Enter paid weeks per year between 1 and 52.');
+    const yearly = { year: amt, month: amt * 12, biweek: amt * (w / 2), week: amt * w, day: amt * d * w, hour: amt * h * w }[per]!;
+    const rows: [string, number][] = [['Hourly', yearly / (h * w)], ['Daily', yearly / (d * w)], ['Weekly', yearly / w], ['Every 2 weeks', (yearly / w) * 2], ['Monthly', yearly / 12], ['Yearly', yearly]];
+    ui.show(); ui.set('main', money(rows[0][1], c));
+    ui.html('table', rows.map(([l, v]) => `<tr><td class="py-2 text-muted">${l}</td><td class="py-2 text-right font-semibold">${money(v, c)}</td></tr>`).join(''));
+  }
+  live(root.querySelector('[data-inputs]')!, calc);
+</script>

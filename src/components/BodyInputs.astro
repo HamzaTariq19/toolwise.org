@@ -1,0 +1,20 @@
+---
+// Sex, age, height and weight inputs with metric / US units (shared by health calculators)
+interface Props { id: string; weight?: boolean; age?: boolean }
+const { id, weight = true, age = true } = Astro.props;
+---
+<fieldset><legend class="label">Units</legend>
+  <div class="segmented"><label><input type="radio" name={`${id}-u`} value="metric" checked /><span>Metric (cm, kg)</span></label><label><input type="radio" name={`${id}-u`} value="us" /><span>US (ft, lb)</span></label></div>
+</fieldset>
+<div class="grid gap-3 min-[420px]:grid-cols-2">
+  <fieldset><legend class="label">Sex</legend><div class="segmented"><label><input type="radio" name={`${id}-sex`} value="f" checked /><span>Female</span></label><label><input type="radio" name={`${id}-sex`} value="m" /><span>Male</span></label></div></fieldset>
+  {age && <div><label for={`${id}-age`} class="label">Age</label><div class="input-group"><input id={`${id}-age`} class="input tabular" inputmode="numeric" value="35" /><span class="addon">years</span></div></div>}
+</div>
+<div data-u="metric" class="grid grid-cols-2 gap-3">
+  <div><label for={`${id}-cm`} class="label">Height</label><div class="input-group"><input id={`${id}-cm`} class="input tabular" inputmode="decimal" value="168" /><span class="addon">cm</span></div></div>
+  {weight && <div><label for={`${id}-kg`} class="label">Weight</label><div class="input-group"><input id={`${id}-kg`} class="input tabular" inputmode="decimal" value="68" /><span class="addon">kg</span></div></div>}
+</div>
+<div data-u="us" class="grid grid-cols-2 gap-3" hidden>
+  <fieldset class="col-span-2 sm:col-span-1"><legend class="label">Height</legend><div class="grid grid-cols-2 gap-2"><div class="input-group"><input id={`${id}-ft`} class="input tabular" inputmode="numeric" value="5" aria-label="Feet" /><span class="addon">ft</span></div><div class="input-group"><input id={`${id}-in`} class="input tabular" inputmode="decimal" value="6" aria-label="Inches" /><span class="addon">in</span></div></div></fieldset>
+  {weight && <div class="col-span-2 sm:col-span-1"><label for={`${id}-lb`} class="label">Weight</label><div class="input-group"><input id={`${id}-lb`} class="input tabular" inputmode="decimal" value="150" /><span class="addon">lb</span></div></div>}
+</div>

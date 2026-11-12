@@ -1,0 +1,59 @@
+---
+import CalcLayout from '../components/CalcLayout.astro';
+import CurrencySelect from '../components/CurrencySelect.astro';
+import Field from '../components/Field.astro';
+import ResultPanel from '../components/ResultPanel.astro';
+---
+<CalcLayout id="cl2">
+  <Fragment slot="inputs">
+    <CurrencySelect id="cl2-cur" />
+    <Field id="cl2-price" label="Car price" value="32,000" sym />
+    <div class="grid grid-cols-2 gap-3">
+      <Field id="cl2-down" label="Down payment" value="4,000" sym />
+      <Field id="cl2-trade" label="Trade-in value" value="0" sym />
+    </div>
+    <div class="grid grid-cols-2 gap-3">
+      <Field id="cl2-rate" label="Interest rate (APR)" value="6.9" suffix="%" />
+      <div><label for="cl2-term" class="label">Loan term</label><select id="cl2-term" class="select"><option value="36">36 months</option><option value="48">48 months</option><option value="60" selected>60 months</option><option value="72">72 months</option><option value="84">84 months</option></select></div>
+    </div>
+    <div class="grid grid-cols-2 gap-3">
+      <Field id="cl2-tax" label="Sales tax" value="7" suffix="%" />
+      <Field id="cl2-fees" label="Fees (title, registration)" value="500" sym />
+    </div>
+    <label class="flex min-h-11 items-center gap-3 text-[0.9375rem]"><input type="checkbox" id="cl2-taxtrade" class="h-5 w-5 accent-[var(--brand)]" checked />Tax only the price minus the trade-in (most US states)</label>
+  </Fragment>
+  <Fragment slot="results">
+    <ResultPanel label="Monthly payment">
+      <dl class="mt-5 grid grid-cols-2 gap-3">
+        <div class="stat"><dt class="stat-label">Amount financed</dt><dd class="text-lg font-bold tabular" data-r="fin"></dd></div>
+        <div class="stat"><dt class="stat-label">Sales tax</dt><dd class="text-lg font-bold tabular" data-r="tax"></dd></div>
+        <div class="stat"><dt class="stat-label">Total interest</dt><dd class="text-lg font-bold tabular" data-r="int"></dd></div>
+        <div class="stat"><dt class="stat-label">Total cost of car</dt><dd class="text-lg font-bold tabular" data-r="tot"></dd></div>
+      </dl>
+      <p class="mt-4 text-sm text-muted" data-r="compare"></p>
+    </ResultPanel>
+  </Fragment>
+</CalcLayout>
+<script>
+  import { payment, bindCurrency, live, resultsUi, val } from '../lib/calc';
+  import { num, money } from '../lib/ui';
+  const root = document.getElementById('cl2')!, ui = resultsUi(root);
+  const cur = bindCurrency(document.getElementById('cl2-cur') as HTMLSelectElement, () => calc());
+  function calc() {
+    const c = cur(); root.querySelectorAll('[data-sym]').forEach((e) => (e.textContent = c || '#'));
+    const price = num(val('cl2-price')), down = num(val('cl2-down')) || 0, trade = num(val('cl2-trade')) || 0, r = num(val('cl2-rate')), n = Number(val('cl2-term')), taxR = num(val('cl2-tax')) || 0, fees = num(val('cl2-fees')) || 0;
+    if (!(price > 0)) return ui.empty();
+    if ([down, trade, taxR, fees].some((x) => x < 0)) return ui.fail('Amounts cannot be negative.');
+    if (!(r >= 0) || r > 50) return ui.fail('Enter an interest rate between 0% and 50%.');
+    const taxable = (document.getElementById('cl2-taxtrade') as HTMLInputElement).checked ? Math.max(0, price - trade) : price;
+    const tax = (taxable * taxR) / 100, fin = price + tax + fees - down - trade;
+    if (fin <= 0) return ui.fail('Your down payment and trade-in cover the whole cost, so no loan is needed.');
+    const m = payment(fin, r, n), interest = m * n - fin;
+    ui.show(); ui.set('main', money(m, c)); ui.set('sub', `${n} payments at ${r}% APR`);
+    ui.set('fin', money(fin, c, 0)); ui.set('tax', money(tax, c, 0)); ui.set('int', money(interest, c, 0)); ui.set('tot', money(down + trade + m * n, c, 0));
+    const alt = n > 48 ? 48 : 72, ma = payment(fin, r, alt);
+    const altInt = ma * alt - fin;
+    ui.set('compare', `For comparison: a ${alt}-month loan would be ${money(ma, c)} a month, with ${money(altInt, c, 0)} total interest (${altInt < interest ? `${money(interest - altInt, c, 0)} less` : `${money(altInt - interest, c, 0)} more`} than your choice).`);
+  }
+  live(root.querySelector('[data-inputs]')!, calc);
+</script>

@@ -1,0 +1,50 @@
+---
+import CalcLayout from '../components/CalcLayout.astro';
+import CurrencySelect from '../components/CurrencySelect.astro';
+import Field from '../components/Field.astro';
+import ResultPanel from '../components/ResultPanel.astro';
+---
+<CalcLayout id="pm">
+  <Fragment slot="inputs">
+    <CurrencySelect id="pm-cur" />
+    <fieldset><legend class="label">I know</legend>
+      <div class="segmented"><label><input type="radio" name="pm-m" value="price" checked /><span>Cost and price</span></label><label><input type="radio" name="pm-m" value="margin" /><span>Cost and target margin</span></label><label><input type="radio" name="pm-m" value="markup" /><span>Cost and markup</span></label></div>
+    </fieldset>
+    <Field id="pm-cost" label="Cost" value="40" sym hint="What the item costs you to buy or make." />
+    <div data-m="price"><Field id="pm-price" label="Selling price" value="65" sym /></div>
+    <div data-m="margin" hidden><Field id="pm-margin" label="Target profit margin" value="35" suffix="%" /></div>
+    <div data-m="markup" hidden><Field id="pm-markup" label="Markup" value="50" suffix="%" /></div>
+  </Fragment>
+  <Fragment slot="results">
+    <ResultPanel label="Profit margin">
+      <dl class="mt-5 grid grid-cols-2 gap-3">
+        <div class="stat"><dt class="stat-label">Selling price</dt><dd class="text-lg font-bold tabular" data-r="price"></dd></div>
+        <div class="stat"><dt class="stat-label">Profit per item</dt><dd class="text-lg font-bold tabular" data-r="profit"></dd></div>
+        <div class="stat"><dt class="stat-label">Markup</dt><dd class="text-lg font-bold tabular" data-r="markup"></dd></div>
+        <div class="stat"><dt class="stat-label">Cost</dt><dd class="text-lg font-bold tabular" data-r="cost"></dd></div>
+      </dl>
+    </ResultPanel>
+  </Fragment>
+</CalcLayout>
+<script>
+  import { bindCurrency, live, resultsUi, val } from '../lib/calc';
+  import { num, money, fmt } from '../lib/ui';
+  const root = document.getElementById('pm')!, ui = resultsUi(root);
+  const cur = bindCurrency(document.getElementById('pm-cur') as HTMLSelectElement, () => calc());
+  const mode = () => (root.querySelector('input[name=pm-m]:checked') as HTMLInputElement).value;
+  function calc() {
+    const c = cur(); root.querySelectorAll('[data-sym]').forEach((e) => (e.textContent = c || '#'));
+    root.querySelectorAll<HTMLElement>('[data-m]').forEach((e) => (e.hidden = e.dataset.m !== mode()));
+    const cost = num(val('pm-cost'));
+    if (!(cost >= 0) || Number.isNaN(cost)) return ui.empty();
+    let price: number;
+    if (mode() === 'price') { price = num(val('pm-price')); if (!(price > 0)) return ui.empty(); }
+    else if (mode() === 'margin') { const m = num(val('pm-margin')); if (!(m < 100)) return ui.fail('A profit margin must be below 100%, because margin is a share of the selling price.'); if (Number.isNaN(m)) return ui.empty(); price = cost / (1 - m / 100); }
+    else { const mk = num(val('pm-markup')); if (Number.isNaN(mk)) return ui.empty(); if (mk < -100) return ui.fail('Markup cannot be below -100%.'); price = cost * (1 + mk / 100); }
+    const profit = price - cost, margin = price ? (profit / price) * 100 : 0;
+    ui.show(); ui.set('main', `${fmt(margin, 2)}%`); (root.querySelector('[data-r=main]') as HTMLElement).classList.toggle('text-danger', profit < 0);
+    ui.set('sub', profit < 0 ? 'You are selling below cost (a loss).' : `${money(profit, c)} profit on every ${money(price, c)} sale`);
+    ui.set('price', money(price, c)); ui.set('profit', money(profit, c)); ui.set('markup', cost ? `${fmt((profit / cost) * 100, 2)}%` : '–'); ui.set('cost', money(cost, c));
+  }
+  live(root.querySelector('[data-inputs]')!, calc);
+</script>

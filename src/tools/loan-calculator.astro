@@ -1,0 +1,52 @@
+---
+import CalcLayout from '../components/CalcLayout.astro';
+import CurrencySelect from '../components/CurrencySelect.astro';
+import Field from '../components/Field.astro';
+import ResultPanel from '../components/ResultPanel.astro';
+---
+<CalcLayout id="ln">
+  <Fragment slot="inputs">
+    <CurrencySelect id="ln-cur" />
+    <Field id="ln-amt" label="Loan amount" value="15,000" sym />
+    <Field id="ln-rate" label="Interest rate (APR)" value="7.5" suffix="%" />
+    <div class="grid grid-cols-2 gap-3">
+      <Field id="ln-term" label="Loan term" value="5" mode="numeric" />
+      <div><label for="ln-unit" class="label">&nbsp;<span class="sr-only">Term unit</span></label><select id="ln-unit" class="select"><option value="12">years</option><option value="1">months</option></select></div>
+    </div>
+    <Field id="ln-fee" label="Upfront fees (optional)" value="0" sym hint="Arrangement or origination fees. Used to show the true cost of the loan." />
+  </Fragment>
+  <Fragment slot="results">
+    <ResultPanel label="Monthly payment">
+      <dl class="mt-5 grid grid-cols-2 gap-3">
+        <div class="stat"><dt class="stat-label">Total interest</dt><dd class="text-lg font-bold tabular" data-r="int"></dd></div>
+        <div class="stat"><dt class="stat-label">Total repaid</dt><dd class="text-lg font-bold tabular" data-r="tot"></dd></div>
+        <div class="stat"><dt class="stat-label">Number of payments</dt><dd class="text-lg font-bold tabular" data-r="n"></dd></div>
+        <div class="stat"><dt class="stat-label">Paid off by</dt><dd class="text-lg font-bold" data-r="end"></dd></div>
+      </dl>
+      <div class="mt-5 flex h-3 overflow-hidden rounded-full" aria-hidden="true"><span class="bg-brand" data-bar-p></span><span class="bg-[#f59e0b]" data-bar-i></span></div>
+      <p class="mt-2 flex gap-4 text-sm text-muted"><span class="flex items-center gap-1.5"><span class="h-2.5 w-2.5 rounded-full bg-brand"></span>Principal</span><span class="flex items-center gap-1.5"><span class="h-2.5 w-2.5 rounded-full bg-[#f59e0b]"></span>Interest and fees</span></p>
+    </ResultPanel>
+  </Fragment>
+</CalcLayout>
+<script>
+  import { payment, bindCurrency, live, resultsUi, val, addMonths, monthYear } from '../lib/calc';
+  import { num, money, fmt } from '../lib/ui';
+  const root = document.getElementById('ln')!, ui = resultsUi(root);
+  const cur = bindCurrency(document.getElementById('ln-cur') as HTMLSelectElement, () => calc());
+  function calc() {
+    const c = cur(); root.querySelectorAll('[data-sym]').forEach((e) => (e.textContent = c || '#'));
+    const P = num(val('ln-amt')), r = num(val('ln-rate')), n = Math.round(num(val('ln-term')) * Number(val('ln-unit'))), fee = num(val('ln-fee')) || 0;
+    if (!(P > 0)) return ui.empty();
+    if (!(r >= 0) || r > 100) return ui.fail('Enter an interest rate between 0% and 100%, for example 7.5.');
+    if (!(n >= 1) || n > 600) return ui.fail('Enter a loan term between 1 month and 50 years.');
+    if (fee < 0) return ui.fail('Fees cannot be negative.');
+    const m = payment(P, r, n), total = m * n, interest = total - P;
+    ui.show();
+    ui.set('main', money(m, c)); ui.set('sub', `for ${n} months at ${fmt(r, 3)}% APR`);
+    ui.set('int', money(interest, c)); ui.set('tot', money(total + fee, c)); ui.set('n', fmt(n)); ui.set('end', monthYear(addMonths(new Date(), n)));
+    const all = total + fee;
+    (root.querySelector('[data-bar-p]') as HTMLElement).style.width = `${(P / all) * 100}%`;
+    (root.querySelector('[data-bar-i]') as HTMLElement).style.width = `${((interest + fee) / all) * 100}%`;
+  }
+  live(root.querySelector('[data-inputs]')!, calc);
+</script>

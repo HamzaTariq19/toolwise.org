@@ -1,0 +1,14 @@
+---
+// A labelled numeric input with optional prefix/suffix, matching the calculator style.
+interface Props { id: string; label: string; value?: string; prefix?: string; suffix?: string; hint?: string; placeholder?: string; mode?: 'decimal' | 'numeric'; sym?: boolean }
+const { id, label, value = '', prefix, suffix, hint, placeholder, mode = 'decimal', sym = false } = Astro.props;
+---
+<div>
+  <label for={id} class="label">{label}</label>
+  <div class={prefix || suffix || sym ? 'input-group' : ''}>
+    {(prefix || sym) && <span class="addon addon-left" data-sym={sym ? '' : undefined}>{prefix ?? '$'}</span>}
+    <input id={id} class="input tabular" inputmode={mode} value={value} placeholder={placeholder} autocomplete="off" />
+    {suffix && <span class="addon">{suffix}</span>}
+  </div>
+  {hint && <p class="hint">{hint}</p>}
+</div>

@@ -1,0 +1,50 @@
+---
+import CalcLayout from '../components/CalcLayout.astro';
+import BodyInputs from '../components/BodyInputs.astro';
+---
+<CalcLayout id="bf">
+  <Fragment slot="inputs">
+    <BodyInputs id="bf" weight age={false} />
+    <div class="grid grid-cols-2 gap-3">
+      <div><label for="bf-neck" class="label">Neck</label><div class="input-group"><input id="bf-neck" class="input tabular" inputmode="decimal" value="34" /><span class="addon" data-unit>cm</span></div></div>
+      <div><label for="bf-waist" class="label">Waist</label><div class="input-group"><input id="bf-waist" class="input tabular" inputmode="decimal" value="78" /><span class="addon" data-unit>cm</span></div></div>
+      <div data-hip><label for="bf-hip" class="label">Hips</label><div class="input-group"><input id="bf-hip" class="input tabular" inputmode="decimal" value="98" /><span class="addon" data-unit>cm</span></div></div>
+    </div>
+    <p class="hint">Measure the neck just below the voice box, the waist at the belly button (men) or the narrowest point (women), and the hips at the widest point. Keep the tape level and relaxed.</p>
+  </Fragment>
+  <Fragment slot="results">
+    <div data-ok hidden>
+      <p class="text-sm font-medium text-muted">Estimated body fat</p>
+      <p class="mt-1 flex items-baseline gap-3"><span class="text-5xl font-extrabold tracking-tight tabular" data-r="main"></span><span class="badge !px-3 !py-1 !text-sm" data-r="cat"></span></p>
+      <dl class="mt-5 grid grid-cols-2 gap-3">
+        <div class="stat"><dt class="stat-label">Fat mass</dt><dd class="text-lg font-bold tabular" data-r="fat"></dd></div>
+        <div class="stat"><dt class="stat-label">Lean mass</dt><dd class="text-lg font-bold tabular" data-r="lean"></dd></div>
+      </dl>
+      <table class="mt-4 w-full text-sm"><caption class="mb-1 text-left text-muted">Categories (American Council on Exercise)</caption><tbody class="divide-y divide-[var(--border)]" data-r="table"></tbody></table>
+    </div>
+    <div data-empty class="py-8 text-center text-muted">Enter your measurements to estimate body fat.</div>
+    <p class="alert alert-error" data-msg hidden role="alert"></p>
+  </Fragment>
+</CalcLayout>
+<script>
+  import { live, resultsUi, body, val } from '../lib/calc';
+  import { num, fmt } from '../lib/ui';
+  const root = document.getElementById('bf')!, ui = resultsUi(root);
+  const CATS = { f: [['Essential fat', 10, 13], ['Athletes', 14, 20], ['Fitness', 21, 24], ['Average', 25, 31], ['Above average', 32, 100]], m: [['Essential fat', 2, 5], ['Athletes', 6, 13], ['Fitness', 14, 17], ['Average', 18, 24], ['Above average', 25, 100]] } as const;
+  function calc() {
+    const b = body('bf'), k = b.us ? 2.54 : 1;
+    root.querySelectorAll('[data-unit]').forEach((e) => (e.textContent = b.us ? 'in' : 'cm'));
+    (root.querySelector('[data-hip]') as HTMLElement).hidden = b.sex === 'm';
+    const neck = num(val('bf-neck')) * k, waist = num(val('bf-waist')) * k, hip = num(val('bf-hip')) * k;
+    if (!(b.cm > 0) || !(neck > 0) || !(waist > 0) || (b.sex === 'f' && !(hip > 0))) return ui.empty();
+    if (waist <= neck) return ui.fail('Your waist measurement must be larger than your neck. Please check both.');
+    // US Navy method (measurements in cm)
+    const bf = b.sex === 'm' ? 495 / (1.0324 - 0.19077 * Math.log10(waist - neck) + 0.15456 * Math.log10(b.cm)) - 450 : 495 / (1.29579 - 0.35004 * Math.log10(waist + hip - neck) + 0.221 * Math.log10(b.cm)) - 450;
+    if (!(bf > 1 && bf < 70)) return ui.fail('These measurements give an unrealistic result. Please check them, especially the units.');
+    const cats = CATS[b.sex], cat = cats.find(([, , hi]) => bf < hi + 1) ?? cats[cats.length - 1];
+    ui.show(); ui.set('main', `${fmt(bf, 1)}%`); ui.set('cat', cat[0]);
+    if (b.kg > 0) { const f = (b.kg * bf) / 100, u = b.us ? 1 / 0.45359237 : 1, unit = b.us ? 'lb' : 'kg'; ui.set('fat', `${fmt(f * u, 1)} ${unit}`); ui.set('lean', `${fmt((b.kg - f) * u, 1)} ${unit}`); } else { ui.set('fat', '–'); ui.set('lean', '–'); }
+    ui.html('table', cats.map(([n, lo, hi]) => `<tr class="${n === cat[0] ? 'font-semibold text-ink' : 'text-muted'}"><td class="py-1.5">${n}</td><td class="py-1.5 text-right tabular">${hi === 100 ? `${lo}%+` : `${lo}–${hi}%`}</td></tr>`).join(''));
+  }
+  live(root.querySelector('[data-inputs]')!, calc);
+</script>

@@ -1,0 +1,44 @@
+---
+import CalcLayout from '../components/CalcLayout.astro';
+---
+<CalcLayout id="wi2">
+  <Fragment slot="inputs">
+    <fieldset><legend class="label">Units</legend><div class="segmented"><label><input type="radio" name="wi2-u" value="metric" checked /><span>kg and liters</span></label><label><input type="radio" name="wi2-u" value="us" /><span>lb and ounces</span></label></div></fieldset>
+    <div><label for="wi2-w" class="label">Body weight</label><div class="input-group"><input id="wi2-w" class="input tabular" inputmode="decimal" value="70" /><span class="addon" data-wu>kg</span></div></div>
+    <div><label for="wi2-ex" class="label">Exercise per day</label><div class="input-group"><input id="wi2-ex" class="input tabular" inputmode="numeric" value="30" /><span class="addon">minutes</span></div></div>
+    <div><label for="wi2-cl" class="label">Climate</label><select id="wi2-cl" class="select"><option value="0">Mild or cool</option><option value="500">Hot or humid</option></select></div>
+    <label class="flex min-h-11 items-center gap-3 text-[0.9375rem]"><input type="checkbox" id="wi2-preg" class="h-5 w-5 accent-[var(--brand)]" />Pregnant or breastfeeding</label>
+  </Fragment>
+  <Fragment slot="results">
+    <div data-ok hidden>
+      <p class="text-sm font-medium text-muted">Aim to drink about</p>
+      <p class="mt-1 text-4xl font-extrabold tracking-tight tabular" data-r="main"></p>
+      <p class="mt-1 text-[0.9375rem] text-muted" data-r="sub"></p>
+      <div class="mt-5 flex flex-wrap gap-1.5" data-r="glasses" aria-hidden="true"></div>
+      <p class="mt-4 text-sm text-muted">This is drinking water and other drinks. Food provides roughly another 20% of the water you need. Thirst and pale yellow urine are good everyday guides.</p>
+    </div>
+    <div data-empty class="py-8 text-center text-muted">Enter your weight to estimate how much to drink.</div>
+    <p class="alert alert-error" data-msg hidden role="alert"></p>
+  </Fragment>
+</CalcLayout>
+<script>
+  import { live, resultsUi, val } from '../lib/calc';
+  import { num, fmt } from '../lib/ui';
+  const root = document.getElementById('wi2')!, ui = resultsUi(root);
+  function calc() {
+    const us = (root.querySelector('input[name=wi2-u]:checked') as HTMLInputElement).value === 'us';
+    root.querySelector('[data-wu]')!.textContent = us ? 'lb' : 'kg';
+    const w = num(val('wi2-w')), kg = us ? w * 0.45359237 : w, ex = num(val('wi2-ex')) || 0;
+    if (!(w > 0)) return ui.empty();
+    if (kg < 20 || kg > 300) return ui.fail('Please check your weight.');
+    if (ex < 0 || ex > 600) return ui.fail('Enter exercise time between 0 and 600 minutes.');
+    // ~33 ml per kg baseline, +350 ml per 30 minutes of exercise, +500 ml for heat, +700 ml pregnancy/breastfeeding
+    let ml = kg * 33 + (ex / 30) * 350 + Number(val('wi2-cl')) + ((document.getElementById('wi2-preg') as HTMLInputElement).checked ? 700 : 0);
+    ml = Math.min(ml, 6000);
+    const glasses = Math.round(ml / 250);
+    ui.show(); ui.set('main', us ? `${fmt(ml / 29.5735, 0)} fl oz` : `${fmt(ml / 1000, 1)} liters`);
+    ui.set('sub', us ? `about ${fmt(ml / 1000, 1)} liters, or ${glasses} glasses of 8 oz` : `about ${glasses} glasses of 250 ml, or ${fmt(ml / 29.5735, 0)} fl oz`);
+    ui.html('glasses', Array.from({ length: glasses }, () => '<svg width="22" height="28" viewBox="0 0 22 28"><path d="M2 2h18l-2.5 23a2 2 0 0 1-2 1.8H6.5a2 2 0 0 1-2-1.8z" fill="var(--brand-soft)" stroke="var(--brand)" stroke-width="1.5"/><path d="M4.2 10h13.6l-1.6 15H5.8z" fill="var(--brand)" opacity=".55"/></svg>').join(''));
+  }
+  live(root.querySelector('[data-inputs]')!, calc);
+</script>

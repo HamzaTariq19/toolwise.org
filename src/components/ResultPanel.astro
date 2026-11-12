@@ -1,0 +1,13 @@
+---
+// Standard calculator result area: big headline value, stat grid slot, placeholder and error message.
+interface Props { label: string; empty?: string }
+const { label, empty = 'Fill in the details to see your result.' } = Astro.props;
+---
+<div data-ok hidden>
+  <p class="text-sm font-medium text-muted">{label}</p>
+  <p class="mt-1 text-4xl font-extrabold tracking-tight tabular" data-r="main">–</p>
+  <p class="mt-1 text-[0.9375rem] text-muted" data-r="sub"></p>
+  <slot />
+</div>
+<div data-empty class="py-8 text-center text-muted"><p>{empty}</p></div>
+<p class="alert alert-error" data-msg hidden role="alert"></p>

@@ -1,0 +1,49 @@
+---
+import CalcLayout from '../components/CalcLayout.astro';
+import Field from '../components/Field.astro';
+---
+<CalcLayout id="ov">
+  <Fragment slot="inputs">
+    <div><label for="ov-date" class="label">First day of your last period</label><input id="ov-date" type="date" class="input" /></div>
+    <Field id="ov-cycle" label="Average cycle length" value="28" suffix="days" mode="numeric" hint="From the first day of one period to the first day of the next. Usually 21 to 35 days." />
+    <Field id="ov-luteal" label="Luteal phase (optional)" value="14" suffix="days" mode="numeric" hint="Days from ovulation to your next period. Leave at 14 if you don't know it." />
+  </Fragment>
+  <Fragment slot="results">
+    <div data-ok hidden>
+      <p class="text-sm font-medium text-muted">Next estimated ovulation</p>
+      <p class="mt-1 text-3xl font-extrabold tracking-tight" data-r="main"></p>
+      <p class="mt-1 text-[0.9375rem] text-muted" data-r="sub"></p>
+      <ul class="mt-5 space-y-3" data-r="cycles"></ul>
+      <p class="mt-4 text-sm text-muted">Never use this calculator as a method of contraception.</p>
+    </div>
+    <div data-empty class="py-8 text-center text-muted">Choose the first day of your last period.</div>
+    <p class="alert alert-error" data-msg hidden role="alert"></p>
+  </Fragment>
+</CalcLayout>
+<script>
+  import { live, resultsUi, val } from '../lib/calc';
+  import { num } from '../lib/ui';
+  const root = document.getElementById('ov')!, ui = resultsUi(root), DAY = 86400000;
+  const today = new Date(); today.setHours(12, 0, 0, 0);
+  const dateIn = document.getElementById('ov-date') as HTMLInputElement;
+  dateIn.max = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
+  const f = (d: Date, o: Intl.DateTimeFormatOptions = { weekday: 'short', month: 'short', day: 'numeric' }) => d.toLocaleDateString(undefined, o);
+  function calc() {
+    if (!dateIn.value) return ui.empty();
+    const [y, m, d] = dateIn.value.split('-').map(Number), lmp = new Date(y, m - 1, d, 12);
+    const cyc = num(val('ov-cycle')), lut = num(val('ov-luteal')) || 14;
+    if (lmp > today) return ui.fail('That date is in the future. Choose the first day of your most recent period.');
+    if (!(cyc >= 20 && cyc <= 45)) return ui.fail('Enter a cycle length between 20 and 45 days.');
+    if (!(lut >= 9 && lut <= 18) || lut >= cyc - 4) return ui.fail('Enter a luteal phase between 9 and 18 days (14 is typical).');
+    if ((today.getTime() - lmp.getTime()) / DAY > 120) return ui.fail('That date is more than four months ago. Use your most recent period for an accurate estimate.');
+    // Find the first cycle whose ovulation has not passed yet, then show three cycles
+    let start = lmp.getTime();
+    while (start + (cyc - lut) * DAY < today.getTime() - DAY) start += cyc * DAY;
+    const cycles = [0, 1, 2].map((i) => { const s = start + i * cyc * DAY, ov = new Date(s + (cyc - lut) * DAY); return { ov, from: new Date(ov.getTime() - 5 * DAY), to: new Date(ov.getTime() + DAY), next: new Date(s + cyc * DAY) }; });
+    const first = cycles[0], days = Math.round((first.ov.getTime() - today.getTime()) / DAY);
+    ui.show(); ui.set('main', f(first.ov, { weekday: 'long', month: 'long', day: 'numeric' }));
+    ui.set('sub', days > 0 ? `in ${days} day${days === 1 ? '' : 's'}` : days === 0 ? 'today' : 'yesterday');
+    ui.html('cycles', cycles.map((c) => `<li class="stat"><p class="font-semibold">Fertile window: ${f(c.from)} – ${f(c.to)}</p><p class="text-sm text-muted">Ovulation about ${f(c.ov)} · next period about ${f(c.next)}</p></li>`).join(''));
+  }
+  live(root.querySelector('[data-inputs]')!, calc);
+</script>

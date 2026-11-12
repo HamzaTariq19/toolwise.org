@@ -1,0 +1,52 @@
+---
+import CalcLayout from '../components/CalcLayout.astro';
+import CurrencySelect from '../components/CurrencySelect.astro';
+import Field from '../components/Field.astro';
+import ResultPanel from '../components/ResultPanel.astro';
+---
+<CalcLayout id="rt">
+  <Fragment slot="inputs">
+    <CurrencySelect id="rt-cur" />
+    <div class="grid grid-cols-2 gap-3"><Field id="rt-age" label="Your age" value="30" mode="numeric" /><Field id="rt-ret" label="Retirement age" value="65" mode="numeric" /></div>
+    <Field id="rt-saved" label="Retirement savings today" value="20,000" sym />
+    <Field id="rt-month" label="You save each month" value="500" sym hint="Include any employer contribution." />
+    <div class="grid grid-cols-2 gap-3"><Field id="rt-return" label="Investment return / year" value="6" suffix="%" /><Field id="rt-infl" label="Inflation / year" value="2.5" suffix="%" /></div>
+    <Field id="rt-wd" label="Yearly withdrawal rate in retirement" value="4" suffix="%" hint="The share of your savings you take out each year. 4% is a common rule of thumb." />
+  </Fragment>
+  <Fragment slot="results">
+    <ResultPanel label="Savings at retirement">
+      <dl class="mt-5 grid grid-cols-2 gap-3">
+        <div class="stat col-span-2"><dt class="stat-label">In today's money (after inflation)</dt><dd class="text-xl font-bold tabular" data-r="real"></dd></div>
+        <div class="stat"><dt class="stat-label">Monthly income it could provide</dt><dd class="text-lg font-bold tabular" data-r="inc"></dd></div>
+        <div class="stat"><dt class="stat-label">In today's money</dt><dd class="text-lg font-bold tabular" data-r="increal"></dd></div>
+        <div class="stat"><dt class="stat-label">You contribute</dt><dd class="text-lg font-bold tabular" data-r="dep"></dd></div>
+        <div class="stat"><dt class="stat-label">Investment growth</dt><dd class="text-lg font-bold tabular text-success" data-r="growth"></dd></div>
+      </dl>
+    </ResultPanel>
+  </Fragment>
+</CalcLayout>
+<script>
+  import { bindCurrency, live, resultsUi, val } from '../lib/calc';
+  import { num, money } from '../lib/ui';
+  const root = document.getElementById('rt')!, ui = resultsUi(root);
+  const cur = bindCurrency(document.getElementById('rt-cur') as HTMLSelectElement, () => calc());
+  function calc() {
+    const c = cur(); root.querySelectorAll('[data-sym]').forEach((e) => (e.textContent = c || '#'));
+    const age = num(val('rt-age')), ret = num(val('rt-ret')), PV = num(val('rt-saved')) || 0, M = num(val('rt-month')) || 0;
+    const g = num(val('rt-return')), inf = num(val('rt-infl')) || 0, wd = num(val('rt-wd'));
+    if (!(age > 0) || !(ret > 0)) return ui.empty();
+    if (age < 14 || age > 100) return ui.fail('Enter your current age, for example 30.');
+    if (ret <= age) return ui.fail('Your retirement age must be higher than your current age.');
+    if (ret > 100) return ui.fail('Enter a retirement age of 100 or below.');
+    if (PV < 0 || M < 0) return ui.fail('Savings amounts cannot be negative.');
+    if (!(g > -20 && g < 30)) return ui.fail('Enter an investment return between -20% and 30%, for example 6.');
+    if (!(wd > 0 && wd <= 20)) return ui.fail('Enter a withdrawal rate between 0.1% and 20%, for example 4.');
+    const n = Math.round((ret - age) * 12), r = Math.pow(1 + g / 100, 1 / 12) - 1;
+    const fv = PV * Math.pow(1 + r, n) + (r ? M * ((Math.pow(1 + r, n) - 1) / r) : M * n);
+    const real = fv / Math.pow(1 + inf / 100, ret - age), inc = (fv * wd) / 100 / 12;
+    ui.show(); ui.set('main', money(fv, c, 0)); ui.set('sub', `at age ${ret}, in ${ret - age} years`);
+    ui.set('real', money(real, c, 0)); ui.set('inc', money(inc, c, 0)); ui.set('increal', money(inc / Math.pow(1 + inf / 100, ret - age), c, 0));
+    ui.set('dep', money(PV + M * n, c, 0)); ui.set('growth', money(fv - PV - M * n, c, 0));
+  }
+  live(root.querySelector('[data-inputs]')!, calc);
+</script>

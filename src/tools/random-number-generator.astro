@@ -1,0 +1,65 @@
+---
+import Icon from '../components/Icon.astro';
+---
+<div id="rn" class="grid gap-5 md:grid-cols-2 md:items-start">
+  <form class="card space-y-5 p-5 sm:p-6" novalidate onsubmit="return false">
+    <div class="grid grid-cols-2 gap-3">
+      <div><label for="rn-min" class="label">From</label><input id="rn-min" class="input tabular" inputmode="decimal" value="1" /></div>
+      <div><label for="rn-max" class="label">To</label><input id="rn-max" class="input tabular" inputmode="decimal" value="100" /></div>
+    </div>
+    <div class="grid grid-cols-2 gap-3">
+      <div><label for="rn-n" class="label">How many numbers</label><input id="rn-n" class="input tabular" inputmode="numeric" value="1" /></div>
+      <div><label for="rn-dec" class="label">Decimal places</label><select id="rn-dec" class="select"><option value="0">None (whole numbers)</option><option value="1">1</option><option value="2">2</option><option value="3">3</option></select></div>
+    </div>
+    <div class="space-y-1">
+      <label class="flex min-h-11 items-center gap-3 text-[0.9375rem]"><input type="checkbox" id="rn-unique" class="h-5 w-5 accent-[var(--brand)]" checked />No repeats (every number different)</label>
+      <label class="flex min-h-11 items-center gap-3 text-[0.9375rem]"><input type="checkbox" id="rn-sort" class="h-5 w-5 accent-[var(--brand)]" />Sort from smallest to largest</label>
+    </div>
+    <div class="flex flex-wrap gap-2" aria-label="Presets">
+      <button type="button" class="chip !min-h-9 !text-sm" data-preset="1,10,1">1–10</button>
+      <button type="button" class="chip !min-h-9 !text-sm" data-preset="1,100,1">1–100</button>
+      <button type="button" class="chip !min-h-9 !text-sm" data-preset="1,6,1">Dice 1–6</button>
+      <button type="button" class="chip !min-h-9 !text-sm" data-preset="1,49,6">Lottery 6 of 49</button>
+    </div>
+  </form>
+  <section class="card p-5 sm:p-6" aria-live="polite">
+    <p class="text-sm font-medium text-muted" data-head>Your random number</p>
+    <div class="mt-2 flex min-h-20 flex-wrap items-center gap-2 text-4xl font-extrabold tabular" data-out>–</div>
+    <p class="alert alert-error mt-3" data-err hidden></p>
+    <div class="mt-5 flex flex-col gap-3 sm:flex-row">
+      <button type="button" class="btn btn-primary btn-lg" data-go><Icon name="Dices" size={20} />Generate</button>
+      <button type="button" class="btn btn-secondary btn-lg" data-copy disabled><Icon name="Copy" size={18} /><span data-label>Copy</span></button>
+    </div>
+  </section>
+</div>
+<script>
+  import { randInt } from '../lib/random';
+  import { num, copyText, showError } from '../lib/ui';
+  const root = document.getElementById('rn')!;
+  const $ = (id: string) => document.getElementById(id) as HTMLInputElement;
+  const out = root.querySelector<HTMLElement>('[data-out]')!, err = root.querySelector<HTMLElement>('[data-err]')!, copyBtn = root.querySelector<HTMLButtonElement>('[data-copy]')!;
+  let last: string[] = [];
+  function gen() {
+    const min = num($('rn-min').value), max = num($('rn-max').value), n = num($('rn-n').value), dec = Number($('rn-dec').value), unique = $('rn-unique').checked;
+    if (Number.isNaN(min) || Number.isNaN(max)) return showError(err, 'Enter a lowest and a highest number.');
+    if (min > max) return showError(err, 'The “From” number must be smaller than the “To” number.');
+    if (!Number.isInteger(n) || n < 1 || n > 1000) return showError(err, 'Choose how many numbers you want, from 1 to 1,000.');
+    const scale = 10 ** dec, lo = Math.ceil(min * scale), hi = Math.floor(max * scale), span = hi - lo + 1;
+    if (span < 1) return showError(err, 'There are no numbers in that range with these decimal places.');
+    if (span > 2 ** 32) return showError(err, 'That range is too large. Use a smaller range or fewer decimal places.');
+    if (unique && n > span) return showError(err, `There are only ${span} different numbers in this range, so you can't pick ${n} without repeats.`);
+    showError(err, null);
+    const picked: number[] = [], seen = new Set<number>();
+    while (picked.length < n) { const v = lo + randInt(span); if (unique && seen.has(v)) continue; seen.add(v); picked.push(v); }
+    if ($('rn-sort').checked) picked.sort((a, b) => a - b);
+    last = picked.map((v) => (v / scale).toFixed(dec));
+    root.querySelector('[data-head]')!.textContent = n === 1 ? 'Your random number' : `Your ${n} random numbers`;
+    out.className = n === 1 ? 'mt-2 flex min-h-20 items-center text-6xl font-extrabold tabular' : 'mt-2 flex min-h-20 max-h-80 flex-wrap content-start gap-2 overflow-y-auto';
+    out.innerHTML = n === 1 ? last[0] : last.map((x) => `<span class="rounded-lg bg-surface-2 px-3 py-1.5 text-lg font-bold tabular">${x}</span>`).join('');
+    copyBtn.disabled = false;
+  }
+  root.querySelector('[data-go]')!.addEventListener('click', gen);
+  copyBtn.addEventListener('click', () => copyText(last.join(', '), copyBtn));
+  root.querySelectorAll<HTMLElement>('[data-preset]').forEach((b) => b.addEventListener('click', () => { const [a, z, n] = b.dataset.preset!.split(','); $('rn-min').value = a; $('rn-max').value = z; $('rn-n').value = n; $('rn-dec').value = '0'; $('rn-unique').checked = true; $('rn-sort').checked = n !== '1'; gen(); }));
+  gen();
+</script>

@@ -1,0 +1,48 @@
+---
+import CalcLayout from '../components/CalcLayout.astro';
+import CurrencySelect from '../components/CurrencySelect.astro';
+import Field from '../components/Field.astro';
+import ResultPanel from '../components/ResultPanel.astro';
+---
+<CalcLayout id="sg3">
+  <Fragment slot="inputs">
+    <CurrencySelect id="sg3-cur" />
+    <Field id="sg3-goal" label="Savings goal" value="10,000" sym />
+    <Field id="sg3-have" label="Already saved" value="1,000" sym />
+    <div class="grid grid-cols-2 gap-3">
+      <Field id="sg3-years" label="Years" value="2" mode="numeric" />
+      <Field id="sg3-months" label="Months" value="0" mode="numeric" />
+    </div>
+    <Field id="sg3-rate" label="Interest rate (per year)" value="4" suffix="%" hint="The rate on your savings account. Use 0 for cash." />
+  </Fragment>
+  <Fragment slot="results">
+    <ResultPanel label="Save each month">
+      <dl class="mt-5 grid grid-cols-2 gap-3">
+        <div class="stat"><dt class="stat-label">Save each week</dt><dd class="text-lg font-bold tabular" data-r="week"></dd></div>
+        <div class="stat"><dt class="stat-label">You deposit in total</dt><dd class="text-lg font-bold tabular" data-r="dep"></dd></div>
+        <div class="stat"><dt class="stat-label">Interest earned</dt><dd class="text-lg font-bold tabular text-success" data-r="int"></dd></div>
+        <div class="stat"><dt class="stat-label">Goal date</dt><dd class="text-lg font-bold" data-r="date"></dd></div>
+      </dl>
+    </ResultPanel>
+  </Fragment>
+</CalcLayout>
+<script>
+  import { bindCurrency, live, resultsUi, val, addMonths, monthYear } from '../lib/calc';
+  import { num, money } from '../lib/ui';
+  const root = document.getElementById('sg3')!, ui = resultsUi(root);
+  const cur = bindCurrency(document.getElementById('sg3-cur') as HTMLSelectElement, () => calc());
+  function calc() {
+    const c = cur(); root.querySelectorAll('[data-sym]').forEach((e) => (e.textContent = c || '#'));
+    const FV = num(val('sg3-goal')), PV = num(val('sg3-have')) || 0, n = Math.round((num(val('sg3-years')) || 0) * 12 + (num(val('sg3-months')) || 0)), r = (num(val('sg3-rate')) || 0) / 100 / 12;
+    if (!(FV > 0)) return ui.empty();
+    if (PV < 0) return ui.fail('Already saved cannot be negative.');
+    if (!(n >= 1)) return ui.fail('Enter how long you have to save, for example 2 years.');
+    if (n > 1200) return ui.fail('Enter a period of 100 years or less.');
+    const grown = PV * Math.pow(1 + r, n);
+    if (grown >= FV) { ui.show(); ui.set('main', money(0, c)); ui.set('sub', `You already have enough: your ${money(PV, c, 0)} grows to ${money(grown, c, 0)} by then.`); ['week', 'dep', 'int', 'date'].forEach((k) => ui.set(k, '–')); return; }
+    const m = r ? ((FV - grown) * r) / (Math.pow(1 + r, n) - 1) : (FV - PV) / n;
+    ui.show(); ui.set('main', money(m, c)); ui.set('sub', `for ${n} months to reach ${money(FV, c, 0)}`);
+    ui.set('week', money((m * 12) / 52, c)); ui.set('dep', money(m * n + PV, c, 0)); ui.set('int', money(FV - m * n - PV, c, 0)); ui.set('date', monthYear(addMonths(new Date(), n)));
+  }
+  live(root.querySelector('[data-inputs]')!, calc);
+</script>

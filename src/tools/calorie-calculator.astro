@@ -1,0 +1,45 @@
+---
+import CalcLayout from '../components/CalcLayout.astro';
+import BodyInputs from '../components/BodyInputs.astro';
+---
+<CalcLayout id="cal">
+  <Fragment slot="inputs">
+    <BodyInputs id="cal" />
+    <div><label for="cal-act" class="label">Activity level</label>
+      <select id="cal-act" class="select">
+        <option value="1.2">Little or no exercise</option><option value="1.375">Light: exercise 1 to 3 days a week</option><option value="1.55" selected>Moderate: exercise 3 to 5 days a week</option><option value="1.725">Active: hard exercise 6 to 7 days a week</option><option value="1.9">Very active: physical job and daily training</option>
+      </select></div>
+  </Fragment>
+  <Fragment slot="results">
+    <div data-ok hidden>
+      <p class="text-sm font-medium text-muted">To maintain your weight</p>
+      <p class="mt-1 text-4xl font-extrabold tracking-tight tabular"><span data-r="main"></span> <span class="text-xl font-semibold text-muted">kcal / day</span></p>
+      <p class="mt-1 text-[0.9375rem] text-muted" data-r="sub"></p>
+      <table class="mt-5 w-full text-[0.9375rem]"><tbody class="divide-y divide-[var(--border)] tabular" data-r="goals"></tbody></table>
+      <p class="mt-3 text-sm text-muted" data-r="note"></p>
+    </div>
+    <div data-empty class="py-8 text-center text-muted">Enter your details to estimate your daily calories.</div>
+    <p class="alert alert-error" data-msg hidden role="alert"></p>
+  </Fragment>
+</CalcLayout>
+<script>
+  import { live, resultsUi, body, val } from '../lib/calc';
+  import { fmt } from '../lib/ui';
+  const root = document.getElementById('cal')!, ui = resultsUi(root);
+  function calc() {
+    const b = body('cal');
+    if (!(b.cm > 0) || !(b.kg > 0) || !(b.age > 0)) return ui.empty();
+    if (b.age < 18 || b.age > 100) return ui.fail('This calculator is designed for adults aged 18 to 100. Children and teens have different needs; ask a doctor or dietitian.');
+    if (b.cm < 120 || b.cm > 230) return ui.fail('Please check your height.');
+    if (b.kg < 30 || b.kg > 300) return ui.fail('Please check your weight.');
+    // Mifflin-St Jeor equation
+    const bmr = 10 * b.kg + 6.25 * b.cm - 5 * b.age + (b.sex === 'm' ? 5 : -161);
+    const tdee = bmr * Number(val('cal-act')), floor = b.sex === 'm' ? 1500 : 1200;
+    const per = b.us ? 'lb' : 'kg', step = b.us ? 1 : 0.5;
+    const goals: [string, number][] = [[`Lose ${step} ${per} a week`, tdee - (b.us ? 500 : 550)], [`Lose ${step / 2} ${per} a week (mild)`, tdee - (b.us ? 250 : 275)], ['Maintain weight', tdee], [`Gain ${step / 2} ${per} a week`, tdee + (b.us ? 250 : 275)], [`Gain ${step} ${per} a week`, tdee + (b.us ? 500 : 550)]];
+    ui.show(); ui.set('main', fmt(Math.round(tdee))); ui.set('sub', `Your body uses about ${fmt(Math.round(bmr))} kcal a day at complete rest (BMR).`);
+    ui.html('goals', goals.map(([l, v]) => `<tr><td class="py-2 text-muted">${l}</td><td class="py-2 text-right font-semibold">${fmt(Math.max(v, 0), 0)} kcal${v < floor ? ' <span class="text-danger">*</span>' : ''}</td></tr>`).join(''));
+    ui.set('note', goals.some(([, v]) => v < floor) ? `* Below ${fmt(floor)} kcal a day is not recommended without medical supervision.` : '');
+  }
+  live(root.querySelector('[data-inputs]')!, calc);
+</script>

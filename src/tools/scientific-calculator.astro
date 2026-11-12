@@ -1,0 +1,87 @@
+---
+const keys = [
+  ['sin', 'sin('], ['cos', 'cos('], ['tan', 'tan('], ['deg', 'mode'], ['C', 'clear'],
+  ['asin', 'asin('], ['acos', 'acos('], ['atan', 'atan('], ['(', '('], [')', ')'],
+  ['ln', 'ln('], ['log', 'log('], ['√', 'sqrt('], ['x²', '^2'], ['xʸ', '^'],
+  ['7', '7'], ['8', '8'], ['9', '9'], ['÷', '÷'], ['⌫', 'back'],
+  ['4', '4'], ['5', '5'], ['6', '6'], ['×', '×'], ['n!', '!'],
+  ['1', '1'], ['2', '2'], ['3', '3'], ['−', '−'], ['%', '%'],
+  ['0', '0'], ['.', '.'], ['π', 'π'], ['+', '+'], ['e', 'e'],
+  ['Ans', 'Ans'], ['EXP', 'e'], ['1/x', 'inv'], ['±', 'neg'], ['=', 'equals'],
+];
+---
+<div id="sc" class="mx-auto grid max-w-3xl gap-5 md:grid-cols-[1fr_240px] md:items-start">
+  <div class="card p-3 sm:p-4">
+    <div class="rounded-xl bg-surface-2 p-3 text-right">
+      <div class="flex items-center justify-between text-xs font-semibold text-subtle"><span data-mode-label>DEG</span><span data-prev class="truncate pl-4"></span></div>
+      <label for="sc-in" class="sr-only">Calculation</label>
+      <input id="sc-in" class="mono mt-1 w-full bg-transparent text-right text-xl text-ink outline-none" autocomplete="off" spellcheck="false" inputmode="none" placeholder="0" />
+      <output class="mono block min-h-10 truncate text-3xl font-bold tabular" data-out aria-live="polite">0</output>
+    </div>
+    <p class="mt-1 min-h-5 text-sm text-danger" data-err></p>
+    <div class="mt-2 grid grid-cols-5 gap-1.5" role="group" aria-label="Calculator keys">
+      {keys.map(([l, v]) => (
+        <button type="button" data-k={v} class:list={['btn !min-h-12 !px-1 !text-base', /^[0-9.]$/.test(l) ? 'bg-surface border-line text-ink hover:bg-surface-2' : v === 'equals' ? 'btn-primary' : v === 'clear' ? 'bg-danger-soft !text-danger' : 'btn-secondary !bg-surface-2']} aria-label={l === '⌫' ? 'Delete' : l === 'x²' ? 'Square' : l === 'xʸ' ? 'Power' : l === '√' ? 'Square root' : l === '±' ? 'Change sign' : l === 'deg' ? 'Switch degrees or radians' : undefined}>{l === 'deg' ? 'DEG' : l}</button>
+      ))}
+    </div>
+  </div>
+  <aside class="card p-4">
+    <div class="flex items-center justify-between"><h2 class="text-base font-semibold">History</h2><button type="button" class="btn btn-ghost btn-sm" data-clear-hist>Clear</button></div>
+    <ul class="mt-2 max-h-80 space-y-1 overflow-y-auto text-right" data-hist><li class="text-sm text-subtle">Your calculations appear here.</li></ul>
+    <p class="mt-3 text-sm text-subtle">You can also type: numbers, + − * / ^ ( ), and press Enter.</p>
+  </aside>
+</div>
+<script>
+  import { evaluate, formatNumber, type Angle } from '../lib/expr';
+  import { store } from '../lib/ui';
+  const root = document.getElementById('sc')!, input = document.getElementById('sc-in') as HTMLInputElement;
+  const out = root.querySelector<HTMLElement>('[data-out]')!, err = root.querySelector<HTMLElement>('[data-err]')!, histEl = root.querySelector<HTMLElement>('[data-hist]')!;
+  let angle: Angle = store.get('tw-sc-angle', 'deg'), ans = 0, justEvaluated = false;
+  let hist: { e: string; r: string }[] = store.get('tw-sc-hist', []);
+  // On touch devices keep the on-screen keypad and avoid the phone keyboard popping up
+  if (!matchMedia('(pointer: fine)').matches) input.readOnly = true;
+  const modeBtn = root.querySelector<HTMLButtonElement>('[data-k=mode]')!;
+  function syncMode() { modeBtn.textContent = angle.toUpperCase(); root.querySelector('[data-mode-label]')!.textContent = angle === 'deg' ? 'DEG' : 'RAD'; store.set('tw-sc-angle', angle); }
+  function preview() {
+    err.textContent = '';
+    if (!input.value.trim()) { out.textContent = '0'; return; }
+    try { out.textContent = formatNumber(evaluate(input.value, angle, ans)); } catch { out.textContent = '…'; } out.classList.add('text-subtle');
+  }
+  function equals() {
+    if (!input.value.trim()) return;
+    try {
+      const v = evaluate(input.value, angle, ans), r = formatNumber(v);
+      ans = v; out.textContent = r; out.classList.remove('text-subtle');
+      root.querySelector('[data-prev]')!.textContent = `${input.value} =`;
+      hist.unshift({ e: input.value, r }); hist = hist.slice(0, 30); store.set('tw-sc-hist', hist); renderHist();
+      input.value = r === '∞' ? '' : r; justEvaluated = true;
+    } catch (e) { err.textContent = (e as Error).message; out.textContent = 'Error'; out.classList.remove('text-subtle'); }
+  }
+  function renderHist() {
+    histEl.innerHTML = hist.length ? hist.map((h, i) => `<li><button type="button" class="w-full rounded-md px-2 py-1 text-right hover:bg-surface-2" data-h="${i}"><span class="block truncate text-xs text-subtle mono">${h.e.replace(/</g, '&lt;')} =</span><span class="mono font-semibold">${h.r}</span></button></li>`).join('') : '<li class="text-sm text-subtle">Your calculations appear here.</li>';
+  }
+  function insert(t: string) {
+    if (justEvaluated && /^[0-9.(πe]|^[a-z]+\(/.test(t) && t !== 'e' ) input.value = '';
+    justEvaluated = false;
+    const s = input.selectionStart ?? input.value.length, en = input.selectionEnd ?? s;
+    input.value = input.value.slice(0, s) + t + input.value.slice(en);
+    const c = s + t.length; input.setSelectionRange?.(c, c); preview();
+  }
+  root.querySelectorAll<HTMLButtonElement>('[data-k]').forEach((b) => b.addEventListener('click', () => {
+    const k = b.dataset.k!;
+    if (k === 'clear') { input.value = ''; out.textContent = '0'; err.textContent = ''; root.querySelector('[data-prev]')!.textContent = ''; }
+    else if (k === 'back') { input.value = input.value.slice(0, -1); preview(); }
+    else if (k === 'equals') equals();
+    else if (k === 'mode') { angle = angle === 'deg' ? 'rad' : 'deg'; syncMode(); preview(); }
+    else if (k === 'inv') { input.value = `1/(${input.value || '0'})`; preview(); }
+    else if (k === 'neg') { input.value = input.value.startsWith('-(') && input.value.endsWith(')') ? input.value.slice(2, -1) : `-(${input.value || '0'})`; preview(); }
+    else if (k === 'Ans') insert('Ans');
+    else insert(k);
+    if (matchMedia('(pointer: fine)').matches) input.focus();
+  }));
+  input.addEventListener('input', () => { justEvaluated = false; preview(); });
+  input.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === '=') { e.preventDefault(); equals(); } if (e.key === 'Escape') { input.value = ''; preview(); } });
+  histEl.addEventListener('click', (e) => { const b = (e.target as HTMLElement).closest<HTMLElement>('[data-h]'); if (b) { input.value = hist[Number(b.dataset.h)].e; preview(); } });
+  root.querySelector('[data-clear-hist]')!.addEventListener('click', () => { hist = []; store.set('tw-sc-hist', hist); renderHist(); });
+  syncMode(); renderHist();
+</script>

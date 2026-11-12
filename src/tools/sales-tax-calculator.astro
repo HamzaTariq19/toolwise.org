@@ -1,0 +1,46 @@
+---
+import CalcLayout from '../components/CalcLayout.astro';
+import CurrencySelect from '../components/CurrencySelect.astro';
+import Field from '../components/Field.astro';
+import ResultPanel from '../components/ResultPanel.astro';
+---
+<CalcLayout id="vt">
+  <Fragment slot="inputs">
+    <CurrencySelect id="vt-cur" />
+    <fieldset><legend class="label">I want to</legend>
+      <div class="segmented"><label><input type="radio" name="vt-m" value="add" checked /><span>Add tax to a price</span></label><label><input type="radio" name="vt-m" value="remove" /><span>Remove tax from a price</span></label></div>
+    </fieldset>
+    <Field id="vt-amt" label="Price" value="100" sym />
+    <div>
+      <Field id="vt-rate" label="Tax rate (VAT, GST or sales tax)" value="20" suffix="%" />
+      <div class="mt-2 flex flex-wrap gap-2">{[5, 7.5, 10, 13, 15, 18, 20, 21].map((p) => <button type="button" class="chip !min-h-9 !text-sm" data-p={p}>{p}%</button>)}</div>
+    </div>
+  </Fragment>
+  <Fragment slot="results">
+    <ResultPanel label="Price including tax">
+      <dl class="mt-5 grid grid-cols-2 gap-3">
+        <div class="stat"><dt class="stat-label">Price before tax</dt><dd class="text-lg font-bold tabular" data-r="net"></dd></div>
+        <div class="stat"><dt class="stat-label">Tax amount</dt><dd class="text-lg font-bold tabular" data-r="tax"></dd></div>
+      </dl>
+    </ResultPanel>
+  </Fragment>
+</CalcLayout>
+<script>
+  import { bindCurrency, live, resultsUi, val } from '../lib/calc';
+  import { num, money } from '../lib/ui';
+  const root = document.getElementById('vt')!, ui = resultsUi(root);
+  const cur = bindCurrency(document.getElementById('vt-cur') as HTMLSelectElement, () => calc());
+  root.querySelectorAll<HTMLElement>('[data-p]').forEach((b) => b.addEventListener('click', () => { (document.getElementById('vt-rate') as HTMLInputElement).value = b.dataset.p!; calc(); }));
+  function calc() {
+    const c = cur(); root.querySelectorAll('[data-sym]').forEach((e) => (e.textContent = c || '#'));
+    const add = (root.querySelector('input[name=vt-m]:checked') as HTMLInputElement).value === 'add';
+    const a = num(val('vt-amt')), r = num(val('vt-rate'));
+    if (!(a > 0) || Number.isNaN(r)) return ui.empty();
+    if (r < 0 || r > 100) return ui.fail('Enter a tax rate between 0% and 100%.');
+    const net = add ? a : a / (1 + r / 100), gross = add ? a * (1 + r / 100) : a;
+    ui.show(); (root.querySelector('[data-ok] p') as HTMLElement).textContent = add ? 'Price including tax' : 'Price before tax';
+    ui.set('main', money(add ? gross : net, c)); ui.set('sub', add ? `${money(a, c)} + ${r}% tax` : `${money(a, c)} includes ${money(gross - net, c)} of ${r}% tax`);
+    ui.set('net', money(net, c)); ui.set('tax', money(gross - net, c));
+  }
+  live(root.querySelector('[data-inputs]')!, calc);
+</script>

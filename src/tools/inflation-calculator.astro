@@ -1,0 +1,69 @@
+---
+import CalcLayout from '../components/CalcLayout.astro';
+import CurrencySelect from '../components/CurrencySelect.astro';
+import Field from '../components/Field.astro';
+import ResultPanel from '../components/ResultPanel.astro';
+import cpi from '../data/cpi-us.json';
+const years = Object.keys(cpi.values).map(Number).sort((a, b) => b - a);
+---
+<CalcLayout id="if">
+  <Fragment slot="inputs">
+    <fieldset><legend class="label">Calculate with</legend>
+      <div class="segmented"><label><input type="radio" name="if-m" value="hist" checked /><span>Historical US inflation</span></label><label><input type="radio" name="if-m" value="custom" /><span>My own rate</span></label></div>
+    </fieldset>
+    <div data-m="hist" class="space-y-5">
+      <Field id="if-amt" label="Amount (US dollars)" value="100" prefix="$" />
+      <div class="grid grid-cols-2 gap-3">
+        <div><label for="if-from" class="label">In year</label><select id="if-from" class="select">{years.map((y) => <option selected={y === 2000}>{y}</option>)}</select></div>
+        <div><label for="if-to" class="label">Is worth in</label><select id="if-to" class="select">{years.map((y) => <option selected={y === cpi.lastYear}>{y}</option>)}</select></div>
+      </div>
+    </div>
+    <div data-m="custom" class="space-y-5" hidden>
+      <CurrencySelect id="if-cur" />
+      <Field id="if-camt" label="Amount today" value="1,000" sym />
+      <div class="grid grid-cols-2 gap-3"><Field id="if-rate" label="Inflation per year" value="3" suffix="%" /><Field id="if-years" label="Years from now" value="10" mode="numeric" /></div>
+    </div>
+  </Fragment>
+  <Fragment slot="results">
+    <ResultPanel label="Equivalent value">
+      <dl class="mt-5 grid grid-cols-2 gap-3">
+        <div class="stat"><dt class="stat-label">Total price change</dt><dd class="text-lg font-bold tabular" data-r="chg"></dd></div>
+        <div class="stat"><dt class="stat-label">Average per year</dt><dd class="text-lg font-bold tabular" data-r="avg"></dd></div>
+        <div class="stat col-span-2"><dt class="stat-label" data-r="pplabel">Buying power</dt><dd class="text-lg font-bold tabular" data-r="pp"></dd></div>
+      </dl>
+    </ResultPanel>
+    <p class="mt-4 text-xs text-subtle" data-src>Data: {cpi.source}. Annual averages up to {cpi.lastYear}, last updated {cpi.updated}. Source: <a href={cpi.sourceUrl} rel="noopener">bls.gov/cpi</a>.</p>
+  </Fragment>
+</CalcLayout>
+<script>
+  import cpi from '../data/cpi-us.json';
+  import { bindCurrency, live, resultsUi, val } from '../lib/calc';
+  import { num, money, fmt } from '../lib/ui';
+  const root = document.getElementById('if')!, ui = resultsUi(root);
+  const cur = bindCurrency(document.getElementById('if-cur') as HTMLSelectElement, () => calc());
+  const V = cpi.values as Record<string, number>;
+  const mode = () => (root.querySelector('input[name=if-m]:checked') as HTMLInputElement).value;
+  function calc() {
+    root.querySelectorAll<HTMLElement>('[data-m]').forEach((e) => (e.hidden = e.dataset.m !== mode()));
+    (root.querySelector('[data-src]') as HTMLElement).hidden = mode() !== 'hist';
+    if (mode() === 'hist') {
+      const amt = num(val('if-amt')), a = val('if-from'), b = val('if-to');
+      if (!(amt > 0)) return ui.empty();
+      const res = amt * (V[b] / V[a]), yrs = Number(b) - Number(a), chg = (V[b] / V[a] - 1) * 100;
+      ui.show(); ui.set('main', money(res, '$')); ui.set('sub', `${money(amt, '$')} in ${a} has the same buying power as ${money(res, '$')} in ${b}.`);
+      ui.set('chg', `${chg >= 0 ? '+' : ''}${fmt(chg, 1)}%`); ui.set('avg', yrs ? `${fmt((Math.pow(V[b] / V[a], 1 / yrs) - 1) * 100, 2)}%` : '–');
+      ui.set('pplabel', `What ${money(amt, '$', 0)} in ${b} would have cost in ${a}`); ui.set('pp', money(amt * (V[a] / V[b]), '$'));
+    } else {
+      const c = cur(); root.querySelectorAll('[data-sym]').forEach((e) => (e.textContent = c || '#'));
+      const amt = num(val('if-camt')), r = num(val('if-rate')), n = num(val('if-years'));
+      if (!(amt > 0)) return ui.empty();
+      if (!(r > -20 && r < 100)) return ui.fail('Enter an inflation rate between -20% and 100%, for example 3.');
+      if (!(n > 0 && n <= 100)) return ui.fail('Enter the number of years, between 1 and 100.');
+      const f = Math.pow(1 + r / 100, n);
+      ui.show(); ui.set('main', money(amt * f, c)); ui.set('sub', `What costs ${money(amt, c)} today would cost about ${money(amt * f, c)} in ${n} years at ${r}% inflation.`);
+      ui.set('chg', `${f >= 1 ? '+' : ''}${fmt((f - 1) * 100, 1)}%`); ui.set('avg', `${fmt(r, 2)}%`);
+      ui.set('pplabel', `Buying power of ${money(amt, c, 0)} in ${n} years`); ui.set('pp', money(amt / f, c));
+    }
+  }
+  live(root.querySelector('[data-inputs]')!, calc);
+</script>

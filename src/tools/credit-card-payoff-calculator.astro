@@ -1,0 +1,67 @@
+---
+import CalcLayout from '../components/CalcLayout.astro';
+import CurrencySelect from '../components/CurrencySelect.astro';
+import Field from '../components/Field.astro';
+import ResultPanel from '../components/ResultPanel.astro';
+---
+<CalcLayout id="cc2">
+  <Fragment slot="inputs">
+    <CurrencySelect id="cc2-cur" />
+    <Field id="cc2-bal" label="Card balance" value="5,000" sym />
+    <Field id="cc2-apr" label="Interest rate (APR)" value="22.9" suffix="%" />
+    <fieldset><legend class="label">I want to</legend>
+      <div class="segmented"><label><input type="radio" name="cc2-mode" value="pay" checked /><span>Pay a fixed amount</span></label><label><input type="radio" name="cc2-mode" value="time" /><span>Be debt-free by</span></label></div>
+    </fieldset>
+    <div data-m="pay"><Field id="cc2-pay" label="Monthly payment" value="250" sym /></div>
+    <div data-m="time" hidden><Field id="cc2-months" label="Months to pay it off" value="24" mode="numeric" /></div>
+  </Fragment>
+  <Fragment slot="results">
+    <ResultPanel label="Debt-free in">
+      <dl class="mt-5 grid grid-cols-2 gap-3">
+        <div class="stat"><dt class="stat-label">Monthly payment</dt><dd class="text-lg font-bold tabular" data-r="pay"></dd></div>
+        <div class="stat"><dt class="stat-label">Total interest</dt><dd class="text-lg font-bold tabular text-danger" data-r="int"></dd></div>
+        <div class="stat"><dt class="stat-label">Total paid</dt><dd class="text-lg font-bold tabular" data-r="tot"></dd></div>
+        <div class="stat"><dt class="stat-label">Debt-free date</dt><dd class="text-lg font-bold" data-r="date"></dd></div>
+      </dl>
+      <p class="mt-4 text-sm text-muted" data-r="tip"></p>
+    </ResultPanel>
+  </Fragment>
+</CalcLayout>
+<script>
+  import { bindCurrency, live, resultsUi, val, payment, addMonths, monthYear } from '../lib/calc';
+  import { num, money } from '../lib/ui';
+  const root = document.getElementById('cc2')!, ui = resultsUi(root);
+  const cur = bindCurrency(document.getElementById('cc2-cur') as HTMLSelectElement, () => calc());
+  const mode = () => (root.querySelector('input[name=cc2-mode]:checked') as HTMLInputElement).value;
+  const dur = (n: number) => { const y = Math.floor(n / 12), m = n % 12; return [y ? `${y} year${y > 1 ? 's' : ''}` : '', m ? `${m} month${m > 1 ? 's' : ''}` : ''].filter(Boolean).join(' ') || '0 months'; };
+  /** Month-by-month simulation with interest charged on the balance each month */
+  function simulate(B: number, apr: number, pay: number) {
+    const r = apr / 100 / 12; let bal = B, months = 0, interest = 0;
+    while (bal > 0.005 && months < 1200) { const i = bal * r; interest += i; bal = bal + i - pay; months++; }
+    return { months, interest, total: B + interest };
+  }
+  function calc() {
+    const c = cur(); root.querySelectorAll('[data-sym]').forEach((e) => (e.textContent = c || '#'));
+    root.querySelectorAll<HTMLElement>('[data-m]').forEach((e) => (e.hidden = e.dataset.m !== mode()));
+    const B = num(val('cc2-bal')), apr = num(val('cc2-apr'));
+    if (!(B > 0)) return ui.empty();
+    if (!(apr >= 0) || apr > 100) return ui.fail('Enter the card interest rate (APR), for example 22.9.');
+    let pay: number;
+    if (mode() === 'pay') {
+      pay = num(val('cc2-pay'));
+      const minNeeded = (B * apr) / 100 / 12;
+      if (!(pay > 0)) return ui.fail('Enter how much you will pay each month.');
+      if (pay <= minNeeded) return ui.fail(`A payment of ${money(pay, c)} does not even cover the monthly interest of ${money(minNeeded, c)}, so the balance would never go down. Pay more than ${money(minNeeded, c)} a month.`);
+    } else {
+      const n = Math.round(num(val('cc2-months')));
+      if (!(n >= 1 && n <= 600)) return ui.fail('Enter the number of months, between 1 and 600.');
+      pay = payment(B, apr, n);
+    }
+    const s = simulate(B, apr, pay);
+    ui.show(); ui.set('main', dur(s.months)); ui.set('sub', `${s.months} monthly payments`);
+    ui.set('pay', money(pay, c)); ui.set('int', money(s.interest, c)); ui.set('tot', money(s.total, c)); ui.set('date', monthYear(addMonths(new Date(), s.months)));
+    const faster = simulate(B, apr, pay * 1.25);
+    ui.set('tip', `Paying ${money(pay * 1.25, c)} a month instead would clear it in ${dur(faster.months)} and save ${money(s.interest - faster.interest, c)} in interest.`);
+  }
+  live(root.querySelector('[data-inputs]')!, calc);
+</script>

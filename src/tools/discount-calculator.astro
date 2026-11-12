@@ -1,0 +1,46 @@
+---
+import CalcLayout from '../components/CalcLayout.astro';
+import CurrencySelect from '../components/CurrencySelect.astro';
+import Field from '../components/Field.astro';
+import ResultPanel from '../components/ResultPanel.astro';
+---
+<CalcLayout id="dc">
+  <Fragment slot="inputs">
+    <CurrencySelect id="dc-cur" />
+    <Field id="dc-price" label="Original price" value="80" sym />
+    <div>
+      <Field id="dc-off" label="Discount" value="25" suffix="% off" />
+      <div class="mt-2 flex flex-wrap gap-2">{[10, 15, 20, 25, 30, 40, 50, 70].map((p) => <button type="button" class="chip !min-h-9 !text-sm" data-p={p}>{p}%</button>)}</div>
+    </div>
+    <Field id="dc-extra" label="Extra discount on top (optional)" value="" suffix="% off" placeholder="0" hint="For example an extra 10% off sale prices." />
+    <Field id="dc-tax" label="Sales tax (optional)" value="" suffix="%" placeholder="0" />
+  </Fragment>
+  <Fragment slot="results">
+    <ResultPanel label="You pay">
+      <dl class="mt-5 grid grid-cols-2 gap-3">
+        <div class="stat"><dt class="stat-label">You save</dt><dd class="text-lg font-bold tabular text-success" data-r="save"></dd></div>
+        <div class="stat"><dt class="stat-label">Total discount</dt><dd class="text-lg font-bold tabular" data-r="pct"></dd></div>
+        <div class="stat"><dt class="stat-label">Sale price before tax</dt><dd class="text-lg font-bold tabular" data-r="sale"></dd></div>
+        <div class="stat"><dt class="stat-label">Tax</dt><dd class="text-lg font-bold tabular" data-r="tax"></dd></div>
+      </dl>
+    </ResultPanel>
+  </Fragment>
+</CalcLayout>
+<script>
+  import { bindCurrency, live, resultsUi, val } from '../lib/calc';
+  import { num, money, fmt } from '../lib/ui';
+  const root = document.getElementById('dc')!, ui = resultsUi(root);
+  const cur = bindCurrency(document.getElementById('dc-cur') as HTMLSelectElement, () => calc());
+  root.querySelectorAll<HTMLElement>('[data-p]').forEach((b) => b.addEventListener('click', () => { (document.getElementById('dc-off') as HTMLInputElement).value = b.dataset.p!; calc(); }));
+  function calc() {
+    const c = cur(); root.querySelectorAll('[data-sym]').forEach((e) => (e.textContent = c || '#'));
+    const p = num(val('dc-price')), d = num(val('dc-off')), e = num(val('dc-extra')) || 0, t = num(val('dc-tax')) || 0;
+    if (!(p > 0) || Number.isNaN(d)) return ui.empty();
+    if (d < 0 || d > 100 || e < 0 || e > 100) return ui.fail('Discounts must be between 0% and 100%.');
+    if (t < 0 || t > 100) return ui.fail('Enter a tax rate between 0% and 100%.');
+    const sale = p * (1 - d / 100) * (1 - e / 100), tax = (sale * t) / 100;
+    ui.show(); ui.set('main', money(sale + tax, c)); ui.set('sub', `instead of ${money(p * (1 + t / 100), c)}`);
+    ui.set('save', money(p - sale, c)); ui.set('pct', `${fmt((1 - sale / p) * 100, 2)}%`); ui.set('sale', money(sale, c)); ui.set('tax', money(tax, c));
+  }
+  live(root.querySelector('[data-inputs]')!, calc);
+</script>
