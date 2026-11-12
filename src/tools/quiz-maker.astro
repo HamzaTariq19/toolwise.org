@@ -1,0 +1,168 @@
+---
+import Icon from '../components/Icon.astro';
+import LocalNote from '../components/LocalNote.astro';
+---
+<div id="qz" class="space-y-4">
+  <div class="card space-y-4 p-4 sm:p-5" data-edit>
+    <div class="grid gap-3 sm:grid-cols-[1fr_auto] sm:items-end">
+      <div><label for="qz-sel" class="label">Quiz</label><select id="qz-sel" class="select"></select></div>
+      <div class="flex gap-2"><button type="button" class="btn btn-secondary" data-new><Icon name="Plus" size={18} />New quiz</button><button type="button" class="btn btn-ghost text-danger" data-del aria-label="Delete this quiz"><Icon name="Trash2" size={18} /></button></div>
+    </div>
+    <div><label for="qz-title" class="label">Quiz title</label><input id="qz-title" class="input" maxlength="80" autocomplete="off" /></div>
+    <div>
+      <label for="qz-text" class="label">Questions</label>
+      <p class="hint -mt-1 mb-2">Write the question, then one answer per line. Put <b>*</b> before the correct answer. Leave a blank line between questions. A line starting with <b>&gt;</b> is an explanation shown after answering.</p>
+      <textarea id="qz-text" class="textarea mono !min-h-[260px] text-[0.9375rem]" spellcheck="true"></textarea>
+      <p class="hint" data-count></p>
+    </div>
+    <div class="alert alert-error" data-error hidden role="alert"><Icon name="CircleAlert" size={18} class="mt-0.5 flex-none" /><span data-msg></span></div>
+    <div class="flex flex-wrap gap-x-6 gap-y-1">
+      <label class="flex min-h-11 items-center gap-2.5 text-[0.9375rem]"><input type="checkbox" id="qz-sq" class="h-5 w-5 accent-[var(--brand)]" checked />Shuffle questions</label>
+      <label class="flex min-h-11 items-center gap-2.5 text-[0.9375rem]"><input type="checkbox" id="qz-sa" class="h-5 w-5 accent-[var(--brand)]" checked />Shuffle answers</label>
+    </div>
+    <div class="flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+      <button type="button" class="btn btn-primary btn-lg" data-start><Icon name="Play" size={18} />Take the quiz</button>
+      <button type="button" class="btn btn-secondary btn-lg" data-print><Icon name="Printer" size={18} />Print worksheet</button>
+      <div class="flex gap-3"><button type="button" class="btn btn-ghost" data-export><Icon name="Download" size={18} />Save as file</button><label class="btn btn-ghost relative cursor-pointer"><Icon name="Upload" size={18} />Open file<input type="file" accept=".txt,text/plain" class="absolute inset-0 cursor-pointer opacity-0" data-import /></label></div>
+    </div>
+  </div>
+
+  <div class="card p-5 sm:p-7" data-play hidden>
+    <div class="flex items-center justify-between gap-3 text-sm text-subtle tabular"><span data-pos></span><span data-sc></span></div>
+    <div class="mt-2 h-1.5 overflow-hidden rounded-full bg-surface-2"><div class="h-full bg-[var(--cat)] transition-[width]" data-bar></div></div>
+    <h2 class="mt-5 text-xl font-bold leading-snug sm:text-2xl" data-q></h2>
+    <div class="mt-4 grid gap-2" data-opts role="group" aria-label="Answers"></div>
+    <p class="mt-4 rounded-lg bg-surface-2 px-4 py-3 text-[0.9375rem]" data-expl hidden></p>
+    <div class="mt-5 flex justify-between gap-3"><button type="button" class="btn btn-ghost" data-quit>Stop</button><button type="button" class="btn btn-primary btn-lg" data-next hidden><span data-label>Next question</span><Icon name="ArrowRight" size={18} /></button></div>
+  </div>
+
+  <div class="card p-5 sm:p-6" data-end hidden aria-live="polite">
+    <div class="text-center"><p class="text-sm font-semibold uppercase tracking-wide text-subtle">Your score</p><p class="mt-1 text-5xl font-extrabold tabular" data-score></p><p class="mt-1 text-muted" data-pct></p></div>
+    <ol class="mt-5 space-y-2" data-review></ol>
+    <div class="mt-5 flex flex-col justify-center gap-3 sm:flex-row"><button type="button" class="btn btn-primary btn-lg" data-again><Icon name="RotateCcw" size={18} />Take it again</button><button type="button" class="btn btn-secondary btn-lg" data-back>Edit questions</button></div>
+  </div>
+  <div hidden><div data-sheet></div></div>
+  <LocalNote what="Your quizzes are" />
+</div>
+<style is:global>
+  #qz .qz-opt { display: flex; align-items: center; gap: .75rem; width: 100%; min-height: 3.25rem; padding: .75rem 1rem; text-align: left; border: 1.5px solid var(--border-strong); border-radius: var(--radius-ctl); background: var(--surface); font-size: 1rem; }
+  #qz .qz-opt:hover:not(:disabled) { border-color: var(--cat); background: var(--surface-2); }
+  #qz .qz-opt .k { flex: none; display: inline-flex; align-items: center; justify-content: center; width: 1.75rem; height: 1.75rem; border-radius: 999px; background: var(--surface-2); font-weight: 700; font-size: .875rem; }
+  #qz .qz-opt.ok { border-color: var(--success); background: var(--success-soft); } #qz .qz-opt.ok .k { background: var(--success); color: #fff; }
+  #qz .qz-opt.bad { border-color: var(--danger); background: var(--danger-soft); } #qz .qz-opt.bad .k { background: var(--danger); color: #fff; }
+  #qz .qz-opt:disabled { cursor: default; }
+  .qz-sheet { font-size: 11.5pt; color: #111; } .qz-sheet h2 { font-size: 16pt; font-weight: 700; } .qz-sheet ol.qs > li { margin: 0 0 14pt; break-inside: avoid; } .qz-sheet ul { margin: 4pt 0 0 0; } .qz-sheet ul li { margin: 2pt 0; } .qz-sheet .key { break-before: page; }
+</style>
+<script>
+  import { store, showError, esc, downloadBlob, printElement } from '../lib/ui';
+  import { shuffle } from '../lib/random';
+  type Quiz = { id: string; title: string; text: string };
+  type Q = { q: string; opts: string[]; correct: number; expl: string };
+  const KEY = 'tw-quizzes', L = 'ABCDEFGH';
+  const SAMPLE: Quiz = { id: 'sample', title: 'Sample: the solar system', text: 'Which planet is closest to the Sun?\n*Mercury\nVenus\nEarth\nMars\n> Mercury orbits about 58 million km from the Sun.\n\nWhat is the largest planet?\nSaturn\n*Jupiter\nNeptune\n\nHow many planets are in the solar system?\n7\n*8\n9\n10\n> Pluto was reclassified as a dwarf planet in 2006.' };
+  const root = document.getElementById('qz')!, q = <T extends HTMLElement = HTMLElement>(s: string) => root.querySelector(s) as T;
+  const sel = q<HTMLSelectElement>('#qz-sel'), title = q<HTMLInputElement>('#qz-title'), ta = q<HTMLTextAreaElement>('#qz-text'), err = q('[data-error]');
+  let state = store.get<{ quizzes: Quiz[]; cur: string }>(KEY, { quizzes: [SAMPLE], cur: 'sample' });
+  if (!state.quizzes?.length) state = { quizzes: [SAMPLE], cur: 'sample' };
+  const quiz = () => state.quizzes.find((x) => x.id === state.cur) ?? state.quizzes[0];
+  const save = () => store.set(KEY, state);
+
+  function parse(text: string): { qs: Q[]; problems: string[] } {
+    const qs: Q[] = [], problems: string[] = [];
+    text.replace(/\r/g, '').split(/\n\s*\n/).map((b) => b.split('\n').map((l) => l.trim()).filter(Boolean)).filter((b) => b.length).forEach((lines, n) => {
+      const head = lines[0].replace(/^(q(uestion)?\s*\d*\s*[:.)]|\d+\s*[.)])\s*/i, '');
+      const opts: string[] = [], expl: string[] = []; let correct = -1, many = false;
+      for (const l of lines.slice(1)) {
+        if (l.startsWith('>')) { expl.push(l.slice(1).trim()); continue; }
+        let t = l, star = false;
+        if (/^\*/.test(t)) { star = true; t = t.slice(1).trim(); }
+        t = t.replace(/^[a-h]\s*[).:]\s+/i, '');
+        if (/\s\*$/.test(t)) { star = true; t = t.slice(0, -1).trim(); }
+        if (star) { if (correct >= 0) many = true; correct = opts.length; }
+        opts.push(t);
+      }
+      const label = `Question ${n + 1} (“${head.slice(0, 40)}${head.length > 40 ? '…' : ''}”)`;
+      if (opts.length < 2) problems.push(`${label} needs at least two answers.`);
+      else if (opts.length > 8) problems.push(`${label} has more than 8 answers.`);
+      else if (correct < 0) problems.push(`${label} has no correct answer. Put * before it.`);
+      else if (many) problems.push(`${label} has more than one answer marked with *.`);
+      else qs.push({ q: head, opts, correct, expl: expl.join(' ') });
+    });
+    return { qs, problems };
+  }
+  function fill() {
+    sel.innerHTML = state.quizzes.map((x) => `<option value="${x.id}">${esc(x.title || 'Untitled quiz')}</option>`).join('');
+    sel.value = quiz().id; title.value = quiz().title; ta.value = quiz().text; count();
+  }
+  function count() { const { qs, problems } = parse(ta.value); q('[data-count]').textContent = `${qs.length} question${qs.length === 1 ? '' : 's'} ready` + (problems.length ? ` · ${problems.length} to fix` : ''); return { qs, problems }; }
+  sel.addEventListener('change', () => { state.cur = sel.value; save(); fill(); showError(err, null); });
+  title.addEventListener('input', () => { quiz().title = title.value; save(); const o = sel.selectedOptions[0]; if (o) o.textContent = title.value || 'Untitled quiz'; });
+  ta.addEventListener('input', () => { quiz().text = ta.value; save(); count(); showError(err, null); });
+  q('[data-new]').addEventListener('click', () => { const x = { id: Date.now().toString(36), title: `Quiz ${state.quizzes.length + 1}`, text: '' }; state.quizzes.push(x); state.cur = x.id; save(); fill(); ta.focus(); });
+  q('[data-del]').addEventListener('click', () => {
+    if (!confirm(`Delete the quiz “${quiz().title || 'Untitled quiz'}”? This cannot be undone.`)) return;
+    state.quizzes = state.quizzes.filter((x) => x.id !== quiz().id); if (!state.quizzes.length) state.quizzes = [{ id: Date.now().toString(36), title: 'Quiz 1', text: '' }];
+    state.cur = state.quizzes[0].id; save(); fill();
+  });
+  function ready() {
+    const { qs, problems } = count();
+    if (problems.length) { showError(err, problems[0] + (problems.length > 1 ? ` (and ${problems.length - 1} more)` : '')); return null; }
+    if (!qs.length) { showError(err, 'Write at least one question with two or more answers, and mark the correct one with *.'); return null; }
+    showError(err, null); return qs;
+  }
+  q('[data-export]').addEventListener('click', () => downloadBlob(new Blob([`# ${quiz().title}\n\n${ta.value}`], { type: 'text/plain' }), `${(quiz().title || 'quiz').replace(/[^\w-]+/g, '-').toLowerCase()}.txt`));
+  q<HTMLInputElement>('[data-import]').addEventListener('change', async (e) => {
+    const f = (e.target as HTMLInputElement).files?.[0]; (e.target as HTMLInputElement).value = ''; if (!f) return;
+    if (f.size > 500_000) return showError(err, 'That file is too large for a quiz. Choose a text file under 500 KB.');
+    let text = await f.text(); let t = f.name.replace(/\.[^.]+$/, '');
+    const m = text.match(/^#\s*(.+)\n+/); if (m) { t = m[1].trim(); text = text.slice(m[0].length); }
+    const x = { id: Date.now().toString(36), title: t, text }; state.quizzes.push(x); state.cur = x.id; save(); fill();
+    const { problems } = count(); showError(err, problems.length ? `Opened “${t}”. ${problems[0]}` : null);
+  });
+
+  // Taking the quiz
+  let qs: Q[] = [], k = 0, score = 0, answers: number[] = [];
+  function start() {
+    const base = ready(); if (!base) return;
+    const sa = q<HTMLInputElement>('#qz-sa').checked;
+    qs = (q<HTMLInputElement>('#qz-sq').checked ? shuffle(base) : base).map((x) => { if (!sa) return x; const idx = shuffle(x.opts.map((_, i) => i)); return { ...x, opts: idx.map((i) => x.opts[i]), correct: idx.indexOf(x.correct) }; });
+    k = 0; score = 0; answers = [];
+    q('[data-edit]').hidden = true; q('[data-end]').hidden = true; q('[data-play]').hidden = false; show();
+  }
+  function show() {
+    const x = qs[k];
+    q('[data-pos]').textContent = `Question ${k + 1} of ${qs.length}`; q('[data-sc]').textContent = `${score} correct`;
+    q('[data-bar]').style.width = `${(k / qs.length) * 100}%`;
+    q('[data-q]').textContent = x.q;
+    q('[data-opts]').innerHTML = x.opts.map((o, i) => `<button type="button" class="qz-opt" data-o="${i}"><span class="k">${L[i]}</span><span>${esc(o)}</span></button>`).join('');
+    q('[data-expl]').hidden = true; q('[data-next]').hidden = true;
+    q<HTMLButtonElement>('[data-opts] button').focus();
+  }
+  q('[data-opts]').addEventListener('click', (e) => {
+    const b = (e.target as HTMLElement).closest<HTMLButtonElement>('[data-o]'); if (!b || b.disabled) return;
+    const pick = +b.dataset.o!, x = qs[k]; answers[k] = pick; if (pick === x.correct) score++;
+    q('[data-opts]').querySelectorAll<HTMLButtonElement>('[data-o]').forEach((o) => { o.disabled = true; const i = +o.dataset.o!; if (i === x.correct) o.classList.add('ok'); else if (i === pick) o.classList.add('bad'); });
+    const ex = q('[data-expl]'); ex.hidden = false; ex.textContent = (pick === x.correct ? '✓ Correct. ' : `✗ The answer is ${L[x.correct]}: ${x.opts[x.correct]}. `) + x.expl;
+    q('[data-sc]').textContent = `${score} correct`;
+    const n = q<HTMLButtonElement>('[data-next]'); n.hidden = false; n.querySelector('[data-label]')!.textContent = k + 1 < qs.length ? 'Next question' : 'See my score'; n.focus();
+  });
+  q('[data-next]').addEventListener('click', () => { k++; if (k < qs.length) show(); else finish(); });
+  function finish() {
+    q('[data-play]').hidden = true; q('[data-end]').hidden = false;
+    q('[data-score]').textContent = `${score} / ${qs.length}`;
+    const pct = Math.round((score / qs.length) * 100);
+    q('[data-pct]').textContent = `${pct}%${pct === 100 ? ', a perfect score!' : pct >= 80 ? ', great work.' : pct >= 50 ? '. Review the ones you missed below.' : '. Keep practicing, you’ll get there.'}`;
+    q('[data-review]').innerHTML = qs.map((x, i) => { const ok = answers[i] === x.correct; return `<li class="rounded-lg ${ok ? 'bg-success-soft' : 'bg-danger-soft'} px-4 py-2.5"><p class="font-semibold">${ok ? '✓' : '✗'} ${esc(x.q)}</p>${ok ? '' : `<p class="text-sm">Your answer: ${esc(x.opts[answers[i]] ?? 'none')} · Correct: <b>${esc(x.opts[x.correct])}</b></p>`}</li>`; }).join('');
+  }
+  q('[data-start]').addEventListener('click', start);
+  q('[data-again]').addEventListener('click', start);
+  const back = () => { q('[data-play]').hidden = true; q('[data-end]').hidden = true; q('[data-edit]').hidden = false; };
+  q('[data-back]').addEventListener('click', back); q('[data-quit]').addEventListener('click', back);
+  q('[data-print]').addEventListener('click', () => {
+    const base = ready(); if (!base) return;
+    const sheet = q('[data-sheet]');
+    sheet.innerHTML = `<div class="qz-sheet"><h2>${esc(quiz().title || 'Quiz')}</h2><p style="margin:6pt 0 14pt">Name: ______________________ &nbsp; Date: ____________</p><ol class="qs" style="list-style:decimal;padding-left:18pt">${base.map((x) => `<li><p><b>${esc(x.q)}</b></p><ul>${x.opts.map((o, i) => `<li>☐ ${L[i]}. ${esc(o)}</li>`).join('')}</ul></li>`).join('')}</ol><div class="key"><h2>Answer key</h2><ol style="list-style:decimal;padding-left:18pt">${base.map((x) => `<li>${L[x.correct]}. ${esc(x.opts[x.correct])}</li>`).join('')}</ol></div></div>`;
+    printElement(sheet);
+  });
+  fill();
+</script>

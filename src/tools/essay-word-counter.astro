@@ -1,0 +1,89 @@
+---
+import LocalNote from '../components/LocalNote.astro';
+---
+<div id="ew" class="grid grid-cols-1 gap-5 lg:grid-cols-[1fr_20rem] lg:items-start">
+  <div class="space-y-3">
+    <label for="ew-in" class="label">Your essay</label>
+    <textarea id="ew-in" class="textarea -mt-2 !min-h-[320px]" placeholder="Paste or type your essay here…"></textarea>
+    <div class="flex flex-wrap gap-x-6 gap-y-1">
+      <label class="flex min-h-11 items-center gap-2.5 text-[0.9375rem]"><input type="checkbox" id="ew-refs" class="h-5 w-5 accent-[var(--brand)]" checked />Don't count the reference list</label>
+      <label class="flex min-h-11 items-center gap-2.5 text-[0.9375rem]"><input type="checkbox" id="ew-cite" class="h-5 w-5 accent-[var(--brand)]" />Don't count in-text citations</label>
+      <label class="flex min-h-11 items-center gap-2.5 text-[0.9375rem]"><input type="checkbox" id="ew-head" class="h-5 w-5 accent-[var(--brand)]" />Don't count title and headings</label>
+    </div>
+    <LocalNote what="Your draft is" clearLabel="Clear essay" />
+  </div>
+  <aside class="space-y-4 lg:sticky lg:top-20">
+    <section class="card p-5" aria-live="polite">
+      <div class="grid grid-cols-[1fr_auto] items-end gap-3">
+        <div><label for="ew-goal" class="label">Word limit</label><input id="ew-goal" class="input" type="number" inputmode="numeric" min="1" value="1500" /></div>
+        <div><label for="ew-type" class="sr-only">Limit type</label><select id="ew-type" class="select w-auto"><option value="about">About (±10%)</option><option value="max">Maximum</option><option value="min">Minimum</option></select></div>
+      </div>
+      <p class="mt-5 text-5xl font-extrabold tracking-tight tabular" data-words>0</p>
+      <p class="text-sm text-subtle" data-of>words counted</p>
+      <div class="mt-3 h-2.5 overflow-hidden rounded-full bg-surface-2"><div class="h-full rounded-full transition-[width]" data-bar style="width:0;background:var(--cat)"></div></div>
+      <p class="mt-3 flex items-start gap-2 text-[0.9375rem]" data-status></p>
+    </section>
+    <dl class="grid grid-cols-2 gap-2">
+      <div class="stat"><dt class="stat-label">Pages, double spaced</dt><dd class="stat-value" data-k="pd">0</dd></div>
+      <div class="stat"><dt class="stat-label">Pages, single spaced</dt><dd class="stat-value" data-k="ps">0</dd></div>
+      <div class="stat"><dt class="stat-label">Paragraphs</dt><dd class="stat-value" data-k="para">0</dd></div>
+      <div class="stat"><dt class="stat-label">Sentences</dt><dd class="stat-value" data-k="sent">0</dd></div>
+      <div class="stat"><dt class="stat-label">Avg. sentence</dt><dd class="stat-value" data-k="avg">0</dd></div>
+      <div class="stat"><dt class="stat-label">Characters</dt><dd class="stat-value" data-k="chars">0</dd></div>
+      <div class="stat"><dt class="stat-label">Reading time</dt><dd class="stat-value" data-k="read">0 min</dd></div>
+      <div class="stat"><dt class="stat-label">Speaking time</dt><dd class="stat-value" data-k="speak">0 min</dd></div>
+    </dl>
+    <p class="text-sm text-subtle" data-excluded></p>
+  </aside>
+</div>
+<script>
+  import { store, fmt } from '../lib/ui';
+  import { words, sentences, graphemes } from '../lib/text-stats';
+  const root = document.getElementById('ew')!, q = <T extends HTMLElement = HTMLElement>(s: string) => root.querySelector(s) as T;
+  const ta = q<HTMLTextAreaElement>('#ew-in'), KEY = 'tw-essay';
+  const opts = store.get(KEY, { text: '', goal: 1500, type: 'about', refs: true, cite: false, head: false });
+  ta.value = opts.text; q<HTMLInputElement>('#ew-goal').value = String(opts.goal); q<HTMLSelectElement>('#ew-type').value = opts.type;
+  q<HTMLInputElement>('#ew-refs').checked = opts.refs; q<HTMLInputElement>('#ew-cite').checked = opts.cite; q<HTMLInputElement>('#ew-head').checked = opts.head;
+
+  const REF = /^\s*(references|reference list|works cited|bibliography|sources|works consulted|literature cited)\s*:?\s*$/im;
+  const CITE = /\((?:[^()]*?\b(?:1[5-9]|20)\d{2}[a-z]?\b|[^()]*?\bp{1,2}\.\s*\d+|n\.d\.)[^()]*\)|\[\d+(?:[-–,]\s*\d+)*\]/g;
+  const isHeading = (line: string) => { const t = line.trim(); return /^#{1,6}\s/.test(t) || (t.length > 0 && words(t).length <= 12 && !/[.!?:;,"”’)]$/.test(t)); };
+  const mins = (n: number) => (n < 1 ? '< 1 min' : `${Math.round(n)} min`);
+
+  function run() {
+    const text = ta.value, refs = q<HTMLInputElement>('#ew-refs').checked, cite = q<HTMLInputElement>('#ew-cite').checked, head = q<HTMLInputElement>('#ew-head').checked;
+    const goal = Math.round(Number(q<HTMLInputElement>('#ew-goal').value)), type = q<HTMLSelectElement>('#ew-type').value;
+    store.set(KEY, { text, goal: goal || 1500, type, refs, cite, head });
+    let body = text; const notes: string[] = [];
+    if (refs) { const m = REF.exec(body); if (m && m.index > body.length * 0.3) { const n = words(body.slice(m.index)).length; body = body.slice(0, m.index); notes.push(`${fmt(n)} words in the reference list`); } }
+    if (cite) { let n = 0; body = body.replace(CITE, (c) => { n += words(c).length; return ''; }); if (n) notes.push(`${fmt(n)} words in citations`); }
+    const paras = body.split(/\n\s*\n|\n(?=\s*\S)/).map((p) => p.trim()).filter(Boolean);
+    let prose = paras;
+    if (head) { const h = paras.filter((p) => !p.includes('\n') && isHeading(p)); if (h.length) { prose = paras.filter((p) => !h.includes(p)); notes.push(`${fmt(words(h.join(' ')).length)} words in ${h.length} title or heading line${h.length > 1 ? 's' : ''}`); } }
+    const counted = words(prose.join('\n')).length, sent = sentences(prose.join('\n')).length;
+    q('[data-words]').textContent = fmt(counted);
+    q('[data-of]').textContent = goal > 0 ? `of ${fmt(goal)} words counted` : 'words counted';
+    const set = (k: string, v: string) => (q(`[data-k=${k}]`).textContent = v);
+    set('pd', fmt(counted / 275, 1)); set('ps', fmt(counted / 550, 1)); set('para', fmt(prose.filter((p) => !isHeading(p) || p.length > 80).length));
+    set('sent', fmt(sent)); set('avg', sent ? `${fmt(counted / sent, 0)} words` : '0'); set('chars', fmt(graphemes(prose.join('\n'))));
+    set('read', counted ? mins(counted / 238) : '0 min'); set('speak', counted ? mins(counted / 130) : '0 min');
+    q('[data-excluded]').textContent = notes.length ? `Not counted: ${notes.join(', ')}.` : '';
+    // goal status
+    const bar = q('[data-bar]'), st = q('[data-status]');
+    if (!(goal > 0)) { bar.style.width = '0'; st.textContent = 'Enter a word limit to track your progress.'; return; }
+    const lo = type === 'about' ? goal * 0.9 : goal, hi = type === 'about' ? goal * 1.1 : goal, pct = counted / goal;
+    bar.style.width = `${Math.min(100, pct * 100)}%`;
+    let ok = true, msg: string;
+    if (!counted) msg = 'Start writing to see how close you are.';
+    else if (type === 'max') { ok = counted <= goal; msg = ok ? `${fmt(goal - counted)} words left before the limit.` : `${fmt(counted - goal)} words over the limit. Cut them before you submit.`; }
+    else if (type === 'min') { ok = counted >= goal; msg = ok ? `Minimum reached, ${fmt(counted - goal)} words over.` : `${fmt(goal - counted)} more words to reach the minimum.`; }
+    else if (counted < lo) { ok = false; msg = `${fmt(Math.ceil(lo - counted))} more words to reach the usual 10% range (${fmt(Math.ceil(lo))}–${fmt(Math.floor(hi))}).`; }
+    else if (counted > hi) { ok = false; msg = `${fmt(Math.ceil(counted - hi))} words above the usual 10% range. Check your marking rules.`; }
+    else msg = `Within 10% of ${fmt(goal)} words. Nicely on target.`;
+    bar.style.background = counted > hi && type !== 'min' ? 'var(--danger)' : ok ? 'var(--success)' : 'var(--cat)';
+    st.innerHTML = `<span aria-hidden="true">${ok ? '✓' : '•'}</span><span></span>`; st.lastElementChild!.textContent = msg;
+  }
+  root.addEventListener('input', run); root.addEventListener('change', run);
+  q('[data-local-clear]').addEventListener('click', () => { if (ta.value && !confirm('Clear your essay from this page? This cannot be undone.')) return; ta.value = ''; run(); ta.focus(); });
+  run();
+</script>

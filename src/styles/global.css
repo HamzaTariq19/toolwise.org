@@ -234,3 +234,15 @@
 @layer utilities {
   .sr-only-focusable:not(:focus) { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); border: 0; }
 }
+
+/* ---------- Printing a single tool area (see printElement in lib/ui.ts) ---------- */
+.print-host { display: none; }
+@media print {
+  html.dark { color-scheme: light; --bg: #fff; --surface: #fff; --surface-2: #f1f3f6; --border: #d5d9e0; --border-strong: #b8bec8;
+    --text: #0f172a; --muted: #4a5568; --subtle: #5f6b7d; --brand: #1d4ed8; --brand-soft: #eef3ff; --success: #15803d; --danger: #b91c1c; }
+  body.print-area { background: #fff; }
+  body.print-area > :not(.print-host) { display: none !important; }
+  body.print-area > .print-host { display: block; }
+  .print-host [data-noprint] { display: none !important; }
+  .print-host * { print-color-adjust: exact; -webkit-print-color-adjust: exact; }
+}

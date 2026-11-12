@@ -8,3 +8,9 @@ export function randInt(n: number): number {
 /** One item per line; a single line may be comma separated instead */
 export const parseList = (s: string) => (/\n/.test(s.trim()) ? s.split(/\r?\n/) : s.split(',')).map((x) => x.trim()).filter(Boolean);
 export const reducedMotion = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+/** Fisher-Yates shuffle (returns a new array) */
+export function shuffle<T>(a: readonly T[]): T[] {
+  const r = [...a];
+  for (let i = r.length - 1; i > 0; i--) { const j = randInt(i + 1); [r[i], r[j]] = [r[j], r[i]]; }
+  return r;
+}

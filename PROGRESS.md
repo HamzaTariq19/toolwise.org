@@ -11,9 +11,10 @@ Status of each tool lives in `src/data/tools.json` (`"status": "built"` = live, 
 - Batch 5, Converters (14): length, weight, temperature, area, volume, speed, time, data size (decimal + binary), fuel economy, shoe size, clothing size, number to words, Roman numerals, number bases
 - Batch 6, Developer (15): JSON→CSV, CSV→JSON, Base64, URL encode, barcode, color picker, CSS gradient, HTML/CSS/JS minifiers, regex tester, UUID, hash (MD5/SHA), timestamp, Markdown→HTML (sanitized)
 - Batch 7, SEO & Social (12): meta tags, keyword density, robots.txt, sitemap, Open Graph preview, YouTube title + thumbnail checkers, X character counter + thread splitter, Instagram caption formatter, hashtag generator, UTM builder, email signature. New shared `CodeOutput.astro`.
+- Batch 8, Student (10): flashcards, Pomodoro, essay word counter, equation solver (lib/equation.ts, exact fractions + steps), periodic table (src/data/elements.ts), unit circle, multiplication table (print + practice), spelling practice, quiz maker, homework planner. New shared `LocalNote.astro` (device-only storage note), `printElement()` + `esc()` in lib/ui.ts, `shuffle()` in lib/random.ts.
 
 ## Next
-- Batch 8 Student (10) → Batch 9 Everyday (10) → Batch 10 Heavy (8; ask before building the link shortener)
+- Batch 9 Everyday (10) → Batch 10 Heavy (8; ask before building the link shortener)
 
 ## How each tool is built (keep it consistent)
 1. `src/tools/<slug>.astro`: UI + `<script>`. Reuse components:
@@ -38,3 +39,5 @@ Health/finance calculators: the tool page template shows the estimates disclaime
 - Never self-close `<select … set:html>`; wrap options in `<Fragment set:html>` inside a real `<select></select>`.
 - pdf-lib `form.flatten()` leaves dangling widget refs; use `flattenForm()` from lib/pdf.ts.
 - Phone overflow: `.grid` defaults to `minmax(0,1fr)` (base layer), `.card` has `min-width:0`, the tool area and `.prose-tw` use `overflow-wrap:anywhere`. Test with 300-char unbroken input at 360px (scratchpad `allovf.cjs` checks every built page).
+- Printing: `printElement(el)` clones el into `.print-host` and hides everything else via @media print (dark tokens reset to light).
+- Read tool caches images by path: use a new filename when re-checking a screenshot.

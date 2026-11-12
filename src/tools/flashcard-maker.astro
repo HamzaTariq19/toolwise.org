@@ -1,0 +1,148 @@
+---
+import Icon from '../components/Icon.astro';
+import LocalNote from '../components/LocalNote.astro';
+---
+<div id="fc" class="space-y-4">
+  <div class="card space-y-4 p-4 sm:p-5" data-edit>
+    <div class="grid gap-3 sm:grid-cols-[1fr_auto] sm:items-end">
+      <div><label for="fc-deck" class="label">Deck</label><select id="fc-deck" class="select"></select></div>
+      <div class="flex gap-2"><button type="button" class="btn btn-secondary" data-new><Icon name="Plus" size={18} />New deck</button><button type="button" class="btn btn-ghost text-danger" data-del aria-label="Delete this deck"><Icon name="Trash2" size={18} /></button></div>
+    </div>
+    <div><label for="fc-name" class="label">Deck name</label><input id="fc-name" class="input" maxlength="60" autocomplete="off" /></div>
+    <div>
+      <label for="fc-cards" class="label">Cards</label>
+      <p class="hint -mt-1 mb-2">One card per line: <b>front | back</b>. You can also paste two columns from a spreadsheet.</p>
+      <textarea id="fc-cards" class="textarea mono !min-h-[220px] text-[0.9375rem]" spellcheck="false"></textarea>
+      <p class="hint" data-count></p>
+    </div>
+    <div class="alert alert-error" data-error hidden role="alert"><Icon name="CircleAlert" size={18} class="mt-0.5 flex-none" /><span data-msg></span></div>
+    <div class="flex flex-col gap-3 sm:flex-row sm:items-center">
+      <button type="button" class="btn btn-primary btn-lg" data-study><Icon name="Play" size={18} />Study cards</button>
+      <label class="flex min-h-11 items-center gap-2.5 text-[0.9375rem]"><input type="checkbox" id="fc-swap" class="h-5 w-5 accent-[var(--brand)]" />Show the back first</label>
+    </div>
+  </div>
+
+  <section class="space-y-4" data-studybox hidden aria-label="Study">
+    <div class="flex flex-wrap items-center justify-between gap-2">
+      <p class="font-semibold tabular" data-pos></p>
+      <div class="flex gap-2"><button type="button" class="btn btn-secondary btn-sm" data-shuffle><Icon name="Shuffle" size={16} />Shuffle</button><button type="button" class="btn btn-ghost btn-sm" data-back><Icon name="Pencil" size={16} />Edit cards</button></div>
+    </div>
+    <div class="h-2 overflow-hidden rounded-full bg-surface-2"><div class="h-full rounded-full bg-[var(--success)] transition-[width]" data-bar style="width:0"></div></div>
+    <button type="button" class="fc-card block w-full text-left" data-card aria-live="polite">
+      <span class="fc-inner"><span class="fc-face card"><span class="text-xs font-semibold uppercase tracking-wide text-subtle" data-side1>Front</span><span class="fc-text" data-front></span></span><span class="fc-face fc-back card"><span class="text-xs font-semibold uppercase tracking-wide text-subtle" data-side2>Back</span><span class="fc-text" data-backtext></span></span></span>
+    </button>
+    <p class="text-center text-sm text-subtle">Tap the card or press Space to flip. Use the arrow keys to move.</p>
+    <div class="grid grid-cols-2 gap-3">
+      <button type="button" class="btn btn-secondary btn-lg" data-miss><Icon name="RotateCcw" size={18} />Still learning</button>
+      <button type="button" class="btn btn-primary btn-lg" data-know><Icon name="Check" size={18} />I know it</button>
+    </div>
+    <div class="flex justify-between"><button type="button" class="btn btn-ghost btn-sm" data-prev><Icon name="ChevronLeft" size={16} />Previous</button><button type="button" class="btn btn-ghost btn-sm" data-next>Skip<Icon name="ChevronRight" size={16} /></button></div>
+  </section>
+
+  <section class="card p-6 text-center" data-done hidden aria-live="polite">
+    <p class="text-sm font-semibold uppercase tracking-wide text-subtle">Round complete</p>
+    <p class="mt-1 text-4xl font-extrabold tabular" data-score></p>
+    <p class="mt-2 text-muted" data-scoretext></p>
+    <div class="mt-5 flex flex-col justify-center gap-3 sm:flex-row"><button type="button" class="btn btn-primary btn-lg" data-retry><Icon name="RotateCcw" size={18} />Study the ones I missed</button><button type="button" class="btn btn-secondary btn-lg" data-restart>Study all again</button></div>
+  </section>
+  <LocalNote what="Your decks are" />
+</div>
+<style is:global>
+  #fc .fc-card { perspective: 1200px; border-radius: var(--radius-card); }
+  #fc .fc-card:focus-visible { outline: 2.5px solid var(--ring); outline-offset: 3px; }
+  #fc .fc-inner { position: relative; display: grid; min-height: 15rem; transition: transform .45s cubic-bezier(.2,.7,.3,1); transform-style: preserve-3d; }
+  #fc .fc-card[data-flipped] .fc-inner { transform: rotateY(180deg); }
+  #fc .fc-face { grid-area: 1 / 1; display: flex; flex-direction: column; gap: .75rem; padding: 1.25rem; backface-visibility: hidden; -webkit-backface-visibility: hidden; }
+  #fc .fc-back { transform: rotateY(180deg); background: var(--surface-2); }
+  #fc .fc-text { flex: 1; display: flex; align-items: center; justify-content: center; text-align: center; font-size: clamp(1.25rem, 4.5vw, 1.75rem); font-weight: 600; line-height: 1.35; white-space: pre-line; }
+  @media (prefers-reduced-motion: reduce) { #fc .fc-inner { transition: none; } }
+</style>
+<script>
+  import { store, showError } from '../lib/ui';
+  import { shuffle } from '../lib/random';
+  type Deck = { id: string; name: string; text: string };
+  const KEY = 'tw-flashcards';
+  const SAMPLE: Deck = { id: 'sample', name: 'Sample: world capitals', text: 'France | Paris\nJapan | Tokyo\nKenya | Nairobi\nCanada | Ottawa\nBrazil | Brasília\nAustralia | Canberra' };
+  const root = document.getElementById('fc')!, q = <T extends HTMLElement = HTMLElement>(s: string) => root.querySelector(s) as T;
+  const sel = q<HTMLSelectElement>('#fc-deck'), name = q<HTMLInputElement>('#fc-name'), ta = q<HTMLTextAreaElement>('#fc-cards'), err = q('[data-error]');
+  let state = store.get<{ decks: Deck[]; cur: string }>(KEY, { decks: [SAMPLE], cur: 'sample' });
+  if (!state.decks?.length) state = { decks: [SAMPLE], cur: 'sample' };
+  const deck = () => state.decks.find((d) => d.id === state.cur) ?? state.decks[0];
+  const save = () => store.set(KEY, state);
+
+  function parse(text: string) {
+    const cards: [string, string][] = [], bad: number[] = [];
+    text.split(/\r?\n/).forEach((line, i) => {
+      if (!line.trim()) return;
+      const sep = line.includes('\t') ? '\t' : line.includes('|') ? '|' : '', k = sep ? line.indexOf(sep) : -1;
+      const f = k >= 0 ? line.slice(0, k).trim() : '', b = k >= 0 ? line.slice(k + 1).replace(/\t/g, ' ').trim() : '';
+      if (!f || !b) bad.push(i + 1); else cards.push([f.replace(/\\n/g, '\n'), b.replace(/\\n/g, '\n')]);
+    });
+    return { cards, bad };
+  }
+  function fill() {
+    sel.innerHTML = state.decks.map((d) => `<option value="${d.id}">${d.name.replace(/</g, '&lt;') || 'Untitled deck'}</option>`).join('');
+    sel.value = deck().id; name.value = deck().name; ta.value = deck().text; count();
+  }
+  function count() {
+    const { cards, bad } = parse(ta.value);
+    q('[data-count]').textContent = `${cards.length} card${cards.length === 1 ? '' : 's'}` + (bad.length ? ` · line${bad.length > 1 ? 's' : ''} ${bad.slice(0, 5).join(', ')}${bad.length > 5 ? '…' : ''} need a | between front and back` : '');
+    return { cards, bad };
+  }
+  sel.addEventListener('change', () => { state.cur = sel.value; save(); fill(); showError(err, null); });
+  name.addEventListener('input', () => { deck().name = name.value; save(); const o = sel.selectedOptions[0]; if (o) o.textContent = name.value || 'Untitled deck'; });
+  ta.addEventListener('input', () => { deck().text = ta.value; save(); count(); showError(err, null); });
+  q('[data-new]').addEventListener('click', () => { const d = { id: Date.now().toString(36), name: `Deck ${state.decks.length + 1}`, text: '' }; state.decks.push(d); state.cur = d.id; save(); fill(); ta.focus(); });
+  q('[data-del]').addEventListener('click', () => {
+    if (!confirm(`Delete the deck “${deck().name || 'Untitled deck'}”? This cannot be undone.`)) return;
+    state.decks = state.decks.filter((d) => d.id !== deck().id); if (!state.decks.length) state.decks = [{ id: Date.now().toString(36), name: 'Deck 1', text: '' }];
+    state.cur = state.decks[0].id; save(); fill();
+  });
+
+  // Study
+  let order: [string, string][] = [], i = 0, known = new Set<number>(), missed = new Set<number>(), all: [string, string][] = [];
+  const card = q('[data-card]'), box = q('[data-studybox]'), done = q('[data-done]');
+  function show() {
+    if (i >= order.length) return finish();
+    const [f, b] = order[i], swap = q<HTMLInputElement>('#fc-swap').checked;
+    card.removeAttribute('data-flipped');
+    q('[data-front]').textContent = swap ? b : f; q('[data-backtext]').textContent = swap ? f : b;
+    q('[data-side1]').textContent = swap ? 'Back' : 'Front'; q('[data-side2]').textContent = swap ? 'Front' : 'Back';
+    q('[data-pos]').textContent = `Card ${i + 1} of ${order.length} · ${known.size} known`;
+    q<HTMLElement>('[data-bar]').style.width = `${(known.size / order.length) * 100}%`;
+    card.setAttribute('aria-label', `Card ${i + 1}. ${swap ? b : f}. Press to flip.`);
+  }
+  function start(cards: [string, string][]) {
+    order = cards; i = 0; known = new Set(); missed = new Set();
+    done.hidden = true; q('[data-edit]').hidden = true; box.hidden = false; show(); card.focus();
+  }
+  function finish() {
+    box.hidden = true; done.hidden = false;
+    q('[data-score]').textContent = `${known.size} / ${order.length}`;
+    q('[data-scoretext]').textContent = missed.size ? `You marked ${missed.size} card${missed.size > 1 ? 's' : ''} as still learning. Go through those again to lock them in.` : 'You knew every card. Great work!';
+    q('[data-retry]').hidden = !missed.size;
+  }
+  q('[data-study]').addEventListener('click', () => {
+    const { cards, bad } = count();
+    if (!cards.length) return showError(err, 'Add at least one card first, written as front | back on its own line.');
+    if (bad.length) return showError(err, `Line ${bad[0]} has no back side. Put a | between the front and the back, like “France | Paris”.`);
+    showError(err, null); all = cards; start(cards);
+  });
+  const flip = () => card.toggleAttribute('data-flipped');
+  card.addEventListener('click', flip);
+  const mark = (ok: boolean) => { (ok ? known : missed).add(i); (ok ? missed : known).delete(i); i++; show(); };
+  q('[data-know]').addEventListener('click', () => mark(true));
+  q('[data-miss]').addEventListener('click', () => mark(false));
+  q('[data-next]').addEventListener('click', () => { i++; show(); });
+  q('[data-prev]').addEventListener('click', () => { i = Math.max(0, i - 1); show(); });
+  q('[data-shuffle]').addEventListener('click', () => { order = shuffle(order); i = 0; known = new Set(); missed = new Set(); show(); });
+  q('[data-back]').addEventListener('click', () => { box.hidden = true; done.hidden = true; q('[data-edit]').hidden = false; });
+  q('[data-retry]').addEventListener('click', () => start(order.filter((_, k) => missed.has(k))));
+  q('[data-restart]').addEventListener('click', () => start(all));
+  root.addEventListener('keydown', (e) => {
+    if (box.hidden || (e.target as HTMLElement).matches('input, textarea, select')) return;
+    if (e.key === ' ' && e.target !== card) { e.preventDefault(); flip(); }
+    else if (e.key === 'ArrowRight') { i++; show(); } else if (e.key === 'ArrowLeft') { i = Math.max(0, i - 1); show(); }
+  });
+  fill();
+</script>

@@ -1,0 +1,51 @@
+---
+import Icon from '../components/Icon.astro';
+const examples = ['2x + 3 = 11', '3(x − 2) = 2x + 4', 'x/4 + 1/2 = 3', 'x² − 5x + 6 = 0', '2x² + 3x − 2 = 0', 'x² + 4x − 1 = 0'];
+const keys = ['x', '²', '(', ')', '+', '−', '×', '÷', '=', '^'];
+---
+<div id="eq" class="space-y-4">
+  <form class="card space-y-3 p-4 sm:p-5" novalidate data-form>
+    <label for="eq-in" class="label">Equation</label>
+    <input id="eq-in" class="input mono -mt-1 !min-h-[52px] text-lg" value="2x + 3 = 11" autocomplete="off" autocapitalize="off" spellcheck="false" inputmode="text" aria-describedby="eq-hint" />
+    <div class="flex flex-wrap gap-1.5" aria-label="Insert symbol">
+      {keys.map((k) => <button type="button" class="btn btn-secondary btn-sm mono min-w-10" data-key={k} aria-label={`Insert ${k}`}>{k}</button>)}
+    </div>
+    <p id="eq-hint" class="hint">Linear or quadratic, with one letter. Use ^ or ² for squares, and brackets as needed.</p>
+    <button type="submit" class="btn btn-primary btn-lg w-full sm:w-auto"><Icon name="Sigma" size={18} />Solve</button>
+    <div class="alert alert-error" data-error hidden role="alert"><Icon name="CircleAlert" size={18} class="mt-0.5 flex-none" /><span data-msg></span></div>
+    <div class="flex flex-wrap items-center gap-2 pt-1 text-sm"><span class="text-subtle">Try:</span>{examples.map((e) => <button type="button" class="chip mono !min-h-9 text-sm" data-ex={e}>{e}</button>)}</div>
+  </form>
+  <section class="card p-5 sm:p-6" data-result hidden aria-live="polite">
+    <p class="text-sm font-semibold uppercase tracking-wide text-subtle">Answer</p>
+    <p class="mono mt-1 text-2xl font-bold sm:text-3xl" data-answer></p>
+    <h2 class="mt-6 text-base font-semibold">Step by step</h2>
+    <ol class="mt-3 space-y-3" data-steps></ol>
+  </section>
+</div>
+<script>
+  import { solve, EqError } from '../lib/equation';
+  import { showError } from '../lib/ui';
+  const root = document.getElementById('eq')!, q = <T extends HTMLElement = HTMLElement>(s: string) => root.querySelector(s) as T;
+  const input = q<HTMLInputElement>('#eq-in'), err = q('[data-error]'), out = q('[data-result]');
+  const fromUrl = new URLSearchParams(location.search).get('eq'); if (fromUrl) input.value = fromUrl.slice(0, 200);
+  function run() {
+    try {
+      const r = solve(input.value);
+      showError(err, null); input.removeAttribute('aria-invalid');
+      q('[data-answer]').innerHTML = r.answer.replace(/&(?!nbsp;)/g, '&amp;');
+      q('[data-steps]').innerHTML = r.steps.map((s, i) => `<li class="flex gap-3"><span class="flex h-7 w-7 flex-none items-center justify-center rounded-full bg-[var(--cat-soft)] text-sm font-bold text-[var(--cat)]">${i + 1}</span><div class="min-w-0 pt-0.5"><p class="font-semibold">${s.title}</p>${s.math ? `<p class="mono mt-1 rounded-lg bg-surface-2 px-3 py-2">${s.math}</p>` : ''}${s.note ? `<p class="mt-1 text-sm text-muted">${s.note}</p>` : ''}</div></li>`).join('');
+      out.hidden = false;
+    } catch (e) {
+      out.hidden = true; input.setAttribute('aria-invalid', 'true');
+      showError(err, e instanceof EqError ? e.message : 'Something went wrong with that equation. Check it for typos and try again.');
+    }
+  }
+  q('[data-form]').addEventListener('submit', (e) => { e.preventDefault(); run(); });
+  root.querySelectorAll<HTMLButtonElement>('[data-key]').forEach((b) => b.addEventListener('click', () => {
+    const s = input.selectionStart ?? input.value.length, t = input.selectionEnd ?? s, k = b.dataset.key!;
+    const ins = ['+', '−', '×', '÷', '='].includes(k) ? ` ${k} ` : k;
+    input.value = input.value.slice(0, s) + ins + input.value.slice(t); input.focus(); input.setSelectionRange(s + ins.length, s + ins.length);
+  }));
+  root.querySelectorAll<HTMLButtonElement>('[data-ex]').forEach((b) => b.addEventListener('click', () => { input.value = b.dataset.ex!; run(); }));
+  run();
+</script>

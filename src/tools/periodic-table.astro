@@ -1,0 +1,103 @@
+---
+import Icon from '../components/Icon.astro';
+import { ELEMENTS, CATS } from '../data/elements';
+---
+<div id="pt" class="space-y-4">
+  <div class="grid gap-3 sm:grid-cols-[1fr_auto]">
+    <div><label for="pt-q" class="sr-only">Find an element</label>
+      <div class="relative"><Icon name="Search" size={18} class="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-subtle" /><input id="pt-q" class="input pl-10" placeholder="Find by name, symbol or number" autocomplete="off" /></div></div>
+    <p class="self-center text-sm text-subtle" data-found></p>
+  </div>
+  <section class="card grid gap-4 p-4 sm:grid-cols-[auto_1fr] sm:p-5" data-detail aria-live="polite">
+    <div class="pt-big flex h-28 w-28 flex-col justify-between rounded-xl p-3" data-cat="nonmetal" data-bigbox>
+      <span class="text-sm font-semibold tabular" data-d="z">1</span><span class="text-4xl font-bold leading-none" data-d="sym">H</span><span class="truncate text-xs" data-d="mass">1.008</span>
+    </div>
+    <div class="min-w-0">
+      <h2 class="text-xl font-bold" data-d="name">Hydrogen</h2>
+      <p class="text-sm text-muted" data-d="cat">Reactive nonmetal</p>
+      <dl class="mt-3 grid grid-cols-2 gap-x-4 gap-y-1.5 text-sm sm:grid-cols-3">
+        <div><dt class="text-subtle">Atomic mass</dt><dd class="font-semibold tabular" data-d="mass2"></dd></div>
+        <div><dt class="text-subtle">Group · Period</dt><dd class="font-semibold" data-d="gp"></dd></div>
+        <div><dt class="text-subtle">Block</dt><dd class="font-semibold" data-d="block"></dd></div>
+        <div><dt class="text-subtle">State at 20 °C</dt><dd class="font-semibold" data-d="state"></dd></div>
+        <div><dt class="text-subtle">Electronegativity</dt><dd class="font-semibold tabular" data-d="en"></dd></div>
+        <div class="col-span-2 sm:col-span-1"><dt class="text-subtle">Electron configuration</dt><dd class="mono font-semibold" data-d="config"></dd></div>
+      </dl>
+    </div>
+  </section>
+  <div class="flex flex-wrap gap-1.5" role="group" aria-label="Highlight a category">
+    {Object.entries(CATS).map(([k, v]) => <button type="button" class="chip !min-h-9 gap-2 text-sm" data-legend={k} aria-pressed="false"><span class="pt-dot h-3 w-3 rounded-sm" data-cat={k}></span>{v}</button>)}
+  </div>
+  <div class="-mx-1 overflow-x-auto px-1 pb-2" tabindex="0" aria-label="Periodic table (scrolls sideways on small screens)">
+    <div class="pt-grid" data-grid>
+      {ELEMENTS.map((e) => (
+        <button type="button" class="pt-cell" data-cat={e.cat} data-z={e.z} style={`grid-row:${e.row + 1};grid-column:${e.col}`} aria-label={`${e.name}, ${e.z}`}>
+          <span class="pt-z">{e.z}</span><span class="pt-sym">{e.sym}</span><span class="pt-name">{e.name}</span>
+        </button>
+      ))}
+      <span class="pt-gap" style="grid-row:7;grid-column:3" aria-hidden="true">57–71</span>
+      <span class="pt-gap" style="grid-row:8;grid-column:3" aria-hidden="true">89–103</span>
+      {Array.from({ length: 18 }, (_, i) => <span class="pt-gnum" style={`grid-row:1;grid-column:${i + 1}`} aria-hidden="true">{i + 1}</span>)}
+    </div>
+  </div>
+  <p class="text-sm text-subtle">Masses are IUPAC standard atomic weights. A number in [brackets] is the mass number of the most stable isotope. Electronegativity is on the Pauling scale.</p>
+</div>
+<style is:global>
+  #pt [data-cat='alkali'] { --k: #e5484d; }
+  #pt [data-cat='alkaline'] { --k: #f76b15; }
+  #pt [data-cat='transition'] { --k: #d4a20a; }
+  #pt [data-cat='post'] { --k: #30a46c; }
+  #pt [data-cat='metalloid'] { --k: #12a594; }
+  #pt [data-cat='nonmetal'] { --k: #3e63dd; }
+  #pt [data-cat='halogen'] { --k: #6e56cf; }
+  #pt [data-cat='noble'] { --k: #ab4aba; }
+  #pt [data-cat='lanthanide'] { --k: #d6409f; }
+  #pt [data-cat='actinide'] { --k: #e54666; }
+  #pt [data-cat='unknown'] { --k: #8b8d98; }
+  #pt [data-cat] { --c: color-mix(in srgb, var(--k) 17%, #fff); --t: color-mix(in srgb, var(--k) 62%, #000); }
+  .dark #pt [data-cat] { --c: color-mix(in srgb, var(--k) 30%, #121821); --t: color-mix(in srgb, var(--k) 25%, #fff); }
+  #pt .pt-dot, #pt .pt-big { background: var(--c); color: var(--t); }
+  #pt .pt-grid { display: grid; grid-template-columns: repeat(18, minmax(2.35rem, 1fr)); grid-template-rows: auto repeat(7, auto) .75rem auto auto; gap: 3px; min-width: 44rem; }
+  #pt .pt-cell { display: flex; flex-direction: column; align-items: center; justify-content: center; aspect-ratio: 1 / 1.1; padding: 2px; border-radius: 6px; background: var(--c); color: var(--t); line-height: 1.1; transition: transform .12s, opacity .15s, box-shadow .12s; min-width: 0; }
+  #pt .pt-cell:hover { transform: scale(1.08); z-index: 1; box-shadow: 0 4px 12px rgb(0 0 0 / .18); }
+  #pt .pt-cell:focus-visible { outline: 2.5px solid var(--ring); outline-offset: 1px; z-index: 2; }
+  #pt .pt-cell[aria-pressed='true'] { box-shadow: 0 0 0 2.5px var(--text); z-index: 1; }
+  #pt .pt-cell.dim { opacity: .18; }
+  #pt .pt-z { font-size: .625rem; font-variant-numeric: tabular-nums; }
+  #pt .pt-sym { font-size: 1.0625rem; font-weight: 700; }
+  #pt .pt-name { font-size: .5rem; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  #pt .pt-gap, #pt .pt-gnum { display: flex; align-items: center; justify-content: center; font-size: .625rem; color: var(--subtle); }
+  #pt .pt-gnum { padding-bottom: 2px; }
+  @media (prefers-reduced-motion: reduce) { #pt .pt-cell { transition: none; } #pt .pt-cell:hover { transform: none; } }
+</style>
+<script>
+  import { ELEMENTS, CATS } from '../data/elements';
+  const root = document.getElementById('pt')!, q = <T extends HTMLElement = HTMLElement>(s: string) => root.querySelector(s) as T;
+  const cells = [...root.querySelectorAll<HTMLButtonElement>('.pt-cell')];
+  let legend: string | null = null;
+  function select(z: number) {
+    const e = ELEMENTS[z - 1]; if (!e) return;
+    cells.forEach((c) => c.setAttribute('aria-pressed', String(+c.dataset.z! === z)));
+    const d = (k: string, v: string) => (q(`[data-d=${k}]`).textContent = v);
+    q('[data-bigbox]').dataset.cat = e.cat;
+    d('z', String(e.z)); d('sym', e.sym); d('mass', e.mass); d('name', e.name); d('cat', CATS[e.cat]);
+    d('mass2', e.mass.startsWith('[') ? `${e.mass} (most stable isotope)` : `${e.mass} u`);
+    d('gp', `${e.group ?? (e.cat === 'lanthanide' ? 'Lanthanide' : 'Actinide') + ' series'} · ${e.period}`);
+    d('block', `${e.block}-block`); d('state', e.state); d('en', e.en || 'No value'); d('config', e.config);
+  }
+  function filter() {
+    const t = q<HTMLInputElement>('#pt-q').value.trim().toLowerCase();
+    const hits = ELEMENTS.filter((e) => (!t || String(e.z) === t || e.sym.toLowerCase() === t || e.name.toLowerCase().includes(t) || (t.length > 1 && e.sym.toLowerCase().startsWith(t))) && (!legend || e.cat === legend));
+    const ids = new Set(hits.map((e) => e.z));
+    cells.forEach((c) => c.classList.toggle('dim', !ids.has(+c.dataset.z!)));
+    q('[data-found]').textContent = t || legend ? (hits.length ? `${hits.length} match${hits.length > 1 ? 'es' : ''}` : 'No element matches. Check the spelling.') : '';
+    if (t && hits.length) { const exact = hits.find((e) => e.sym.toLowerCase() === t || e.name.toLowerCase() === t || String(e.z) === t) ?? hits[0]; select(exact.z); }
+  }
+  root.addEventListener('click', (e) => {
+    const c = (e.target as HTMLElement).closest<HTMLButtonElement>('.pt-cell'); if (c) return select(+c.dataset.z!);
+    const l = (e.target as HTMLElement).closest<HTMLButtonElement>('[data-legend]');
+    if (l) { legend = legend === l.dataset.legend ? null : l.dataset.legend!; root.querySelectorAll('[data-legend]').forEach((b) => b.setAttribute('aria-pressed', String((b as HTMLElement).dataset.legend === legend))); filter(); }
+  });
+  q('#pt-q').addEventListener('input', filter);
+  select(1);
+</script>

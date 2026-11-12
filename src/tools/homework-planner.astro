@@ -1,0 +1,118 @@
+---
+import Icon from '../components/Icon.astro';
+import LocalNote from '../components/LocalNote.astro';
+---
+<div id="hw" class="space-y-4">
+  <form class="card space-y-3 p-4 sm:p-5" novalidate data-form>
+    <div class="grid gap-3 sm:grid-cols-[2fr_1fr_1fr]">
+      <div><label for="hw-title" class="label">Assignment</label><input id="hw-title" class="input" maxlength="140" placeholder="e.g. Read chapter 4 and answer questions" autocomplete="off" /></div>
+      <div><label for="hw-subj" class="label">Subject</label><input id="hw-subj" class="input" maxlength="40" list="hw-subjects" placeholder="e.g. History" autocomplete="off" /><datalist id="hw-subjects"></datalist></div>
+      <div><label for="hw-due" class="label">Due date</label><input id="hw-due" class="input" type="date" /></div>
+    </div>
+    <div class="alert alert-error" data-error hidden role="alert"><Icon name="CircleAlert" size={18} class="mt-0.5 flex-none" /><span data-msg></span></div>
+    <div class="flex flex-wrap gap-3"><button type="submit" class="btn btn-primary btn-lg flex-1 sm:flex-none" data-submit><Icon name="Plus" size={18} /><span data-label>Add assignment</span></button><button type="button" class="btn btn-ghost btn-lg" data-cancel hidden>Cancel</button></div>
+  </form>
+
+  <div class="flex flex-wrap items-center gap-3">
+    <p class="font-semibold" data-summary aria-live="polite"></p>
+    <div class="ml-auto flex flex-wrap items-center gap-2">
+      <label for="hw-filter" class="sr-only">Show subject</label><select id="hw-filter" class="select !min-h-10 w-auto py-1.5 text-sm"><option value="">All subjects</option></select>
+      <button type="button" class="btn btn-secondary btn-sm" data-print><Icon name="Printer" size={16} />Print</button>
+    </div>
+  </div>
+  <div class="space-y-5" data-list data-printable></div>
+
+  <details class="card p-4" data-backup>
+    <summary class="flex min-h-11 cursor-pointer items-center gap-2 font-semibold"><Icon name="DatabaseBackup" size={18} />Back up or move your planner</summary>
+    <p class="mt-2 text-sm text-muted">Save a backup file, then open it on another device or browser to bring your assignments with you.</p>
+    <div class="mt-3 flex flex-wrap gap-2"><button type="button" class="btn btn-secondary btn-sm" data-export><Icon name="Download" size={16} />Save backup</button><label class="btn btn-secondary btn-sm relative cursor-pointer"><Icon name="Upload" size={16} />Open backup<input type="file" accept=".json,application/json" class="absolute inset-0 cursor-pointer opacity-0" data-import /></label><button type="button" class="btn btn-ghost btn-sm text-danger" data-wipe><Icon name="Trash2" size={16} />Delete everything</button></div>
+    <p class="mt-2 text-sm" data-bmsg></p>
+  </details>
+  <LocalNote what="Your planner is" />
+</div>
+<script>
+  import { store, showError, esc, downloadBlob, printElement } from '../lib/ui';
+  type Item = { id: string; title: string; subj: string; due: string; done: boolean; at: number };
+  const KEY = 'tw-homework', root = document.getElementById('hw')!, q = <T extends HTMLElement = HTMLElement>(s: string) => root.querySelector(s) as T;
+  let items = store.get<Item[]>(KEY, []); if (!Array.isArray(items)) items = [];
+  let editing: string | null = null;
+  const err = q('[data-error]'), fTitle = q<HTMLInputElement>('#hw-title'), fSubj = q<HTMLInputElement>('#hw-subj'), fDue = q<HTMLInputElement>('#hw-due');
+  const iso = (d: Date) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+  const today = () => { const d = new Date(); d.setHours(0, 0, 0, 0); return d; };
+  const parseD = (s: string) => { const [y, m, d] = s.split('-').map(Number); return new Date(y, m - 1, d); };
+  const days = (s: string) => Math.round((parseD(s).getTime() - today().getTime()) / 86_400_000);
+  const tomorrow = () => { const d = today(); d.setDate(d.getDate() + 1); return iso(d); };
+  const hue = (s: string) => { let h = 0; for (const c of s.toLowerCase()) h = (h * 31 + c.charCodeAt(0)) % 360; return h; };
+  const save = () => store.set(KEY, items);
+  fDue.value = tomorrow();
+
+  function group(it: Item) { const n = days(it.due); return n < 0 ? 0 : n === 0 ? 1 : n === 1 ? 2 : n <= 7 ? 3 : 4; }
+  const GROUPS = ['Overdue', 'Due today', 'Due tomorrow', 'Next 7 days', 'Later'];
+  function when(it: Item) {
+    const n = days(it.due), d = parseD(it.due).toLocaleDateString(undefined, { weekday: 'short', day: 'numeric', month: 'short' });
+    return n < 0 ? `${d} · ${-n} day${n === -1 ? '' : 's'} late` : n === 0 ? `${d} · today` : n === 1 ? `${d} · tomorrow` : `${d} · in ${n} days`;
+  }
+  function row(it: Item) {
+    const h = hue(it.subj || 'none'), late = !it.done && days(it.due) < 0;
+    return `<li class="flex items-start gap-3 px-4 py-3" data-id="${it.id}">
+      <input type="checkbox" class="mt-0.5 h-5 w-5 flex-none accent-[var(--success)]" ${it.done ? 'checked' : ''} aria-label="Mark “${esc(it.title)}” as done" data-done />
+      <div class="min-w-0 flex-1"><p class="font-medium ${it.done ? 'text-subtle line-through' : ''}">${esc(it.title)}</p>
+        <p class="mt-0.5 flex flex-wrap items-center gap-x-2 gap-y-1 text-sm">${it.subj ? `<span class="rounded-full px-2 py-0.5 text-xs font-semibold" style="background:hsl(${h} 80% 50% / .14);color:hsl(${h} 60% 38%)" data-subj>${esc(it.subj)}</span>` : ''}<span class="${late ? 'font-semibold text-danger' : 'text-subtle'}">${when(it)}</span></p></div>
+      <div class="flex flex-none gap-1" data-noprint><button type="button" class="btn btn-ghost btn-sm !px-2" aria-label="Edit “${esc(it.title)}”" data-edit>✎</button><button type="button" class="btn btn-ghost btn-sm !px-2 text-danger" aria-label="Delete “${esc(it.title)}”" data-delete>✕</button></div></li>`;
+  }
+  function render() {
+    const f = q<HTMLSelectElement>('#hw-filter'), cur = f.value, subjects = [...new Set(items.map((i) => i.subj).filter(Boolean))].sort((a, b) => a.localeCompare(b));
+    f.innerHTML = '<option value="">All subjects</option>' + subjects.map((s) => `<option>${esc(s)}</option>`).join(''); f.value = subjects.includes(cur) ? cur : '';
+    q('#hw-subjects').innerHTML = subjects.map((s) => `<option value="${esc(s)}">`).join('');
+    const shown = items.filter((i) => !f.value || i.subj === f.value).sort((a, b) => a.due.localeCompare(b.due) || a.at - b.at);
+    const open = shown.filter((i) => !i.done), done = shown.filter((i) => i.done);
+    const list = q('[data-list]');
+    if (!items.length) { list.innerHTML = `<div class="card px-5 py-10 text-center"><p class="font-semibold">No assignments yet</p><p class="mt-1 text-sm text-muted">Add your first one above. It will be sorted by due date automatically.</p></div>`; }
+    else {
+      list.innerHTML = GROUPS.map((g, gi) => { const its = open.filter((i) => group(i) === gi); return its.length ? `<section><h2 class="mb-2 text-sm font-semibold uppercase tracking-wide ${gi === 0 ? 'text-danger' : 'text-subtle'}">${g} <span class="font-normal">(${its.length})</span></h2><ul class="card divide-y divide-[var(--border)]">${its.map(row).join('')}</ul></section>` : ''; }).join('')
+        + (open.length ? '' : `<div class="card px-5 py-8 text-center"><p class="font-semibold">All caught up 🎉</p><p class="mt-1 text-sm text-muted">Nothing left to do${f.value ? ` in ${esc(f.value)}` : ''}.</p></div>`)
+        + (done.length ? `<details data-noprint><summary class="mb-2 flex min-h-11 cursor-pointer items-center gap-2 text-sm font-semibold text-subtle">Completed (${done.length})</summary><ul class="card divide-y divide-[var(--border)]">${done.map(row).join('')}</ul><button type="button" class="btn btn-ghost btn-sm mt-2" data-clear>Remove completed</button></details>` : '');
+    }
+    const all = items.filter((i) => !i.done), late = all.filter((i) => days(i.due) < 0).length, week = all.filter((i) => days(i.due) >= 0 && days(i.due) <= 7).length;
+    q('[data-summary]').textContent = items.length ? `${all.length} to do${late ? ` · ${late} overdue` : ''}${week ? ` · ${week} due within a week` : ''}` : '';
+  }
+  function resetForm() { editing = null; fTitle.value = ''; fDue.value = tomorrow(); q('[data-submit] [data-label]').textContent = 'Add assignment'; q('[data-cancel]').hidden = true; showError(err, null); fTitle.removeAttribute('aria-invalid'); fDue.removeAttribute('aria-invalid'); }
+  q('[data-form]').addEventListener('submit', (e) => {
+    e.preventDefault();
+    const title = fTitle.value.trim(), subj = fSubj.value.trim(), due = fDue.value;
+    fTitle.setAttribute('aria-invalid', String(!title)); fDue.setAttribute('aria-invalid', String(!/^\d{4}-\d{2}-\d{2}$/.test(due)));
+    if (!title) { showError(err, 'Give the assignment a short name, like “Math worksheet 3”.'); return fTitle.focus(); }
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(due)) { showError(err, 'Choose a due date.'); return fDue.focus(); }
+    if (items.length >= 1000 && !editing) return showError(err, 'Your planner is full (1,000 items). Remove completed ones to add more.');
+    if (editing) { const it = items.find((i) => i.id === editing); if (it) Object.assign(it, { title, subj, due }); }
+    else items.push({ id: Date.now().toString(36) + Math.random().toString(36).slice(2, 6), title, subj, due, done: false, at: Date.now() });
+    save(); resetForm(); render(); fTitle.focus();
+  });
+  q('[data-cancel]').addEventListener('click', resetForm);
+  q('[data-list]').addEventListener('click', (e) => {
+    const t = e.target as HTMLElement, id = t.closest<HTMLElement>('[data-id]')?.dataset.id, it = items.find((i) => i.id === id);
+    if (t.closest('[data-clear]')) { items = items.filter((i) => !i.done); save(); return render(); }
+    if (!it) return;
+    if (t.matches('[data-done]')) { it.done = (t as HTMLInputElement).checked; save(); render(); }
+    else if (t.closest('[data-delete]')) { items = items.filter((i) => i !== it); save(); render(); }
+    else if (t.closest('[data-edit]')) { editing = it.id; fTitle.value = it.title; fSubj.value = it.subj; fDue.value = it.due; q('[data-submit] [data-label]').textContent = 'Save changes'; q('[data-cancel]').hidden = false; fTitle.focus(); q('[data-form]').scrollIntoView({ block: 'nearest', behavior: 'smooth' }); }
+  });
+  q('#hw-filter').addEventListener('change', render);
+  q('[data-print]').addEventListener('click', () => { const el = q('[data-list]').cloneNode(true) as HTMLElement; const wrap = document.createElement('div'); wrap.innerHTML = `<h2 style="font-size:16pt;font-weight:700;margin-bottom:10pt">Homework planner${q<HTMLSelectElement>('#hw-filter').value ? ` · ${esc(q<HTMLSelectElement>('#hw-filter').value)}` : ''}</h2>`; wrap.appendChild(el); printElement(wrap); });
+  const bmsg = q('[data-bmsg]');
+  q('[data-export]').addEventListener('click', () => downloadBlob(new Blob([JSON.stringify({ app: 'toolwise-homework', version: 1, items }, null, 2)], { type: 'application/json' }), `homework-planner-${iso(new Date())}.json`));
+  q<HTMLInputElement>('[data-import]').addEventListener('change', async (e) => {
+    const inp = e.target as HTMLInputElement, f = inp.files?.[0]; inp.value = ''; if (!f) return;
+    try {
+      const data = JSON.parse(await f.text()); const list = Array.isArray(data) ? data : data?.items;
+      if (!Array.isArray(list)) throw 0;
+      const ok = list.filter((i: any) => i && typeof i.title === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(i.due)).map((i: any) => ({ id: String(i.id ?? Math.random().toString(36).slice(2)), title: i.title.slice(0, 140), subj: String(i.subj ?? '').slice(0, 40), due: i.due, done: !!i.done, at: Number(i.at) || Date.now() }));
+      if (!ok.length) throw 0;
+      const known = new Set(items.map((i) => i.id)); const added = ok.filter((i: Item) => !known.has(i.id));
+      items.push(...added); save(); render();
+      bmsg.className = 'mt-2 text-sm text-success'; bmsg.textContent = `Added ${added.length} assignment${added.length === 1 ? '' : 's'} from the backup${ok.length > added.length ? ` (${ok.length - added.length} were already here)` : ''}.`;
+    } catch { bmsg.className = 'mt-2 text-sm text-danger'; bmsg.textContent = 'That file is not a toolwise homework backup. Choose the .json file you saved from this page.'; }
+  });
+  q('[data-wipe]').addEventListener('click', () => { if (items.length && confirm('Delete every assignment from this planner? This cannot be undone.')) { items = []; save(); render(); resetForm(); } });
+  render();
+</script>

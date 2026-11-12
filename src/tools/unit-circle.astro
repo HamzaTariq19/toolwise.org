@@ -1,0 +1,125 @@
+---
+const SPECIAL = [0, 30, 45, 60, 90, 120, 135, 150, 180, 210, 225, 240, 270, 300, 315, 330];
+const R = 100;
+const PTS = SPECIAL.map((d) => { const a = (d * Math.PI) / 180; return { d, x: Math.cos(a) * R, y: -Math.sin(a) * R, lx: Math.cos(a) * (R + 17), ly: -Math.sin(a) * (R + 17) + 3.5 }; });
+---
+<div id="uc" class="grid grid-cols-1 gap-5 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)] lg:items-start">
+  <div class="card p-3 sm:p-4">
+    <svg viewBox="-150 -150 300 300" class="mx-auto block w-full max-w-[30rem] touch-none select-none" data-svg role="img" aria-label="Unit circle. Drag the point to change the angle.">
+      <line x1="-140" y1="0" x2="140" y2="0" stroke="var(--border-strong)" stroke-width="1" />
+      <line x1="0" y1="-140" x2="0" y2="140" stroke="var(--border-strong)" stroke-width="1" />
+      <circle cx="0" cy="0" r={R} fill="none" stroke="var(--muted)" stroke-width="1.5" />
+      <line data-tan stroke="#9333ea" stroke-width="2" stroke-dasharray="4 3" />
+      <path data-arc fill="color-mix(in srgb, var(--cat) 18%, transparent)" stroke="var(--cat)" stroke-width="1.5" />
+      <line data-cos stroke="#2563eb" stroke-width="4" stroke-linecap="round" />
+      <line data-sin stroke="#dc2626" stroke-width="4" stroke-linecap="round" />
+      <line data-rad x1="0" y1="0" stroke="var(--text)" stroke-width="2" />
+      {PTS.map((p) => (<g data-sp={p.d} class="cursor-pointer"><circle cx={p.x} cy={p.y} r="3.2" fill="var(--muted)" /><text x={p.lx} y={p.ly} text-anchor="middle" font-size="9" fill="var(--subtle)" data-lbl={p.d}>{p.d}°</text></g>))}
+      <circle data-pt r="7" fill="var(--cat)" stroke="var(--surface)" stroke-width="2.5" class="cursor-grab" />
+      <text data-coord x="-146" y="-138" font-size="10" font-weight="600" fill="var(--text)"></text>
+    </svg>
+    <p class="mt-1 text-center text-sm text-subtle">Drag the point, tap an angle, or use the slider.</p>
+  </div>
+  <div class="space-y-4">
+    <div class="card space-y-4 p-4 sm:p-5">
+      <div class="grid gap-3 sm:grid-cols-[1fr_auto] sm:items-end">
+        <div><label for="uc-deg" class="label">Angle in degrees</label><input id="uc-deg" class="input" type="number" inputmode="decimal" step="1" value="30" /></div>
+        <div class="segmented" role="radiogroup" aria-label="Label the circle in"><label><input type="radio" name="uc-u" value="deg" checked /><span>Degrees</span></label><label><input type="radio" name="uc-u" value="rad" /><span>Radians</span></label></div>
+      </div>
+      <div><label for="uc-range" class="sr-only">Angle slider</label><input id="uc-range" type="range" min="0" max="360" step="1" value="30" class="w-full accent-[var(--cat)]" /></div>
+      <div class="flex flex-wrap gap-x-6 gap-y-1">
+        <label class="flex min-h-11 items-center gap-2.5 text-[0.9375rem]"><input type="checkbox" id="uc-snap" class="h-5 w-5 accent-[var(--brand)]" checked />Snap to special angles</label>
+        <label class="flex min-h-11 items-center gap-2.5 text-[0.9375rem]"><input type="checkbox" id="uc-tan" class="h-5 w-5 accent-[var(--brand)]" />Show tangent line</label>
+      </div>
+      <p class="text-sm text-danger" data-err hidden></p>
+    </div>
+    <section class="card p-4 sm:p-5" aria-live="polite">
+      <p class="text-2xl font-bold tabular"><span data-o="deg"></span> <span class="text-muted">=</span> <span data-o="rad"></span></p>
+      <p class="text-sm text-muted" data-o="where"></p>
+      <dl class="mt-4 grid grid-cols-3 gap-2">
+        <div class="stat"><dt class="stat-label"><span class="mr-1 inline-block h-2.5 w-2.5 rounded-full bg-[#2563eb]"></span>cos θ</dt><dd class="text-lg font-bold" data-o="cos"></dd><dd class="text-xs text-subtle tabular" data-o="cosd"></dd></div>
+        <div class="stat"><dt class="stat-label"><span class="mr-1 inline-block h-2.5 w-2.5 rounded-full bg-[#dc2626]"></span>sin θ</dt><dd class="text-lg font-bold" data-o="sin"></dd><dd class="text-xs text-subtle tabular" data-o="sind"></dd></div>
+        <div class="stat"><dt class="stat-label"><span class="mr-1 inline-block h-2.5 w-2.5 rounded-full bg-[#9333ea]"></span>tan θ</dt><dd class="text-lg font-bold" data-o="tan"></dd><dd class="text-xs text-subtle tabular" data-o="tand"></dd></div>
+      </dl>
+      <p class="mt-3 text-sm text-muted">The point on the circle is <b class="mono" data-o="xy"></b>, which is (cos θ, sin θ).</p>
+    </section>
+  </div>
+  <section class="lg:col-span-2">
+    <h2 class="mb-2 text-base font-semibold">Special angles</h2>
+    <div class="card overflow-x-auto">
+      <table class="w-full min-w-[34rem] text-sm tabular"><thead class="bg-surface-2 text-left text-subtle"><tr><th class="px-3 py-2 font-semibold">Degrees</th><th class="px-3 py-2 font-semibold">Radians</th><th class="px-3 py-2 font-semibold">cos</th><th class="px-3 py-2 font-semibold">sin</th><th class="px-3 py-2 font-semibold">tan</th></tr></thead><tbody class="divide-y divide-[var(--border)]" data-table></tbody></table>
+    </div>
+  </section>
+</div>
+<script>
+  const root = document.getElementById('uc')!, q = <T extends Element = HTMLElement>(s: string) => root.querySelector(s) as unknown as T;
+  const R = 100, SPECIAL = [0, 30, 45, 60, 90, 120, 135, 150, 180, 210, 225, 240, 270, 300, 315, 330];
+  const gcd = (a: number, b: number): number => (b ? gcd(b, a % b) : Math.abs(a));
+  function radText(d: number) {
+    if (!Number.isInteger(d)) return `${((d * Math.PI) / 180).toFixed(4)} rad`;
+    if (d === 0) return '0';
+    const g = gcd(Math.abs(d), 180), n = d / g, den = 180 / g;
+    const top = n === 1 ? 'π' : n === -1 ? '−π' : `${n < 0 ? '−' : ''}${Math.abs(n)}π`;
+    return den === 1 ? top : `${top}/${den}`;
+  }
+  const BASE: Record<number, [string, string, string]> = { 0: ['1', '0', '0'], 30: ['√3/2', '1/2', '√3/3'], 45: ['√2/2', '√2/2', '1'], 60: ['1/2', '√3/2', '√3'], 90: ['0', '1', 'undefined'] };
+  function exact(d: number): [string, string, string] | null {
+    const n = ((d % 360) + 360) % 360; if (!Number.isInteger(n)) return null;
+    const ref = n <= 90 ? n : n <= 180 ? 180 - n : n <= 270 ? n - 180 : 360 - n;
+    const b = BASE[ref]; if (!b) return null;
+    const cs = n > 90 && n < 270 ? -1 : 1, ss = n > 180 ? -1 : 1;
+    const sg = (s: number, v: string) => (v === '0' || v === 'undefined' || s > 0 ? v : `−${v}`);
+    return [sg(cs, b[0]), sg(ss, b[1]), sg(cs * ss, b[2])];
+  }
+  const dec = (v: number) => (Math.abs(v) < 1e-12 ? '0' : (Math.round(v * 10000) / 10000).toString().replace('-', '−'));
+  let deg = 30;
+  function draw(fromInput = false) {
+    const n = ((deg % 360) + 360) % 360, a = (n * Math.PI) / 180, c = Math.cos(a), s = Math.sin(a);
+    const x = c * R, y = -s * R;
+    const set = (sel: string, attrs: Record<string, number | string>) => { const el = q<SVGElement>(sel); for (const k in attrs) el.setAttribute(k, String(attrs[k])); };
+    set('[data-pt]', { cx: x, cy: y }); set('[data-rad]', { x2: x, y2: y });
+    set('[data-cos]', { x1: 0, y1: 0, x2: x, y2: 0 }); set('[data-sin]', { x1: x, y1: 0, x2: x, y2: y });
+    const r = 22, large = n > 180 ? 1 : 0;
+    set('[data-arc]', { d: n === 0 ? '' : n >= 359.999 ? `M ${r} 0 A ${r} ${r} 0 1 0 ${-r} 0 A ${r} ${r} 0 1 0 ${r} 0 Z` : `M 0 0 L ${r} 0 A ${r} ${r} 0 ${large} 0 ${Math.cos(a) * r} ${-Math.sin(a) * r} Z` });
+    const showTan = q<HTMLInputElement>('#uc-tan').checked && Math.abs(c) > 1e-9;
+    const t = s / c, ty = Math.max(-140, Math.min(140, -t * R));
+    set('[data-tan]', showTan ? { x1: R, y1: 0, x2: R, y2: ty, opacity: 1 } : { opacity: 0 });
+    const lbl = q<SVGTextElement>('[data-coord]'); lbl.textContent = `P = (${dec(c)}, ${dec(s)})`;
+    const ex = exact(deg), o = (k: string, v: string) => (q(`[data-o=${k}]`).textContent = v);
+    o('deg', `${dec(deg)}°`); o('rad', radText(deg));
+    const quad = n % 90 === 0 ? `on the ${n % 180 === 0 ? 'x' : 'y'}-axis` : `in quadrant ${['I', 'II', 'III', 'IV'][Math.floor(n / 90)]}`;
+    const ref = n <= 90 ? n : n <= 180 ? 180 - n : n <= 270 ? n - 180 : 360 - n;
+    o('where', `The angle lies ${quad}${n % 90 ? `, reference angle ${dec(ref)}°` : ''}${deg !== n ? `. Coterminal with ${dec(n)}°` : ''}.`);
+    o('cos', ex ? ex[0] : dec(c)); o('sin', ex ? ex[1] : dec(s)); o('tan', Math.abs(c) < 1e-9 ? 'undefined' : ex ? ex[2] : dec(t));
+    o('cosd', ex && !/^[−]?[01]$/.test(ex[0]) ? `≈ ${dec(c)}` : ''); o('sind', ex && !/^[−]?[01]$/.test(ex[1]) ? `≈ ${dec(s)}` : '');
+    o('tand', ex && Math.abs(c) > 1e-9 && !/^[−]?[01]$/.test(ex[2]) ? `≈ ${dec(t)}` : '');
+    o('xy', `(${ex ? ex[0] : dec(c)}, ${ex ? ex[1] : dec(s)})`);
+    if (!fromInput) q<HTMLInputElement>('#uc-deg').value = String(Math.round(deg * 100) / 100);
+    q<HTMLInputElement>('#uc-range').value = String(n);
+    root.querySelectorAll('[data-row]').forEach((tr) => tr.classList.toggle('bg-[var(--cat-soft)]', +(tr as HTMLElement).dataset.row! === n));
+  }
+  function labels() {
+    const rad = (q<HTMLInputElement>('input[name=uc-u]:checked')).value === 'rad';
+    root.querySelectorAll<SVGTextElement>('[data-lbl]').forEach((t) => (t.textContent = rad ? radText(+t.dataset.lbl!) : `${t.dataset.lbl}°`));
+  }
+  const snap = (d: number) => { if (!q<HTMLInputElement>('#uc-snap').checked) return Math.round(d); const near = [...SPECIAL, 360].find((s) => Math.abs(s - d) <= 7); return near === undefined ? Math.round(d) : near % 360; };
+  // dragging
+  const svg = q<SVGSVGElement>('[data-svg]'); let drag = false;
+  const fromPointer = (e: PointerEvent) => { const p = svg.createSVGPoint(); p.x = e.clientX; p.y = e.clientY; const m = p.matrixTransform(svg.getScreenCTM()!.inverse()); let d = (Math.atan2(-m.y, m.x) * 180) / Math.PI; if (d < 0) d += 360; deg = snap(d); draw(); };
+  svg.addEventListener('pointerdown', (e) => { const sp = (e.target as Element).closest('[data-sp]'); if (sp) { deg = +(sp as SVGElement).dataset.sp!; draw(); return; } drag = true; svg.setPointerCapture(e.pointerId); fromPointer(e); });
+  svg.addEventListener('pointermove', (e) => drag && fromPointer(e));
+  svg.addEventListener('pointerup', () => (drag = false)); svg.addEventListener('pointercancel', () => (drag = false));
+  q('#uc-range').addEventListener('input', (e) => { deg = snap(+(e.target as HTMLInputElement).value); draw(); });
+  q('#uc-deg').addEventListener('input', (e) => {
+    const el = e.target as HTMLInputElement, v = Number(el.value), err = q('[data-err]');
+    const ok = el.value.trim() !== '' && Number.isFinite(v) && Math.abs(v) <= 100000;
+    err.hidden = ok; err.textContent = ok ? '' : 'Enter an angle in degrees, like 135 or −45.'; el.setAttribute('aria-invalid', String(!ok));
+    if (ok) { deg = v; draw(true); }
+  });
+  root.querySelectorAll('input[name=uc-u]').forEach((r) => r.addEventListener('change', labels));
+  q('#uc-tan').addEventListener('change', () => draw());
+  q('[data-table]').innerHTML = SPECIAL.map((d) => { const e = exact(d)!; return `<tr data-row="${d}" class="cursor-pointer hover:bg-surface-2" tabindex="0"><td class="px-3 py-1.5 font-semibold">${d}°</td><td class="px-3 py-1.5">${radText(d)}</td><td class="px-3 py-1.5">${e[0]}</td><td class="px-3 py-1.5">${e[1]}</td><td class="px-3 py-1.5">${e[2]}</td></tr>`; }).join('');
+  q('[data-table]').addEventListener('click', (e) => { const tr = (e.target as HTMLElement).closest<HTMLElement>('[data-row]'); if (tr) { deg = +tr.dataset.row!; draw(); } });
+  q('[data-table]').addEventListener('keydown', (e) => { const tr = (e.target as HTMLElement).closest<HTMLElement>('[data-row]'); if (tr && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); deg = +tr.dataset.row!; draw(); } });
+  draw();
+</script>

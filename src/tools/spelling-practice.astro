@@ -1,0 +1,137 @@
+---
+import Icon from '../components/Icon.astro';
+import LocalNote from '../components/LocalNote.astro';
+---
+<div id="sp" class="space-y-4">
+  <div class="card space-y-4 p-4 sm:p-5" data-setup>
+    <div>
+      <label for="sp-words" class="label">Spelling words</label>
+      <p class="hint -mt-1 mb-2">One word per line. Add an example sentence after a | if you like: <b>their | They forgot their coats.</b></p>
+      <textarea id="sp-words" class="textarea !min-h-[180px]" spellcheck="false" autocapitalize="off"></textarea>
+      <p class="hint" data-count></p>
+    </div>
+    <div class="flex flex-wrap items-end gap-4">
+      <div><p class="label">How to practice</p><div class="segmented" role="radiogroup" aria-label="Practice mode"><label><input type="radio" name="sp-mode" value="listen" checked /><span>Listen and spell</span></label><label><input type="radio" name="sp-mode" value="look" /><span>Look, cover, write</span></label></div></div>
+      <label class="flex min-h-11 items-center gap-2.5 text-[0.9375rem]"><input type="checkbox" id="sp-shuffle" class="h-5 w-5 accent-[var(--brand)]" checked />Mix up the order</label>
+    </div>
+    <div class="grid gap-3 sm:grid-cols-2" data-voicebox>
+      <div><label for="sp-voice" class="label">Voice</label><select id="sp-voice" class="select"><option value="">Default voice</option></select></div>
+      <div><label for="sp-rate" class="label">Speed</label><select id="sp-rate" class="select"><option value="0.7">Slow</option><option value="0.9" selected>Normal</option><option value="1.1">Quick</option></select></div>
+    </div>
+    <p class="alert alert-info" data-nospeech hidden><Icon name="Info" size={18} class="mt-0.5 flex-none" /><span>This browser can't read words aloud, so “Look, cover, write” is selected. For listening practice, try Chrome, Edge or Safari.</span></p>
+    <div class="alert alert-error" data-error hidden role="alert"><Icon name="CircleAlert" size={18} class="mt-0.5 flex-none" /><span data-msg></span></div>
+    <button type="button" class="btn btn-primary btn-lg w-full sm:w-auto" data-start><Icon name="Play" size={18} />Start practice</button>
+  </div>
+
+  <div class="card p-5 text-center sm:p-7" data-play hidden>
+    <div class="flex justify-between text-sm text-subtle tabular"><span data-pos></span><span data-sc></span></div>
+    <div class="mt-5 flex min-h-[4.5rem] items-center justify-center" data-prompt></div>
+    <form class="mx-auto mt-4 max-w-sm" novalidate data-form>
+      <label for="sp-in" class="sr-only">Type the word</label>
+      <input id="sp-in" class="input text-center text-xl" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="Type the word" />
+      <button type="submit" class="btn btn-primary btn-lg mt-3 w-full" data-check>Check</button>
+    </form>
+    <div class="mt-4 min-h-[3.5rem]" data-fb aria-live="assertive"></div>
+  </div>
+
+  <div class="card p-6 text-center" data-end hidden aria-live="polite">
+    <p class="text-sm font-semibold uppercase tracking-wide text-subtle">Your score</p>
+    <p class="mt-1 text-5xl font-extrabold tabular" data-score></p>
+    <ul class="mx-auto mt-4 max-w-xs space-y-1 text-left" data-missed></ul>
+    <div class="mt-5 flex flex-col justify-center gap-3 sm:flex-row"><button type="button" class="btn btn-primary btn-lg" data-retry><Icon name="RotateCcw" size={18} />Practice missed words</button><button type="button" class="btn btn-secondary btn-lg" data-edit>Change the list</button></div>
+  </div>
+  <LocalNote what="Your word list is" />
+</div>
+<script>
+  import { store, showError, esc } from '../lib/ui';
+  import { shuffle } from '../lib/random';
+  const root = document.getElementById('sp')!, q = <T extends HTMLElement = HTMLElement>(s: string) => root.querySelector(s) as T;
+  const ta = q<HTMLTextAreaElement>('#sp-words'), KEY = 'tw-spelling', err = q('[data-error]');
+  ta.value = store.get(KEY, 'because\nfriend | My friend lives next door.\nnecessary\nbeautiful\ntheir | They forgot their coats.\nWednesday');
+  const synth = 'speechSynthesis' in window && 'SpeechSynthesisUtterance' in window ? window.speechSynthesis : null;
+  let voices: SpeechSynthesisVoice[] = [];
+  function loadVoices() {
+    if (!synth) return;
+    voices = synth.getVoices().filter((v) => /^en/i.test(v.lang));
+    const sel = q<HTMLSelectElement>('#sp-voice'), cur = sel.value;
+    sel.innerHTML = '<option value="">Default voice</option>' + voices.map((v) => `<option value="${esc(v.name)}">${esc(v.name)} (${esc(v.lang)})</option>`).join('');
+    sel.value = cur;
+  }
+  if (synth) { loadVoices(); synth.addEventListener?.('voiceschanged', loadVoices); }
+  else { q('[data-nospeech]').hidden = false; q<HTMLInputElement>('input[name=sp-mode][value=look]').checked = true; q<HTMLInputElement>('input[name=sp-mode][value=listen]').disabled = true; q('[data-voicebox]').hidden = true; }
+  const mode = () => (q<HTMLInputElement>('input[name=sp-mode]:checked')).value;
+  root.querySelectorAll('input[name=sp-mode]').forEach((r) => r.addEventListener('change', () => (q('[data-voicebox]').hidden = mode() !== 'listen' || !synth)));
+
+  type W = { w: string; s: string };
+  const parse = (t: string): W[] => t.split(/\r?\n/).map((l) => { const [w, ...s] = l.split('|'); return { w: w.trim(), s: s.join('|').trim() }; }).filter((x) => x.w);
+  const count = () => { const n = parse(ta.value).length; q('[data-count]').textContent = `${n} word${n === 1 ? '' : 's'}`; };
+  ta.addEventListener('input', () => { store.set(KEY, ta.value); count(); showError(err, null); }); count();
+
+  function say(text: string, rate = +q<HTMLSelectElement>('#sp-rate').value) {
+    if (!synth) return; synth.cancel();
+    const u = new SpeechSynthesisUtterance(text); u.rate = rate; u.lang = 'en';
+    const v = voices.find((x) => x.name === q<HTMLSelectElement>('#sp-voice').value); if (v) { u.voice = v; u.lang = v.lang; }
+    synth.speak(u);
+  }
+  let list: W[] = [], k = 0, right = 0, missed: W[] = [], answered = false, hideT = 0;
+  const norm = (s: string) => s.trim().replace(/[’‘]/g, "'").replace(/\s+/g, ' ').toLowerCase();
+
+  function start(words: W[]) {
+    list = q<HTMLInputElement>('#sp-shuffle').checked ? shuffle(words) : words; k = 0; right = 0; missed = [];
+    q('[data-setup]').hidden = true; q('[data-end]').hidden = true; q('[data-play]').hidden = false; next();
+  }
+  function next() {
+    answered = false; clearTimeout(hideT);
+    const cur = list[k], inp = q<HTMLInputElement>('#sp-in');
+    q('[data-pos]').textContent = `Word ${k + 1} of ${list.length}`; q('[data-sc]').textContent = `${right} correct`;
+    q('[data-fb]').innerHTML = ''; inp.value = ''; inp.disabled = false; q('[data-check]').textContent = 'Check';
+    const p = q('[data-prompt]');
+    if (mode() === 'listen') {
+      p.innerHTML = `<div class="flex flex-wrap justify-center gap-2"><button type="button" class="btn btn-secondary btn-lg" data-hear>🔊 Hear the word</button><button type="button" class="btn btn-ghost btn-lg" data-slow>Slower</button></div>`;
+      p.querySelector('[data-hear]')!.addEventListener('click', () => sayWord(+q<HTMLSelectElement>('#sp-rate').value));
+      p.querySelector('[data-slow]')!.addEventListener('click', () => sayWord(0.6));
+      sayWord(+q<HTMLSelectElement>('#sp-rate').value);
+    } else {
+      p.innerHTML = `<p class="text-4xl font-bold tracking-wide" data-look>${esc(cur.w)}</p>`;
+      inp.disabled = true;
+      hideT = window.setTimeout(() => { p.innerHTML = `<p class="text-subtle">Now write it from memory.</p>`; inp.disabled = false; inp.focus(); }, 1500 + cur.w.length * 250);
+    }
+    inp.focus();
+  }
+  const sayWord = (rate: number) => { const c = list[k]; say(c.s ? `${c.w}. ${c.s}. ${c.w}.` : c.w, rate); q<HTMLInputElement>('#sp-in').focus(); };
+  /** Highlight letters of the correct word that the attempt missed or got wrong (LCS alignment) */
+  function marked(correct: string, typed: string) {
+    const a = [...correct], b = [...typed.toLowerCase()], al = a.map((c) => c.toLowerCase());
+    const L = Array.from({ length: a.length + 1 }, () => new Array(b.length + 1).fill(0));
+    for (let i = a.length - 1; i >= 0; i--) for (let j = b.length - 1; j >= 0; j--) L[i][j] = al[i] === b[j] ? L[i + 1][j + 1] + 1 : Math.max(L[i + 1][j], L[i][j + 1]);
+    let i = 0, j = 0, out = '';
+    while (i < a.length) { if (j < b.length && al[i] === b[j]) { out += esc(a[i]); i++; j++; } else if (j < b.length && L[i][j + 1] >= L[i + 1][j]) j++; else { out += `<mark class="rounded bg-[var(--danger-soft)] px-0.5 text-danger underline">${esc(a[i])}</mark>`; i++; } }
+    return out;
+  }
+  q('[data-form]').addEventListener('submit', (e) => {
+    e.preventDefault();
+    if (answered) { k++; return k < list.length ? next() : finish(); }
+    const inp = q<HTMLInputElement>('#sp-in'), cur = list[k], fb = q('[data-fb]');
+    if (!inp.value.trim()) { fb.innerHTML = '<p class="text-muted">Type the word first, then press Check.</p>'; return; }
+    answered = true; inp.disabled = true; clearTimeout(hideT);
+    if (norm(inp.value) === norm(cur.w)) { right++; fb.innerHTML = `<p class="text-lg font-semibold text-success">✓ Correct! <span class="font-bold">${esc(cur.w)}</span></p>`; }
+    else { missed.push(cur); fb.innerHTML = `<p class="font-semibold text-danger">✗ Not quite. You wrote “${esc(inp.value.trim())}”.</p><p class="mt-1 text-2xl font-bold tracking-wide">${marked(cur.w, inp.value.trim())}</p><p class="text-sm text-subtle">Highlighted letters are the ones to watch.</p>`; }
+    q('[data-check]').textContent = k + 1 < list.length ? 'Next word' : 'See my score';
+    q('[data-sc]').textContent = `${right} correct`;
+    q<HTMLButtonElement>('[data-check]').focus();
+  });
+  function finish() {
+    q('[data-play]').hidden = true; q('[data-end]').hidden = false; synth?.cancel();
+    q('[data-score]').textContent = `${right} / ${list.length}`;
+    q('[data-missed]').innerHTML = missed.length ? '<li class="text-sm font-semibold text-subtle">Words to practice:</li>' + missed.map((m) => `<li class="rounded-lg bg-surface-2 px-3 py-1.5 text-lg font-semibold">${esc(m.w)}</li>`).join('') : '<li class="text-center text-muted">Every word spelled correctly. Brilliant!</li>';
+    q('[data-retry]').hidden = !missed.length;
+  }
+  q('[data-start]').addEventListener('click', () => {
+    const words = parse(ta.value);
+    if (!words.length) return showError(err, 'Add at least one word to practice, one per line.');
+    if (words.length > 200) return showError(err, 'That is a lot of words. Practice up to 200 at a time.');
+    showError(err, null); start(words);
+  });
+  q('[data-retry]').addEventListener('click', () => start(missed));
+  q('[data-edit]').addEventListener('click', () => { q('[data-end]').hidden = true; q('[data-setup]').hidden = false; });
+</script>

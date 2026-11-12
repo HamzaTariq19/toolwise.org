@@ -1,0 +1,117 @@
+---
+import Icon from '../components/Icon.astro';
+import LocalNote from '../components/LocalNote.astro';
+---
+<div id="pm" class="space-y-4">
+  <div class="card p-5 text-center sm:p-7" data-face>
+    <div class="segmented" role="radiogroup" aria-label="Timer mode">
+      <label><input type="radio" name="pm-mode" value="focus" checked /><span>Focus</span></label>
+      <label><input type="radio" name="pm-mode" value="short" /><span>Break</span></label>
+      <label><input type="radio" name="pm-mode" value="long" /><span>Long break</span></label>
+    </div>
+    <div class="relative mx-auto mt-6 aspect-square w-full max-w-[17rem]">
+      <svg viewBox="0 0 120 120" class="h-full w-full -rotate-90" aria-hidden="true"><circle cx="60" cy="60" r="54" fill="none" stroke="var(--surface-2)" stroke-width="7" /><circle cx="60" cy="60" r="54" fill="none" stroke="var(--cat)" stroke-width="7" stroke-linecap="round" pathLength="1000" stroke-dasharray="1000" stroke-dashoffset="0" data-ring /></svg>
+      <div class="absolute inset-0 flex flex-col items-center justify-center">
+        <p class="text-[clamp(2.75rem,14vw,4rem)] font-bold leading-none tracking-tight tabular" data-time role="timer" aria-live="off">25:00</p>
+        <p class="mt-2 text-sm text-subtle" data-label>Time to focus</p>
+      </div>
+    </div>
+    <p class="sr-only" aria-live="assertive" data-announce></p>
+    <div class="mx-auto mt-6 flex max-w-sm flex-col gap-3 sm:flex-row">
+      <button type="button" class="btn btn-primary btn-lg flex-1" data-start><Icon name="Play" size={18} /><span data-btn>Start</span></button>
+      <div class="flex gap-3"><button type="button" class="btn btn-secondary btn-lg flex-1" data-reset aria-label="Reset timer"><Icon name="RotateCcw" size={18} /></button><button type="button" class="btn btn-secondary btn-lg flex-1" data-skip aria-label="Skip to next session"><Icon name="SkipForward" size={18} /></button></div>
+    </div>
+    <div class="mt-5"><label for="pm-task" class="sr-only">What are you working on?</label><input id="pm-task" class="input mx-auto max-w-sm text-center" placeholder="What are you working on? (optional)" maxlength="80" autocomplete="off" /></div>
+    <p class="mt-4 text-sm text-muted" data-today></p>
+  </div>
+
+  <details class="card p-4 sm:p-5" data-settings>
+    <summary class="flex min-h-11 cursor-pointer items-center gap-2 font-semibold"><Icon name="Settings2" size={18} />Timer settings</summary>
+    <div class="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-4">
+      <div><label for="pm-f" class="label">Focus (min)</label><input id="pm-f" class="input" type="number" inputmode="numeric" min="1" max="180" value="25" /></div>
+      <div><label for="pm-s" class="label">Short break</label><input id="pm-s" class="input" type="number" inputmode="numeric" min="1" max="60" value="5" /></div>
+      <div><label for="pm-l" class="label">Long break</label><input id="pm-l" class="input" type="number" inputmode="numeric" min="1" max="90" value="15" /></div>
+      <div><label for="pm-n" class="label">Long break every</label><input id="pm-n" class="input" type="number" inputmode="numeric" min="2" max="12" value="4" /></div>
+    </div>
+    <p class="hint" data-serr></p>
+    <div class="mt-3 flex flex-wrap gap-x-6 gap-y-1">
+      <label class="flex min-h-11 items-center gap-2.5 text-[0.9375rem]"><input type="checkbox" id="pm-auto" class="h-5 w-5 accent-[var(--brand)]" />Start the next session automatically</label>
+      <label class="flex min-h-11 items-center gap-2.5 text-[0.9375rem]"><input type="checkbox" id="pm-sound" class="h-5 w-5 accent-[var(--brand)]" checked />Play a sound when time is up</label>
+    </div>
+    <button type="button" class="btn btn-secondary btn-sm mt-2" data-notify hidden><Icon name="Bell" size={16} />Turn on desktop notifications</button>
+  </details>
+  <LocalNote what="Your settings and today's session count are" />
+</div>
+<script>
+  import { store } from '../lib/ui';
+  type Mode = 'focus' | 'short' | 'long';
+  const root = document.getElementById('pm')!, q = <T extends HTMLElement = HTMLElement>(s: string) => root.querySelector(s) as T;
+  const KEY = 'tw-pomodoro', today = new Date().toDateString();
+  const saved = store.get<{ f: number; s: number; l: number; n: number; auto: boolean; sound: boolean; day: string; done: number; mins: number }>(KEY, { f: 25, s: 5, l: 15, n: 4, auto: false, sound: true, day: today, done: 0, mins: 0 });
+  if (saved.day !== today) Object.assign(saved, { day: today, done: 0, mins: 0 });
+  const inputs = { f: q<HTMLInputElement>('#pm-f'), s: q<HTMLInputElement>('#pm-s'), l: q<HTMLInputElement>('#pm-l'), n: q<HTMLInputElement>('#pm-n') };
+  (Object.keys(inputs) as (keyof typeof inputs)[]).forEach((k) => (inputs[k].value = String(saved[k])));
+  q<HTMLInputElement>('#pm-auto').checked = saved.auto; q<HTMLInputElement>('#pm-sound').checked = saved.sound;
+  const LABEL: Record<Mode, string> = { focus: 'Time to focus', short: 'Short break', long: 'Long break' };
+
+  let mode: Mode = 'focus', total = saved.f * 60_000, left = total, endAt = 0, tick = 0, cycle = 0;
+  const running = () => tick !== 0;
+  const minutes = (m: Mode) => (m === 'focus' ? saved.f : m === 'short' ? saved.s : saved.l);
+  const fmt = (ms: number) => { const s = Math.max(0, Math.ceil(ms / 1000)); return `${String(Math.floor(s / 60)).padStart(2, '0')}:${String(s % 60).padStart(2, '0')}`; };
+  const save = () => store.set(KEY, saved);
+
+  function render() {
+    q('[data-time]').textContent = fmt(left);
+    q<SVGCircleElement & HTMLElement>('[data-ring]').setAttribute('stroke-dashoffset', String(1000 - (left / total) * 1000));
+    q('[data-btn]').textContent = running() ? 'Pause' : left < total ? 'Resume' : 'Start';
+    q('[data-label]').textContent = LABEL[mode] + (mode === 'focus' ? ` · ${(cycle % saved.n) + 1} of ${saved.n}` : '');
+    document.title = running() ? `${fmt(left)} · ${mode === 'focus' ? 'Focus' : 'Break'}` : baseTitle;
+    q('[data-today]').textContent = saved.done ? `Today: ${saved.done} focus session${saved.done > 1 ? 's' : ''}, ${saved.mins} minutes` : 'Your focus sessions today will appear here.';
+  }
+  const baseTitle = document.title;
+  function setMode(m: Mode, keepRunning = false) {
+    stop(); mode = m; total = left = minutes(m) * 60_000;
+    (q<HTMLInputElement>(`input[name=pm-mode][value=${m}]`)).checked = true;
+    root.style.setProperty('--cat', m === 'focus' ? '' : 'var(--success)');
+    if (keepRunning) start(); else render();
+  }
+  function start() {
+    endAt = Date.now() + left;
+    tick = window.setInterval(() => { left = endAt - Date.now(); if (left <= 0) complete(); else render(); }, 250);
+    render();
+  }
+  function stop() { clearInterval(tick); tick = 0; }
+  function complete() {
+    stop(); left = 0; render();
+    if (mode === 'focus') { saved.done++; saved.mins += saved.f; cycle++; save(); }
+    const next: Mode = mode === 'focus' ? (cycle % saved.n === 0 ? 'long' : 'short') : 'focus';
+    const msg = mode === 'focus' ? `Focus session done. Time for a ${next === 'long' ? 'long' : 'short'} break.` : 'Break over. Ready to focus?';
+    q('[data-announce]').textContent = msg;
+    if (saved.sound) chime();
+    if ('Notification' in window && Notification.permission === 'granted' && document.hidden) try { new Notification('toolwise Pomodoro', { body: msg }); } catch {}
+    setMode(next, saved.auto);
+  }
+  function chime() {
+    try {
+      const AC = window.AudioContext || (window as any).webkitAudioContext; const ac = new AC();
+      [0, 0.25, 0.5].forEach((t, k) => { const o = ac.createOscillator(), g = ac.createGain(); o.frequency.value = [880, 988, 1175][k]; o.connect(g); g.connect(ac.destination); g.gain.setValueAtTime(0.0001, ac.currentTime + t); g.gain.exponentialRampToValueAtTime(0.25, ac.currentTime + t + 0.02); g.gain.exponentialRampToValueAtTime(0.0001, ac.currentTime + t + 0.6); o.start(ac.currentTime + t); o.stop(ac.currentTime + t + 0.65); });
+      setTimeout(() => ac.close(), 1500);
+    } catch {}
+  }
+  q('[data-start]').addEventListener('click', () => { if (running()) { stop(); render(); } else { if (left <= 0) left = total; start(); } });
+  q('[data-reset]').addEventListener('click', () => setMode(mode));
+  q('[data-skip]').addEventListener('click', () => { if (mode === 'focus') cycle++; setMode(mode === 'focus' ? (cycle % saved.n === 0 ? 'long' : 'short') : 'focus'); });
+  root.querySelectorAll<HTMLInputElement>('input[name=pm-mode]').forEach((r) => r.addEventListener('change', () => setMode(r.value as Mode)));
+  q('[data-settings]').addEventListener('input', () => {
+    const lim = { f: [1, 180], s: [1, 60], l: [1, 90], n: [2, 12] } as const; let bad = '';
+    (Object.keys(inputs) as (keyof typeof inputs)[]).forEach((k) => { const v = Math.round(Number(inputs[k].value)); const ok = inputs[k].value !== '' && v >= lim[k][0] && v <= lim[k][1]; inputs[k].setAttribute('aria-invalid', String(!ok)); if (ok) saved[k] = v; else bad = `Use a whole number from ${lim[k][0]} to ${lim[k][1]}.`; });
+    saved.auto = q<HTMLInputElement>('#pm-auto').checked; saved.sound = q<HTMLInputElement>('#pm-sound').checked; save();
+    q('[data-serr]').textContent = bad;
+    if (!running() && left === total) setMode(mode); else render();
+  });
+  const nb = q<HTMLButtonElement>('[data-notify]');
+  if ('Notification' in window && Notification.permission === 'default') nb.hidden = false;
+  nb.addEventListener('click', async () => { const p = await Notification.requestPermission(); nb.hidden = true; if (p === 'denied') q('[data-serr]').textContent = 'Notifications are blocked. You can allow them in your browser’s site settings.'; });
+  window.addEventListener('beforeunload', (e) => { if (running() && mode === 'focus') e.preventDefault(); });
+  setMode('focus');
+</script>

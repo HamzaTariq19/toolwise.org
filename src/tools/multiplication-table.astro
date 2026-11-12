@@ -1,0 +1,132 @@
+---
+import Icon from '../components/Icon.astro';
+---
+<div id="mx" class="space-y-4">
+  <div class="segmented" role="radiogroup" aria-label="Mode">
+    <label><input type="radio" name="mx-mode" value="chart" checked /><span>Times table chart</span></label>
+    <label><input type="radio" name="mx-mode" value="practice" /><span>Practice</span></label>
+  </div>
+
+  <section class="space-y-4" data-panel="chart">
+    <div class="card flex flex-wrap items-end gap-3 p-4">
+      <div class="w-28"><label for="mx-n" class="label">Size</label><select id="mx-n" class="select">{[10, 12, 15, 20].map((n) => <option value={n} selected={n === 12}>{n} × {n}</option>)}</select></div>
+      <div class="w-40"><label for="mx-one" class="label">Single table</label><select id="mx-one" class="select"><option value="0">Show the full chart</option>{Array.from({ length: 20 }, (_, i) => <option value={i + 1}>{i + 1} times table</option>)}</select></div>
+      <button type="button" class="btn btn-secondary ml-auto" data-print><Icon name="Printer" size={18} />Print</button>
+    </div>
+    <p class="min-h-6 text-center font-semibold tabular" data-hover aria-live="polite">Tap a square to see the fact.</p>
+    <div class="overflow-x-auto" data-printable>
+      <h2 class="mb-2 hidden text-lg font-bold print:block" data-ptitle>Multiplication table</h2>
+      <div data-chart></div>
+    </div>
+  </section>
+
+  <section class="space-y-4" data-panel="practice" hidden>
+    <div class="card space-y-4 p-4 sm:p-5" data-setup>
+      <div><p class="label">Tables to practice</p><div class="flex flex-wrap gap-1.5" data-pick>{Array.from({ length: 12 }, (_, i) => <button type="button" class="chip !min-h-10 min-w-11 justify-center tabular" aria-pressed={i >= 1 && i <= 9 ? 'true' : 'false'} data-t={i + 1}>{i + 1}</button>)}</div></div>
+      <div class="flex flex-wrap items-end gap-4">
+        <div><p class="label">Questions</p><div class="segmented" role="radiogroup" aria-label="Number of questions">{[10, 20, 30].map((n) => <label><input type="radio" name="mx-q" value={n} checked={n === 20} /><span>{n}</span></label>)}</div></div>
+        <label class="flex min-h-11 items-center gap-2.5 text-[0.9375rem]"><input type="checkbox" id="mx-up" class="h-5 w-5 accent-[var(--brand)]" checked />Include up to × 12</label>
+      </div>
+      <p class="text-sm text-danger" data-perr hidden></p>
+      <button type="button" class="btn btn-primary btn-lg w-full sm:w-auto" data-go><Icon name="Play" size={18} />Start practice</button>
+    </div>
+    <div class="card p-5 text-center sm:p-7" data-quiz hidden>
+      <div class="flex justify-between text-sm text-subtle tabular"><span data-qn></span><span data-qs></span></div>
+      <form class="mt-4" data-qform novalidate>
+        <label for="mx-ans" class="block text-[clamp(2.5rem,12vw,3.75rem)] font-extrabold tracking-tight tabular" data-qq></label>
+        <input id="mx-ans" class="input mx-auto mt-3 max-w-[10rem] text-center text-2xl font-bold tabular" inputmode="numeric" pattern="[0-9]*" autocomplete="off" />
+        <button type="submit" class="btn btn-primary btn-lg mx-auto mt-4 flex w-full max-w-[10rem]">Check</button>
+      </form>
+      <p class="mt-3 min-h-6 font-semibold" data-fb aria-live="assertive"></p>
+    </div>
+    <div class="card p-6 text-center" data-end hidden aria-live="polite">
+      <p class="text-sm font-semibold uppercase tracking-wide text-subtle">Your score</p>
+      <p class="mt-1 text-5xl font-extrabold tabular" data-score></p>
+      <p class="mt-2 text-muted" data-stime></p>
+      <ul class="mx-auto mt-4 max-w-xs space-y-1 text-left text-sm" data-wrong></ul>
+      <div class="mt-5 flex flex-col justify-center gap-3 sm:flex-row"><button type="button" class="btn btn-primary btn-lg" data-again><Icon name="RotateCcw" size={18} />Practice again</button><button type="button" class="btn btn-secondary btn-lg" data-fix hidden>Practice my mistakes</button></div>
+    </div>
+  </section>
+</div>
+<style is:global>
+  #mx table.mxt, .print-host table.mxt { border-collapse: separate; border-spacing: 2px; margin-inline: auto; font-variant-numeric: tabular-nums; }
+  .mxt td, .mxt th { min-width: 2.4rem; height: 2.4rem; text-align: center; border-radius: 6px; font-size: .9375rem; }
+  .mxt th { background: var(--cat-soft, #eef3ff); color: var(--cat, #1d4ed8); font-weight: 700; }
+  .mxt td { background: var(--surface); border: 1px solid var(--border); cursor: pointer; }
+  .mxt td.sq { font-weight: 700; }
+  .mxt .hl { background: color-mix(in srgb, var(--cat) 12%, var(--surface)); }
+  .mxt td.on { background: var(--cat); color: #fff; border-color: var(--cat); }
+  .mxl { columns: 2; column-gap: 2rem; max-width: 26rem; margin-inline: auto; font-size: 1.25rem; font-variant-numeric: tabular-nums; }
+  .mxl li { padding: .3rem .5rem; break-inside: avoid; } .mxl b { font-weight: 700; }
+  @media print { .mxt td, .mxt th { min-width: 1.9rem; height: 1.9rem; font-size: 11pt; border: 1px solid #ccc; } .mxt th { background: #eef3ff !important; } }
+</style>
+<script>
+  import { printElement } from '../lib/ui';
+  import { randInt, shuffle } from '../lib/random';
+  const root = document.getElementById('mx')!, q = <T extends HTMLElement = HTMLElement>(s: string) => root.querySelector(s) as T;
+  root.querySelectorAll<HTMLInputElement>('input[name=mx-mode]').forEach((r) => r.addEventListener('change', () => root.querySelectorAll<HTMLElement>('[data-panel]').forEach((p) => (p.hidden = p.dataset.panel !== r.value))));
+
+  // Chart
+  function chart() {
+    const n = +q<HTMLSelectElement>('#mx-n').value, one = +q<HTMLSelectElement>('#mx-one').value, c = q('[data-chart]');
+    q('[data-ptitle]').textContent = one ? `${one} times table` : `Multiplication table ${n} × ${n}`;
+    if (one) { c.innerHTML = `<ol class="mxl card p-4">${Array.from({ length: n }, (_, i) => `<li>${one} × ${i + 1} = <b>${one * (i + 1)}</b></li>`).join('')}</ol>`; q('[data-hover]').textContent = `The ${one} times table, up to ${one} × ${n}.`; return; }
+    let h = '<table class="mxt" aria-label="Multiplication chart"><thead><tr><th scope="col">×</th>';
+    for (let j = 1; j <= n; j++) h += `<th scope="col">${j}</th>`;
+    h += '</tr></thead><tbody>';
+    for (let i = 1; i <= n; i++) { h += `<tr><th scope="row">${i}</th>`; for (let j = 1; j <= n; j++) h += `<td data-i="${i}" data-j="${j}" class="${i === j ? 'sq' : ''}">${i * j}</td>`; h += '</tr>'; }
+    c.innerHTML = h + '</tbody></table>';
+    q('[data-hover]').textContent = 'Tap a square to see the fact.';
+  }
+  function hl(td: HTMLElement | null) {
+    root.querySelectorAll('.mxt .hl, .mxt .on').forEach((e) => e.classList.remove('hl', 'on'));
+    if (!td?.dataset.i) return;
+    const i = td.dataset.i, j = td.dataset.j;
+    root.querySelectorAll<HTMLElement>('.mxt td').forEach((e) => { if ((e.dataset.i === i && +e.dataset.j! <= +j!) || (e.dataset.j === j && +e.dataset.i! <= +i!)) e.classList.add('hl'); });
+    td.classList.add('on'); q('[data-hover]').textContent = `${i} × ${j} = ${+i * +j!}`;
+  }
+  q('[data-chart]').addEventListener('pointerover', (e) => hl((e.target as HTMLElement).closest('td')));
+  q('[data-chart]').addEventListener('click', (e) => hl((e.target as HTMLElement).closest('td')));
+  q('#mx-n').addEventListener('change', chart); q('#mx-one').addEventListener('change', chart);
+  q('[data-print]').addEventListener('click', () => printElement(q('[data-printable]')));
+  chart();
+
+  // Practice
+  let qs: [number, number][] = [], k = 0, right = 0, wrong: [number, number, string][] = [], t0 = 0, locked = false;
+  root.querySelectorAll<HTMLButtonElement>('[data-t]').forEach((b) => b.addEventListener('click', () => b.setAttribute('aria-pressed', String(b.getAttribute('aria-pressed') !== 'true'))));
+  function begin(list: [number, number][]) {
+    qs = list; k = 0; right = 0; wrong = []; t0 = Date.now();
+    q('[data-setup]').hidden = true; q('[data-end]').hidden = true; q('[data-quiz]').hidden = false; ask();
+  }
+  function ask() {
+    const [a, b] = qs[k]; locked = false;
+    q('[data-qq]').textContent = `${a} × ${b} =`; q('[data-qn]').textContent = `Question ${k + 1} of ${qs.length}`; q('[data-qs]').textContent = `${right} correct`;
+    const inp = q<HTMLInputElement>('#mx-ans'); inp.value = ''; inp.removeAttribute('aria-invalid'); q('[data-fb]').textContent = ''; inp.focus();
+  }
+  q('[data-go]').addEventListener('click', () => {
+    const tables = [...root.querySelectorAll<HTMLElement>('[data-t][aria-pressed=true]')].map((b) => +b.dataset.t!);
+    const err = q('[data-perr]'); err.hidden = !!tables.length; err.textContent = tables.length ? '' : 'Pick at least one times table to practice.';
+    if (!tables.length) return;
+    const n = +(q<HTMLInputElement>('input[name=mx-q]:checked')).value, top = q<HTMLInputElement>('#mx-up').checked ? 12 : 10;
+    begin(Array.from({ length: n }, () => { const a = tables[randInt(tables.length)], b = randInt(top) + 1; return randInt(2) ? [a, b] : [b, a]; }));
+  });
+  q('[data-qform]').addEventListener('submit', (e) => {
+    e.preventDefault(); if (locked) return;
+    const inp = q<HTMLInputElement>('#mx-ans'), v = inp.value.trim(), [a, b] = qs[k], fb = q('[data-fb]');
+    if (!/^\d+$/.test(v)) { fb.textContent = 'Type your answer as a number.'; fb.className = 'mt-3 min-h-6 font-semibold text-muted'; inp.setAttribute('aria-invalid', 'true'); return; }
+    locked = true;
+    if (+v === a * b) { right++; fb.textContent = '✓ Correct!'; fb.className = 'mt-3 min-h-6 font-semibold text-success'; }
+    else { wrong.push([a, b, v]); fb.textContent = `✗ Not quite. ${a} × ${b} = ${a * b}`; fb.className = 'mt-3 min-h-6 font-semibold text-danger'; }
+    setTimeout(() => { k++; if (k < qs.length) ask(); else finish(); }, +v === a * b ? 700 : 1800);
+  });
+  function finish() {
+    q('[data-quiz]').hidden = true; q('[data-end]').hidden = false;
+    const s = Math.round((Date.now() - t0) / 1000);
+    q('[data-score]').textContent = `${right} / ${qs.length}`;
+    q('[data-stime]').textContent = `${right === qs.length ? 'Perfect score! ' : ''}Time: ${Math.floor(s / 60)} min ${s % 60} s, about ${Math.round(s / qs.length)} s per question.`;
+    q('[data-wrong]').innerHTML = wrong.length ? '<li class="font-semibold">Facts to review:</li>' + wrong.map(([a, b, v]) => `<li class="rounded-lg bg-surface-2 px-3 py-1.5 tabular">${a} × ${b} = <b>${a * b}</b> <span class="text-subtle">(you wrote ${v})</span></li>`).join('') : '';
+    q('[data-fix]').hidden = !wrong.length;
+  }
+  q('[data-again]').addEventListener('click', () => { q('[data-end]').hidden = true; q('[data-setup]').hidden = false; });
+  q('[data-fix]').addEventListener('click', () => begin(shuffle(wrong.flatMap(([a, b]) => [[a, b], [b, a]] as [number, number][]))));
+</script>

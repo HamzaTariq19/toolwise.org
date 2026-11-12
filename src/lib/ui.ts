@@ -103,3 +103,19 @@ export function setBusy(button: HTMLButtonElement, busy: boolean, busyLabel?: st
     button.disabled = false;
   }
 }
+
+/** Print only a copy of one element (the rest of the page is hidden while printing) */
+export function printElement(el: HTMLElement) {
+  document.querySelectorAll('.print-host').forEach((h) => h.remove());
+  const host = document.createElement('div');
+  host.className = 'print-host';
+  host.appendChild(el.cloneNode(true));
+  document.body.appendChild(host);
+  document.body.classList.add('print-area');
+  const done = () => { host.remove(); document.body.classList.remove('print-area'); window.removeEventListener('afterprint', done); };
+  window.addEventListener('afterprint', done);
+  window.print();
+}
+
+/** Escape text for innerHTML */
+export const esc = (s: unknown) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]!);
