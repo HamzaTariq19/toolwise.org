@@ -5,16 +5,18 @@ const CHARTS = {
   shirt: { title: "Men's shirts (collar)", cols: ['Letter', 'US / UK (in)', 'EU (cm)', 'Neck (cm)'], rows: [['S', '14', '36', '35–36'], ['S', '14.5', '37', '37'], ['M', '15', '38', '38'], ['M', '15.5', '39', '39–40'], ['L', '16', '41', '41'], ['L', '16.5', '42', '42'], ['XL', '17', '43', '43–44'], ['XL', '17.5', '44', '45'], ['XXL', '18', '46', '46']] },
   jeans: { title: "Men's trousers and jeans (waist)", cols: ['Letter', 'US / UK (waist in)', 'EU', 'Waist (cm)'], rows: [['XS', '28', '44', '71'], ['S', '29–30', '46', '74–76'], ['M', '31–32', '48', '79–81'], ['L', '33–34', '50', '84–86'], ['XL', '36', '52', '91'], ['XXL', '38', '54', '97'], ['3XL', '40', '56', '102']] },
 };
+// Initial state (women's clothing, US column, middle size) rendered at build time so nothing shifts in
+const D = CHARTS.dress, MID = Math.floor(D.rows.length / 2), SYS = 1;
 ---
 <div id="cs" class="space-y-5" data-charts={JSON.stringify(CHARTS)}>
   <div class="card grid gap-4 p-5 sm:grid-cols-3 sm:p-6">
     <div><label for="cs-type" class="label">Clothing</label><select id="cs-type" class="select"><option value="dress">Women's clothing</option><option value="suit">Men's suits and jackets</option><option value="shirt">Men's shirts</option><option value="jeans">Men's trousers and jeans</option></select></div>
-    <div><label for="cs-sys" class="label">I know my size in</label><select id="cs-sys" class="select"></select></div>
-    <div><label for="cs-size" class="label">Size</label><select id="cs-size" class="select"></select></div>
+    <div><label for="cs-sys" class="label">I know my size in</label><select id="cs-sys" class="select">{D.cols.map((col, i) => <option value={i} selected={i === SYS}>{col}</option>)}</select></div>
+    <div><label for="cs-size" class="label">Size</label><select id="cs-size" class="select">{D.rows.map((r, i) => <option value={i} selected={i === MID}>{r[SYS]}</option>)}</select></div>
   </div>
-  <section class="card p-5" aria-live="polite"><p class="text-sm font-medium text-muted">Equivalent sizes</p><dl class="mt-3 grid grid-cols-2 gap-3 sm:grid-cols-4" data-out></dl></section>
-  <section class="card overflow-hidden"><h2 class="border-b border-line px-5 py-3 text-base font-semibold" data-title></h2>
-    <div class="overflow-x-auto"><table class="w-full text-center text-[0.9375rem] tabular"><thead class="bg-surface-2 text-sm text-muted" data-head></thead><tbody class="divide-y divide-[var(--border)]" data-table></tbody></table></div></section>
+  <section class="card p-5" aria-live="polite"><p class="text-sm font-medium text-muted">Equivalent sizes</p><dl class="mt-3 grid grid-cols-2 gap-3 sm:grid-cols-4" data-out>{D.cols.map((col, k) => <div class:list={['stat', k === SYS && 'ring-2 ring-[var(--ring)]']}><dt class="stat-label">{col}</dt><dd class="text-xl font-bold tabular">{D.rows[MID][k]}</dd></div>)}</dl></section>
+  <section class="card overflow-hidden"><h2 class="border-b border-line px-5 py-3 text-base font-semibold" data-title>{D.title}</h2>
+    <div class="overflow-x-auto"><table class="w-full text-center text-[0.9375rem] tabular"><thead class="bg-surface-2 text-sm text-muted" data-head><tr>{D.cols.map((x) => <th class="px-3 py-2 font-semibold">{x}</th>)}</tr></thead><tbody class="divide-y divide-[var(--border)]" data-table>{D.rows.map((r, j) => <tr class={j === MID ? 'bg-brand-soft font-semibold' : ''}>{r.map((x) => <td class="px-3 py-2">{x}</td>)}</tr>)}</tbody></table></div></section>
 </div>
 <script>
   const root = document.getElementById('cs')!, charts = JSON.parse(root.dataset.charts!) as Record<string, { title: string; cols: string[]; rows: string[][] }>;

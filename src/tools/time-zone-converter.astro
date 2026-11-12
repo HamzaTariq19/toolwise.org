@@ -1,5 +1,7 @@
 ---
 import Icon from '../components/Icon.astro';
+// Placeholder cards for the default cities, the same size as the real ones, so the page doesn't shift when the times fill in
+const DEFAULTS = ['UTC', 'New York', 'London', 'Kolkata', 'Tokyo', 'Sydney'];
 ---
 <div id="tz" class="space-y-5">
   <form class="card grid gap-4 p-5 sm:grid-cols-3 sm:p-6" novalidate onsubmit="return false">
@@ -11,7 +13,7 @@ import Icon from '../components/Icon.astro';
     </div>
   </form>
   <p class="alert alert-error" data-err hidden role="alert"></p>
-  <ul class="grid gap-3 sm:grid-cols-2" data-list aria-live="polite"></ul>
+  <ul class="grid gap-3 sm:grid-cols-2" data-list aria-live="polite">{DEFAULTS.map((n) => <li class="card flex items-center gap-3 p-4"><div class="min-w-0 flex-1"><p class="truncate font-semibold">{n} <span class="text-sm font-normal text-subtle">UTC</span></p><p class="text-2xl font-bold tabular">--:--</p><p class="text-sm text-muted">&nbsp;</p></div><span class="h-11 w-11"></span></li>)}</ul>
   <form class="card flex flex-col gap-3 p-4 sm:flex-row sm:items-end" data-addform novalidate>
     <div class="flex-1"><label for="tz-add" class="label">Add a city or time zone</label><input id="tz-add" class="input" list="tz-list" placeholder="e.g. Tokyo, Dubai, Los Angeles" autocomplete="off" spellcheck="false" /></div>
     <button type="submit" class="btn btn-primary"><Icon name="Plus" size={18} />Add</button>

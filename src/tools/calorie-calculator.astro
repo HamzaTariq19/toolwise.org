@@ -11,14 +11,14 @@ import BodyInputs from '../components/BodyInputs.astro';
       </select></div>
   </Fragment>
   <Fragment slot="results">
-    <div data-ok hidden>
+    <div data-ok>
       <p class="text-sm font-medium text-muted">To maintain your weight</p>
       <p class="mt-1 text-4xl font-extrabold tracking-tight tabular"><span data-r="main"></span> <span class="text-xl font-semibold text-muted">kcal / day</span></p>
       <p class="mt-1 text-[0.9375rem] text-muted" data-r="sub"></p>
       <table class="mt-5 w-full text-[0.9375rem]"><tbody class="divide-y divide-[var(--border)] tabular" data-r="goals"></tbody></table>
       <p class="mt-3 text-sm text-muted" data-r="note"></p>
     </div>
-    <div data-empty class="py-8 text-center text-muted">Enter your details to estimate your daily calories.</div>
+    <div data-empty class="py-8 text-center text-muted" hidden>Enter your details to estimate your daily calories.</div>
     <p class="alert alert-error" data-msg hidden role="alert"></p>
   </Fragment>
 </CalcLayout>

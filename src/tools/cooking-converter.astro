@@ -8,6 +8,12 @@ const ING = [
   ['chips', 'Chocolate chips', 170], ['nuts', 'Chopped nuts', 120],
 ] as const;
 const UNITS = [['cup', 'cups'], ['tbsp', 'tablespoons'], ['tsp', 'teaspoons'], ['ml', 'milliliters'], ['l', 'liters'], ['floz', 'fluid ounces'], ['g', 'grams'], ['kg', 'kilograms'], ['oz', 'ounces'], ['lb', 'pounds']];
+// Default result (1 cup of all-purpose flour) rendered at build time so the list doesn't shift in.
+// Same formulas as the script below; numbers are re-formatted for the visitor's locale when it runs.
+const ML0: Record<string, number> = { cup: 236.588, tbsp: 14.7868, tsp: 4.92892, ml: 1, l: 1000, floz: 29.5735 }, G0: Record<string, number> = { g: 1, kg: 1000, oz: 28.3495, lb: 453.592 };
+const N0: [string, string][] = [['tbsp', 'Tablespoons'], ['tsp', 'Teaspoons'], ['ml', 'Ml'], ['l', 'Liters'], ['floz', 'Fl oz'], ['g', 'G'], ['kg', 'Kg'], ['oz', 'Oz'], ['lb', 'Lb']];
+const d0 = 125 / 236.588, ml0 = 236.588, conv0 = (u: string) => (ML0[u] ? ml0 / ML0[u] : (ml0 * d0) / G0[u]);
+const nice0 = (v: number) => v.toLocaleString('en-US', { maximumFractionDigits: v < 10 ? 2 : v < 100 ? 1 : 0 });
 ---
 <div id="ck" class="grid gap-5 md:grid-cols-2 md:items-start">
   <form class="card space-y-5 p-5 sm:p-6" novalidate onsubmit="return false">
@@ -22,10 +28,10 @@ const UNITS = [['cup', 'cups'], ['tbsp', 'tablespoons'], ['tsp', 'teaspoons'], [
     <p class="hint">You can type fractions such as 1/2 or 1 1/3. Cups are US cups (236.6 ml). Weights for dry ingredients assume spooned and leveled measuring.</p>
   </form>
   <section class="card p-5 sm:p-6" aria-live="polite">
-    <p class="text-sm font-medium text-muted" data-head></p>
-    <p class="mt-1 text-3xl font-extrabold tracking-tight tabular" data-main></p>
+    <p class="text-sm font-medium text-muted" data-head>1 cup of all-purpose flour is</p>
+    <p class="mt-1 text-3xl font-extrabold tracking-tight tabular" data-main>{nice0(conv0('g'))} g</p>
     <p class="alert alert-error mt-3" data-err hidden></p>
-    <ul class="mt-4 divide-y divide-[var(--border)]" data-list></ul>
+    <ul class="mt-4 divide-y divide-[var(--border)]" data-list>{N0.map(([k, n]) => <li class="flex justify-between py-2.5"><span class="text-muted">{n}</span><span class="font-semibold tabular">{nice0(conv0(k))}</span></li>)}</ul>
   </section>
 </div>
 <script>

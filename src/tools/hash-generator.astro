@@ -1,5 +1,8 @@
 ---
 import Icon from '../components/Icon.astro';
+import { createHash } from 'node:crypto';
+// Hashes of the default text, computed at build time so the list is there before the script runs (no layout shift)
+const INIT: [string, string][] = [['MD5', 'md5'], ['SHA-1', 'sha1'], ['SHA-256', 'sha256'], ['SHA-384', 'sha384'], ['SHA-512', 'sha512']].map(([n, a]) => [n, createHash(a).update('hello world').digest('hex')]);
 ---
 <div id="hg" class="space-y-4">
   <div class="card space-y-4 p-4 sm:p-5">
@@ -13,7 +16,7 @@ import Icon from '../components/Icon.astro';
     <label class="flex min-h-11 items-center gap-3 text-[0.9375rem]"><input type="checkbox" id="hg-up" class="h-5 w-5 accent-[var(--brand)]" />Uppercase letters</label>
   </div>
   <p class="alert alert-error" data-err hidden></p>
-  <ul class="card divide-y divide-[var(--border)]" data-out aria-live="polite"></ul>
+  <ul class="card divide-y divide-[var(--border)]" data-out aria-live="polite">{INIT.map(([a, h]) => <li class="flex items-center gap-3 px-4 py-2.5"><span class="w-20 flex-none text-sm font-semibold text-muted">{a}</span><code class="mono min-w-0 flex-1 break-all text-sm">{h}</code><button type="button" class="btn btn-ghost btn-sm flex-none" data-copy={a}><span data-label>Copy</span></button></li>)}</ul>
   <section class="card p-4"><label for="hg-cmp" class="label">Compare with an expected hash</label><input id="hg-cmp" class="input mono" placeholder="Paste a checksum from a download page" autocomplete="off" spellcheck="false" /><p class="mt-2 text-sm font-semibold" data-cmp></p></section>
   <p class="text-sm text-subtle">MD5 and SHA-1 are fine for checking file integrity but are no longer secure for passwords or signatures. Use SHA-256 or stronger where security matters.</p>
 </div>

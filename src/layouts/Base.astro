@@ -19,6 +19,8 @@ const { title, description, path = Astro.url.pathname, noindex = false, ogType =
 const cleanPath = path === '/' ? '/' : path.replace(/\/$/, '').replace(/\.html$/, '');
 const canonical = new URL(cleanPath, site.url).href.replace(/\/$/, cleanPath === '/' ? '/' : '');
 const ogImage = new URL('/og-image.png', site.url).href;
+// Preload the main text font so it is usually ready before first paint (avoids text re-wrapping)
+import interLatin from '@fontsource-variable/inter/files/inter-latin-wght-normal.woff2?url';
 ---
 <!doctype html>
 <html lang="en">
@@ -27,6 +29,7 @@ const ogImage = new URL('/og-image.png', site.url).href;
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{title}</title>
     <meta name="description" content={description} />
+    <link rel="preload" href={interLatin} as="font" type="font/woff2" crossorigin />
     <link rel="canonical" href={canonical} />
     {noindex && <meta name="robots" content="noindex, follow" />}
     <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)" />

@@ -14,13 +14,13 @@ import Field from '../components/Field.astro';
     <Field id="sh-weeks" label="Paid weeks per year" value="52" hint="Use 52 if you have paid holidays. For unpaid leave, subtract those weeks." />
   </Fragment>
   <Fragment slot="results">
-    <div data-ok hidden>
+    <div data-ok>
       <p class="text-sm font-medium text-muted">Hourly pay</p>
       <p class="mt-1 text-4xl font-extrabold tracking-tight tabular" data-r="main"></p>
       <table class="mt-5 w-full text-[0.9375rem] tabular"><tbody class="divide-y divide-[var(--border)]" data-r="table"></tbody></table>
       <p class="mt-3 text-sm text-muted">Before tax and deductions.</p>
     </div>
-    <div data-empty class="py-8 text-center text-muted">Enter your pay to see it per hour, day, week, month and year.</div>
+    <div data-empty class="py-8 text-center text-muted" hidden>Enter your pay to see it per hour, day, week, month and year.</div>
     <p class="alert alert-error" data-msg hidden role="alert"></p>
   </Fragment>
 </CalcLayout>

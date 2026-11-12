@@ -18,13 +18,13 @@ import CalcLayout from '../components/CalcLayout.astro';
     </div>
   </Fragment>
   <Fragment slot="results">
-    <div data-ok hidden>
+    <div data-ok>
       <p class="text-sm font-medium text-muted" data-r="head"></p>
       <p class="mt-1 text-4xl font-extrabold tracking-tight tabular" data-r="main"></p>
       <p class="mt-1 text-[0.9375rem] text-muted" data-r="sub"></p>
       <dl class="mt-5 grid grid-cols-2 gap-3" data-r="grid"></dl>
     </div>
-    <div data-empty class="py-8 text-center text-muted">Choose the dates.</div>
+    <div data-empty class="py-8 text-center text-muted" hidden>Choose the dates.</div>
     <p class="alert alert-error" data-msg hidden role="alert"></p>
   </Fragment>
 </CalcLayout>

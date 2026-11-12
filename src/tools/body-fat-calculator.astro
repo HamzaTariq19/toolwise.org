@@ -13,7 +13,7 @@ import BodyInputs from '../components/BodyInputs.astro';
     <p class="hint">Measure the neck just below the voice box, the waist at the belly button (men) or the narrowest point (women), and the hips at the widest point. Keep the tape level and relaxed.</p>
   </Fragment>
   <Fragment slot="results">
-    <div data-ok hidden>
+    <div data-ok>
       <p class="text-sm font-medium text-muted">Estimated body fat</p>
       <p class="mt-1 flex items-baseline gap-3"><span class="text-5xl font-extrabold tracking-tight tabular" data-r="main"></span><span class="badge !px-3 !py-1 !text-sm" data-r="cat"></span></p>
       <dl class="mt-5 grid grid-cols-2 gap-3">
@@ -22,7 +22,7 @@ import BodyInputs from '../components/BodyInputs.astro';
       </dl>
       <table class="mt-4 w-full text-sm"><caption class="mb-1 text-left text-muted">Categories (American Council on Exercise)</caption><tbody class="divide-y divide-[var(--border)]" data-r="table"></tbody></table>
     </div>
-    <div data-empty class="py-8 text-center text-muted">Enter your measurements to estimate body fat.</div>
+    <div data-empty class="py-8 text-center text-muted" hidden>Enter your measurements to estimate body fat.</div>
     <p class="alert alert-error" data-msg hidden role="alert"></p>
   </Fragment>
 </CalcLayout>

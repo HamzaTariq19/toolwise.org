@@ -10,14 +10,14 @@ import CalcLayout from '../components/CalcLayout.astro';
     <label class="flex min-h-11 items-center gap-3 text-[0.9375rem]"><input type="checkbox" id="wi2-preg" class="h-5 w-5 accent-[var(--brand)]" />Pregnant or breastfeeding</label>
   </Fragment>
   <Fragment slot="results">
-    <div data-ok hidden>
+    <div data-ok>
       <p class="text-sm font-medium text-muted">Aim to drink about</p>
       <p class="mt-1 text-4xl font-extrabold tracking-tight tabular" data-r="main"></p>
       <p class="mt-1 text-[0.9375rem] text-muted" data-r="sub"></p>
       <div class="mt-5 flex flex-wrap gap-1.5" data-r="glasses" aria-hidden="true"></div>
       <p class="mt-4 text-sm text-muted">This is drinking water and other drinks. Food provides roughly another 20% of the water you need. Thirst and pale yellow urine are good everyday guides.</p>
     </div>
-    <div data-empty class="py-8 text-center text-muted">Enter your weight to estimate how much to drink.</div>
+    <div data-empty class="py-8 text-center text-muted" hidden>Enter your weight to estimate how much to drink.</div>
     <p class="alert alert-error" data-msg hidden role="alert"></p>
   </Fragment>
 </CalcLayout>

@@ -8,6 +8,8 @@ export default defineConfig({
   site: 'https://toolwise.org',
   trailingSlash: 'never',
   build: { format: 'file' },
+  // Code blocks in guides: light and dark themes that match the site (dark colors switch on with the .dark class)
+  markdown: { shikiConfig: { themes: { light: 'github-light', dark: 'github-dark' }, defaultColor: 'light' } },
   integrations: [
     sitemap({
       // "Coming soon" tool pages are noindex, so keep them out of the sitemap.

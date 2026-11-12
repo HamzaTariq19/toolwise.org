@@ -3,6 +3,13 @@
 
 @custom-variant dark (&:where(.dark, .dark *));
 
+/* Fallback with Inter's proportions, so text doesn't re-wrap if the web font arrives after first paint */
+@font-face {
+  font-family: 'Inter Fallback';
+  src: local('Arial'), local('Helvetica'), local('Liberation Sans');
+  size-adjust: 107.4%; ascent-override: 90.4%; descent-override: 22.5%; line-gap-override: 0%;
+}
+
 /* ---------- Design tokens ---------- */
 :root {
   color-scheme: light;
@@ -49,7 +56,7 @@
 }
 
 @theme inline {
-  --font-sans: 'Inter Variable', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --font-sans: 'Inter Variable', 'Inter Fallback', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
   --color-bg: var(--bg);
   --color-surface: var(--surface);
   --color-surface-2: var(--surface-2);
@@ -223,6 +230,9 @@
   .prose-tw li { margin: .375rem 0; padding-left: .25rem; }
   .prose-tw strong { font-weight: 650; }
   .prose-tw a { text-decoration: underline; text-underline-offset: 2px; }
+  .prose-tw pre.astro-code { padding: 1rem; border-radius: 10px; overflow-x: auto; margin: 0 0 1rem; font-size: .875rem; border: 1px solid var(--border); }
+  .prose-tw pre.astro-code code { background: none; padding: 0; font-size: inherit; }
+  .dark .prose-tw pre.astro-code, .dark .prose-tw pre.astro-code span { color: var(--shiki-dark) !important; background-color: var(--shiki-dark-bg) !important; }
   .prose-tw code { font-size: .9em; background: var(--surface-2); padding: .1em .35em; border-radius: 5px; }
   .prose-tw > :first-child { margin-top: 0; }
 
