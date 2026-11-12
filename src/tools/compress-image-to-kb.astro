@@ -1,0 +1,137 @@
+---
+import Dropzone from '../components/Dropzone.astro';
+import FileResults from '../components/FileResults.astro';
+---
+<div id="kb" class="space-y-5">
+  <div class="card p-5">
+    <fieldset>
+      <legend class="label">Target size</legend>
+      <div class="flex flex-wrap items-center gap-2">
+        <div class="segmented" role="radiogroup">
+          {[20, 50, 100, 200, 500].map((k) => (
+            <label><input type="radio" name="kb-target" value={k} checked={k === 100} /><span>{k} KB</span></label>
+          ))}
+          <label><input type="radio" name="kb-target" value="custom" /><span>Custom</span></label>
+        </div>
+        <div class="input-group w-36" data-custom hidden>
+          <label for="kb-custom" class="sr-only">Custom size in KB</label>
+          <input id="kb-custom" class="input tabular" inputmode="numeric" value="150" />
+          <span class="addon">KB</span>
+        </div>
+      </div>
+      <p class="hint">The image is saved as a JPG just under this size, at the best quality that fits.</p>
+    </fieldset>
+  </div>
+
+  <div data-step="pick">
+    <Dropzone id="kb-drop" accept="image/jpeg,image/png,image/webp,.jpg,.jpeg,.png,.webp,.heic,.heif" formats="JPG, PNG, WebP or HEIC" maxLabel="50 MB each" multiple label="Choose images" icon="ImagePlus" />
+  </div>
+  <div class="alert alert-error" data-error hidden role="alert"><span data-msg></span></div>
+  <FileResults id="kb-results" />
+</div>
+
+<script>
+  import { initDropzone } from '../lib/dropzone';
+  import { createResults, type ResultItem } from '../lib/file-results';
+  import { decodeAny, drawToCanvas, fitWithin, toBlob } from '../lib/image';
+  import { baseName, showError, num, formatBytes } from '../lib/ui';
+
+  const root = document.getElementById('kb')!;
+  const pick = root.querySelector<HTMLElement>('[data-step=pick]')!;
+  const err = root.querySelector<HTMLElement>('[data-error]')!;
+  const custom = document.getElementById('kb-custom') as HTMLInputElement;
+  const customWrap = root.querySelector<HTMLElement>('[data-custom]')!;
+  let files: File[] = [];
+  let run = 0;
+
+  const targetKB = () => {
+    const v = root.querySelector<HTMLInputElement>('input[name=kb-target]:checked')!.value;
+    return v === 'custom' ? num(custom.value) : Number(v);
+  };
+
+  const results = createResults(document.getElementById('kb-results')!, {
+    zipName: 'compressed-images.zip',
+    onReset: () => { files = []; pick.hidden = false; showError(err, null); },
+  });
+
+  /** Find the highest JPG quality (and largest dimensions) that fits under maxBytes. */
+  async function fit(file: File, maxBytes: number): Promise<{ blob: Blob; w: number; h: number; q: number }> {
+    const img = await decodeAny(file);
+    try {
+      let { width: w, height: h } = fitWithin(img.width, img.height);
+      for (let attempt = 0; attempt < 12; attempt++) {
+        const canvas = drawToCanvas(img, w, h, '#ffffff');
+        let lo = 0.3, hi = 0.95, best: Blob | null = null, bestQ = 0;
+        const top = await toBlob(canvas, 'image/jpeg', hi);
+        if (top.size <= maxBytes) return { blob: top, w, h, q: hi };
+        for (let i = 0; i < 7; i++) {
+          const q = (lo + hi) / 2;
+          const b = await toBlob(canvas, 'image/jpeg', q);
+          if (b.size <= maxBytes) { best = b; bestQ = q; lo = q; } else hi = q;
+        }
+        // Good enough quality at this size: done. Otherwise make the picture smaller and try again.
+        if (best && bestQ >= 0.5) return { blob: best, w, h, q: bestQ };
+        const low = best ?? (await toBlob(canvas, 'image/jpeg', 0.3));
+        const shrink = Math.min(0.9, Math.sqrt(maxBytes / low.size) * 0.95);
+        if (best && w * shrink < 320) return { blob: best, w, h, q: bestQ };
+        w = Math.max(1, Math.round(w * shrink));
+        h = Math.max(1, Math.round(h * shrink));
+        if (w < 16 || h < 16) break;
+      }
+      throw new Error(`This image cannot be made smaller than ${formatBytes(maxBytes)} while staying readable.`);
+    } finally {
+      img.close?.();
+    }
+  }
+
+  async function process() {
+    if (!files.length) return;
+    const kb = targetKB();
+    if (!(kb >= 5)) { showError(err, 'Please enter a target size of at least 5 KB.'); return; }
+    if (kb > 20000) { showError(err, 'Please enter a target size below 20,000 KB (20 MB).'); return; }
+    showError(err, null);
+    const maxBytes = Math.floor(kb * 1000); // under the limit whether a site counts 1 KB as 1000 or 1024 bytes
+    const id = ++run;
+    pick.hidden = true;
+    const out: ResultItem[] = [];
+    for (let i = 0; i < files.length; i++) {
+      if (id !== run) return;
+      results.setProgress(i, files.length, `Fitting ${files.length > 1 ? `image ${i + 1} of ${files.length}` : 'image'} under ${kb} KB…`);
+      const f = files[i];
+      try {
+        if (f.size <= maxBytes && f.type === 'image/jpeg') {
+          out.push({ name: f.name, originalSize: f.size, blob: f, thumb: true, outName: f.name, note: `Already under ${kb} KB, original kept` });
+          continue;
+        }
+        const r = await fit(f, maxBytes);
+        out.push({
+          name: f.name, originalSize: f.size, blob: r.blob, thumb: true,
+          outName: `${baseName(f.name)}-${kb}kb.jpg`,
+          note: `${r.w} × ${r.h} px, quality ${Math.round(r.q * 100)}%`,
+        });
+      } catch (e) {
+        out.push({ name: f.name, originalSize: f.size, error: (e as Error).message });
+      }
+    }
+    if (id !== run) return;
+    results.render(out);
+  }
+
+  root.querySelectorAll<HTMLInputElement>('input[name=kb-target]').forEach((r) =>
+    r.addEventListener('change', () => {
+      customWrap.hidden = r.value !== 'custom' || !r.checked;
+      if (r.value === 'custom' && r.checked) custom.focus();
+      process();
+    }),
+  );
+  let t: number | undefined;
+  custom.addEventListener('input', () => { clearTimeout(t); t = window.setTimeout(process, 600); });
+
+  initDropzone(document.getElementById('kb-drop')!, {
+    accept: ['image/jpeg', 'image/png', 'image/webp', '.jpg', '.jpeg', '.png', '.webp', '.heic', '.heif'],
+    multiple: true,
+    maxBytes: 50 * 1024 * 1024,
+    onFiles: (f) => { files = f; process(); },
+    onError: (m) => showError(err, m || null),
+  });
+</script>

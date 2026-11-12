@@ -1,0 +1,107 @@
+---
+import Icon from '../components/Icon.astro';
+---
+<div id="ty" class="space-y-4">
+  <div class="flex flex-wrap items-center gap-3">
+    <div class="segmented" role="radiogroup" aria-label="Test length">
+      <label><input type="radio" name="ty-dur" value="30" /><span>30 s</span></label>
+      <label><input type="radio" name="ty-dur" value="60" checked /><span>1 min</span></label>
+      <label><input type="radio" name="ty-dur" value="120" /><span>2 min</span></label>
+    </div>
+    <div class="ml-auto flex gap-4 text-center">
+      <div><p class="text-2xl font-bold tabular" data-time>60</p><p class="text-xs text-subtle">seconds</p></div>
+      <div><p class="text-2xl font-bold tabular" data-wpm>0</p><p class="text-xs text-subtle">WPM</p></div>
+      <div><p class="text-2xl font-bold tabular" data-acc>100%</p><p class="text-xs text-subtle">accuracy</p></div>
+    </div>
+  </div>
+  <div class="card relative p-5 sm:p-6" data-box>
+    <div class="mono max-h-[11.5rem] select-none overflow-hidden text-lg leading-[2.3rem] sm:text-xl" data-text aria-hidden="true"></div>
+    <label for="ty-input" class="sr-only">Type the text shown</label>
+    <textarea id="ty-input" class="absolute inset-0 h-full w-full cursor-text resize-none opacity-0" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"></textarea>
+    <p class="mt-3 text-sm text-subtle" data-hint>Click or tap the text and start typing. The timer starts with your first key.</p>
+  </div>
+  <div class="card p-6 text-center" data-result hidden aria-live="polite">
+    <p class="text-sm font-semibold uppercase tracking-wide text-subtle">Your result</p>
+    <p class="mt-1 text-5xl font-extrabold tracking-tight tabular"><span data-r-wpm></span> <span class="text-2xl font-semibold text-muted">WPM</span></p>
+    <p class="mt-2 text-muted" data-r-text></p>
+    <button type="button" class="btn btn-primary btn-lg mt-5" data-again><Icon name="RotateCcw" size={18} />Try again</button>
+  </div>
+</div>
+<style is:global>
+  #ty [data-text] .ok { color: var(--text); }
+  #ty [data-text] .bad { color: var(--danger); background: var(--danger-soft); border-radius: 3px; }
+  #ty [data-text] .todo { color: var(--subtle); }
+  #ty [data-text] .cur { box-shadow: inset 2px 0 0 var(--ring); }
+  #ty [data-box]:focus-within { outline: 2.5px solid var(--ring); outline-offset: 2px; }
+</style>
+<script>
+  import { randInt } from '../lib/random';
+  const PASSAGES = [
+    'The best way to get better at typing is to practice a little every day. Keep your eyes on the screen, rest your fingers on the home row, and let accuracy come first. Speed follows naturally once your hands learn where every key lives.',
+    'A small garden can change a whole street. Neighbors stop to talk, children ask about the tomatoes, and bees find their way to the flowers. It takes only a few pots, some soil and a sunny window ledge to begin.',
+    'Rain tapped against the window while the kettle started to whistle. She opened her notebook to a clean page and wrote the first line of a story she had been thinking about for weeks. The words came slowly at first, then all at once.',
+    'Good habits are built from tiny steps repeated often. Instead of planning to read a whole book this week, read two pages tonight. Instead of running five miles, put on your shoes and walk to the corner. Small wins add up quickly.',
+    'The old lighthouse stood on the rocks for more than a century, guiding fishing boats home through fog and storm. Today it is a museum, and visitors climb the narrow stairs to see the giant lens that once threw light far across the sea.',
+    'Learning a new language opens doors you did not know were there. You notice signs, songs and jokes that used to be invisible. Mistakes are part of the journey, so speak often, listen closely and laugh at the funny moments along the way.',
+  ];
+  const root = document.getElementById('ty')!;
+  const input = document.getElementById('ty-input') as HTMLTextAreaElement;
+  const textEl = root.querySelector<HTMLElement>('[data-text]')!;
+  let passage = '', dur = 60, started = 0, timer = 0, done = false;
+  const q = (s: string) => root.querySelector<HTMLElement>(s)!;
+  const esc = (c: string) => (c === '<' ? '&lt;' : c === '&' ? '&amp;' : c);
+
+  function newPassage() {
+    let p = PASSAGES[randInt(PASSAGES.length)];
+    while (p.length < 900) p += ' ' + PASSAGES[randInt(PASSAGES.length)];
+    passage = p;
+  }
+  function stats() {
+    const typed = input.value, elapsed = started ? Math.min(dur, (performance.now() - started) / 1000) : 0;
+    let correct = 0; for (let i = 0; i < typed.length; i++) if (typed[i] === passage[i]) correct++;
+    const wpm = elapsed > 1 ? Math.round(correct / 5 / (elapsed / 60)) : 0;
+    const acc = typed.length ? Math.round((correct / typed.length) * 100) : 100;
+    return { wpm, acc, elapsed, correct, errors: typed.length - correct };
+  }
+  function render() {
+    const typed = input.value;
+    let html = '';
+    for (let i = 0; i < passage.length; i++) {
+      const cls = i < typed.length ? (typed[i] === passage[i] ? 'ok' : 'bad') : 'todo';
+      html += `<span class="${cls}${i === typed.length ? ' cur' : ''}">${esc(passage[i])}</span>`;
+    }
+    textEl.innerHTML = html;
+    const cur = textEl.querySelector<HTMLElement>('.cur');
+    if (cur) textEl.scrollTop = Math.max(0, cur.offsetTop - textEl.offsetTop - 36);
+    const s = stats();
+    q('[data-wpm]').textContent = String(s.wpm); q('[data-acc]').textContent = `${s.acc}%`;
+  }
+  function finish() {
+    done = true; clearInterval(timer); input.disabled = true;
+    const s = stats();
+    q('[data-result]').hidden = false;
+    q('[data-r-wpm]').textContent = String(s.wpm);
+    const level = s.wpm < 25 ? 'a beginner pace. Practice daily and you will speed up quickly.' : s.wpm < 40 ? 'about average. Nice work!' : s.wpm < 60 ? 'above average. Great typing!' : s.wpm < 80 ? 'fast, faster than most people.' : 'excellent, professional-level speed.';
+    q('[data-r-text]').textContent = `${s.acc}% accuracy with ${s.errors} mistake${s.errors === 1 ? '' : 's'}. That is ${level}`;
+    q('[data-result]').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
+  function reset() {
+    clearInterval(timer); started = 0; done = false; input.disabled = false; input.value = '';
+    dur = Number(root.querySelector<HTMLInputElement>('input[name=ty-dur]:checked')!.value);
+    q('[data-time]').textContent = String(dur); q('[data-result]').hidden = true;
+    newPassage(); render();
+  }
+  input.addEventListener('input', () => {
+    if (done) return;
+    if (!started && input.value) {
+      started = performance.now();
+      timer = window.setInterval(() => { const left = Math.max(0, Math.ceil(dur - (performance.now() - started) / 1000)); q('[data-time]').textContent = String(left); render(); if (left <= 0) finish(); }, 250);
+    }
+    if (input.value.length >= passage.length) { render(); finish(); return; }
+    render();
+  });
+  input.addEventListener('paste', (e) => e.preventDefault());
+  root.querySelectorAll('input[name=ty-dur]').forEach((r) => r.addEventListener('change', reset));
+  q('[data-again]').addEventListener('click', () => { reset(); input.focus(); });
+  reset();
+</script>

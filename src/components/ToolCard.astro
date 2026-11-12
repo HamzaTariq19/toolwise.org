@@ -1,0 +1,29 @@
+---
+import Icon from './Icon.astro';
+import type { Tool } from '../lib/tools';
+import { searchText, isLive } from '../lib/tools';
+
+interface Props { tool: Tool; size?: 'md' | 'lg'; headingLevel?: 'h3' | 'h2' }
+const { tool, size = 'md', headingLevel: H = 'h3' } = Astro.props;
+const live = isLive(tool);
+---
+<li class={`cat-${tool.category} list-none`} data-tool data-cat={tool.category} data-name={tool.name} data-search={searchText(tool)}>
+  <a
+    href={`/${tool.slug}`}
+    class:list={[
+      'group card flex h-full items-start gap-3.5 text-ink no-underline transition-[border-color,box-shadow] hover:border-line-strong hover:[box-shadow:var(--shadow-hover)]',
+      size === 'lg' ? 'p-5' : 'p-4',
+    ]}
+  >
+    <span class:list={['icon-tile', size === 'lg' ? 'h-12 w-12' : 'h-10 w-10']}>
+      <Icon name={tool.icon} size={size === 'lg' ? 24 : 20} />
+    </span>
+    <span class="min-w-0 flex-1">
+      <H class:list={['flex flex-wrap items-center gap-x-2 font-semibold leading-snug tracking-tight', size === 'lg' ? 'text-[1.0625rem]' : 'text-base']}>
+        {tool.name}
+        {!live && <span class="badge font-medium">Soon</span>}
+      </H>
+      <p class="mt-1 text-[0.9375rem] leading-snug text-muted">{tool.shortDescription}</p>
+    </span>
+  </a>
+</li>

@@ -1,0 +1,186 @@
+---
+import Base from '../layouts/Base.astro';
+import Icon from '../components/Icon.astro';
+import ToolCard from '../components/ToolCard.astro';
+import TrustStrip from '../components/TrustStrip.astro';
+import { groupedTools, popularTools, tools } from '../lib/tools';
+import { site } from '../config';
+
+const groups = groupedTools();
+const popular = popularTools(12);
+const jsonLd = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'WebSite',
+    name: site.name,
+    url: site.url,
+    potentialAction: {
+      '@type': 'SearchAction',
+      target: `${site.url}/?q={search_term_string}`,
+      'query-input': 'required name=search_term_string',
+    },
+  },
+  { '@context': 'https://schema.org', '@type': 'Organization', name: site.name, url: site.url, logo: `${site.url}/apple-touch-icon.png` },
+];
+---
+<Base
+  title="toolwise: Free online tools for PDF, images, text and calculators"
+  description={site.description}
+  jsonLd={jsonLd}
+>
+  <section class="border-b border-line bg-surface">
+    <div class="container-page pb-8 pt-10 text-center sm:pb-10 sm:pt-16">
+      <h1 class="mx-auto max-w-3xl text-[2rem] font-extrabold tracking-tight sm:text-5xl">Free online tools for everyday tasks</h1>
+      <p class="mx-auto mt-3 max-w-xl text-lg text-muted sm:text-xl">Fast, private and free. No signup.</p>
+      <form role="search" action="/" method="get" class="relative mx-auto mt-8 max-w-2xl" onsubmit="return false">
+        <label for="tool-search" class="sr-only">Search {tools.length} tools</label>
+        <Icon name="Search" size={22} class="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-subtle" />
+        <input
+          id="tool-search"
+          name="q"
+          type="search"
+          autocomplete="off"
+          spellcheck="false"
+          enterkeyhint="search"
+          placeholder={`Search ${tools.length} free tools…`}
+          class="h-16 w-full rounded-2xl border border-line-strong bg-surface pl-13 pr-4 text-lg text-ink shadow-[0_1px_2px_rgb(15_23_42/0.04),0_8px_24px_-12px_rgb(15_23_42/0.18)] outline-none placeholder:text-subtle focus:border-[var(--ring)] focus:ring-4 focus:ring-blue-500/20"
+          aria-controls="all-tools"
+        />
+      </form>
+      <p class="mt-4 flex flex-wrap items-center justify-center gap-x-1 gap-y-1 text-[0.9375rem] text-subtle" id="search-hints">
+        <span>Try:</span>
+        {['compress image', 'merge pdf', 'word counter', 'bmi', 'qr code'].map((h) => (
+          <button type="button" class="inline-flex min-h-9 items-center rounded-full px-2.5 font-medium text-link hover:bg-brand-soft" data-hint={h}>{h}</button>
+        ))}
+      </p>
+      <p class="mt-2 min-h-6 text-[0.9375rem] text-subtle" id="search-status" aria-live="polite"></p>
+    </div>
+  </section>
+
+  <div class="container-page">
+    <section id="popular" aria-labelledby="popular-heading" class="pt-10">
+      <h2 id="popular-heading" class="text-xl font-bold sm:text-2xl">Most popular</h2>
+      <ul class="mt-5 grid grid-cols-1 gap-3 min-[520px]:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+        {popular.map((t) => <ToolCard tool={t} size="lg" />)}
+      </ul>
+    </section>
+
+    <div class="sticky top-16 z-30 -mx-4 mt-12 border-b border-line bg-bg/95 px-4 py-3 backdrop-blur sm:-mx-6 sm:px-6">
+      <div class="flex gap-2 overflow-x-auto pb-0.5 [scrollbar-width:none]" role="group" aria-label="Filter tools by category" id="chips">
+        <button type="button" class="chip" aria-pressed="true" data-chip="all">All <span class="opacity-75">{tools.length}</span></button>
+        {groups.map(({ category: c }) => (
+          <button type="button" class={`chip cat-${c.slug}`} aria-pressed="false" data-chip={c.slug}>
+            <span class="text-[var(--cat)]"><Icon name={c.icon} size={16} /></span>{c.short}
+          </button>
+        ))}
+      </div>
+    </div>
+
+    <section id="results" aria-labelledby="results-heading" class="pt-8" hidden>
+      <h2 id="results-heading" class="text-xl font-bold sm:text-2xl">Search results</h2>
+      <ul id="results-list" class="mt-5 grid grid-cols-1 gap-3 min-[520px]:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"></ul>
+      <div id="no-results" class="card mt-5 p-8 text-center" hidden>
+        <p class="text-lg font-semibold">No tools match your search.</p>
+        <p class="mt-1 text-muted">Try a shorter word such as “pdf”, “photo”, “loan” or “convert”.</p>
+        <button type="button" class="btn btn-secondary mt-4" data-clear-search>Clear search</button>
+      </div>
+    </section>
+
+    <div id="all-tools">
+      {groups.map(({ category: c, tools: list }) => (
+        <section class={`cat-${c.slug} pt-10`} data-section={c.slug} aria-labelledby={`h-${c.slug}`}>
+          <div class="flex items-end justify-between gap-4">
+            <h2 id={`h-${c.slug}`} class="flex items-center gap-3 text-xl font-bold sm:text-2xl">
+              <span class="icon-tile h-9 w-9"><Icon name={c.icon} size={20} /></span>
+              {c.name}
+              <span class="text-base font-medium text-subtle">{list.length}</span>
+            </h2>
+            <a href={`/category/${c.slug}`} class="hidden min-h-11 items-center gap-1 text-[0.9375rem] font-medium no-underline hover:underline sm:inline-flex">
+              View category <Icon name="ChevronRight" size={16} />
+            </a>
+          </div>
+          <ul class="mt-5 grid grid-cols-1 gap-3 min-[520px]:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+            {list.map((t) => <ToolCard tool={t} />)}
+          </ul>
+        </section>
+      ))}
+    </div>
+
+    <div class="mt-16"><TrustStrip /></div>
+  </div>
+</Base>
+
+<script>
+  import { scoreMatch } from '../lib/search';
+
+  const input = document.getElementById('tool-search') as HTMLInputElement;
+  const status = document.getElementById('search-status')!;
+  const hints = document.getElementById('search-hints')!;
+  const popular = document.getElementById('popular')!;
+  const all = document.getElementById('all-tools')!;
+  const results = document.getElementById('results')!;
+  const resultsList = document.getElementById('results-list')!;
+  const noResults = document.getElementById('no-results')!;
+  const chips = Array.from(document.querySelectorAll<HTMLButtonElement>('[data-chip]'));
+  const sections = Array.from(all.querySelectorAll<HTMLElement>('[data-section]'));
+  const cards = Array.from(all.querySelectorAll<HTMLLIElement>('[data-tool]'));
+  let category = 'all';
+
+  // Autofocus only on desktop: on phones it would pop the keyboard over the page.
+  if (window.matchMedia('(min-width: 1024px) and (pointer: fine)').matches && !location.hash) input.focus({ preventScroll: true });
+
+  function apply() {
+    const q = input.value.trim();
+    chips.forEach((c) => c.setAttribute('aria-pressed', String(c.dataset.chip === category)));
+    hints.hidden = !!q;
+    if (q) {
+      const matches = cards
+        .filter((c) => category === 'all' || c.dataset.cat === category)
+        .map((c) => ({ c, s: scoreMatch(q, c.dataset.name!, c.dataset.search!) }))
+        .filter((m) => m.s > 0)
+        .sort((a, b) => b.s - a.s);
+      resultsList.replaceChildren(...matches.map((m) => m.c.cloneNode(true)));
+      results.hidden = false;
+      noResults.hidden = matches.length > 0;
+      popular.hidden = true;
+      all.hidden = true;
+      status.textContent = matches.length ? `${matches.length} tool${matches.length === 1 ? '' : 's'} found` : '';
+    } else {
+      results.hidden = true;
+      all.hidden = false;
+      popular.hidden = category !== 'all';
+      sections.forEach((s) => (s.hidden = category !== 'all' && s.dataset.section !== category));
+      status.textContent = '';
+    }
+    const url = new URL(location.href);
+    if (q) url.searchParams.set('q', q); else url.searchParams.delete('q');
+    history.replaceState(null, '', url);
+  }
+
+  let t: number | undefined;
+  input.addEventListener('input', () => { clearTimeout(t); t = window.setTimeout(apply, 60); });
+  input.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') { input.value = ''; apply(); }
+    if (e.key === 'Enter') {
+      const first = resultsList.querySelector('a');
+      if (first && input.value.trim()) first.click();
+    }
+  });
+  chips.forEach((c) =>
+    c.addEventListener('click', () => {
+      category = c.dataset.chip!;
+      apply();
+      const target = input.value.trim() ? results : category === 'all' ? popular : document.querySelector(`[data-section="${category}"]`);
+      const top = (target as HTMLElement).getBoundingClientRect().top + scrollY - 140;
+      if (scrollY > top) scrollTo({ top, behavior: 'smooth' });
+    }),
+  );
+  document.querySelector('[data-clear-search]')!.addEventListener('click', () => { input.value = ''; category = 'all'; apply(); input.focus(); });
+
+  document.querySelectorAll<HTMLButtonElement>('[data-hint]').forEach((b) =>
+    b.addEventListener('click', () => { input.value = b.dataset.hint!; apply(); input.focus(); }),
+  );
+
+  const initial = new URLSearchParams(location.search).get('q');
+  if (initial) { input.value = initial; apply(); }
+</script>

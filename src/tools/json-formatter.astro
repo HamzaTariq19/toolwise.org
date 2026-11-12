@@ -1,0 +1,98 @@
+---
+import Icon from '../components/Icon.astro';
+---
+<div id="jf" class="space-y-4">
+  <div class="flex flex-wrap items-center gap-3">
+    <div class="segmented">
+      <label><input type="radio" name="jf-mode" value="pretty" checked /><span>Format</span></label>
+      <label><input type="radio" name="jf-mode" value="min" /><span>Minify</span></label>
+    </div>
+    <label for="jf-indent" class="sr-only">Indentation</label>
+    <select id="jf-indent" class="select !w-auto">
+      <option value="2">2 spaces</option><option value="4">4 spaces</option><option value="tab">Tabs</option>
+    </select>
+    <label class="flex min-h-11 items-center gap-2 text-[0.9375rem]"><input type="checkbox" id="jf-sort" class="h-5 w-5 accent-[var(--brand)]" />Sort keys A–Z</label>
+  </div>
+  <div class="grid gap-4 lg:grid-cols-2">
+    <div>
+      <div class="mb-1.5 flex items-center justify-between"><label for="jf-in" class="label !mb-0">Your JSON</label>
+        <div class="flex gap-1">
+          <label class="btn btn-ghost btn-sm relative cursor-pointer"><Icon name="Upload" size={16} />Open file<input type="file" accept=".json,application/json,text/plain" class="absolute inset-0 cursor-pointer opacity-0" data-file /></label>
+          <button type="button" class="btn btn-ghost btn-sm" data-sample>Example</button>
+        </div>
+      </div>
+      <textarea id="jf-in" class="textarea mono !min-h-[360px] text-sm" spellcheck="false" placeholder='Paste JSON here, e.g. {"name": "toolwise", "free": true}'></textarea>
+    </div>
+    <div>
+      <div class="mb-1.5 flex items-center justify-between"><span class="label !mb-0" id="jf-out-l">Result</span><span class="text-sm" data-status></span></div>
+      <pre class="textarea mono !min-h-[360px] overflow-auto whitespace-pre text-sm" aria-labelledby="jf-out-l" tabindex="0" data-out></pre>
+    </div>
+  </div>
+  <div class="alert alert-error" data-error hidden role="alert"><span data-msg></span></div>
+  <div class="flex flex-col gap-3 sm:flex-row">
+    <button type="button" class="btn btn-primary btn-lg" data-copy disabled><Icon name="Copy" size={18} /><span data-label>Copy result</span></button>
+    <button type="button" class="btn btn-secondary btn-lg" data-download disabled><Icon name="Download" size={18} />Download .json</button>
+  </div>
+</div>
+<script>
+  import { copyText, downloadBlob, formatBytes, showError } from '../lib/ui';
+  const root = document.getElementById('jf')!;
+  const input = document.getElementById('jf-in') as HTMLTextAreaElement;
+  const out = root.querySelector<HTMLElement>('[data-out]')!;
+  const status = root.querySelector<HTMLElement>('[data-status]')!;
+  const err = root.querySelector<HTMLElement>('[data-error]')!;
+  const copyBtn = root.querySelector<HTMLButtonElement>('[data-copy]')!, dlBtn = root.querySelector<HTMLButtonElement>('[data-download]')!;
+  let result = '';
+
+  const sortKeys = (v: unknown): unknown => Array.isArray(v) ? v.map(sortKeys) : v && typeof v === 'object' ? Object.fromEntries(Object.keys(v as object).sort().map((k) => [k, sortKeys((v as Record<string, unknown>)[k])])) : v;
+
+  function where(text: string, msg: string) {
+    let pos = Number(msg.match(/position (\d+)/)?.[1]);
+    const lc = msg.match(/line (\d+) column (\d+)/);
+    if (lc) return { line: +lc[1], col: +lc[2] };
+    if (Number.isNaN(pos)) return null;
+    const before = text.slice(0, pos);
+    return { line: before.split('\n').length, col: pos - before.lastIndexOf('\n') };
+  }
+  function hint(text: string, msg: string) {
+    if (/'/.test(text) && !/"/.test(text)) return 'JSON needs double quotes (") around text and keys, not single quotes.';
+    if (/,\s*[}\]]/.test(text)) return 'There may be a trailing comma before a closing } or ]. JSON does not allow it.';
+    if (/[{,]\s*[A-Za-z_$][\w$]*\s*:/.test(text)) return 'Keys must be wrapped in double quotes, like "name": "value".';
+    if (/Unexpected end/i.test(msg)) return 'The JSON ends too early. Check for a missing } or ].';
+    return 'Check for missing commas, quotes or brackets near this spot.';
+  }
+
+  function run() {
+    const text = input.value.trim();
+    result = '';
+    if (!text) { out.textContent = ''; status.textContent = ''; showError(err, null); copyBtn.disabled = dlBtn.disabled = true; input.removeAttribute('aria-invalid'); return; }
+    try {
+      let data = JSON.parse(text);
+      if ((document.getElementById('jf-sort') as HTMLInputElement).checked) data = sortKeys(data);
+      const min = root.querySelector<HTMLInputElement>('input[name=jf-mode]:checked')!.value === 'min';
+      const ind = (document.getElementById('jf-indent') as HTMLSelectElement).value;
+      result = JSON.stringify(data, null, min ? undefined : ind === 'tab' ? '\t' : Number(ind));
+      out.textContent = result;
+      status.innerHTML = `<span class="text-success font-semibold">✓ Valid JSON</span> <span class="text-subtle">· ${formatBytes(new Blob([result]).size)}</span>`;
+      showError(err, null);
+      input.removeAttribute('aria-invalid');
+      copyBtn.disabled = dlBtn.disabled = false;
+    } catch (e) {
+      const m = (e as Error).message;
+      const w = where(text, m);
+      out.textContent = '';
+      status.innerHTML = '<span class="text-danger font-semibold">Invalid JSON</span>';
+      showError(err, `${w ? `Problem on line ${w.line}, column ${w.col}. ` : ''}${hint(text, m)}`);
+      input.setAttribute('aria-invalid', 'true');
+      copyBtn.disabled = dlBtn.disabled = true;
+    }
+  }
+  let t: number | undefined;
+  input.addEventListener('input', () => { clearTimeout(t); t = window.setTimeout(run, 150); });
+  root.addEventListener('change', (e) => { if (e.target !== input) run(); });
+  copyBtn.addEventListener('click', () => copyText(result, copyBtn));
+  dlBtn.addEventListener('click', () => downloadBlob(new Blob([result], { type: 'application/json' }), 'formatted.json'));
+  root.querySelector('[data-sample]')!.addEventListener('click', () => { input.value = '{"name":"toolwise","free":true,"tools":170,"categories":["pdf","image","text"],"owner":{"signup":false,"uploads":null}}'; run(); });
+  const file = root.querySelector<HTMLInputElement>('[data-file]')!;
+  file.addEventListener('change', async () => { const f = file.files?.[0]; if (!f) return; if (f.size > 20e6) { showError(err, 'This file is larger than 20 MB, which is too big to format in the browser.'); return; } input.value = await f.text(); run(); file.value = ''; });
+</script>

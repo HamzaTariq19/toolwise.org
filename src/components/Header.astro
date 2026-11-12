@@ -1,0 +1,93 @@
+---
+import Logo from './Logo.astro';
+import Icon from './Icon.astro';
+import { categories } from '../data/categories';
+
+const primary = ['pdf', 'image', 'text', 'finance', 'converters', 'developer'];
+const navItems = primary.map((s) => categories.find((c) => c.slug === s)!);
+const path = Astro.url.pathname;
+---
+<a href="#main" class="sr-only-focusable fixed left-3 top-3 z-[60] rounded-lg bg-brand px-4 py-2 font-semibold text-white">Skip to content</a>
+<header class="sticky top-0 z-40 border-b border-line bg-surface/90 backdrop-blur supports-[backdrop-filter]:bg-surface/80">
+  <div class="container-page flex h-16 items-center gap-3">
+    <Logo />
+    <nav aria-label="Main" class="ml-6 hidden items-center gap-1 lg:flex">
+      {navItems.map((c) => (
+        <a
+          href={`/category/${c.slug}`}
+          class:list={[
+            'rounded-lg px-3 py-2 text-[0.9375rem] font-medium no-underline hover:bg-surface-2',
+            path === `/category/${c.slug}` ? 'text-ink' : 'text-muted',
+          ]}
+          aria-current={path === `/category/${c.slug}` ? 'page' : undefined}
+        >{c.short}</a>
+      ))}
+    </nav>
+    <div class="ml-auto flex items-center gap-1">
+      <button type="button" class="btn btn-ghost h-11 w-11 !p-0 sm:w-auto sm:!px-3" data-search-open aria-label="Search tools">
+        <Icon name="Search" size={20} />
+        <span class="hidden text-[0.9375rem] font-medium text-muted sm:inline">Search</span>
+        <kbd class="ml-1 hidden rounded border border-line px-1.5 text-xs font-medium text-subtle md:inline">/</kbd>
+      </button>
+      <button type="button" class="btn btn-ghost h-11 w-11 !p-0" data-theme-toggle aria-label="Switch to dark mode" title="Toggle dark mode">
+        <Icon name="Moon" size={20} class="dark:hidden" />
+        <Icon name="Sun" size={20} class="hidden dark:block" />
+      </button>
+      <button type="button" class="btn btn-ghost h-11 w-11 !p-0" data-menu-toggle aria-expanded="false" aria-controls="site-menu" aria-label="All categories">
+        <Icon name="LayoutGrid" size={20} />
+      </button>
+    </div>
+  </div>
+  <div id="site-menu" class="border-t border-line bg-surface" hidden>
+    <nav aria-label="All categories" class="container-page grid grid-cols-1 gap-1 py-4 min-[420px]:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+      {categories.map((c) => (
+        <a href={`/category/${c.slug}`} class={`cat-${c.slug} flex min-h-11 items-center gap-3 rounded-lg px-2 py-2 font-medium text-ink no-underline hover:bg-surface-2`}>
+          <span class="icon-tile h-9 w-9"><Icon name={c.icon} size={18} /></span>
+          {c.name}
+        </a>
+      ))}
+    </nav>
+  </div>
+</header>
+
+<dialog id="search-dialog" class="m-0 h-full max-h-none w-full max-w-none bg-transparent p-0 backdrop:bg-black/40 sm:mx-auto sm:mt-[10vh] sm:h-auto sm:max-w-xl" aria-label="Search tools">
+  <div class="flex h-full flex-col bg-surface sm:h-auto sm:max-h-[70vh] sm:rounded-xl sm:border sm:border-line sm:shadow-2xl">
+    <div class="flex items-center gap-2 border-b border-line px-3">
+      <Icon name="Search" size={20} class="ml-1 text-subtle" />
+      <label for="search-dialog-input" class="sr-only">Search tools</label>
+      <input id="search-dialog-input" type="search" autocomplete="off" spellcheck="false" placeholder="Search 170 free tools…"
+        class="h-14 min-w-0 flex-1 bg-transparent text-[1.0625rem] text-ink outline-none placeholder:text-subtle" />
+      <button type="button" class="btn btn-ghost btn-sm" data-search-close>Close</button>
+    </div>
+    <ul id="search-dialog-results" class="flex-1 overflow-y-auto p-2" role="listbox" aria-label="Search results"></ul>
+  </div>
+</dialog>
+
+<script>
+  import { initSearchDialog } from '../lib/search-dialog';
+
+  const toggle = document.querySelector<HTMLButtonElement>('[data-theme-toggle]')!;
+  const sync = () => {
+    const dark = document.documentElement.classList.contains('dark');
+    toggle.setAttribute('aria-label', dark ? 'Switch to light mode' : 'Switch to dark mode');
+  };
+  sync();
+  toggle.addEventListener('click', () => {
+    const dark = document.documentElement.classList.toggle('dark');
+    try { localStorage.setItem('theme', dark ? 'dark' : 'light'); } catch {}
+    sync();
+  });
+
+  const menuBtn = document.querySelector<HTMLButtonElement>('[data-menu-toggle]')!;
+  const menu = document.getElementById('site-menu')!;
+  menuBtn.addEventListener('click', () => {
+    const open = menu.hidden;
+    menu.hidden = !open;
+    menuBtn.setAttribute('aria-expanded', String(open));
+  });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && !menu.hidden) { menu.hidden = true; menuBtn.setAttribute('aria-expanded', 'false'); menuBtn.focus(); }
+  });
+
+  initSearchDialog();
+</script>

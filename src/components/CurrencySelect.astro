@@ -1,0 +1,11 @@
+---
+interface Props { id: string }
+const { id } = Astro.props;
+const list = [['$', 'US dollar ($)'], ['€', 'Euro (€)'], ['£', 'Pound (£)'], ['₹', 'Rupee (₹)'], ['C$', 'Canadian dollar (C$)'], ['A$', 'Australian dollar (A$)'], ['¥', 'Yen or yuan (¥)'], ['R', 'Rand (R)'], ['', 'No symbol']];
+---
+<div class="flex items-center justify-end gap-2 text-sm">
+  <label for={id} class="text-muted">Currency</label>
+  <select id={id} class="select !min-h-9 !w-auto !py-1 !text-sm" data-currency>
+    {list.map(([v, l]) => <option value={v}>{l}</option>)}
+  </select>
+</div>

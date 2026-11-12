@@ -1,0 +1,16 @@
+---
+import Base from './Base.astro';
+import Breadcrumb from '../components/Breadcrumb.astro';
+interface Props { title: string; heading: string; description: string; updated?: string }
+const { title, heading, description, updated } = Astro.props;
+---
+<Base title={title} description={description}>
+  <div class="container-page pt-5">
+    <Breadcrumb items={[{ name: 'Home', href: '/' }, { name: heading }]} />
+    <article class="card mx-auto mt-6 max-w-3xl p-6 sm:p-10">
+      <h1 class="text-[1.75rem] font-extrabold tracking-tight sm:text-4xl">{heading}</h1>
+      {updated && <p class="mt-2 text-sm text-subtle">Last updated: {updated}</p>}
+      <div class="prose-tw mt-6"><slot /></div>
+    </article>
+  </div>
+</Base>

@@ -1,0 +1,40 @@
+---
+import Page from '../layouts/Page.astro';
+import { site } from '../config';
+---
+<Page title="Contact toolwise" heading="Contact us" description="Get in touch with toolwise to report a bug, suggest a new tool or ask a question.">
+  <p>
+    Report a bug, suggest a tool or ask a question. Fill in the form below and press <strong>Write email</strong>: your email app
+    opens with the message ready to send. You can also write to us directly at <a href={`mailto:${site.contactEmail}`}>{site.contactEmail}</a>.
+  </p>
+  <p>We read every message and usually reply within a few working days.</p>
+  <form id="contact-form" class="not-prose mt-6 grid gap-5" novalidate>
+    <div>
+      <label class="label" for="c-topic">Topic</label>
+      <select id="c-topic" class="select" name="topic">
+        <option>Report a bug</option>
+        <option>Suggest a new tool</option>
+        <option>Question</option>
+        <option>Other</option>
+      </select>
+    </div>
+    <div>
+      <label class="label" for="c-msg">Message</label>
+      <textarea id="c-msg" class="textarea" name="message" rows="6" required placeholder="Tell us what happened, which tool you used and on which device."></textarea>
+      <p id="c-err" class="hint !text-danger" hidden>Please write a short message first.</p>
+    </div>
+    <div><button type="submit" class="btn btn-primary">Write email</button></div>
+  </form>
+</Page>
+<script define:vars={{ email: site.contactEmail }}>
+  const form = document.getElementById('contact-form');
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const msg = form.message.value.trim();
+    const err = document.getElementById('c-err');
+    err.hidden = !!msg;
+    form.message.setAttribute('aria-invalid', String(!msg));
+    if (!msg) { form.message.focus(); return; }
+    location.href = `mailto:${email}?subject=${encodeURIComponent('toolwise: ' + form.topic.value)}&body=${encodeURIComponent(msg)}`;
+  });
+</script>

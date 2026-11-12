@@ -1,0 +1,161 @@
+---
+import Dropzone from '../components/Dropzone.astro';
+import FileResults from '../components/FileResults.astro';
+import Icon from '../components/Icon.astro';
+---
+<div id="ip" class="space-y-5">
+  <div data-step="pick">
+    <Dropzone id="ip-drop" accept="image/jpeg,image/png,image/webp,.jpg,.jpeg,.png,.webp,.heic,.heif" formats="JPG, PNG, WebP or HEIC" maxLabel="50 MB each" multiple label="Choose images" icon="FileImage" />
+  </div>
+  <div class="alert alert-error" data-error hidden role="alert"><span data-msg></span></div>
+
+  <div data-step="list" hidden class="space-y-5">
+    <div class="card overflow-hidden">
+      <div class="flex items-center justify-between gap-3 border-b border-line px-4 py-3">
+        <p class="font-semibold" data-count></p>
+        <label class="btn btn-secondary btn-sm relative cursor-pointer">
+          <Icon name="Plus" size={16} /> Add more
+          <input type="file" accept="image/jpeg,image/png,image/webp,.jpg,.jpeg,.png,.webp,.heic,.heif" multiple class="absolute inset-0 cursor-pointer opacity-0" data-add aria-label="Add more images" />
+        </label>
+      </div>
+      <ul class="divide-y divide-[var(--border)]" data-list aria-label="Images, one per page, in order"></ul>
+    </div>
+
+    <div class="card grid gap-5 p-5 sm:grid-cols-3">
+      <div>
+        <label for="ip-size" class="label">Page size</label>
+        <select id="ip-size" class="select">
+          <option value="a4">A4</option>
+          <option value="letter">US Letter</option>
+          <option value="fit">Same as image</option>
+        </select>
+      </div>
+      <div>
+        <label for="ip-orient" class="label">Orientation</label>
+        <select id="ip-orient" class="select">
+          <option value="auto">Automatic</option>
+          <option value="portrait">Portrait</option>
+          <option value="landscape">Landscape</option>
+        </select>
+      </div>
+      <div>
+        <label for="ip-margin" class="label">Margin</label>
+        <select id="ip-margin" class="select">
+          <option value="0">No margin</option>
+          <option value="20" selected>Small</option>
+          <option value="48">Large</option>
+        </select>
+      </div>
+    </div>
+    <p class="flex items-center gap-1.5 text-sm text-muted"><Icon name="ShieldCheck" size={16} class="text-success" />Your files never leave your device.</p>
+    <div class="flex flex-col gap-3 sm:flex-row">
+      <button type="button" class="btn btn-primary btn-lg" data-create><Icon name="FileImage" size={20} />Create PDF</button>
+      <button type="button" class="btn btn-secondary btn-lg" data-clear>Start over</button>
+    </div>
+  </div>
+
+  <FileResults id="ip-results" />
+</div>
+
+<script>
+  import { initDropzone } from '../lib/dropzone';
+  import { createResults } from '../lib/file-results';
+  import { createSortableList, type ListItem } from '../lib/sortable-list';
+  import { decodeAny, drawToCanvas, fitWithin, toBlob, hasTransparency } from '../lib/image';
+  import { getPdfLib, pdfBlob } from '../lib/pdf';
+  import { formatBytes, showError, baseName } from '../lib/ui';
+
+  type Item = ListItem & { file: File };
+  const root = document.getElementById('ip')!;
+  const pick = root.querySelector<HTMLElement>('[data-step=pick]')!;
+  const listStep = root.querySelector<HTMLElement>('[data-step=list]')!;
+  const err = root.querySelector<HTMLElement>('[data-error]')!;
+  const createBtn = root.querySelector<HTMLButtonElement>('[data-create]')!;
+  const sel = (id: string) => (document.getElementById(id) as HTMLSelectElement).value;
+  let seq = 0;
+
+  const list = createSortableList<Item>(root.querySelector('[data-list]')!, (items) => {
+    root.querySelector('[data-count]')!.textContent = `${items.length} image${items.length === 1 ? '' : 's'} · ${items.length} page${items.length === 1 ? '' : 's'}`;
+    createBtn.disabled = !items.length;
+    if (!items.length) { listStep.hidden = true; pick.hidden = false; }
+  });
+
+  const results = createResults(document.getElementById('ip-results')!, {
+    zipName: 'images.zip', showSavings: false,
+    summary: (items) => `Your PDF is ready · ${items[0]?.note ?? ''} · ${items[0]?.blob ? formatBytes(items[0].blob.size) : ''}`,
+    onReset: () => { list.items.forEach((i) => i.thumb && URL.revokeObjectURL(i.thumb)); list.set([]); showError(err, null); },
+  });
+
+  function addFiles(files: File[]) {
+    list.add(files.map((file) => ({
+      id: `i${seq++}`, file, name: file.name, meta: formatBytes(file.size),
+      thumb: /\.(heic|heif)$/i.test(file.name) ? undefined : URL.createObjectURL(file),
+    })));
+    pick.hidden = true;
+    listStep.hidden = false;
+  }
+
+  const PAGE = { a4: [595.28, 841.89], letter: [612, 792] } as const;
+
+  createBtn.addEventListener('click', async () => {
+    const items = list.items;
+    if (!items.length) return;
+    listStep.hidden = true;
+    showError(err, null);
+    const { PDFDocument } = await getPdfLib();
+    const pdf = await PDFDocument.create();
+    const margin = Number(sel('ip-margin'));
+    const failed: string[] = [];
+    for (let i = 0; i < items.length; i++) {
+      results.setProgress(i, items.length, `Adding image ${i + 1} of ${items.length}…`);
+      try {
+        const img = await decodeAny(items[i].file);
+        // Re-encode: applies phone rotation (EXIF) and keeps the PDF a sensible size
+        const { width, height } = fitWithin(img.width, img.height, 3000, 3000);
+        const canvas = drawToCanvas(img, width, height);
+        img.close?.();
+        const alpha = hasTransparency(canvas);
+        const blob = await toBlob(canvas, alpha ? 'image/png' : 'image/jpeg', 0.9);
+        const bytes = new Uint8Array(await blob.arrayBuffer());
+        const embedded = alpha ? await pdf.embedPng(bytes) : await pdf.embedJpg(bytes);
+
+        let pw: number, ph: number;
+        const size = sel('ip-size');
+        if (size === 'fit') { pw = width * 0.75 + margin * 2; ph = height * 0.75 + margin * 2; }
+        else {
+          [pw, ph] = PAGE[size as 'a4' | 'letter'];
+          const o = sel('ip-orient');
+          const landscape = o === 'landscape' || (o === 'auto' && width > height);
+          if (landscape) [pw, ph] = [ph, pw];
+        }
+        const page = pdf.addPage([pw, ph]);
+        const s = Math.min((pw - margin * 2) / width, (ph - margin * 2) / height);
+        const dw = width * s, dh = height * s;
+        page.drawImage(embedded, { x: (pw - dw) / 2, y: (ph - dh) / 2, width: dw, height: dh });
+      } catch {
+        failed.push(items[i].name);
+      }
+    }
+    if (!pdf.getPageCount()) {
+      results.reset(); listStep.hidden = false;
+      return showError(err, 'None of the images could be opened. They may be damaged or in an unsupported format.');
+    }
+    results.setProgress(1, 1, 'Saving PDF…');
+    const bytes = await pdf.save();
+    const total = items.reduce((s, i) => s + i.file.size, 0);
+    const name = items.length === 1 ? `${baseName(items[0].name)}.pdf` : 'images.pdf';
+    results.render([{ name, outName: name, originalSize: total, blob: pdfBlob(bytes), note: `${pdf.getPageCount()} page${pdf.getPageCount() === 1 ? '' : 's'}` }]);
+    if (failed.length) showError(err, `Skipped ${failed.length} image${failed.length > 1 ? 's' : ''} that could not be opened: ${failed.join(', ')}`);
+  });
+
+  root.querySelector('[data-clear]')!.addEventListener('click', () => { list.set([]); showError(err, null); });
+  const add = root.querySelector<HTMLInputElement>('[data-add]')!;
+  add.addEventListener('change', () => { const f = Array.from(add.files ?? []); if (f.length) addFiles(f); add.value = ''; });
+
+  initDropzone(document.getElementById('ip-drop')!, {
+    accept: ['image/jpeg', 'image/png', 'image/webp', '.jpg', '.jpeg', '.png', '.webp', '.heic', '.heif'],
+    multiple: true, maxBytes: 50 * 1024 * 1024,
+    onFiles: addFiles,
+    onError: (m) => showError(err, m || null),
+  });
+</script>

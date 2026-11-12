@@ -1,0 +1,27 @@
+---
+---
+<div id="ft">
+  <label for="ft-in" class="label">Your text</label>
+  <input id="ft-in" class="input !min-h-14 text-lg" value="Hello world" autocomplete="off" maxlength="500" />
+  <p class="hint">Tap any style to copy it, then paste it into Instagram, TikTok, WhatsApp, X, Discord or anywhere else.</p>
+  <ul class="mt-5 grid gap-2 sm:grid-cols-2" data-list aria-live="polite"></ul>
+</div>
+<script>
+  import { STYLES } from '../lib/fancy';
+  import { copyText } from '../lib/ui';
+  const input = document.getElementById('ft-in') as HTMLInputElement;
+  const list = document.querySelector<HTMLElement>('#ft [data-list]')!;
+  const esc = (s: string) => s.replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]!);
+  function render() {
+    const t = input.value || 'Hello world';
+    list.innerHTML = STYLES.map((s, i) => `<li><button type="button" data-i="${i}" class="card group flex w-full items-center gap-3 p-4 text-left hover:border-line-strong">
+      <span class="min-w-0 flex-1"><span class="block text-xs font-semibold uppercase tracking-wide text-subtle">${s.name}</span><span class="mt-1 block truncate text-xl">${esc(s.fn(t))}</span></span>
+      <span class="badge flex-none group-data-[copied]:!bg-success-soft group-data-[copied]:!text-success" data-label>Copy</span></button></li>`).join('');
+  }
+  list.addEventListener('click', (e) => {
+    const b = (e.target as HTMLElement).closest<HTMLButtonElement>('[data-i]');
+    if (b) copyText(STYLES[Number(b.dataset.i)].fn(input.value || 'Hello world'), b);
+  });
+  input.addEventListener('input', render);
+  render();
+</script>

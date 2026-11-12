@@ -1,0 +1,28 @@
+---
+import { site } from '../config';
+interface Props {
+  /** Reserved height in px on mobile and desktop */
+  mobile: number;
+  desktop?: number;
+  id: string;
+  class?: string;
+}
+const { mobile, desktop = mobile, id, class: cls = '' } = Astro.props;
+const show = site.ads.reserveSpace || site.ads.client;
+---
+{show && (
+  <aside
+    class={`ad-slot ${cls}`}
+    aria-label="Advertisement"
+    data-ad-slot={id}
+    style={`--h-m:${mobile}px;--h-d:${desktop}px`}
+  >
+    {site.ads.client && (
+      <ins class="adsbygoogle" style="display:block;width:100%;height:100%" data-ad-client={site.ads.client} data-ad-slot={id} data-full-width-responsive="true"></ins>
+    )}
+  </aside>
+)}
+<style>
+  .ad-slot { height: var(--h-m); }
+  @media (min-width: 1024px) { .ad-slot { height: var(--h-d); } }
+</style>

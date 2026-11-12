@@ -1,0 +1,103 @@
+---
+import CalcLayout from '../components/CalcLayout.astro';
+---
+<CalcLayout id="dd">
+  <Fragment slot="inputs">
+    <div>
+      <label for="dd-method" class="label">Calculate based on</label>
+      <select id="dd-method" class="select">
+        <option value="lmp">First day of last period</option>
+        <option value="conception">Conception date</option>
+        <option value="ivf5">IVF: 5-day embryo transfer</option>
+        <option value="ivf3">IVF: 3-day embryo transfer</option>
+      </select>
+    </div>
+    <div>
+      <label for="dd-date" class="label" data-date-label>First day of your last period</label>
+      <input id="dd-date" type="date" class="input" />
+    </div>
+    <div data-cycle>
+      <label for="dd-cycle" class="label">Average cycle length</label>
+      <div class="input-group"><input id="dd-cycle" class="input tabular" inputmode="numeric" value="28" /><span class="addon">days</span></div>
+      <p class="hint">Most cycles are 21 to 35 days. Use 28 if you are not sure.</p>
+    </div>
+  </Fragment>
+  <Fragment slot="results">
+    <div data-ok hidden>
+      <p class="text-sm font-medium text-muted">Estimated due date</p>
+      <p class="mt-1 text-3xl font-extrabold tracking-tight sm:text-4xl" data-due>–</p>
+      <p class="mt-1 text-muted" data-countdown></p>
+      <div class="mt-5" data-progress-wrap>
+        <div class="flex justify-between text-sm font-medium"><span data-weeks></span><span class="text-subtle" data-tri></span></div>
+        <div class="mt-2 h-3 overflow-hidden rounded-full bg-surface-2"><div class="h-full rounded-full bg-[var(--cat)]" data-bar></div></div>
+      </div>
+      <ul class="mt-5 divide-y divide-[var(--border)] text-[0.9375rem]" data-milestones></ul>
+    </div>
+    <div data-empty class="py-8 text-center text-muted">
+      <p class="text-lg font-semibold text-ink">Choose a date</p>
+      <p class="mt-1">Your due date and pregnancy timeline appear here.</p>
+    </div>
+    <p class="alert alert-error" data-msg hidden></p>
+  </Fragment>
+</CalcLayout>
+
+<script>
+  import { live } from '../lib/calc';
+  import { num } from '../lib/ui';
+
+  const root = document.getElementById('dd')!;
+  const method = document.getElementById('dd-method') as HTMLSelectElement;
+  const dateIn = document.getElementById('dd-date') as HTMLInputElement;
+  const cycle = document.getElementById('dd-cycle') as HTMLInputElement;
+  const ok = root.querySelector<HTMLElement>('[data-ok]')!, empty = root.querySelector<HTMLElement>('[data-empty]')!, msg = root.querySelector<HTMLElement>('[data-msg]')!;
+  const DAY = 86400000;
+  const today = new Date(); today.setHours(12, 0, 0, 0);
+  const toInput = (d: Date) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+  dateIn.max = toInput(today);
+  const fmtDate = (d: Date) => d.toLocaleDateString(undefined, { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+  const short = (d: Date) => d.toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' });
+  const LABELS: Record<string, string> = { lmp: 'First day of your last period', conception: 'Conception date', ivf5: 'Embryo transfer date', ivf3: 'Embryo transfer date' };
+
+  function calc() {
+    root.querySelector('[data-date-label]')!.textContent = LABELS[method.value];
+    root.querySelector<HTMLElement>('[data-cycle]')!.hidden = method.value !== 'lmp';
+    msg.hidden = true;
+    if (!dateIn.value) { ok.hidden = true; empty.hidden = false; return; }
+    const [y, mo, d] = dateIn.value.split('-').map(Number);
+    const start = new Date(y, mo - 1, d, 12);
+    if (isNaN(start.getTime())) return;
+    const fail = (t: string) => { ok.hidden = true; empty.hidden = true; msg.hidden = false; msg.textContent = t; };
+    if (start > today) return fail('This date is in the future. Please choose a date on or before today.');
+    let lmp: Date;
+    if (method.value === 'lmp') {
+      const c = num(cycle.value);
+      if (!(c >= 20 && c <= 45)) return fail('Please enter a cycle length between 20 and 45 days.');
+      lmp = new Date(start.getTime() + (c - 28) * DAY);
+    } else if (method.value === 'conception') lmp = new Date(start.getTime() - 14 * DAY);
+    else lmp = new Date(start.getTime() - (method.value === 'ivf5' ? 19 : 17) * DAY);
+    const due = new Date(lmp.getTime() + 280 * DAY);
+    const ga = Math.round((today.getTime() - lmp.getTime()) / DAY);
+    if (ga > 44 * 7) return fail('This date is more than 44 weeks ago. Please check the date you entered.');
+    ok.hidden = false; empty.hidden = true;
+    root.querySelector('[data-due]')!.textContent = fmtDate(due);
+    const left = Math.round((due.getTime() - today.getTime()) / DAY);
+    root.querySelector('[data-countdown]')!.textContent = left > 0 ? `${left} days to go` : left === 0 ? 'Your due date is today' : `${-left} days past the due date`;
+    const w = Math.floor(Math.max(0, ga) / 7), dd = Math.max(0, ga) % 7;
+    root.querySelector('[data-weeks]')!.textContent = ga < 14 && method.value === 'lmp' && ga < 0 ? '' : `${w} weeks ${dd} day${dd === 1 ? '' : 's'} pregnant`;
+    root.querySelector('[data-tri]')!.textContent = w < 14 ? 'First trimester' : w < 28 ? 'Second trimester' : 'Third trimester';
+    root.querySelector<HTMLElement>('[data-bar]')!.style.width = `${Math.min(100, (Math.max(0, ga) / 280) * 100)}%`;
+    const at = (days: number) => new Date(lmp.getTime() + days * DAY);
+    const ms = [
+      ['Conception (approx.)', at(14)],
+      ['Positive pregnancy test possible', at(28)],
+      ['End of first trimester (13 weeks 6 days)', at(97)],
+      ['Anatomy scan window (18 to 21 weeks)', at(126)],
+      ['Third trimester begins (28 weeks)', at(196)],
+      ['Full term (39 weeks)', at(273)],
+    ] as const;
+    root.querySelector('[data-milestones]')!.innerHTML = ms
+      .map(([l, dt]) => `<li class="flex justify-between gap-3 py-2 ${dt < today ? 'text-subtle' : ''}"><span>${l}</span><span class="whitespace-nowrap font-medium tabular">${short(dt)}</span></li>`)
+      .join('');
+  }
+  live(root.querySelector('[data-inputs]')!, calc);
+</script>

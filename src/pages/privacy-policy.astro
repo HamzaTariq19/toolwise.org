@@ -1,0 +1,65 @@
+---
+import Page from '../layouts/Page.astro';
+import { site } from '../config';
+---
+<Page title="Privacy Policy | toolwise" heading="Privacy Policy" updated="November 12, 2026" description="How toolwise handles your data: files are processed locally in your browser and never uploaded. Information about Google AdSense cookies.">
+  <p>
+    This Privacy Policy explains what information toolwise.org ("toolwise", "we", "us") collects when you use the website, and how it is used.
+    The short version: <strong>the files and text you put into our tools stay on your device.</strong>
+  </p>
+
+  <h2>1. Files and text you use in our tools</h2>
+  <p>
+    Our tools run entirely in your web browser using JavaScript. When you add a file (for example a PDF, a photo or an audio recording) or type
+    text into a tool, it is processed locally on your device. <strong>Your files are never uploaded to our servers</strong>, and we cannot see,
+    store or share them. When you close or reload the page, the data is gone, unless a tool clearly says it saves something in your own
+    browser (for example the notepad or to-do list, which use your browser's local storage so your notes are still there next time).
+  </p>
+  <p>Some tools ask for permission to use your microphone, camera or screen. That access is used only inside your browser for that tool, and you can withdraw it at any time in your browser settings.</p>
+
+  <h2>2. Information collected automatically</h2>
+  <p>
+    Like most websites, our hosting provider (Cloudflare) processes technical data such as your IP address, browser type and the pages you
+    request in order to deliver the site and protect it from abuse. We may use privacy-friendly, aggregated statistics to understand which
+    tools are popular. We do not build personal profiles and we do not sell personal data.
+  </p>
+
+  <h2>3. Advertising and Google AdSense cookies</h2>
+  <p>
+    toolwise is free because it shows ads served by Google AdSense. Google and its partners use cookies and similar technologies to serve ads
+    and measure their performance.
+  </p>
+  <ul>
+    <li>Third-party vendors, including Google, use cookies to serve ads based on your prior visits to this website or other websites.</li>
+    <li>Google's use of advertising cookies enables it and its partners to serve ads to you based on your visit to this site and/or other sites on the Internet.</li>
+    <li>You can opt out of personalized advertising by visiting <a href="https://adssettings.google.com" rel="noopener">Google Ads Settings</a>. You can also opt out of some third-party vendors' use of cookies for personalized advertising at <a href="https://www.aboutads.info/choices/" rel="noopener">www.aboutads.info</a>.</li>
+    <li>Learn more about how Google uses information from sites that use its services at <a href="https://policies.google.com/technologies/partner-sites" rel="noopener">policies.google.com/technologies/partner-sites</a>.</li>
+  </ul>
+  <p>
+    If you are in the European Economic Area, the United Kingdom or Switzerland, you will be asked for consent before personalized ads or
+    non-essential cookies are used, through a consent message that meets Google's requirements. You can change your choice at any time.
+  </p>
+
+  <h2>4. Cookies and local storage we use</h2>
+  <p>
+    We store your light or dark mode preference in your browser's local storage. A few tools (such as the notepad, to-do list and homework
+    planner) save your entries in local storage on your device so they are there when you return. This data never leaves your device and you
+    can delete it by clearing your browser data.
+  </p>
+
+  <h2>5. Contacting us</h2>
+  <p>If you email us, we use your email address and message only to reply to you. We delete correspondence when it is no longer needed.</p>
+
+  <h2>6. Children</h2>
+  <p>toolwise is a general-audience website and does not knowingly collect personal information from children under 13.</p>
+
+  <h2>7. Your rights</h2>
+  <p>
+    Depending on where you live, you may have the right to access, correct or delete personal data, and to object to certain processing.
+    Because we do not collect the files you use in our tools, in most cases we hold no personal data about you. To make a request, contact us at
+    <a href={`mailto:${site.contactEmail}`}>{site.contactEmail}</a>.
+  </p>
+
+  <h2>8. Changes to this policy</h2>
+  <p>We may update this policy from time to time. The date at the top of this page shows when it was last changed.</p>
+</Page>

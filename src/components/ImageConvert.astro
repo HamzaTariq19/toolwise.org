@@ -1,0 +1,92 @@
+---
+// Reusable "convert images to another format" tool (WebP to JPG, HEIC to JPG, PNG to JPG, ...)
+import Dropzone from './Dropzone.astro';
+import FileResults from './FileResults.astro';
+interface Props {
+  accept: string; // input accept
+  acceptList: string[]; // validation list
+  formats: string;
+  to: 'image/jpeg' | 'image/png' | 'image/webp';
+  zipName: string;
+  verb: string; // "Converting"
+  heic?: boolean;
+}
+const { accept, acceptList, formats, to, zipName, verb, heic = false } = Astro.props;
+const lossy = to !== 'image/png';
+---
+<div id="ic" class="space-y-5" data-to={to} data-zip={zipName} data-verb={verb} data-accept={JSON.stringify(acceptList)}>
+  <div data-step="pick">
+    <Dropzone id="ic-drop" accept={accept} formats={formats} maxLabel="50 MB each" multiple label="Choose images" icon="ImagePlus" />
+  </div>
+  <div class="alert alert-error" data-error hidden role="alert"><span data-msg></span></div>
+  <FileResults id="ic-results" />
+  {lossy && (
+    <div class="card px-5 py-4">
+      <div class="flex items-center justify-between">
+        <label for="ic-quality" class="label !mb-0">Image quality</label>
+        <output for="ic-quality" class="tabular font-semibold" data-qout>90%</output>
+      </div>
+      <input id="ic-quality" type="range" min="50" max="100" step="5" value="90" class="mt-2 h-11 w-full accent-[var(--brand)]" />
+      <p class="hint">90% keeps photos looking identical. Lower it for smaller files. Changes apply instantly.</p>
+    </div>
+  )}
+  {heic && <p class="hint text-center">Converting HEIC photos can take a few seconds per photo on older phones.</p>}
+</div>
+
+<script>
+  import { initDropzone } from '../lib/dropzone';
+  import { createResults, type ResultItem } from '../lib/file-results';
+  import { decodeAny, drawToCanvas, fitWithin, encode, MIME_EXT } from '../lib/image';
+  import { baseName, showError } from '../lib/ui';
+
+  const root = document.getElementById('ic')!;
+  const to = root.dataset.to!;
+  const pick = root.querySelector<HTMLElement>('[data-step=pick]')!;
+  const err = root.querySelector<HTMLElement>('[data-error]')!;
+  const quality = document.getElementById('ic-quality') as HTMLInputElement | null;
+  const qout = root.querySelector<HTMLOutputElement>('[data-qout]');
+  let files: File[] = [];
+  let run = 0;
+
+  const results = createResults(document.getElementById('ic-results')!, {
+    zipName: root.dataset.zip!,
+    showSavings: false,
+    onReset: () => { files = []; pick.hidden = false; showError(err, null); },
+  });
+
+  async function convertOne(file: File): Promise<ResultItem> {
+    const img = await decodeAny(file);
+    try {
+      const { width, height } = fitWithin(img.width, img.height);
+      // JPG has no transparency: put transparent areas on white instead of black
+      const canvas = drawToCanvas(img, width, height, to === 'image/jpeg' ? '#ffffff' : undefined);
+      const q = quality ? Number(quality.value) / 100 : 0.95;
+      const blob = await encode(canvas, to, to === 'image/png' ? 0.95 : q);
+      return { name: file.name, originalSize: file.size, blob, outName: `${baseName(file.name)}.${MIME_EXT[to]}`, note: `${width} × ${height} px`, thumb: true };
+    } finally { img.close?.(); }
+  }
+
+  async function process() {
+    if (!files.length) return;
+    const id = ++run;
+    pick.hidden = true;
+    const out: ResultItem[] = [];
+    for (let i = 0; i < files.length; i++) {
+      if (id !== run) return;
+      results.setProgress(i, files.length, `${root.dataset.verb} ${files.length > 1 ? `image ${i + 1} of ${files.length}` : 'image'}…`);
+      try { out.push(await convertOne(files[i])); }
+      catch (e) { out.push({ name: files[i].name, originalSize: files[i].size, error: (e as Error).message }); }
+    }
+    if (id === run) results.render(out);
+  }
+
+  initDropzone(document.getElementById('ic-drop')!, {
+    accept: JSON.parse(root.dataset.accept!),
+    multiple: true,
+    maxBytes: 50 * 1024 * 1024,
+    onFiles: (f) => { files = f; process(); },
+    onError: (m) => showError(err, m || null),
+  });
+  quality?.addEventListener('input', () => (qout!.textContent = `${quality.value}%`));
+  quality?.addEventListener('change', () => process());
+</script>

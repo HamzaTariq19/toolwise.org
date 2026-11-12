@@ -1,0 +1,251 @@
+---
+import Dropzone from '../components/Dropzone.astro';
+import Icon from '../components/Icon.astro';
+---
+<div id="pp" class="space-y-5">
+  <div class="card p-5">
+    <label for="pp-country" class="label">Photo size</label>
+    <select id="pp-country" class="select sm:max-w-md">
+      <option value="us">United States passport or visa: 2 × 2 in</option>
+      <option value="uk" selected>United Kingdom: 35 × 45 mm</option>
+      <option value="eu">Schengen and EU: 35 × 45 mm</option>
+      <option value="in">India passport: 35 × 45 mm</option>
+      <option value="ca">Canada passport: 50 × 70 mm</option>
+      <option value="au">Australia: 35 × 45 mm</option>
+      <option value="cn">China visa: 33 × 48 mm</option>
+      <option value="jp">Japan: 35 × 45 mm</option>
+      <option value="other">Other countries: 35 × 45 mm</option>
+    </select>
+    <p class="hint">Always check the latest rules on your government's official website before you print.</p>
+  </div>
+
+  <div data-step="pick">
+    <Dropzone id="pp-drop" accept="image/jpeg,image/png,image/webp,.jpg,.jpeg,.png,.webp,.heic,.heif" formats="A clear, front-facing photo (JPG, PNG, HEIC)" maxLabel="30 MB" icon="IdCard" label="Choose photo" />
+  </div>
+  <div class="alert alert-error" data-error hidden role="alert"><span data-msg></span></div>
+
+  <div data-step="edit" class="card p-5 sm:p-6" hidden>
+    <div class="grid gap-6 md:grid-cols-[minmax(0,300px)_1fr] md:items-start">
+      <div>
+        <div class="relative mx-auto w-full max-w-[300px] touch-none select-none overflow-hidden rounded-lg border border-line bg-white" data-frame>
+          <canvas class="block h-full w-full cursor-grab active:cursor-grabbing" data-canvas aria-label="Photo preview. Drag to move, use the zoom slider to resize."></canvas>
+          <svg class="pointer-events-none absolute inset-0 h-full w-full" data-guide aria-hidden="true"></svg>
+        </div>
+        <p class="hint text-center">Drag the photo to move it. Fit the face inside the oval.</p>
+      </div>
+      <div class="space-y-5">
+        <div>
+          <div class="flex items-center justify-between"><label for="pp-zoom" class="label !mb-0">Zoom</label><span class="text-sm text-subtle">or pinch / scroll</span></div>
+          <input id="pp-zoom" type="range" min="1" max="4" step="0.01" value="1" class="mt-2 h-11 w-full accent-[var(--brand)]" />
+        </div>
+        <div>
+          <label for="pp-bright" class="label">Brightness</label>
+          <input id="pp-bright" type="range" min="80" max="130" step="1" value="100" class="h-11 w-full accent-[var(--brand)]" />
+        </div>
+        <ul class="space-y-1.5 text-[0.9375rem] text-muted">
+          <li class="flex gap-2"><Icon name="Check" size={18} class="mt-0.5 flex-none text-success" />Face the camera with a neutral expression and eyes open.</li>
+          <li class="flex gap-2"><Icon name="Check" size={18} class="mt-0.5 flex-none text-success" />Plain, light background with no shadows.</li>
+          <li class="flex gap-2"><Icon name="Check" size={18} class="mt-0.5 flex-none text-success" />Top of the head and chin between the guide lines.</li>
+        </ul>
+        <div class="flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+          <button type="button" class="btn btn-primary btn-lg" data-download><Icon name="Download" size={20} />Download photo</button>
+          <button type="button" class="btn btn-secondary btn-lg" data-sheet><Icon name="Printer" size={18} />4 × 6 in print sheet</button>
+        </div>
+        <button type="button" class="btn btn-ghost" data-reset><Icon name="RotateCcw" size={18} />Start over</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  import { initDropzone } from '../lib/dropzone';
+  import { decodeAny, toBlob, type Decoded } from '../lib/image';
+  import { downloadBlob, showError } from '../lib/ui';
+
+  // w/h in mm, head = chin-to-crown height as a share of photo height
+  const SIZES: Record<string, { w: number; h: number; head: [number, number]; label: string }> = {
+    us: { w: 50.8, h: 50.8, head: [0.5, 0.69], label: '2x2in' },
+    uk: { w: 35, h: 45, head: [0.64, 0.75], label: '35x45mm' },
+    eu: { w: 35, h: 45, head: [0.71, 0.8], label: '35x45mm' },
+    in: { w: 35, h: 45, head: [0.7, 0.8], label: '35x45mm' },
+    ca: { w: 50, h: 70, head: [0.44, 0.51], label: '50x70mm' },
+    au: { w: 35, h: 45, head: [0.71, 0.8], label: '35x45mm' },
+    cn: { w: 33, h: 48, head: [0.58, 0.69], label: '33x48mm' },
+    jp: { w: 35, h: 45, head: [0.71, 0.8], label: '35x45mm' },
+    other: { w: 35, h: 45, head: [0.7, 0.8], label: '35x45mm' },
+  };
+  const DPI = 300;
+  const mmToPx = (mm: number) => Math.round((mm / 25.4) * DPI);
+
+  const root = document.getElementById('pp')!;
+  const country = document.getElementById('pp-country') as HTMLSelectElement;
+  const pick = root.querySelector<HTMLElement>('[data-step=pick]')!;
+  const edit = root.querySelector<HTMLElement>('[data-step=edit]')!;
+  const err = root.querySelector<HTMLElement>('[data-error]')!;
+  const frame = root.querySelector<HTMLElement>('[data-frame]')!;
+  const canvas = root.querySelector<HTMLCanvasElement>('[data-canvas]')!;
+  const guide = root.querySelector<SVGSVGElement>('[data-guide]')!;
+  const zoom = document.getElementById('pp-zoom') as HTMLInputElement;
+  const bright = document.getElementById('pp-bright') as HTMLInputElement;
+
+  let img: Decoded | null = null;
+  // View state in "photo units": scale relative to cover-fit, offset as fraction of frame size
+  let z = 1, ox = 0, oy = 0;
+
+  const spec = () => SIZES[country.value];
+
+  function layout() {
+    const s = spec();
+    frame.style.aspectRatio = `${s.w} / ${s.h}`;
+    const r = frame.getBoundingClientRect();
+    const dpr = Math.min(2, window.devicePixelRatio || 1);
+    canvas.width = Math.round(r.width * dpr);
+    canvas.height = Math.round(r.height * dpr);
+    drawGuide(r.width, r.height);
+    draw();
+  }
+
+  function drawGuide(w: number, h: number) {
+    const [lo, hi] = spec().head;
+    const headH = h * ((lo + hi) / 2);
+    const top = h * 0.5 - headH * 0.55;
+    const cx = w / 2, rx = headH * 0.37, ry = headH / 2;
+    const yTopMin = h * 0.5 - (h * hi) * 0.55, yTopMax = h * 0.5 - (h * lo) * 0.55;
+    guide.setAttribute('viewBox', `0 0 ${w} ${h}`);
+    guide.innerHTML = `
+      <ellipse cx="${cx}" cy="${top + ry}" rx="${rx}" ry="${ry}" fill="none" stroke="#2563eb" stroke-width="2" stroke-dasharray="6 5" opacity=".9"/>
+      <line x1="0" x2="${w}" y1="${yTopMin}" y2="${yTopMin}" stroke="#16a34a" stroke-width="1.5" opacity=".8"/>
+      <line x1="0" x2="${w}" y1="${yTopMax}" y2="${yTopMax}" stroke="#16a34a" stroke-width="1.5" opacity=".8"/>
+      <line x1="0" x2="${w}" y1="${top + headH}" y2="${top + headH}" stroke="#16a34a" stroke-width="1.5" opacity=".8"/>
+      <line x1="${cx}" x2="${cx}" y1="0" y2="${h}" stroke="#2563eb" stroke-width="1" opacity=".35"/>`;
+  }
+
+  /** Draw the photo into any canvas size using the current view */
+  function render(ctx: CanvasRenderingContext2D, W: number, H: number) {
+    if (!img) return;
+    ctx.save();
+    ctx.fillStyle = '#fff';
+    ctx.fillRect(0, 0, W, H);
+    const cover = Math.max(W / img.width, H / img.height);
+    const s = cover * z;
+    const dw = img.width * s, dh = img.height * s;
+    const x = (W - dw) / 2 + ox * W, y = (H - dh) / 2 + oy * H;
+    ctx.filter = `brightness(${bright.value}%)`;
+    ctx.imageSmoothingQuality = 'high';
+    ctx.drawImage(img.source, x, y, dw, dh);
+    ctx.restore();
+  }
+
+  function clamp() {
+    // Never show empty space at the edges
+    if (!img) return;
+    const W = 1, H = spec().h / spec().w;
+    const cover = Math.max(W / img.width, H / img.height) * z;
+    const maxX = Math.max(0, (img.width * cover - W) / 2 / W);
+    const maxY = Math.max(0, (img.height * cover - H) / 2 / H);
+    ox = Math.min(maxX, Math.max(-maxX, ox));
+    oy = Math.min(maxY, Math.max(-maxY, oy));
+  }
+
+  function draw() { clamp(); render(canvas.getContext('2d')!, canvas.width, canvas.height); }
+
+  // Drag, pinch and wheel
+  const pointers = new Map<number, { x: number; y: number }>();
+  let pinchStart = 0, zoomStart = 1;
+  canvas.addEventListener('pointerdown', (e) => { canvas.setPointerCapture(e.pointerId); pointers.set(e.pointerId, { x: e.clientX, y: e.clientY }); if (pointers.size === 2) { const [a, b] = [...pointers.values()]; pinchStart = Math.hypot(a.x - b.x, a.y - b.y); zoomStart = z; } });
+  canvas.addEventListener('pointermove', (e) => {
+    const prev = pointers.get(e.pointerId);
+    if (!prev) return;
+    const r = canvas.getBoundingClientRect();
+    pointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
+    if (pointers.size === 2) {
+      const [a, b] = [...pointers.values()];
+      setZoom(zoomStart * (Math.hypot(a.x - b.x, a.y - b.y) / pinchStart));
+    } else {
+      ox += (e.clientX - prev.x) / r.width;
+      oy += (e.clientY - prev.y) / r.height;
+      draw();
+    }
+  });
+  const up = (e: PointerEvent) => pointers.delete(e.pointerId);
+  canvas.addEventListener('pointerup', up);
+  canvas.addEventListener('pointercancel', up);
+  canvas.addEventListener('wheel', (e) => { e.preventDefault(); setZoom(z * (e.deltaY < 0 ? 1.06 : 1 / 1.06)); }, { passive: false });
+  // Keyboard: arrows move, +/- zoom
+  canvas.tabIndex = 0;
+  canvas.addEventListener('keydown', (e) => {
+    const step = 0.01;
+    if (e.key === 'ArrowLeft') ox -= step; else if (e.key === 'ArrowRight') ox += step;
+    else if (e.key === 'ArrowUp') oy -= step; else if (e.key === 'ArrowDown') oy += step;
+    else if (e.key === '+' || e.key === '=') return setZoom(z * 1.05);
+    else if (e.key === '-') return setZoom(z / 1.05);
+    else return;
+    e.preventDefault(); draw();
+  });
+
+  function setZoom(v: number) { z = Math.min(4, Math.max(1, v)); zoom.value = String(z); draw(); }
+  zoom.addEventListener('input', () => setZoom(Number(zoom.value)));
+  bright.addEventListener('input', draw);
+  country.addEventListener('change', () => { if (img) layout(); });
+  window.addEventListener('resize', () => { if (img && !edit.hidden) layout(); });
+
+  async function photoCanvas() {
+    const s = spec();
+    const c = document.createElement('canvas');
+    c.width = mmToPx(s.w); c.height = mmToPx(s.h);
+    render(c.getContext('2d')!, c.width, c.height);
+    return c;
+  }
+
+  root.querySelector('[data-download]')!.addEventListener('click', async () => {
+    const c = await photoCanvas();
+    downloadBlob(await toBlob(c, 'image/jpeg', 0.95), `passport-photo-${spec().label}.jpg`);
+  });
+
+  root.querySelector('[data-sheet]')!.addEventListener('click', async () => {
+    const photo = await photoCanvas();
+    // Try both orientations and gap sizes, keep whichever fits the most copies
+    let best = { count: 0, W: 0, H: 0, gap: 0, cols: 0, rows: 0 };
+    for (const [W, H] of [[6 * DPI, 4 * DPI], [4 * DPI, 6 * DPI]])
+      for (const gap of [Math.round(0.12 * DPI), 0]) {
+        const cols = Math.floor((W + gap) / (photo.width + gap));
+        const rows = Math.floor((H + gap) / (photo.height + gap));
+        if (cols * rows > best.count) best = { count: cols * rows, W, H, gap, cols, rows };
+      }
+    const { W, H, gap, cols, rows } = best;
+    const sheet = document.createElement('canvas');
+    sheet.width = W; sheet.height = H;
+    const ctx = sheet.getContext('2d')!;
+    ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, W, H);
+    const startX = Math.round((W - (cols * photo.width + (cols - 1) * gap)) / 2);
+    const startY = Math.round((H - (rows * photo.height + (rows - 1) * gap)) / 2);
+    for (let r = 0; r < rows; r++) for (let col = 0; col < cols; col++) {
+      ctx.drawImage(photo, startX + col * (photo.width + gap), startY + r * (photo.height + gap));
+    }
+    // Light cut lines
+    ctx.strokeStyle = '#c8ccd2'; ctx.lineWidth = 2;
+    for (let r = 0; r < rows; r++) for (let col = 0; col < cols; col++)
+      ctx.strokeRect(startX + col * (photo.width + gap), startY + r * (photo.height + gap), photo.width, photo.height);
+    downloadBlob(await toBlob(sheet, 'image/jpeg', 0.95), `passport-photos-4x6-${spec().label}.jpg`);
+  });
+
+  root.querySelector('[data-reset]')!.addEventListener('click', () => {
+    img?.close?.(); img = null; edit.hidden = true; pick.hidden = false;
+  });
+
+  initDropzone(document.getElementById('pp-drop')!, {
+    accept: ['image/jpeg', 'image/png', 'image/webp', '.jpg', '.jpeg', '.png', '.webp', '.heic', '.heif'],
+    maxBytes: 30 * 1024 * 1024,
+    onFiles: async ([f]) => {
+      try {
+        img = await decodeAny(f);
+        if (img.width < 300 || img.height < 300) showError(err, 'This photo is quite small, so the printed result may look blurry. A photo of at least 600 pixels wide works best.');
+        else showError(err, null);
+        z = 1; ox = 0; oy = 0; zoom.value = '1'; bright.value = '100';
+        pick.hidden = true; edit.hidden = false;
+        layout();
+      } catch (e) { showError(err, (e as Error).message); }
+    },
+    onError: (m) => showError(err, m || null),
+  });
+</script>

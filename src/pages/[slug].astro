@@ -1,0 +1,162 @@
+---
+import type { GetStaticPaths } from 'astro';
+import { getEntry, render } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import Breadcrumb from '../components/Breadcrumb.astro';
+import Icon from '../components/Icon.astro';
+import ToolCard from '../components/ToolCard.astro';
+import AdSlot from '../components/AdSlot.astro';
+import { tools, relatedTools, isLive, popularTools, type Tool } from '../lib/tools';
+import { categoryBySlug } from '../data/categories';
+import { site } from '../config';
+
+export const getStaticPaths = (() => tools.map((tool) => ({ params: { slug: tool.slug }, props: { tool } }))) satisfies GetStaticPaths;
+
+interface Props { tool: Tool }
+const { tool } = Astro.props;
+const category = categoryBySlug[tool.category];
+const live = isLive(tool);
+
+const impls = import.meta.glob<{ default: any }>('../tools/*.astro', { eager: true });
+const ToolUI = live ? impls[`../tools/${tool.slug}.astro`].default : null;
+
+const entry = live ? await getEntry('tools', tool.slug) : undefined;
+if (live && !entry) throw new Error(`Missing content file src/content/tools/${tool.slug}.md`);
+const rendered = entry ? await render(entry) : null;
+const faqs = entry?.data.faqs ?? [];
+
+let related = relatedTools(tool, 6);
+if (!live) {
+  const liveRelated = related.filter(isLive);
+  related = liveRelated.length >= 3 ? liveRelated : [...liveRelated, ...popularTools(24).filter((t) => isLive(t) && t.slug !== tool.slug && !liveRelated.includes(t))].slice(0, 6);
+}
+
+const title = entry?.data.seoTitle ?? `${tool.name}: Free Online Tool, No Signup | toolwise`;
+const description = entry?.data.metaDescription ?? `${tool.shortDescription} Free, fast and private. No signup required.`;
+const url = `${site.url}/${tool.slug}`;
+
+const jsonLd: object[] = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Home', item: `${site.url}/` },
+      { '@type': 'ListItem', position: 2, name: category.name, item: `${site.url}/category/${category.slug}` },
+      { '@type': 'ListItem', position: 3, name: tool.name, item: url },
+    ],
+  },
+];
+if (live) {
+  jsonLd.push({
+    '@context': 'https://schema.org',
+    '@type': 'WebApplication',
+    name: tool.name,
+    url,
+    description: tool.shortDescription,
+    applicationCategory: 'UtilitiesApplication',
+    operatingSystem: 'Any (runs in your web browser)',
+    offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+  });
+  if (faqs.length)
+    jsonLd.push({
+      '@context': 'https://schema.org',
+      '@type': 'FAQPage',
+      mainEntity: faqs.map((f) => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } })),
+    });
+}
+---
+<Base title={title} description={description} noindex={!live} jsonLd={jsonLd}>
+  <div class={`container-page cat-${tool.category} pt-5`}>
+    <Breadcrumb items={[{ name: 'Home', href: '/' }, { name: category.short, href: `/category/${category.slug}` }, { name: tool.name }]} />
+
+    {live ? (
+      <div class="tool-layout mt-4">
+        <header class="[grid-area:head]">
+          <div class="flex items-start gap-4">
+            <span class="icon-tile mt-1 hidden h-12 w-12 sm:inline-flex"><Icon name={tool.icon} size={24} /></span>
+            <div>
+              <h1 class="text-[1.75rem] font-extrabold tracking-tight sm:text-4xl">{tool.name}</h1>
+              <p class="mt-2 text-lg text-muted">{tool.shortDescription}</p>
+            </div>
+          </div>
+        </header>
+
+        <section class="[grid-area:tool]" aria-label={tool.name}>
+          <ToolUI tool={tool} />
+        </section>
+
+        <div class="hidden [grid-area:ad1] lg:block">
+          <div class="sticky top-24"><AdSlot id="tool-rail" mobile={600} desktop={600} /></div>
+        </div>
+
+        <div class="min-w-0 [grid-area:rest]">
+          <AdSlot id="tool-below" mobile={280} desktop={100} class="mt-8" />
+
+          <article class="prose-tw mt-10">
+            {rendered && <rendered.Content />}
+          </article>
+
+          <AdSlot id="tool-mid" mobile={280} class="mt-8 lg:!hidden" />
+
+          {faqs.length > 0 && (
+            <section class="mt-10 max-w-[72ch]" aria-labelledby="faq-heading">
+              <h2 id="faq-heading" class="text-[1.375rem] font-bold">Frequently asked questions</h2>
+              <div class="mt-4 divide-y divide-[var(--border)] rounded-xl border border-line bg-surface">
+                {faqs.map((f, i) => (
+                  <details class="group" open={i === 0}>
+                    <summary class="flex min-h-14 cursor-pointer list-none items-center justify-between gap-4 px-5 py-3 font-semibold [&::-webkit-details-marker]:hidden">
+                      <h3 class="text-base">{f.q}</h3>
+                      <Icon name="ChevronDown" size={18} class="flex-none text-subtle transition-transform group-open:rotate-180" />
+                    </summary>
+                    <p class="px-5 pb-5 text-muted">{f.a}</p>
+                  </details>
+                ))}
+              </div>
+            </section>
+          )}
+
+          <AdSlot id="tool-end" mobile={280} desktop={250} class="mt-10" />
+        </div>
+      </div>
+    ) : (
+      <div class="mx-auto mt-4 max-w-3xl">
+        <h1 class="text-[1.75rem] font-extrabold tracking-tight sm:text-4xl">{tool.name}</h1>
+        <p class="mt-2 text-lg text-muted">{tool.shortDescription}</p>
+        <div class="card mt-8 flex flex-col items-center px-6 py-12 text-center">
+          <span class="icon-tile h-16 w-16"><Icon name={tool.icon} size={30} /></span>
+          <p class="mt-5 text-xl font-bold">{tool.status === 'later' ? 'Planned for a future update' : 'Coming soon'}</p>
+          <p class="mt-2 max-w-md text-muted">
+            We are still building this tool and testing it carefully so it works well on every device. In the meantime, the tools below are ready to use.
+          </p>
+          <a href={`/category/${category.slug}`} class="btn btn-secondary mt-6">See all {category.short} tools</a>
+        </div>
+      </div>
+    )}
+
+    {related.length > 0 && (
+      <section class:list={['mt-14', !live && 'mx-auto max-w-5xl']} aria-labelledby="related-heading">
+        <h2 id="related-heading" class="text-xl font-bold sm:text-2xl">{live ? 'Related tools' : 'Tools you can use right now'}</h2>
+        <ul class="mt-5 grid grid-cols-1 gap-3 min-[520px]:grid-cols-2 lg:grid-cols-3">
+          {related.map((t) => <ToolCard tool={t} />)}
+        </ul>
+      </section>
+    )}
+  </div>
+</Base>
+
+<style>
+  .tool-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas: 'head' 'tool' 'rest';
+    row-gap: 1.5rem;
+  }
+  @media (min-width: 1024px) {
+    .tool-layout {
+      grid-template-columns: minmax(0, 1fr) 300px;
+      grid-template-areas: 'head ad1' 'tool ad1' 'rest ad1';
+      column-gap: 2.5rem;
+      grid-template-rows: auto auto 1fr;
+    }
+  }
+</style>

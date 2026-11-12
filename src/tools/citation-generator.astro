@@ -1,0 +1,161 @@
+---
+import Icon from '../components/Icon.astro';
+---
+<div id="cg" class="space-y-5">
+  <form class="card space-y-5 p-5 sm:p-6" novalidate onsubmit="return false">
+    <div class="flex flex-wrap gap-4">
+      <fieldset><legend class="label">Style</legend>
+        <div class="segmented">
+          <label><input type="radio" name="cg-style" value="apa" checked /><span>APA 7</span></label>
+          <label><input type="radio" name="cg-style" value="mla" /><span>MLA 9</span></label>
+          <label><input type="radio" name="cg-style" value="chicago" /><span>Chicago</span></label>
+        </div>
+      </fieldset>
+      <fieldset><legend class="label">Source type</legend>
+        <div class="segmented">
+          <label><input type="radio" name="cg-type" value="web" checked /><span>Website</span></label>
+          <label><input type="radio" name="cg-type" value="book" /><span>Book</span></label>
+          <label><input type="radio" name="cg-type" value="journal" /><span>Journal article</span></label>
+        </div>
+      </fieldset>
+    </div>
+    <div>
+      <span class="label">Authors</span>
+      <ul class="space-y-2" data-authors></ul>
+      <button type="button" class="btn btn-ghost btn-sm mt-2" data-add-author><Icon name="Plus" size={16} />Add author</button>
+      <p class="hint">Leave empty if there is no author; the organization or title is used instead.</p>
+    </div>
+    <div class="grid gap-4 sm:grid-cols-2">
+      <div class="sm:col-span-2"><label for="cg-title" class="label" data-title-label>Page or article title</label><input id="cg-title" class="input" /></div>
+      <div data-f="web journal"><label for="cg-site" class="label" data-site-label>Website name</label><input id="cg-site" class="input" /></div>
+      <div data-f="book"><label for="cg-pub" class="label">Publisher</label><input id="cg-pub" class="input" /></div>
+      <div data-f="book"><label for="cg-ed" class="label">Edition (optional)</label><input id="cg-ed" class="input" placeholder="e.g. 3" inputmode="numeric" /></div>
+      <div data-f="journal"><label for="cg-vol" class="label">Volume</label><input id="cg-vol" class="input" inputmode="numeric" /></div>
+      <div data-f="journal"><label for="cg-iss" class="label">Issue</label><input id="cg-iss" class="input" inputmode="numeric" /></div>
+      <div data-f="journal"><label for="cg-pages" class="label">Pages</label><input id="cg-pages" class="input" placeholder="e.g. 45-67" /></div>
+      <div><label for="cg-year" class="label">Year published</label><input id="cg-year" class="input" inputmode="numeric" placeholder="e.g. 2024" /></div>
+      <div data-f="web"><label for="cg-date" class="label">Full publish date (optional)</label><input id="cg-date" type="date" class="input" /></div>
+      <div data-f="web journal"><label for="cg-url" class="label" data-url-label>URL</label><input id="cg-url" class="input" inputmode="url" placeholder="https://" /></div>
+      <div data-f="web"><label for="cg-acc" class="label">Date accessed</label><input id="cg-acc" type="date" class="input" /></div>
+    </div>
+  </form>
+  <section class="card p-5 sm:p-6" aria-live="polite">
+    <p class="text-sm font-semibold text-muted">Your citation</p>
+    <p class="mt-2 rounded-lg bg-surface-2 p-4 text-[1.0625rem] leading-relaxed [padding-left:2.5rem] [text-indent:-1.5rem]" data-out></p>
+    <p class="mt-2 text-sm text-subtle" data-intext></p>
+    <div class="mt-4 flex flex-col gap-3 sm:flex-row">
+      <button type="button" class="btn btn-primary btn-lg" data-copy><Icon name="Copy" size={18} /><span data-label>Copy citation</span></button>
+      <button type="button" class="btn btn-secondary btn-lg" data-save><Icon name="Plus" size={18} />Add to bibliography</button>
+    </div>
+  </section>
+  <section class="card p-5 sm:p-6" data-bib-wrap hidden>
+    <div class="flex items-center justify-between"><h2 class="text-lg font-bold">Bibliography</h2><span class="text-sm text-subtle">Sorted A–Z, saved in this browser</span></div>
+    <ol class="mt-3 space-y-3" data-bib></ol>
+    <div class="mt-4 flex gap-3"><button type="button" class="btn btn-secondary" data-copy-bib><Icon name="Copy" size={18} /><span data-label>Copy all</span></button><button type="button" class="btn btn-ghost" data-clear-bib>Clear</button></div>
+  </section>
+</div>
+<script>
+  import { copyText, store } from '../lib/ui';
+  const root = document.getElementById('cg')!;
+  const v = (id: string) => (document.getElementById(id) as HTMLInputElement).value.trim();
+  const style = () => root.querySelector<HTMLInputElement>('input[name=cg-style]:checked')!.value;
+  const type = () => root.querySelector<HTMLInputElement>('input[name=cg-type]:checked')!.value;
+  type Author = { first: string; last: string };
+  let authors: Author[] = [{ first: '', last: '' }];
+  let bib: { html: string; text: string }[] = store.get('tw-bib', []);
+  const esc = (s: string) => s.replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]!);
+  const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+  const MLA_M = ['Jan.', 'Feb.', 'Mar.', 'Apr.', 'May', 'June', 'July', 'Aug.', 'Sept.', 'Oct.', 'Nov.', 'Dec.'];
+  const d = (s: string) => { if (!s) return null; const [y, m, dd] = s.split('-').map(Number); return { y, m: m - 1, d: dd }; };
+  const initials = (f: string) => f.split(/[\s-]+/).filter(Boolean).map((x) => x[0].toUpperCase() + '.').join(' ');
+  const sentence = (t: string) => t.replace(/^(.)/, (c) => c.toUpperCase());
+  const title = (t: string) => t.replace(/\b([a-z])(\w*)/g, (w, a, rest, i) => (i > 0 && /^(a|an|the|and|but|or|for|nor|of|on|in|at|to|by|with)$/.test(w) ? w : a.toUpperCase() + rest));
+  const end = (s: string) => (/[.?!]$/.test(s) ? s : s + '.');
+
+  function renderAuthors() {
+    root.querySelector('[data-authors]')!.innerHTML = authors.map((a, i) => `<li class="grid grid-cols-[1fr_1fr_auto] gap-2">
+      <input class="input" placeholder="First name" aria-label="Author ${i + 1} first name" data-ai="${i}" data-k="first" value="${esc(a.first)}" />
+      <input class="input" placeholder="Last name" aria-label="Author ${i + 1} last name" data-ai="${i}" data-k="last" value="${esc(a.last)}" />
+      <button type="button" class="btn btn-ghost h-11 w-11 !p-0" data-rm="${i}" aria-label="Remove author ${i + 1}" ${authors.length === 1 ? 'disabled' : ''}><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg></button></li>`).join('');
+  }
+
+  function names(list: Author[], s: string): string {
+    if (!list.length) return '';
+    if (s === 'apa') {
+      const f = list.map((a) => `${a.last}, ${initials(a.first)}`.replace(/, $/, ''));
+      if (f.length === 1) return f[0];
+      if (f.length > 20) return f.slice(0, 19).join(', ') + ', . . . ' + f[f.length - 1];
+      return f.slice(0, -1).join(', ') + ', & ' + f[f.length - 1];
+    }
+    const first = `${list[0].last}${list[0].first ? ', ' + list[0].first : ''}`;
+    if (list.length === 1) return first;
+    if (s === 'mla') return list.length === 2 ? `${first}, and ${list[1].first} ${list[1].last}`.trim() : `${first}, et al`;
+    const rest = list.slice(1).map((a) => `${a.first} ${a.last}`.trim());
+    return list.length > 10 ? `${first}, et al` : `${first}, ${rest.length > 1 ? rest.slice(0, -1).join(', ') + ', ' : ''}and ${rest[rest.length - 1]}`;
+  }
+
+  function build(): { html: string; text: string; intext: string } {
+    const s = style(), t = type();
+    const list = authors.filter((a) => a.last || a.first).map((a) => ({ first: a.first, last: a.last || a.first }));
+    const ttl = v('cg-title') || '[Title]', site = v('cg-site'), year = v('cg-year'), url = v('cg-url'), pub = v('cg-pub');
+    const pd = d(v('cg-date')), acc = d(v('cg-acc'));
+    const ord = (n: number) => { const sfx = ['th', 'st', 'nd', 'rd'], m = n % 100; return n + (sfx[(m - 20) % 10] || sfx[m] || sfx[0]); };
+    const ed = Number(v('cg-ed')) > 1 ? `${ord(Number(v('cg-ed')))} ed.` : '';
+    let parts: string[] = [];
+    const who = names(list, s);
+    const i = (x: string) => `<i>${esc(x)}</i>`;
+    const lastNames = list.map((a) => a.last);
+    let intext = '';
+    if (s === 'apa') {
+      const date = t === 'web' && pd ? `${pd.y}, ${MONTHS[pd.m]} ${pd.d}` : year || 'n.d.';
+      const start = who ? `${esc(end(who))} (${date}).` : '';
+      if (t === 'web') parts = who ? [start, `${i(sentence(ttl))}.`, site ? `${esc(site)}.` : '', esc(url)] : [`${i(sentence(ttl))}.`, `(${date}).`, site ? `${esc(site)}.` : '', esc(url)];
+      if (t === 'book') parts = [start || `${i(sentence(ttl))} (${date}).`, start ? `${i(sentence(ttl))}${ed ? ` (${esc(ed)})` : ''}.` : '', pub ? `${esc(pub)}.` : ''];
+      if (t === 'journal') parts = [start, `${esc(sentence(ttl))}.`, `${i(title(site || '[Journal]'))}${v('cg-vol') ? ', ' + i(v('cg-vol')) : ''}${v('cg-iss') ? `(${esc(v('cg-iss'))})` : ''}${v('cg-pages') ? ', ' + esc(v('cg-pages').replace('-', '–')) : ''}.`, esc(url)];
+      const au = lastNames.length > 2 ? `${lastNames[0]} et al.` : lastNames.join(' & ');
+      intext = `In-text: (${au || ttl}, ${year || (pd ? pd.y : 'n.d.')})`;
+    } else if (s === 'mla') {
+      const start = who ? `${esc(end(who))}` : '';
+      if (t === 'web') parts = [start, `“${esc(end(title(ttl)))}”`, site ? `${i(title(site))},` : '', pd ? `${pd.d} ${MLA_M[pd.m]} ${pd.y},` : year ? `${esc(year)},` : '', url ? `${esc(url.replace(/^https?:\/\//, ''))}.` : '', acc ? `Accessed ${acc.d} ${MLA_M[acc.m]} ${acc.y}.` : ''];
+      if (t === 'book') parts = [start, `${i(title(ttl))}.`, ed ? `${esc(ed)},` : '', pub ? `${esc(pub)},` : '', year ? `${esc(year)}.` : ''];
+      if (t === 'journal') parts = [start, `“${esc(end(title(ttl)))}”`, `${i(title(site || '[Journal]'))},`, v('cg-vol') ? `vol. ${esc(v('cg-vol'))},` : '', v('cg-iss') ? `no. ${esc(v('cg-iss'))},` : '', year ? `${esc(year)},` : '', v('cg-pages') ? `pp. ${esc(v('cg-pages'))}.` : '', url ? `${esc(url.replace(/^https?:\/\//, ''))}.` : ''];
+      intext = `In-text: (${lastNames.length > 2 ? lastNames[0] + ' et al.' : lastNames.join(' and ') || '“' + ttl + '”'}), adding a page number if you quote, e.g. (${lastNames[0] || 'Title'} 12)`;
+    } else {
+      const start = who ? `${esc(end(who))}` : '';
+      if (t === 'web') parts = [start, `“${esc(end(title(ttl)))}”`, site ? `${esc(site)}.` : '', pd ? `${MONTHS[pd.m]} ${pd.d}, ${pd.y}.` : year ? `${esc(year)}.` : acc ? `Accessed ${MONTHS[acc.m]} ${acc.d}, ${acc.y}.` : '', url ? `${esc(url)}.` : ''];
+      if (t === 'book') parts = [start, `${i(title(ttl))}.`, ed ? `${esc(ed)}` + ' ' : '', pub ? `${esc(pub)},` : '', year ? `${esc(year)}.` : ''];
+      if (t === 'journal') parts = [start, `“${esc(end(title(ttl)))}”`, `${i(title(site || '[Journal]'))}${v('cg-vol') ? ' ' + esc(v('cg-vol')) : ''}${v('cg-iss') ? `, no. ${esc(v('cg-iss'))}` : ''}${year ? ` (${esc(year)})` : ''}${v('cg-pages') ? `: ${esc(v('cg-pages').replace('-', '–'))}` : ''}.`, url ? `${esc(url)}.` : ''];
+      const cn = lastNames.length > 3 ? `${lastNames[0]} et al.` : lastNames.length > 1 ? `${lastNames.slice(0, -1).join(', ')} and ${lastNames[lastNames.length - 1]}` : lastNames[0] || ttl;
+      intext = `In-text (author-date): (${cn} ${year || (pd ? pd.y : 'n.d.')})`;
+    }
+    let html = parts.filter(Boolean).join(' ').replace(/,(\s*)$/, '.$1').replace(/\s+/g, ' ').trim();
+    const tmp = document.createElement('div'); tmp.innerHTML = html;
+    return { html, text: tmp.textContent!, intext };
+  }
+
+  function update() {
+    const t = type();
+    root.querySelectorAll<HTMLElement>('[data-f]').forEach((el) => (el.hidden = !el.dataset.f!.split(' ').includes(t)));
+    root.querySelector('[data-title-label]')!.textContent = t === 'book' ? 'Book title' : t === 'journal' ? 'Article title' : 'Page or article title';
+    root.querySelector('[data-site-label]')!.textContent = t === 'journal' ? 'Journal name' : 'Website name';
+    root.querySelector('[data-url-label]')!.textContent = t === 'journal' ? 'DOI or URL (optional)' : 'URL';
+    const c = build();
+    root.querySelector('[data-out]')!.innerHTML = c.html;
+    root.querySelector('[data-intext]')!.textContent = c.intext;
+  }
+  function renderBib() {
+    store.set('tw-bib', bib);
+    root.querySelector<HTMLElement>('[data-bib-wrap]')!.hidden = !bib.length;
+    root.querySelector('[data-bib]')!.innerHTML = bib.map((b) => `<li class="[padding-left:1.5rem] [text-indent:-1.5rem]">${b.html}</li>`).join('');
+  }
+  root.querySelector('[data-authors]')!.addEventListener('input', (e) => { const t = e.target as HTMLInputElement; (authors[Number(t.dataset.ai)] as Record<string, string>)[t.dataset.k!] = t.value; update(); });
+  root.querySelector('[data-authors]')!.addEventListener('click', (e) => { const b = (e.target as HTMLElement).closest<HTMLElement>('[data-rm]'); if (b) { authors.splice(Number(b.dataset.rm), 1); renderAuthors(); update(); } });
+  root.querySelector('[data-add-author]')!.addEventListener('click', () => { authors.push({ first: '', last: '' }); renderAuthors(); root.querySelector<HTMLInputElement>('[data-authors] li:last-child input')!.focus(); });
+  root.querySelector('form')!.addEventListener('input', update); root.querySelector('form')!.addEventListener('change', update);
+  root.querySelector('[data-copy]')!.addEventListener('click', (e) => copyText(build().text, e.currentTarget as HTMLElement));
+  root.querySelector('[data-save]')!.addEventListener('click', () => { const c = build(); bib.push({ html: c.html, text: c.text }); bib.sort((a, b) => a.text.localeCompare(b.text)); renderBib(); });
+  root.querySelector('[data-copy-bib]')!.addEventListener('click', (e) => copyText(bib.map((b) => b.text).join('\n\n'), e.currentTarget as HTMLElement));
+  root.querySelector('[data-clear-bib]')!.addEventListener('click', () => { bib = []; renderBib(); });
+  const today = new Date(); (document.getElementById('cg-acc') as HTMLInputElement).value = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
+  renderAuthors(); renderBib(); update();
+</script>

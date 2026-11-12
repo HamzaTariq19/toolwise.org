@@ -1,0 +1,72 @@
+---
+import Icon from '../components/Icon.astro';
+---
+<div id="wc" class="grid gap-5 lg:grid-cols-[1fr_260px] lg:items-start">
+  <div>
+    <label for="wc-text" class="sr-only">Your text</label>
+    <textarea id="wc-text" class="textarea !min-h-[320px] text-[1.0625rem]" placeholder="Type or paste your text here…"></textarea>
+    <div class="mt-3 flex flex-wrap gap-2">
+      <button type="button" class="btn btn-secondary btn-sm" data-copy><Icon name="Copy" size={16} /><span data-label>Copy text</span></button>
+      <button type="button" class="btn btn-ghost btn-sm" data-clear><Icon name="Trash2" size={16} />Clear</button>
+      <span class="ml-auto self-center text-sm text-subtle">Saved in this browser only</span>
+    </div>
+  </div>
+  <aside class="grid grid-cols-2 gap-3 lg:sticky lg:top-24 lg:grid-cols-1" aria-live="polite">
+    <div class="stat col-span-2 lg:col-span-1"><p class="stat-label">Words</p><p class="stat-value !text-4xl" data-k="words">0</p></div>
+    <div class="stat"><p class="stat-label">Characters</p><p class="stat-value" data-k="chars">0</p></div>
+    <div class="stat"><p class="stat-label">Without spaces</p><p class="stat-value" data-k="nospace">0</p></div>
+    <div class="stat"><p class="stat-label">Sentences</p><p class="stat-value" data-k="sentences">0</p></div>
+    <div class="stat"><p class="stat-label">Paragraphs</p><p class="stat-value" data-k="paras">0</p></div>
+    <div class="stat"><p class="stat-label">Reading time</p><p class="stat-value" data-k="read">0 min</p></div>
+    <div class="stat"><p class="stat-label">Speaking time</p><p class="stat-value" data-k="speak">0 min</p></div>
+  </aside>
+  <section class="card p-5 lg:col-span-2" data-kw-wrap hidden>
+    <h2 class="text-base font-semibold">Most used words</h2>
+    <ul class="mt-3 flex flex-wrap gap-2" data-kw></ul>
+  </section>
+</div>
+
+<script>
+  import { copyText, fmt, store } from '../lib/ui';
+  const ta = document.getElementById('wc-text') as HTMLTextAreaElement;
+  const root = document.getElementById('wc')!;
+  const STOP = new Set('the a an and or but of to in on at for with is are was were be been it this that as by from i you he she we they his her their our your not no so if then than there here have has had do does did will would can could should may might just also into about over very more most what which who'.split(' '));
+  const time = (words: number, wpm: number) => { const m = words / wpm; return m < 1 ? `${Math.max(0, Math.round(m * 60))} sec` : `${Math.round(m)} min`; };
+  const set = (k: string, v: string) => (root.querySelector(`[data-k=${k}]`)!.textContent = v);
+  const seg = 'Segmenter' in Intl ? new (Intl as any).Segmenter(undefined, { granularity: 'word' }) : null;
+
+  // Hyphenated words and contractions count as one word (like Word and Google Docs).
+  // Scripts written without spaces (Chinese, Japanese, Thai) are split with the browser's segmenter.
+  const CJK = /[\u3040-\u30ff\u3400-\u9fff\uac00-\ud7af\u0e00-\u0e7f]/;
+  function words(t: string): string[] {
+    const out: string[] = [];
+    for (const m of t.match(/[\p{L}\p{N}\p{M}]+(?:['’.-][\p{L}\p{N}\p{M}]+)*/gu) ?? []) {
+      if (seg && CJK.test(m)) for (const s of seg.segment(m) as Iterable<any>) { if (s.isWordLike) out.push(s.segment); }
+      else out.push(m);
+    }
+    return out;
+  }
+
+  function update() {
+    const t = ta.value;
+    store.set('tw-wc', t);
+    const w = words(t);
+    set('words', fmt(w.length));
+    set('chars', fmt([...t].length));
+    set('nospace', fmt([...t.replace(/\s/g, '')].length));
+    set('sentences', fmt(t.trim() ? (t.match(/[^.!?…]+[.!?…]+(\s|$)|[^.!?…]+$/g) ?? []).filter((s) => /[\p{L}\p{N}]/u.test(s)).length : 0));
+    set('paras', fmt(t.split(/\n\s*\n/).filter((p) => p.trim()).length));
+    set('read', time(w.length, 238));
+    set('speak', time(w.length, 140));
+    const freq = new Map<string, number>();
+    w.forEach((x) => { const k = x.toLowerCase(); if (k.length > 2 && !STOP.has(k) && !/^\d+$/.test(k)) freq.set(k, (freq.get(k) ?? 0) + 1); });
+    const top = [...freq].filter(([, n]) => n > 1).sort((a, b) => b[1] - a[1]).slice(0, 10);
+    root.querySelector<HTMLElement>('[data-kw-wrap]')!.hidden = !top.length;
+    root.querySelector('[data-kw]')!.innerHTML = top.map(([k, n]) => `<li class="badge !px-3 !py-1 !text-sm">${k.replace(/</g, '&lt;')} <span class="ml-1 text-ink">${n}</span></li>`).join('');
+  }
+  ta.value = store.get('tw-wc', '');
+  ta.addEventListener('input', update);
+  root.querySelector('[data-copy]')!.addEventListener('click', (e) => copyText(ta.value, e.currentTarget as HTMLElement));
+  root.querySelector('[data-clear]')!.addEventListener('click', () => { ta.value = ''; update(); ta.focus(); });
+  update();
+</script>

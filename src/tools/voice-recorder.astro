@@ -1,0 +1,94 @@
+---
+import Icon from '../components/Icon.astro';
+---
+<div id="vr" class="space-y-5">
+  <div class="card p-6 text-center sm:p-8">
+    <canvas data-wave class="mx-auto h-20 w-full max-w-md" aria-hidden="true"></canvas>
+    <p class="mono mt-3 text-5xl font-bold tabular" data-clock>00:00</p>
+    <p class="mt-1 min-h-6 text-sm font-medium text-muted" data-status aria-live="polite">Ready to record</p>
+    <div class="mt-6 flex flex-wrap justify-center gap-3">
+      <button type="button" class="btn btn-primary btn-lg min-w-48" data-rec><Icon name="Mic" size={20} /><span data-label>Start recording</span></button>
+      <button type="button" class="btn btn-secondary btn-lg" data-pause hidden><Icon name="Pause" size={18} /><span data-label>Pause</span></button>
+    </div>
+    <p class="alert alert-error mt-4 text-left" data-err hidden role="alert"></p>
+    <p class="mt-4 flex items-center justify-center gap-1.5 text-sm text-muted"><Icon name="ShieldCheck" size={16} class="text-success" />Recordings stay on your device until you download them.</p>
+  </div>
+  <section class="card p-5" data-list-wrap hidden aria-labelledby="vr-h">
+    <h2 id="vr-h" class="text-lg font-bold">Your recordings</h2>
+    <ul class="mt-3 divide-y divide-[var(--border)]" data-list></ul>
+  </section>
+</div>
+<script>
+  import { pickMime, extFor, clock, stamp, mediaError } from '../lib/recorder';
+  import { downloadBlob, formatBytes } from '../lib/ui';
+  const root = document.getElementById('vr')!;
+  const q = <T extends HTMLElement = HTMLElement>(s: string) => root.querySelector<T>(s)!;
+  const recBtn = q<HTMLButtonElement>('[data-rec]'), pauseBtn = q<HTMLButtonElement>('[data-pause]');
+  const canvas = q<HTMLCanvasElement>('[data-wave]');
+  let stream: MediaStream | null = null, rec: MediaRecorder | null = null, chunks: Blob[] = [];
+  let startAt = 0, acc = 0, tick = 0, raf = 0, ctx: AudioContext | null = null;
+  const recordings: { blob: Blob; name: string; url: string; dur: number }[] = [];
+
+  function wave(an: AnalyserNode) {
+    const data = new Uint8Array(an.fftSize), g = canvas.getContext('2d')!;
+    const draw = () => {
+      const w = (canvas.width = canvas.clientWidth * 2), h = (canvas.height = canvas.clientHeight * 2);
+      an.getByteTimeDomainData(data);
+      g.clearRect(0, 0, w, h); g.lineWidth = 3; g.strokeStyle = getComputedStyle(document.documentElement).getPropertyValue('--brand'); g.beginPath();
+      for (let i = 0; i < data.length; i++) { const x = (i / data.length) * w, y = (data[i] / 255) * h; i ? g.lineTo(x, y) : g.moveTo(x, y); }
+      g.stroke(); raf = requestAnimationFrame(draw);
+    };
+    draw();
+  }
+  const elapsed = () => acc + (rec?.state === 'recording' ? performance.now() - startAt : 0);
+
+  async function start() {
+    const err = q('[data-err]'); err.hidden = true;
+    if (typeof MediaRecorder === 'undefined' || !navigator.mediaDevices?.getUserMedia) { err.hidden = false; err.textContent = 'Your browser cannot record audio. Please use the latest Chrome, Edge, Firefox or Safari.'; return; }
+    try { stream = await navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: true, noiseSuppression: true } }); }
+    catch (e) { err.hidden = false; err.textContent = mediaError(e, 'microphone'); return; }
+    const mime = pickMime('audio');
+    rec = new MediaRecorder(stream, mime ? { mimeType: mime, audioBitsPerSecond: 128000 } : undefined);
+    chunks = []; acc = 0; startAt = performance.now();
+    rec.ondataavailable = (e) => e.data.size && chunks.push(e.data);
+    rec.onstop = save;
+    rec.start(1000);
+    ctx = new AudioContext(); const an = ctx.createAnalyser(); an.fftSize = 1024; ctx.createMediaStreamSource(stream).connect(an); wave(an);
+    tick = window.setInterval(() => (q('[data-clock]').textContent = clock(elapsed())), 250);
+    recBtn.querySelector('[data-label]')!.textContent = 'Stop and save';
+    recBtn.classList.add('!bg-[#dc2626]');
+    pauseBtn.hidden = false;
+    q('[data-status]').innerHTML = '<span class="inline-flex items-center gap-2 text-danger"><span class="h-2.5 w-2.5 animate-pulse rounded-full bg-[#dc2626]"></span>Recording</span>';
+  }
+  function stop() { if (rec && rec.state !== 'inactive') { acc = elapsed(); rec.stop(); } }
+  function save() {
+    clearInterval(tick); cancelAnimationFrame(raf); ctx?.close(); stream?.getTracks().forEach((t) => t.stop());
+    const type = rec!.mimeType || 'audio/webm';
+    const blob = new Blob(chunks, { type });
+    recordings.unshift({ blob, name: `recording-${stamp()}.${extFor(type)}`, url: URL.createObjectURL(blob), dur: acc });
+    rec = null; stream = null;
+    recBtn.querySelector('[data-label]')!.textContent = 'Record again'; recBtn.classList.remove('!bg-[#dc2626]');
+    pauseBtn.hidden = true; pauseBtn.querySelector('[data-label]')!.textContent = 'Pause';
+    q('[data-status]').textContent = 'Saved below. Press Download to keep it.';
+    q('[data-clock]').textContent = '00:00';
+    canvas.getContext('2d')!.clearRect(0, 0, canvas.width, canvas.height);
+    render();
+  }
+  function render() {
+    q('[data-list-wrap]').hidden = !recordings.length;
+    q('[data-list]').innerHTML = recordings.map((r, i) => `<li class="py-3"><div class="flex flex-wrap items-center gap-3"><p class="min-w-0 flex-1 truncate font-medium">${r.name}</p><span class="text-sm text-muted tabular">${clock(r.dur)} · ${formatBytes(r.blob.size)}</span></div>
+      <div class="mt-2 flex flex-wrap items-center gap-2"><audio controls src="${r.url}" class="h-11 min-w-0 flex-1"></audio><button type="button" class="btn ${i === 0 ? 'btn-primary' : 'btn-secondary'}" data-dl="${i}">Download</button><button type="button" class="btn btn-ghost h-11 w-11 !p-0" data-del="${i}" aria-label="Delete recording"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6"/></svg></button></div></li>`).join('');
+  }
+  q('[data-list]').addEventListener('click', (e) => {
+    const t = e.target as HTMLElement, dl = t.closest<HTMLElement>('[data-dl]'), del = t.closest<HTMLElement>('[data-del]');
+    if (dl) { const r = recordings[Number(dl.dataset.dl)]; downloadBlob(r.blob, r.name); }
+    if (del) { const [r] = recordings.splice(Number(del.dataset.del), 1); URL.revokeObjectURL(r.url); render(); }
+  });
+  recBtn.addEventListener('click', () => (rec ? stop() : start()));
+  pauseBtn.addEventListener('click', () => {
+    if (!rec) return;
+    if (rec.state === 'recording') { acc = elapsed(); rec.pause(); pauseBtn.querySelector('[data-label]')!.textContent = 'Resume'; q('[data-status]').textContent = 'Paused'; }
+    else { startAt = performance.now(); rec.resume(); pauseBtn.querySelector('[data-label]')!.textContent = 'Pause'; q('[data-status]').innerHTML = '<span class="text-danger">Recording</span>'; }
+  });
+  addEventListener('beforeunload', (e) => { if (rec) e.preventDefault(); });
+</script>

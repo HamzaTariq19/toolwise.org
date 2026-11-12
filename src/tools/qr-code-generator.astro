@@ -1,0 +1,94 @@
+---
+import Icon from '../components/Icon.astro';
+---
+<div id="qr" class="grid gap-5 md:grid-cols-[1fr_300px] md:items-start">
+  <form class="card space-y-5 p-5 sm:p-6" novalidate onsubmit="return false">
+    <fieldset>
+      <legend class="label">What should the QR code open?</legend>
+      <div class="segmented">
+        <label><input type="radio" name="qr-type" value="url" checked /><span>Link or text</span></label>
+        <label><input type="radio" name="qr-type" value="wifi" /><span>Wi-Fi</span></label>
+        <label><input type="radio" name="qr-type" value="email" /><span>Email</span></label>
+        <label><input type="radio" name="qr-type" value="tel" /><span>Phone</span></label>
+      </div>
+    </fieldset>
+    <div data-t="url"><label for="qr-text" class="label">Link or text</label><textarea id="qr-text" class="textarea !min-h-24" placeholder="https://example.com">https://toolwise.org</textarea></div>
+    <div data-t="wifi" class="grid gap-3 sm:grid-cols-2" hidden>
+      <div><label for="qr-ssid" class="label">Network name</label><input id="qr-ssid" class="input" autocomplete="off" /></div>
+      <div><label for="qr-pass" class="label">Password</label><input id="qr-pass" class="input" autocomplete="off" /></div>
+      <div><label for="qr-enc" class="label">Security</label><select id="qr-enc" class="select"><option value="WPA">WPA/WPA2/WPA3</option><option value="WEP">WEP</option><option value="nopass">No password</option></select></div>
+      <label class="flex min-h-11 items-center gap-3 self-end text-[0.9375rem]"><input type="checkbox" id="qr-hidden" class="h-5 w-5 accent-[var(--brand)]" />Hidden network</label>
+    </div>
+    <div data-t="email" class="space-y-3" hidden>
+      <div><label for="qr-to" class="label">Email address</label><input id="qr-to" type="email" class="input" /></div>
+      <div><label for="qr-sub" class="label">Subject (optional)</label><input id="qr-sub" class="input" /></div>
+    </div>
+    <div data-t="tel" hidden><label for="qr-tel" class="label">Phone number</label><input id="qr-tel" type="tel" class="input" placeholder="+1 555 123 4567" /></div>
+    <details class="rounded-[10px] border border-line">
+      <summary class="flex min-h-12 cursor-pointer list-none items-center justify-between px-4 font-semibold [&::-webkit-details-marker]:hidden">Colors and quality <span class="text-sm font-normal text-subtle">optional</span></summary>
+      <div class="grid grid-cols-2 gap-3 border-t border-line p-4">
+        <div><label for="qr-fg" class="label">Code color</label><input id="qr-fg" type="color" value="#000000" class="h-11 w-full cursor-pointer rounded-[10px] border border-line-strong bg-surface p-1" /></div>
+        <div><label for="qr-bg" class="label">Background</label><input id="qr-bg" type="color" value="#ffffff" class="h-11 w-full cursor-pointer rounded-[10px] border border-line-strong bg-surface p-1" /></div>
+        <div class="col-span-2"><label for="qr-ec" class="label">Error correction</label><select id="qr-ec" class="select"><option value="L">Low: smallest code</option><option value="M" selected>Medium (recommended)</option><option value="Q">High</option><option value="H">Highest: survives damage</option></select></div>
+      </div>
+    </details>
+  </form>
+  <aside class="card flex flex-col items-center p-5 md:sticky md:top-24">
+    <div class="flex aspect-square w-full max-w-[260px] items-center justify-center rounded-lg bg-white p-2"><canvas data-canvas class="h-auto w-full" role="img" aria-label="QR code preview"></canvas></div>
+    <p class="mt-2 min-h-5 text-center text-sm text-muted" data-note></p>
+    <p class="alert alert-error mt-2 w-full" data-error hidden role="alert"><span data-msg></span></p>
+    <button type="button" class="btn btn-primary btn-lg mt-3 w-full" data-png><Icon name="Download" size={18} />Download PNG</button>
+    <button type="button" class="btn btn-secondary mt-2 w-full" data-svg>Download SVG</button>
+  </aside>
+</div>
+<script>
+  import QRCode from 'qrcode';
+  import { downloadBlob, showError } from '../lib/ui';
+  const root = document.getElementById('qr')!;
+  const v = (id: string) => (document.getElementById(id) as HTMLInputElement).value;
+  const type = () => root.querySelector<HTMLInputElement>('input[name=qr-type]:checked')!.value;
+  const canvas = root.querySelector<HTMLCanvasElement>('[data-canvas]')!;
+  const err = root.querySelector<HTMLElement>('[data-error]')!;
+  const esc = (s: string) => s.replace(/([\;,:"])/g, '\\$1');
+  let text = '';
+
+  function content(): string | null {
+    switch (type()) {
+      case 'wifi': return v('qr-ssid').trim() ? `WIFI:T:${v('qr-enc')};S:${esc(v('qr-ssid'))};${v('qr-enc') !== 'nopass' ? `P:${esc(v('qr-pass'))};` : ''}${(document.getElementById('qr-hidden') as HTMLInputElement).checked ? 'H:true;' : ''};` : null;
+      case 'email': return v('qr-to').trim() ? `mailto:${v('qr-to').trim()}${v('qr-sub') ? `?subject=${encodeURIComponent(v('qr-sub'))}` : ''}` : null;
+      case 'tel': return v('qr-tel').trim() ? `tel:${v('qr-tel').replace(/[^\d+]/g, '')}` : null;
+      default: return v('qr-text').trim() || null;
+    }
+  }
+  const opts = () => ({ errorCorrectionLevel: v('qr-ec') as 'M', margin: 2, color: { dark: v('qr-fg'), light: v('qr-bg') } });
+  const buttons = root.querySelectorAll<HTMLButtonElement>('[data-png],[data-svg]');
+
+  async function render() {
+    root.querySelectorAll<HTMLElement>('[data-t]').forEach((el) => (el.hidden = el.dataset.t !== type()));
+    const c = content();
+    const note = root.querySelector('[data-note]')!;
+    if (!c) { showError(err, null); note.textContent = 'Fill in the details to create your QR code.'; canvas.getContext('2d')?.clearRect(0, 0, canvas.width, canvas.height); buttons.forEach((b) => (b.disabled = true)); return; }
+    try {
+      await QRCode.toCanvas(canvas, c, { ...opts(), width: 520 });
+      canvas.style.width = '100%'; canvas.style.height = 'auto';
+      text = c; showError(err, null); buttons.forEach((b) => (b.disabled = false));
+      note.textContent = type() === 'url' && /^https?:\/\//i.test(c) ? 'Scan with your phone camera to test it.' : 'Scan to test before you print.';
+      const lum = (h: string) => { const n = parseInt(h.slice(1), 16); return 0.299 * (n >> 16) + 0.587 * ((n >> 8) & 255) + 0.114 * (n & 255); };
+      if (lum(v('qr-fg')) > lum(v('qr-bg')) - 80) note.textContent = 'Tip: use a dark code on a light background, or some phones may not scan it.';
+    } catch {
+      showError(err, 'This is too much text for one QR code. Shorten it, or choose a lower error correction level.');
+      buttons.forEach((b) => (b.disabled = true));
+    }
+  }
+  let t: number | undefined;
+  root.addEventListener('input', () => { clearTimeout(t); t = window.setTimeout(render, 120); });
+  root.addEventListener('change', render);
+  root.querySelector('[data-png]')!.addEventListener('click', async () => {
+    const url = await QRCode.toDataURL(text, { ...opts(), width: 1024 });
+    downloadBlob(await (await fetch(url)).blob(), 'qr-code.png');
+  });
+  root.querySelector('[data-svg]')!.addEventListener('click', async () => {
+    downloadBlob(new Blob([await QRCode.toString(text, { ...opts(), type: 'svg' })], { type: 'image/svg+xml' }), 'qr-code.svg');
+  });
+  render();
+</script>

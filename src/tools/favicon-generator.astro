@@ -1,0 +1,145 @@
+---
+import Icon from '../components/Icon.astro';
+---
+<div id="fv" class="grid gap-5 md:grid-cols-[1fr_300px] md:items-start">
+  <form class="card space-y-5 p-5 sm:p-6" novalidate onsubmit="return false">
+    <fieldset>
+      <legend class="label">Create from</legend>
+      <div class="segmented">
+        <label><input type="radio" name="fv-src" value="text" checked /><span>Text</span></label>
+        <label><input type="radio" name="fv-src" value="emoji" /><span>Emoji</span></label>
+        <label><input type="radio" name="fv-src" value="image" /><span>Image</span></label>
+      </div>
+    </fieldset>
+    <div data-s="text"><label for="fv-text" class="label">Letters (1 to 3)</label><input id="fv-text" class="input text-lg" maxlength="3" value="T" /></div>
+    <div data-s="emoji" hidden><label for="fv-emoji" class="label">Emoji</label><input id="fv-emoji" class="input text-2xl" value="🚀" maxlength="8" /><p class="hint">Emoji look slightly different on each operating system.</p></div>
+    <div data-s="image" hidden>
+      <label class="btn btn-secondary relative cursor-pointer"><Icon name="Upload" size={18} />Choose image<input type="file" accept="image/png,image/jpeg,image/webp,image/svg+xml" class="absolute inset-0 cursor-pointer opacity-0" data-file /></label>
+      <p class="hint" data-file-name>A square PNG or SVG logo of at least 512 × 512 pixels works best. Your image is not uploaded.</p>
+    </div>
+    <div class="grid grid-cols-2 gap-3">
+      <div><label for="fv-bg" class="label">Background</label><input id="fv-bg" type="color" value="#1d4ed8" class="h-11 w-full cursor-pointer rounded-[10px] border border-line-strong bg-surface p-1" /></div>
+      <div data-s="text"><label for="fv-fg" class="label">Text color</label><input id="fv-fg" type="color" value="#ffffff" class="h-11 w-full cursor-pointer rounded-[10px] border border-line-strong bg-surface p-1" /></div>
+      <label class="col-span-2 flex min-h-11 items-center gap-3 text-[0.9375rem]"><input type="checkbox" id="fv-transparent" class="h-5 w-5 accent-[var(--brand)]" />Transparent background</label>
+    </div>
+    <fieldset>
+      <legend class="label">Shape</legend>
+      <div class="segmented">
+        <label><input type="radio" name="fv-shape" value="square" /><span>Square</span></label>
+        <label><input type="radio" name="fv-shape" value="rounded" checked /><span>Rounded</span></label>
+        <label><input type="radio" name="fv-shape" value="circle" /><span>Circle</span></label>
+      </div>
+    </fieldset>
+  </form>
+  <aside class="card p-5 md:sticky md:top-24">
+    <p class="text-sm font-semibold text-muted">Preview</p>
+    <div class="mt-3 flex items-end justify-center gap-4 rounded-lg bg-surface-2 p-4" aria-hidden="true">
+      <canvas data-p="128" class="h-24 w-24"></canvas><canvas data-p="32" class="h-8 w-8"></canvas><canvas data-p="16" class="h-4 w-4 [image-rendering:pixelated]"></canvas>
+    </div>
+    <div class="mt-3 flex items-center gap-2 rounded-t-lg border border-b-0 border-line bg-surface-2 px-3 py-2 text-sm" aria-hidden="true"><canvas data-p="16" class="h-4 w-4"></canvas><span class="truncate">Your website</span></div>
+    <p class="alert alert-error mt-3" data-err hidden></p>
+    <button type="button" class="btn btn-primary btn-lg mt-4 w-full" data-dl><Icon name="Download" size={18} /><span data-label>Download favicon pack</span></button>
+    <p class="hint">ZIP with favicon.ico, PNG icons (16 to 512 px), apple-touch-icon and site.webmanifest.</p>
+  </aside>
+  <section class="card p-5 md:col-span-2">
+    <div class="flex items-center justify-between"><h2 class="text-base font-semibold">Add this to your website's &lt;head&gt;</h2><button type="button" class="btn btn-ghost btn-sm" data-copy><Icon name="Copy" size={16} /><span data-label>Copy</span></button></div>
+    <pre class="mono mt-3 overflow-x-auto rounded-lg bg-surface-2 p-4 text-sm" data-snippet></pre>
+  </section>
+</div>
+<script>
+  import { downloadBlob, copyText, showError } from '../lib/ui';
+  import { toBlob } from '../lib/image';
+  const root = document.getElementById('fv')!;
+  const v = (id: string) => (document.getElementById(id) as HTMLInputElement).value;
+  const src = () => root.querySelector<HTMLInputElement>('input[name=fv-src]:checked')!.value;
+  const shape = () => root.querySelector<HTMLInputElement>('input[name=fv-shape]:checked')!.value;
+  let img: ImageBitmap | HTMLImageElement | null = null;
+  const SNIPPET = `<link rel="icon" href="/favicon.ico" sizes="32x32">
+<link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="manifest" href="/site.webmanifest">`;
+  root.querySelector('[data-snippet]')!.textContent = SNIPPET;
+
+  function draw(size: number): HTMLCanvasElement {
+    const c = document.createElement('canvas'); c.width = c.height = size;
+    const ctx = c.getContext('2d')!;
+    const transparent = (document.getElementById('fv-transparent') as HTMLInputElement).checked;
+    ctx.save();
+    ctx.beginPath();
+    const sh = shape();
+    if (sh === 'circle') ctx.arc(size / 2, size / 2, size / 2, 0, Math.PI * 2);
+    else if (sh === 'rounded') (ctx as any).roundRect ? (ctx as any).roundRect(0, 0, size, size, size * 0.22) : ctx.rect(0, 0, size, size);
+    else ctx.rect(0, 0, size, size);
+    ctx.clip();
+    if (!transparent) { ctx.fillStyle = v('fv-bg'); ctx.fillRect(0, 0, size, size); }
+    const s = src();
+    if (s === 'image' && img) {
+      const w = 'naturalWidth' in img ? img.naturalWidth : img.width, h = 'naturalHeight' in img ? img.naturalHeight : img.height;
+      const pad = sh === 'circle' ? size * 0.12 : 0, box = size - pad * 2, sc = Math.min(box / w, box / h);
+      ctx.imageSmoothingQuality = 'high';
+      ctx.drawImage(img, (size - w * sc) / 2, (size - h * sc) / 2, w * sc, h * sc);
+    } else if (s !== 'image') {
+      const text = s === 'emoji' ? v('fv-emoji').trim() || '🙂' : v('fv-text').trim() || 'A';
+      const n = [...text].length;
+      ctx.fillStyle = v('fv-fg'); ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+      const fs = size * (s === 'emoji' ? 0.72 : n === 1 ? 0.7 : n === 2 ? 0.52 : 0.4);
+      ctx.font = `${s === 'emoji' ? '' : '700 '}${fs}px ${s === 'emoji' ? '"Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif' : '"Inter Variable",system-ui,sans-serif'}`;
+      const m = ctx.measureText(text);
+      const y = size / 2 + (m.actualBoundingBoxAscent - m.actualBoundingBoxDescent) / 2;
+      ctx.fillText(text, size / 2, y);
+    }
+    ctx.restore();
+    return c;
+  }
+  function preview() {
+    root.querySelectorAll<HTMLElement>('[data-s]').forEach((el) => (el.hidden = el.dataset.s !== src()));
+    root.querySelectorAll<HTMLCanvasElement>('canvas[data-p]').forEach((cv) => { const s = Number(cv.dataset.p) * 2; const d = draw(s); cv.width = cv.height = s; cv.getContext('2d')!.drawImage(d, 0, 0); });
+    const err = root.querySelector<HTMLElement>('[data-err]')!;
+    const btn = root.querySelector<HTMLButtonElement>('[data-dl]')!;
+    if (src() === 'image' && !img) { showError(err, 'Choose an image to continue.'); btn.disabled = true; } else { showError(err, null); btn.disabled = false; }
+  }
+  /** ICO file containing PNG images (supported by all current browsers) */
+  async function ico(sizes: number[]) {
+    const pngs = await Promise.all(sizes.map(async (s) => new Uint8Array(await (await toBlob(draw(s), 'image/png')).arrayBuffer())));
+    const header = 6 + 16 * sizes.length;
+    const total = header + pngs.reduce((a, p) => a + p.length, 0);
+    const buf = new Uint8Array(total), dv = new DataView(buf.buffer);
+    dv.setUint16(2, 1, true); dv.setUint16(4, sizes.length, true);
+    let off = header;
+    sizes.forEach((s, i) => {
+      const e = 6 + i * 16;
+      buf[e] = s >= 256 ? 0 : s; buf[e + 1] = s >= 256 ? 0 : s;
+      dv.setUint16(e + 4, 1, true); dv.setUint16(e + 6, 32, true);
+      dv.setUint32(e + 8, pngs[i].length, true); dv.setUint32(e + 12, off, true);
+      buf.set(pngs[i], off); off += pngs[i].length;
+    });
+    return new Blob([buf], { type: 'image/x-icon' });
+  }
+  root.querySelector('[data-dl]')!.addEventListener('click', async () => {
+    const png = async (s: number) => toBlob(draw(s), 'image/png');
+    const manifest = JSON.stringify({ name: 'My website', short_name: 'Website', icons: [{ src: '/icon-192.png', sizes: '192x192', type: 'image/png' }, { src: '/icon-512.png', sizes: '512x512', type: 'image/png' }], theme_color: v('fv-bg'), background_color: '#ffffff', display: 'standalone' }, null, 2);
+    const files = [
+      { name: 'favicon.ico', blob: await ico([16, 32, 48]) },
+      { name: 'favicon-16x16.png', blob: await png(16) }, { name: 'favicon-32x32.png', blob: await png(32) },
+      { name: 'apple-touch-icon.png', blob: await png(180) }, { name: 'icon-192.png', blob: await png(192) }, { name: 'icon-512.png', blob: await png(512) },
+      { name: 'site.webmanifest', blob: new Blob([manifest], { type: 'application/manifest+json' }) },
+      { name: 'README.txt', blob: new Blob([`Upload these files to the root folder of your website, then add this to the <head> of your pages:\n\n${SNIPPET}\n`], { type: 'text/plain' }) },
+    ];
+    const { zipBlobs } = await import('../lib/zip');
+    downloadBlob(await zipBlobs(files), 'favicon-pack.zip');
+  });
+  root.querySelector('[data-copy]')!.addEventListener('click', (e) => copyText(SNIPPET, e.currentTarget as HTMLElement));
+  const file = root.querySelector<HTMLInputElement>('[data-file]')!;
+  file.addEventListener('change', async () => {
+    const f = file.files?.[0]; if (!f) return;
+    try {
+      if (f.type === 'image/svg+xml') { const i = new Image(); i.src = URL.createObjectURL(f); await i.decode(); if (!i.naturalWidth) { i.width = 512; i.height = 512; } img = i; }
+      else img = await createImageBitmap(f);
+      root.querySelector('[data-file-name]')!.textContent = f.name;
+      preview();
+    } catch { showError(root.querySelector('[data-err]'), 'That image could not be opened. Try a PNG, JPG or SVG file.'); }
+  });
+  root.addEventListener('input', preview); root.addEventListener('change', preview);
+  document.fonts?.ready.then(preview);
+  preview();
+</script>

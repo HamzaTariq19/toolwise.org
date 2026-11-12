@@ -1,0 +1,120 @@
+---
+import Dropzone from '../components/Dropzone.astro';
+import FileResults from '../components/FileResults.astro';
+import Icon from '../components/Icon.astro';
+---
+<div id="mp" class="space-y-5">
+  <div data-step="pick">
+    <Dropzone id="mp-drop" accept="application/pdf,.pdf" formats="PDF files" maxLabel="200 MB each" multiple label="Choose PDF files" icon="FileStack" />
+  </div>
+  <div class="alert alert-error" data-error hidden role="alert"><span data-msg></span></div>
+
+  <div data-step="list" hidden>
+    <div class="card overflow-hidden">
+      <div class="flex items-center justify-between gap-3 border-b border-line px-4 py-3">
+        <p class="font-semibold" data-count></p>
+        <label class="btn btn-secondary btn-sm relative cursor-pointer">
+          <Icon name="Plus" size={16} /> Add more
+          <input type="file" accept="application/pdf,.pdf" multiple class="absolute inset-0 cursor-pointer opacity-0" data-add aria-label="Add more PDF files" />
+        </label>
+      </div>
+      <ul class="divide-y divide-[var(--border)]" data-list aria-label="Files to merge, in order"></ul>
+    </div>
+    <p class="hint mt-2">The files are joined from top to bottom. Use the arrows or drag to change the order.</p>
+    <p class="mt-2 flex items-center gap-1.5 text-sm text-muted"><Icon name="ShieldCheck" size={16} class="text-success" />Your files never leave your device.</p>
+    <div class="mt-5 flex flex-col gap-3 sm:flex-row">
+      <button type="button" class="btn btn-primary btn-lg" data-merge><Icon name="FileStack" size={20} /><span data-label>Merge PDFs</span></button>
+      <button type="button" class="btn btn-secondary btn-lg" data-clear>Start over</button>
+    </div>
+  </div>
+
+  <FileResults id="mp-results" />
+</div>
+
+<script>
+  import { initDropzone } from '../lib/dropzone';
+  import { createResults } from '../lib/file-results';
+  import { createSortableList, type ListItem } from '../lib/sortable-list';
+  import { loadPdfLibDoc, getPdfLib, pdfBlob, PdfPasswordError } from '../lib/pdf';
+  import { formatBytes, showError } from '../lib/ui';
+
+  type Item = ListItem & { file: File; pages?: number; ok?: boolean };
+  const root = document.getElementById('mp')!;
+  const pick = root.querySelector<HTMLElement>('[data-step=pick]')!;
+  const listStep = root.querySelector<HTMLElement>('[data-step=list]')!;
+  const err = root.querySelector<HTMLElement>('[data-error]')!;
+  const mergeBtn = root.querySelector<HTMLButtonElement>('[data-merge]')!;
+  const count = root.querySelector<HTMLElement>('[data-count]')!;
+  let seq = 0;
+
+  const list = createSortableList<Item>(root.querySelector('[data-list]')!, (items) => {
+    const okCount = items.filter((i) => i.ok).length;
+    const pages = items.reduce((s, i) => s + (i.pages ?? 0), 0);
+    count.textContent = `${items.length} file${items.length === 1 ? '' : 's'} · ${pages} page${pages === 1 ? '' : 's'}`;
+    mergeBtn.disabled = okCount < 2;
+    mergeBtn.title = okCount < 2 ? 'Add at least two PDF files' : '';
+    if (!items.length) { listStep.hidden = true; pick.hidden = false; }
+  });
+
+  const results = createResults(document.getElementById('mp-results')!, {
+    zipName: 'merged.zip',
+    showSavings: false,
+    summary: (items) => `Merged ${list.items.filter((i) => i.ok).length} files into one PDF · ${items[0]?.note ?? ''}`,
+    onReset: () => { list.set([]); pick.hidden = false; showError(err, null); },
+  });
+
+  async function addFiles(files: File[]) {
+    const items: Item[] = files.map((file) => ({ id: `f${seq++}`, name: file.name, meta: `${formatBytes(file.size)} · reading…`, file }));
+    list.add(items);
+    pick.hidden = true;
+    listStep.hidden = false;
+    for (const it of items) {
+      try {
+        const doc = await loadPdfLibDoc(await it.file.arrayBuffer());
+        const n = doc.getPageCount();
+        list.update(it.id, { pages: n, ok: true, meta: `${n} page${n === 1 ? '' : 's'} · ${formatBytes(it.file.size)}` } as Partial<Item>);
+      } catch (e) {
+        list.update(it.id, { ok: false, error: e instanceof PdfPasswordError ? 'Password protected: unlock it first' : 'Could not be read as a PDF' } as Partial<Item>);
+      }
+    }
+    const bad = list.items.filter((i) => i.error).length;
+    showError(err, bad ? `${bad} file${bad > 1 ? 's' : ''} cannot be merged and will be skipped. Remove ${bad > 1 ? 'them' : 'it'} or add another file.` : null);
+  }
+
+  mergeBtn.addEventListener('click', async () => {
+    const items = list.items.filter((i) => i.ok);
+    if (items.length < 2) return;
+    listStep.hidden = true;
+    showError(err, null);
+    try {
+      const { PDFDocument } = await getPdfLib();
+      const out = await PDFDocument.create();
+      for (let i = 0; i < items.length; i++) {
+        results.setProgress(i, items.length, `Adding file ${i + 1} of ${items.length}…`);
+        const src = await loadPdfLibDoc(await items[i].file.arrayBuffer());
+        const pages = await out.copyPages(src, src.getPageIndices());
+        pages.forEach((p) => out.addPage(p));
+      }
+      results.setProgress(items.length, items.length, 'Saving merged PDF…');
+      const bytes = await out.save({ useObjectStreams: true });
+      const total = items.reduce((s, i) => s + i.file.size, 0);
+      results.render([{ name: 'merged.pdf', outName: 'merged.pdf', originalSize: total, blob: pdfBlob(bytes), note: `${out.getPageCount()} pages` }]);
+    } catch (e) {
+      listStep.hidden = false;
+      results.reset();
+      showError(err, `Merging failed: ${(e as Error).message}`);
+    }
+  });
+
+  root.querySelector('[data-clear]')!.addEventListener('click', () => { list.set([]); showError(err, null); });
+  const add = root.querySelector<HTMLInputElement>('[data-add]')!;
+  add.addEventListener('change', () => { const f = Array.from(add.files ?? []).filter((x) => /\.pdf$/i.test(x.name) || x.type === 'application/pdf'); if (f.length) addFiles(f); add.value = ''; });
+
+  initDropzone(document.getElementById('mp-drop')!, {
+    accept: ['application/pdf', '.pdf'],
+    multiple: true,
+    maxBytes: 200 * 1024 * 1024,
+    onFiles: addFiles,
+    onError: (m) => showError(err, m || null),
+  });
+</script>

@@ -1,0 +1,110 @@
+---
+import CalcLayout from '../components/CalcLayout.astro';
+import CurrencySelect from '../components/CurrencySelect.astro';
+---
+<CalcLayout id="ci2">
+  <Fragment slot="inputs">
+    <CurrencySelect id="ci2-cur" />
+    <div>
+      <label for="ci2-p" class="label">Starting amount</label>
+      <div class="input-group"><span class="addon addon-left" data-sym>$</span><input id="ci2-p" class="input tabular" inputmode="decimal" value="10,000" /></div>
+    </div>
+    <div>
+      <label for="ci2-m" class="label">Monthly contribution</label>
+      <div class="input-group"><span class="addon addon-left" data-sym>$</span><input id="ci2-m" class="input tabular" inputmode="decimal" value="200" /></div>
+    </div>
+    <div class="grid grid-cols-2 gap-3">
+      <div>
+        <label for="ci2-r" class="label">Annual interest rate</label>
+        <div class="input-group"><input id="ci2-r" class="input tabular" inputmode="decimal" value="7" /><span class="addon">%</span></div>
+      </div>
+      <div>
+        <label for="ci2-y" class="label">Years</label>
+        <div class="input-group"><input id="ci2-y" class="input tabular" inputmode="numeric" value="20" /><span class="addon">yrs</span></div>
+      </div>
+    </div>
+    <div>
+      <label for="ci2-n" class="label">Compounding</label>
+      <select id="ci2-n" class="select">
+        <option value="1">Yearly</option><option value="4">Quarterly</option><option value="12" selected>Monthly</option><option value="365">Daily</option>
+      </select>
+    </div>
+  </Fragment>
+  <Fragment slot="results">
+    <div data-ok>
+      <p class="text-sm font-medium text-muted">Future value</p>
+      <p class="mt-1 text-4xl font-extrabold tracking-tight tabular" data-fv>–</p>
+      <dl class="mt-5 grid grid-cols-2 gap-3">
+        <div class="stat"><dt class="stat-label">Total deposits</dt><dd class="text-lg font-bold tabular" data-dep>–</dd></div>
+        <div class="stat"><dt class="stat-label">Interest earned</dt><dd class="text-lg font-bold tabular text-success" data-int>–</dd></div>
+      </dl>
+      <figure class="mt-5">
+        <svg class="h-44 w-full" data-chart role="img" aria-label="Growth chart"></svg>
+        <figcaption class="mt-2 flex gap-4 text-sm text-muted">
+          <span class="flex items-center gap-1.5"><span class="h-2.5 w-2.5 rounded-sm bg-[var(--border-strong)]"></span>Deposits</span>
+          <span class="flex items-center gap-1.5"><span class="h-2.5 w-2.5 rounded-sm bg-brand"></span>Interest</span>
+        </figcaption>
+      </figure>
+    </div>
+    <p class="alert alert-info" data-msg hidden></p>
+  </Fragment>
+</CalcLayout>
+
+<details class="card group mt-5">
+  <summary class="flex min-h-14 cursor-pointer list-none items-center justify-between px-5 font-semibold [&::-webkit-details-marker]:hidden">Year-by-year breakdown <span class="text-sm font-normal text-subtle">Show</span></summary>
+  <div class="overflow-x-auto border-t border-line">
+    <table class="w-full text-right text-[0.9375rem] tabular">
+      <thead class="bg-surface-2 text-sm text-muted"><tr><th class="px-4 py-2 text-left font-semibold">Year</th><th class="px-4 py-2 font-semibold">Deposits</th><th class="px-4 py-2 font-semibold">Interest</th><th class="px-4 py-2 font-semibold">Balance</th></tr></thead>
+      <tbody data-table class="divide-y divide-[var(--border)]"></tbody>
+    </table>
+  </div>
+</details>
+
+<script>
+  import { bindCurrency, live } from '../lib/calc';
+  import { num, money } from '../lib/ui';
+
+  const root = document.getElementById('ci2')!;
+  const v = (id: string) => num((document.getElementById(id) as HTMLInputElement).value);
+  const cur = bindCurrency(document.getElementById('ci2-cur') as HTMLSelectElement, () => calc());
+  const ok = root.querySelector<HTMLElement>('[data-ok]')!, msg = root.querySelector<HTMLElement>('[data-msg]')!;
+  const set = (s: string, t: string) => (root.querySelector(s)!.textContent = t);
+  const fail = (t: string) => { ok.hidden = true; msg.hidden = false; msg.textContent = t; document.querySelector('[data-table]')!.innerHTML = ''; };
+
+  function calc() {
+    const c = cur();
+    root.querySelectorAll('[data-sym]').forEach((el) => (el.textContent = c || '#'));
+    const P = v('ci2-p') || 0, M = v('ci2-m') || 0, r = v('ci2-r'), Y = v('ci2-y');
+    const n = Number((document.getElementById('ci2-n') as HTMLSelectElement).value);
+    if (P < 0 || M < 0) return fail('Amounts cannot be negative.');
+    if (!(P > 0 || M > 0)) return fail('Enter a starting amount or a monthly contribution.');
+    if (!(r >= -20 && r <= 100)) return fail('Enter an annual interest rate, for example 7.');
+    if (!(Y >= 1 && Y <= 100) || !Number.isInteger(Y)) return fail('Enter a whole number of years between 1 and 100.');
+    const monthlyRate = Math.pow(1 + r / 100 / n, n / 12) - 1;
+    let bal = P, dep = P;
+    const rows: { y: number; dep: number; bal: number }[] = [];
+    for (let m = 1; m <= Y * 12; m++) {
+      bal = bal * (1 + monthlyRate) + M;
+      dep += M;
+      if (m % 12 === 0) rows.push({ y: m / 12, dep, bal });
+    }
+    ok.hidden = false; msg.hidden = true;
+    set('[data-fv]', money(bal, c));
+    set('[data-dep]', money(dep, c, 0));
+    set('[data-int]', money(bal - dep, c, 0));
+    // Chart
+    const svg = root.querySelector<SVGSVGElement>('[data-chart]')!;
+    const W = 400, H = 170, max = Math.max(...rows.map((x) => Math.max(x.bal, x.dep)));
+    const bw = W / rows.length;
+    svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
+    svg.setAttribute('preserveAspectRatio', 'none');
+    svg.innerHTML = rows.map((x, i) => {
+      const hd = (x.dep / max) * (H - 4), hi = Math.max(0, ((x.bal - x.dep) / max) * (H - 4));
+      const gap = Math.min(3, bw * 0.25);
+      return `<rect x="${i * bw + gap / 2}" y="${H - hd}" width="${bw - gap}" height="${hd}" fill="var(--border-strong)"/><rect x="${i * bw + gap / 2}" y="${H - hd - hi}" width="${bw - gap}" height="${hi}" fill="var(--brand)"/>`;
+    }).join('');
+    svg.setAttribute('aria-label', `Balance grows from ${money(P, c, 0)} to ${money(bal, c, 0)} over ${Y} years`);
+    document.querySelector('[data-table]')!.innerHTML = rows.map((x) => `<tr><td class="px-4 py-2 text-left">${x.y}</td><td class="px-4 py-2">${money(x.dep, c, 0)}</td><td class="px-4 py-2">${money(x.bal - x.dep, c, 0)}</td><td class="px-4 py-2 font-semibold">${money(x.bal, c, 0)}</td></tr>`).join('');
+  }
+  live(root.querySelector('[data-inputs]')!, calc);
+</script>

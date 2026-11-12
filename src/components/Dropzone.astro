@@ -1,0 +1,30 @@
+---
+import Icon from './Icon.astro';
+interface Props {
+  id: string;
+  accept: string; // input accept attribute
+  formats: string; // human readable, e.g. "JPG, PNG, WebP"
+  maxLabel?: string; // e.g. "50 MB"
+  multiple?: boolean;
+  label?: string; // button label
+  icon?: string;
+}
+const { id, accept, formats, maxLabel, multiple = false, label, icon = 'Upload' } = Astro.props;
+const btn = label ?? (multiple ? 'Choose files' : 'Choose file');
+---
+<div id={id} class="dropzone">
+  <label
+    data-zone
+    class="group relative flex min-h-[240px] cursor-pointer flex-col items-center justify-center rounded-2xl border-2 border-dashed border-line-strong bg-surface px-5 py-10 text-center transition-colors hover:border-[var(--ring)] hover:bg-brand-soft/40 data-[over]:border-[var(--ring)] data-[over]:bg-brand-soft sm:min-h-[280px]"
+  >
+    <input type="file" accept={accept} multiple={multiple} class="peer absolute inset-0 h-full w-full cursor-pointer opacity-0" />
+    <span class="icon-tile h-14 w-14 !rounded-2xl"><Icon name={icon} size={26} /></span>
+    <span class="btn btn-primary btn-lg pointer-events-none mt-5 peer-focus-visible:outline peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-[var(--ring)]">{btn}</span>
+    <span class="mt-3 hidden text-muted sm:block">or drag and drop {multiple ? 'files' : 'a file'} here</span>
+    <span class="mt-3 text-sm text-subtle sm:mt-1">{formats}{maxLabel && ` · up to ${maxLabel}`}</span>
+  </label>
+  <p class="mt-3 flex items-center justify-center gap-1.5 text-sm text-muted">
+    <Icon name="ShieldCheck" size={16} class="text-success" />
+    Your files never leave your device.
+  </p>
+</div>

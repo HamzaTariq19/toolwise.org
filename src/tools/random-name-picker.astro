@@ -1,0 +1,71 @@
+---
+import Icon from '../components/Icon.astro';
+---
+<div id="np" class="grid gap-5 md:grid-cols-2 md:items-start">
+  <div class="card p-5">
+    <div class="flex items-center justify-between"><label for="np-names" class="label !mb-0">Names</label><span class="text-sm text-subtle" data-count></span></div>
+    <textarea id="np-names" class="textarea mt-2 !min-h-[260px]" placeholder="One name per line">Alex
+Sam
+Jordan
+Taylor
+Morgan
+Casey
+Riley
+Jamie</textarea>
+    <div class="mt-3 grid grid-cols-2 gap-3">
+      <div><label for="np-n" class="label">How many to pick</label><input id="np-n" class="input tabular" inputmode="numeric" value="1" /></div>
+      <label class="flex min-h-11 items-center gap-2 self-end text-[0.9375rem]"><input type="checkbox" id="np-remove" class="h-5 w-5 accent-[var(--brand)]" />Remove picked names</label>
+    </div>
+    <button type="button" class="btn btn-ghost btn-sm mt-3" data-shuffle><Icon name="Shuffle" size={16} />Shuffle list</button>
+  </div>
+  <div class="card flex flex-col p-5 text-center">
+    <div class="flex min-h-40 flex-col items-center justify-center rounded-xl bg-surface-2 p-4" aria-live="polite">
+      <p class="text-sm font-semibold uppercase tracking-wide text-subtle" data-label-top>Ready</p>
+      <p class="mt-1 break-words text-3xl font-extrabold tracking-tight sm:text-4xl" data-result>Press the button</p>
+    </div>
+    <p class="alert alert-error mt-3 text-left" data-err hidden></p>
+    <button type="button" class="btn btn-primary btn-lg mt-4" data-pick><Icon name="Sparkles" size={20} />Pick a name</button>
+    <div class="mt-5 text-left" data-hist-wrap hidden>
+      <p class="text-sm font-semibold text-muted">Picked so far</p>
+      <ol class="mt-2 list-decimal space-y-1 pl-6" data-hist></ol>
+    </div>
+  </div>
+</div>
+<script>
+  import { randInt, parseList, reducedMotion } from '../lib/random';
+  import { num } from '../lib/ui';
+  const root = document.getElementById('np')!;
+  const ta = document.getElementById('np-names') as HTMLTextAreaElement;
+  const result = root.querySelector<HTMLElement>('[data-result]')!, top = root.querySelector<HTMLElement>('[data-label-top]')!;
+  const err = root.querySelector<HTMLElement>('[data-err]')!, btn = root.querySelector<HTMLButtonElement>('[data-pick]')!;
+  const hist: string[] = [];
+  const esc = (s: string) => s.replace(/[&<>]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' })[c]!);
+  const count = () => { const n = parseList(ta.value).length; root.querySelector('[data-count]')!.textContent = `${n} name${n === 1 ? '' : 's'}`; };
+  ta.addEventListener('input', count); count();
+
+  btn.addEventListener('click', async () => {
+    const names = parseList(ta.value);
+    const n = Math.floor(num((document.getElementById('np-n') as HTMLInputElement).value));
+    err.hidden = true;
+    if (names.length < 1) { err.hidden = false; err.textContent = 'Add at least one name, one per line.'; return; }
+    if (!(n >= 1)) { err.hidden = false; err.textContent = 'Enter how many names to pick, for example 1.'; return; }
+    if (n > names.length) { err.hidden = false; err.textContent = `You asked for ${n} names but the list only has ${names.length}.`; return; }
+    btn.disabled = true;
+    top.textContent = 'Picking…';
+    if (!reducedMotion()) for (let i = 0; i < 16; i++) { result.textContent = names[randInt(names.length)]; await new Promise((r) => setTimeout(r, 40 + i * 6)); }
+    const pool = [...names], picked: string[] = [];
+    for (let i = 0; i < n; i++) picked.push(pool.splice(randInt(pool.length), 1)[0]);
+    top.textContent = n > 1 ? 'Winners' : 'Winner';
+    result.innerHTML = picked.map(esc).join('<br>');
+    hist.push(...picked);
+    root.querySelector<HTMLElement>('[data-hist-wrap]')!.hidden = false;
+    root.querySelector('[data-hist]')!.innerHTML = hist.map((h) => `<li>${esc(h)}</li>`).join('');
+    if ((document.getElementById('np-remove') as HTMLInputElement).checked) { ta.value = pool.join('\n'); count(); }
+    btn.disabled = false;
+  });
+  root.querySelector('[data-shuffle]')!.addEventListener('click', () => {
+    const a = parseList(ta.value);
+    for (let i = a.length - 1; i > 0; i--) { const j = randInt(i + 1); [a[i], a[j]] = [a[j], a[i]]; }
+    ta.value = a.join('\n');
+  });
+</script>

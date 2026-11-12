@@ -1,0 +1,13 @@
+---
+// Inputs on the left, live results on the right (stacked on mobile).
+interface Props { id: string; resultsLabel?: string }
+const { id, resultsLabel = 'Results' } = Astro.props;
+---
+<div id={id} class="grid gap-5 md:grid-cols-2 md:items-start">
+  <form class="card space-y-5 p-5 sm:p-6" novalidate onsubmit="return false" data-inputs>
+    <slot name="inputs" />
+  </form>
+  <section class="card p-5 sm:p-6 md:sticky md:top-24" aria-live="polite" aria-label={resultsLabel} data-results>
+    <slot name="results" />
+  </section>
+</div>

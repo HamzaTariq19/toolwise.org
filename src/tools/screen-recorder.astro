@@ -1,0 +1,101 @@
+---
+import Icon from '../components/Icon.astro';
+---
+<div id="sr" class="space-y-5">
+  <div class="card p-5 sm:p-6">
+    <div class="relative flex aspect-video items-center justify-center overflow-hidden rounded-xl bg-[#0b0f17]">
+      <video data-live muted playsinline class="h-full w-full object-contain" hidden></video>
+      <video data-result controls playsinline class="h-full w-full object-contain" hidden></video>
+      <div class="px-6 text-center text-gray-300" data-idle>
+        <p class="font-semibold text-white">Record your screen, a window or a browser tab</p>
+        <p class="mt-1 text-sm">You choose what to share in the next step.</p>
+      </div>
+      <span class="absolute left-3 top-3 hidden items-center gap-2 rounded-full bg-black/70 px-3 py-1 text-sm font-semibold text-white" data-badge><span class="h-2.5 w-2.5 animate-pulse rounded-full bg-[#ef4444]"></span><span data-clock>00:00</span></span>
+    </div>
+    <div class="mt-4 flex flex-wrap gap-x-6 gap-y-1" data-opts>
+      <label class="flex min-h-11 items-center gap-3 text-[0.9375rem]"><input type="checkbox" id="sr-mic" class="h-5 w-5 accent-[var(--brand)]" />Include my microphone</label>
+      <label class="flex min-h-11 items-center gap-3 text-[0.9375rem]"><input type="checkbox" id="sr-sys" class="h-5 w-5 accent-[var(--brand)]" checked />Include sound from the screen or tab</label>
+    </div>
+    <p class="alert alert-error mt-3" data-err hidden role="alert"></p>
+    <div class="mt-4 flex flex-col gap-3 sm:flex-row">
+      <button type="button" class="btn btn-primary btn-lg" data-start><Icon name="ScreenShare" size={20} /><span data-label>Start recording</span></button>
+      <button type="button" class="btn btn-primary btn-lg" data-download hidden><Icon name="Download" size={20} /><span data-label>Download video</span></button>
+      <button type="button" class="btn btn-secondary btn-lg" data-again hidden><Icon name="RotateCcw" size={18} />Record again</button>
+    </div>
+    <p class="mt-3 text-sm text-muted" data-meta></p>
+    <p class="mt-2 flex items-center gap-1.5 text-sm text-muted"><Icon name="ShieldCheck" size={16} class="text-success" />The video is recorded in your browser and never uploaded.</p>
+  </div>
+</div>
+<script>
+  import { pickMime, extFor, clock, stamp, mediaError } from '../lib/recorder';
+  import { downloadBlob, formatBytes } from '../lib/ui';
+  const root = document.getElementById('sr')!;
+  const q = <T extends HTMLElement = HTMLElement>(s: string) => root.querySelector<T>(s)!;
+  const live = q<HTMLVideoElement>('[data-live]'), result = q<HTMLVideoElement>('[data-result]');
+  const startBtn = q<HTMLButtonElement>('[data-start]'), err = q('[data-err]');
+  let rec: MediaRecorder | null = null, streams: MediaStream[] = [], chunks: Blob[] = [], t0 = 0, tick = 0, blob: Blob | null = null, url = '', ctx: AudioContext | null = null;
+  const supported = !!navigator.mediaDevices?.getDisplayMedia && typeof MediaRecorder !== 'undefined';
+  if (!supported) {
+    err.hidden = false;
+    err.textContent = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent)
+      ? 'Phone and tablet browsers do not allow websites to record the screen. Use your device\'s built-in screen recorder (in Control Center on iPhone, or Quick Settings on Android), or open this page on a computer.'
+      : 'Your browser does not support screen recording. Please use the latest Chrome, Edge, Firefox or Safari on a computer.';
+    startBtn.disabled = true;
+  }
+  const show = (state: 'idle' | 'rec' | 'done') => {
+    q('[data-idle]').hidden = state !== 'idle'; live.hidden = state !== 'rec'; result.hidden = state !== 'done';
+    q('[data-badge]').style.display = state === 'rec' ? 'flex' : '';
+    q('[data-opts]').hidden = state !== 'idle';
+    startBtn.hidden = state === 'done';
+    q('[data-download]').hidden = q('[data-again]').hidden = state !== 'done';
+    startBtn.querySelector('[data-label]')!.textContent = state === 'rec' ? 'Stop recording' : 'Start recording';
+    startBtn.classList.toggle('!bg-[#dc2626]', state === 'rec');
+  };
+  async function start() {
+    err.hidden = true;
+    const wantMic = (document.getElementById('sr-mic') as HTMLInputElement).checked, wantSys = (document.getElementById('sr-sys') as HTMLInputElement).checked;
+    let screen: MediaStream;
+    try { screen = await navigator.mediaDevices.getDisplayMedia({ video: { frameRate: 30 }, audio: wantSys }); }
+    catch (e) { if ((e as DOMException).name !== 'NotAllowedError') { err.hidden = false; err.textContent = mediaError(e, 'screen'); } return; }
+    streams = [screen];
+    const tracks = [...screen.getVideoTracks()];
+    const audio: MediaStreamTrack[] = [...screen.getAudioTracks()];
+    if (wantMic) {
+      try { const mic = await navigator.mediaDevices.getUserMedia({ audio: true }); streams.push(mic); audio.push(...mic.getAudioTracks()); }
+      catch (e) { err.hidden = false; err.textContent = `${mediaError(e, 'microphone')} Recording continues without your microphone.`; }
+    }
+    // Mix several audio sources into one track
+    if (audio.length > 1) {
+      ctx = new AudioContext(); const dest = ctx.createMediaStreamDestination();
+      audio.forEach((t) => ctx!.createMediaStreamSource(new MediaStream([t])).connect(dest));
+      tracks.push(...dest.stream.getAudioTracks());
+    } else tracks.push(...audio);
+    const mixed = new MediaStream(tracks);
+    const mime = pickMime('video');
+    rec = new MediaRecorder(mixed, mime ? { mimeType: mime } : undefined);
+    chunks = [];
+    rec.ondataavailable = (e) => e.data.size && chunks.push(e.data);
+    rec.onstop = finish;
+    screen.getVideoTracks()[0].addEventListener('ended', stop); // user pressed "Stop sharing"
+    rec.start(1000);
+    live.srcObject = screen; live.play().catch(() => {});
+    t0 = performance.now();
+    tick = window.setInterval(() => (q('[data-clock]').textContent = clock(performance.now() - t0)), 250);
+    show('rec');
+  }
+  function stop() { if (rec && rec.state !== 'inactive') rec.stop(); }
+  function finish() {
+    clearInterval(tick);
+    streams.forEach((s) => s.getTracks().forEach((t) => t.stop())); ctx?.close(); ctx = null;
+    const type = rec!.mimeType || 'video/webm';
+    blob = new Blob(chunks, { type });
+    URL.revokeObjectURL(url); url = URL.createObjectURL(blob);
+    result.src = url; live.srcObject = null;
+    q('[data-meta]').textContent = `${clock(performance.now() - t0)} · ${formatBytes(blob.size)} · ${extFor(type).toUpperCase()} video`;
+    rec = null; show('done');
+  }
+  startBtn.addEventListener('click', () => (rec ? stop() : start()));
+  q('[data-download]').addEventListener('click', () => blob && downloadBlob(blob, `screen-recording-${stamp()}.${extFor(blob.type)}`));
+  q('[data-again]').addEventListener('click', () => { result.removeAttribute('src'); q('[data-meta]').textContent = ''; show('idle'); });
+  addEventListener('beforeunload', (e) => { if (rec) e.preventDefault(); });
+</script>

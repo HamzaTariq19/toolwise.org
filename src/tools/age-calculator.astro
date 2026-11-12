@@ -1,0 +1,88 @@
+---
+import CalcLayout from '../components/CalcLayout.astro';
+---
+<CalcLayout id="ag">
+  <Fragment slot="inputs">
+    <div>
+      <label for="ag-dob" class="label">Date of birth</label>
+      <input id="ag-dob" type="date" class="input" min="1900-01-01" />
+    </div>
+    <div>
+      <label for="ag-at" class="label">Age on this date</label>
+      <input id="ag-at" type="date" class="input" />
+      <p class="hint">Today's date is filled in. Change it to find an age on another day.</p>
+    </div>
+  </Fragment>
+  <Fragment slot="results">
+    <div data-ok hidden>
+      <p class="text-sm font-medium text-muted">Age</p>
+      <p class="mt-1 text-3xl font-extrabold tracking-tight sm:text-4xl" data-age>–</p>
+      <dl class="mt-5 grid grid-cols-2 gap-3">
+        <div class="stat"><dt class="stat-label">Total months</dt><dd class="text-lg font-bold tabular" data-months></dd></div>
+        <div class="stat"><dt class="stat-label">Total weeks</dt><dd class="text-lg font-bold tabular" data-weeks></dd></div>
+        <div class="stat"><dt class="stat-label">Total days</dt><dd class="text-lg font-bold tabular" data-days></dd></div>
+        <div class="stat"><dt class="stat-label">Total hours</dt><dd class="text-lg font-bold tabular" data-hours></dd></div>
+      </dl>
+      <ul class="mt-5 space-y-2 text-[0.9375rem]">
+        <li data-born></li>
+        <li data-next></li>
+      </ul>
+    </div>
+    <div data-empty class="py-8 text-center text-muted">
+      <p class="text-lg font-semibold text-ink">Enter a date of birth</p>
+      <p class="mt-1">The exact age in years, months and days appears here.</p>
+    </div>
+    <p class="alert alert-error" data-msg hidden></p>
+  </Fragment>
+</CalcLayout>
+
+<script>
+  import { live } from '../lib/calc';
+  import { fmt } from '../lib/ui';
+
+  const root = document.getElementById('ag')!;
+  const dob = document.getElementById('ag-dob') as HTMLInputElement;
+  const at = document.getElementById('ag-at') as HTMLInputElement;
+  const ok = root.querySelector<HTMLElement>('[data-ok]')!, empty = root.querySelector<HTMLElement>('[data-empty]')!, msg = root.querySelector<HTMLElement>('[data-msg]')!;
+  const iso = (d: Date) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+  at.value = iso(new Date());
+  const parse = (v: string) => { const [y, m, d] = v.split('-').map(Number); return new Date(y, m - 1, d); };
+  const plural = (n: number, w: string) => `${n} ${w}${n === 1 ? '' : 's'}`;
+  const set = (s: string, t: string) => (root.querySelector(s)!.textContent = t);
+
+  /** Exact difference in years, months and days (calendar-aware) */
+  function diff(a: Date, b: Date) {
+    let y = b.getFullYear() - a.getFullYear();
+    let m = b.getMonth() - a.getMonth();
+    let d = b.getDate() - a.getDate();
+    if (d < 0) { m--; d += new Date(b.getFullYear(), b.getMonth(), 0).getDate(); }
+    if (m < 0) { y--; m += 12; }
+    return { y, m, d };
+  }
+
+  function calc() {
+    msg.hidden = true;
+    if (!dob.value || !at.value) { ok.hidden = true; empty.hidden = false; return; }
+    const a = parse(dob.value), b = parse(at.value);
+    if (b < a) { ok.hidden = true; empty.hidden = true; msg.hidden = false; msg.textContent = 'The date of birth is after the second date. Please check both dates.'; return; }
+    const { y, m, d } = diff(a, b);
+    const days = Math.round((Date.UTC(b.getFullYear(), b.getMonth(), b.getDate()) - Date.UTC(a.getFullYear(), a.getMonth(), a.getDate())) / 86400000);
+    ok.hidden = false; empty.hidden = true;
+    set('[data-age]', `${plural(y, 'year')}, ${plural(m, 'month')}, ${plural(d, 'day')}`);
+    set('[data-months]', fmt(y * 12 + m));
+    set('[data-weeks]', `${fmt(Math.floor(days / 7))} wk ${days % 7} d`);
+    set('[data-days]', fmt(days));
+    set('[data-hours]', fmt(days * 24));
+    set('[data-born]', `Born on a ${a.toLocaleDateString(undefined, { weekday: 'long' })}.`);
+    // Next birthday (Feb 29 birthdays celebrated on Feb 28 in non-leap years)
+    let next = new Date(b.getFullYear(), a.getMonth(), a.getDate());
+    if (next.getMonth() !== a.getMonth()) next = new Date(b.getFullYear(), 1, 28);
+    if (next <= b) { next = new Date(b.getFullYear() + 1, a.getMonth(), a.getDate()); if (next.getMonth() !== a.getMonth()) next = new Date(b.getFullYear() + 1, 1, 28); }
+    const until = Math.round((next.getTime() - b.getTime()) / 86400000);
+    const leapBaby = a.getMonth() === 1 && a.getDate() === 29;
+    const isLeap = (yr: number) => new Date(yr, 1, 29).getMonth() === 1;
+    const isToday = (b.getMonth() === a.getMonth() && b.getDate() === a.getDate()) || (leapBaby && !isLeap(b.getFullYear()) && b.getMonth() === 1 && b.getDate() === 28);
+    set('[data-next]', isToday ? `Happy birthday! Turning ${b.getDate() === a.getDate() ? y : y + 1} today.` : `Next birthday: ${next.toLocaleDateString(undefined, { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' })}, in ${plural(until, 'day')} (turning ${y + 1}).`);
+  }
+  live(root.querySelector('[data-inputs]')!, calc);
+</script>

@@ -1,0 +1,207 @@
+---
+import Dropzone from '../components/Dropzone.astro';
+import FileResults from '../components/FileResults.astro';
+import Icon from '../components/Icon.astro';
+---
+<div id="ri" class="space-y-5">
+  <div data-step="pick">
+    <Dropzone id="ri-drop" accept="image/jpeg,image/png,image/webp,.jpg,.jpeg,.png,.webp" formats="JPG, PNG or WebP" maxLabel="50 MB each" multiple label="Choose images" icon="ImagePlus" />
+  </div>
+  <div class="alert alert-error" data-error hidden role="alert"><span data-msg></span></div>
+
+  <form data-step="options" class="card p-5 sm:p-6" hidden novalidate>
+    <div class="flex items-center gap-3 border-b border-line pb-4">
+      <img data-preview alt="" class="h-14 w-14 flex-none rounded-lg border border-line bg-surface-2 object-contain" />
+      <div class="min-w-0">
+        <p class="truncate font-semibold" data-fname></p>
+        <p class="text-sm text-muted" data-fdims></p>
+      </div>
+    </div>
+
+    <fieldset class="mt-5">
+      <legend class="label">Resize by</legend>
+      <div class="segmented">
+        <label><input type="radio" name="mode" value="px" checked /><span>Pixels</span></label>
+        <label><input type="radio" name="mode" value="pct" /><span>Percentage</span></label>
+      </div>
+    </fieldset>
+
+    <div class="mt-5" data-mode="px">
+      <div class="grid grid-cols-[1fr_auto_1fr] items-end gap-2 sm:max-w-md">
+        <div>
+          <label for="ri-w" class="label">Width</label>
+          <div class="input-group"><input id="ri-w" class="input tabular" inputmode="numeric" autocomplete="off" /><span class="addon">px</span></div>
+        </div>
+        <button type="button" class="btn btn-ghost mb-0.5 h-11 w-11 !p-0" data-lock aria-pressed="true" aria-label="Keep aspect ratio" title="Keep aspect ratio">
+          <span data-locked><Icon name="Link" size={18} /></span><span data-unlocked hidden><Icon name="Unlink" size={18} /></span>
+        </button>
+        <div>
+          <label for="ri-h" class="label">Height</label>
+          <div class="input-group"><input id="ri-h" class="input tabular" inputmode="numeric" autocomplete="off" /><span class="addon">px</span></div>
+        </div>
+      </div>
+      <p class="hint" data-lock-hint>Aspect ratio is kept, so the image is not stretched.</p>
+      <div class="mt-3 flex flex-wrap gap-2" aria-label="Common widths">
+        {[3840, 1920, 1280, 1080, 800, 500].map((w) => <button type="button" class="chip !min-h-9 !text-sm" data-preset={w}>{w} px</button>)}
+      </div>
+    </div>
+
+    <div class="mt-5" data-mode="pct" hidden>
+      <div class="flex items-center justify-between sm:max-w-md">
+        <label for="ri-pct" class="label !mb-0">Scale</label>
+        <output class="tabular font-semibold" data-pct-out>50%</output>
+      </div>
+      <input id="ri-pct" type="range" min="5" max="200" step="5" value="50" class="mt-2 h-11 w-full accent-[var(--brand)] sm:max-w-md" />
+      <p class="hint" data-pct-dims></p>
+    </div>
+
+    <div class="mt-5 sm:max-w-xs">
+      <label for="ri-format" class="label">Save as</label>
+      <select id="ri-format" class="select">
+        <option value="auto">Same as original</option>
+        <option value="image/jpeg">JPG</option>
+        <option value="image/png">PNG</option>
+        <option value="image/webp">WebP</option>
+      </select>
+    </div>
+
+    <p class="alert alert-error mt-5" data-opt-error hidden role="alert"><span data-msg></span></p>
+
+    <div class="mt-6 flex flex-col gap-3 sm:flex-row">
+      <button type="submit" class="btn btn-primary btn-lg"><Icon name="Maximize2" size={18} /><span data-label>Resize image</span></button>
+      <button type="button" class="btn btn-secondary btn-lg" data-cancel>Choose other images</button>
+    </div>
+  </form>
+
+  <FileResults id="ri-results" />
+</div>
+
+<script>
+  import { initDropzone } from '../lib/dropzone';
+  import { createResults, type ResultItem } from '../lib/file-results';
+  import { decodeImage, drawToCanvas, encode, canEncodeWebP, hasTransparency, MAX_PIXELS, MIME_EXT } from '../lib/image';
+  import { baseName, showError, num } from '../lib/ui';
+
+  const root = document.getElementById('ri')!;
+  const pick = root.querySelector<HTMLElement>('[data-step=pick]')!;
+  const form = root.querySelector<HTMLFormElement>('[data-step=options]')!;
+  const err = root.querySelector<HTMLElement>('[data-error]')!;
+  const optErr = root.querySelector<HTMLElement>('[data-opt-error]')!;
+  const wIn = document.getElementById('ri-w') as HTMLInputElement;
+  const hIn = document.getElementById('ri-h') as HTMLInputElement;
+  const pct = document.getElementById('ri-pct') as HTMLInputElement;
+  const fmtSel = document.getElementById('ri-format') as HTMLSelectElement;
+  const lockBtn = root.querySelector<HTMLButtonElement>('[data-lock]')!;
+
+  if (!canEncodeWebP()) fmtSel.querySelector('option[value="image/webp"]')!.remove();
+
+  let files: File[] = [];
+  let dims: { w: number; h: number }[] = [];
+  let locked = true;
+  let previewUrl = '';
+
+  const mode = () => (form.querySelector<HTMLInputElement>('input[name=mode]:checked')!.value as 'px' | 'pct');
+  const ratio = () => dims[0].w / dims[0].h;
+
+  const results = createResults(document.getElementById('ri-results')!, {
+    zipName: 'resized-images.zip',
+    showSavings: false,
+    onReset: () => { files = []; pick.hidden = false; form.hidden = true; showError(err, null); },
+  });
+
+  async function onFiles(f: File[]) {
+    files = f;
+    dims = [];
+    for (const file of files) {
+      try { const img = await decodeImage(file); dims.push({ w: img.width, h: img.height }); img.close?.(); }
+      catch { dims.push({ w: 0, h: 0 }); }
+    }
+    if (!dims[0].w) { showError(err, `“${files[0].name}” could not be opened. It may be damaged.`); return; }
+    URL.revokeObjectURL(previewUrl);
+    previewUrl = URL.createObjectURL(files[0]);
+    root.querySelector<HTMLImageElement>('[data-preview]')!.src = previewUrl;
+    root.querySelector('[data-fname]')!.textContent = files.length > 1 ? `${files[0].name} and ${files.length - 1} more` : files[0].name;
+    root.querySelector('[data-fdims]')!.textContent = `Original: ${dims[0].w} × ${dims[0].h} px`;
+    wIn.value = String(dims[0].w);
+    hIn.value = String(dims[0].h);
+    updatePct();
+    pick.hidden = true;
+    form.hidden = false;
+    showError(optErr, null);
+    wIn.focus();
+  }
+
+  function updatePct() {
+    const p = Number(pct.value) / 100;
+    root.querySelector('[data-pct-out]')!.textContent = `${pct.value}%`;
+    if (dims[0]) root.querySelector('[data-pct-dims]')!.textContent = `New size: ${Math.round(dims[0].w * p)} × ${Math.round(dims[0].h * p)} px`;
+  }
+
+  wIn.addEventListener('input', () => { const w = num(wIn.value); if (locked && w > 0) hIn.value = String(Math.round(w / ratio())); });
+  hIn.addEventListener('input', () => { const h = num(hIn.value); if (locked && h > 0) wIn.value = String(Math.round(h * ratio())); });
+  lockBtn.addEventListener('click', () => {
+    locked = !locked;
+    lockBtn.setAttribute('aria-pressed', String(locked));
+    lockBtn.querySelector<HTMLElement>('[data-locked]')!.hidden = !locked;
+    lockBtn.querySelector<HTMLElement>('[data-unlocked]')!.hidden = locked;
+    root.querySelector('[data-lock-hint]')!.textContent = locked ? 'Aspect ratio is kept, so the image is not stretched.' : 'Aspect ratio is unlocked. The image will be stretched to exactly this size.';
+    if (locked) wIn.dispatchEvent(new Event('input'));
+  });
+  root.querySelectorAll<HTMLButtonElement>('[data-preset]').forEach((b) =>
+    b.addEventListener('click', () => { wIn.value = b.dataset.preset!; wIn.dispatchEvent(new Event('input')); }),
+  );
+  form.querySelectorAll<HTMLInputElement>('input[name=mode]').forEach((r) =>
+    r.addEventListener('change', () => {
+      form.querySelectorAll<HTMLElement>('[data-mode]').forEach((el) => (el.hidden = el.dataset.mode !== mode()));
+    }),
+  );
+  pct.addEventListener('input', updatePct);
+  form.addEventListener('input', () => showError(optErr, null));
+  form.querySelector('[data-cancel]')!.addEventListener('click', () => { form.hidden = true; pick.hidden = false; files = []; });
+
+  function targetSize(d: { w: number; h: number }) {
+    if (mode() === 'pct') { const p = Number(pct.value) / 100; return { w: Math.round(d.w * p), h: Math.round(d.h * p) }; }
+    const w = num(wIn.value), h = num(hIn.value);
+    if (!locked) return { w: Math.round(w), h: Math.round(h) };
+    // With several images of different shapes, match the chosen width and keep each image's own ratio
+    return { w: Math.round(w), h: Math.round(w * (d.h / d.w)) };
+  }
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    if (mode() === 'px') {
+      const w = num(wIn.value), h = num(hIn.value);
+      if (!(w >= 1) || !(h >= 1)) { showError(optErr, 'Please enter a width and height of at least 1 pixel.'); return; }
+      if (w * h > MAX_PIXELS) { showError(optErr, `That is too large for your browser to handle. Keep width × height under ${(MAX_PIXELS / 1e6).toFixed(0)} megapixels (for example 4000 × 4000).`); return; }
+    }
+    showError(optErr, null);
+    form.hidden = true;
+    const out: ResultItem[] = [];
+    for (let i = 0; i < files.length; i++) {
+      results.setProgress(i, files.length, files.length > 1 ? `Resizing image ${i + 1} of ${files.length}…` : 'Resizing image…');
+      const file = files[i];
+      try {
+        const img = await decodeImage(file);
+        let { w, h } = targetSize({ w: img.width, h: img.height });
+        if (w * h > MAX_PIXELS) { const s = Math.sqrt(MAX_PIXELS / (w * h)); w = Math.floor(w * s); h = Math.floor(h * s); }
+        const type = fmtSel.value === 'auto' ? (file.type || 'image/jpeg') : fmtSel.value;
+        let canvas = drawToCanvas(img, Math.max(1, w), Math.max(1, h));
+        if (type === 'image/jpeg' && hasTransparency(canvas)) canvas = drawToCanvas(img, Math.max(1, w), Math.max(1, h), '#ffffff');
+        img.close?.();
+        const blob = await encode(canvas, type, 0.92);
+        out.push({ name: file.name, originalSize: file.size, blob, outName: `${baseName(file.name)}-${w}x${h}.${MIME_EXT[type] ?? 'jpg'}`, note: `${w} × ${h} px`, thumb: true });
+      } catch (er) {
+        out.push({ name: file.name, originalSize: file.size, error: (er as Error).message });
+      }
+    }
+    results.render(out);
+  });
+
+  initDropzone(document.getElementById('ri-drop')!, {
+    accept: ['image/jpeg', 'image/png', 'image/webp', '.jpg', '.jpeg', '.png', '.webp'],
+    multiple: true,
+    maxBytes: 50 * 1024 * 1024,
+    onFiles,
+    onError: (m) => showError(err, m || null),
+  });
+</script>

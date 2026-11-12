@@ -1,0 +1,90 @@
+---
+import type { GetStaticPaths } from 'astro';
+import Base from '../../layouts/Base.astro';
+import Breadcrumb from '../../components/Breadcrumb.astro';
+import Icon from '../../components/Icon.astro';
+import ToolCard from '../../components/ToolCard.astro';
+import { categories, type Category } from '../../data/categories';
+import { toolsInCategory, isLive } from '../../lib/tools';
+import { site } from '../../config';
+
+export const getStaticPaths = (() => categories.map((category) => ({ params: { slug: category.slug }, props: { category } }))) satisfies GetStaticPaths;
+
+interface Props { category: Category }
+const { category } = Astro.props;
+const list = toolsInCategory(category.slug);
+const liveCount = list.filter(isLive).length;
+const others = categories.filter((c) => c.slug !== category.slug);
+const jsonLd = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Home', item: `${site.url}/` },
+      { '@type': 'ListItem', position: 2, name: category.name, item: `${site.url}/category/${category.slug}` },
+    ],
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'CollectionPage',
+    name: `Free ${category.name}`,
+    url: `${site.url}/category/${category.slug}`,
+    description: category.metaDescription,
+  },
+];
+---
+<Base title={`Free ${category.name} online, no signup | toolwise`} description={category.metaDescription} jsonLd={jsonLd}>
+  <div class={`container-page cat-${category.slug} pt-5`}>
+    <Breadcrumb items={[{ name: 'Home', href: '/' }, { name: category.short }]} />
+    <header class="mt-4 flex items-start gap-4">
+      <span class="icon-tile mt-1 h-12 w-12"><Icon name={category.icon} size={24} /></span>
+      <div>
+        <h1 class="text-[1.75rem] font-extrabold tracking-tight sm:text-4xl">Free {category.name}</h1>
+        <p class="mt-2 max-w-2xl text-lg text-muted">{category.intro}</p>
+      </div>
+    </header>
+
+    <div class="relative mt-8 max-w-xl">
+      <label for="cat-search" class="sr-only">Search {category.short} tools</label>
+      <Icon name="Search" size={20} class="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-subtle" />
+      <input id="cat-search" type="search" autocomplete="off" placeholder={`Search ${list.length} ${category.short} tools`}
+        class="input h-13 !rounded-xl pl-12 text-[1.0625rem]" />
+    </div>
+    <p class="mt-3 text-[0.9375rem] text-subtle" id="cat-status" aria-live="polite">{list.length} tools{liveCount < list.length ? `, ${liveCount} ready to use` : ''}</p>
+
+    <ul id="cat-grid" class="mt-5 grid grid-cols-1 gap-3 min-[520px]:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+      {list.map((t) => <ToolCard tool={t} headingLevel="h2" />)}
+    </ul>
+    <div id="cat-empty" class="card mt-5 p-8 text-center" hidden>
+      <p class="text-lg font-semibold">No {category.short} tools match your search.</p>
+      <p class="mt-1 text-muted">Try another word, or <a href="/">search all tools</a>.</p>
+    </div>
+
+    <section class="mt-16" aria-labelledby="other-cats">
+      <h2 id="other-cats" class="text-xl font-bold">Other categories</h2>
+      <ul class="mt-4 flex flex-wrap gap-2">
+        {others.map((c) => (
+          <li><a href={`/category/${c.slug}`} class={`chip cat-${c.slug} no-underline`}><span class="text-[var(--cat)]"><Icon name={c.icon} size={16} /></span>{c.short}</a></li>
+        ))}
+      </ul>
+    </section>
+  </div>
+</Base>
+
+<script>
+  import { scoreMatch } from '../../lib/search';
+  const input = document.getElementById('cat-search') as HTMLInputElement;
+  const grid = document.getElementById('cat-grid')!;
+  const empty = document.getElementById('cat-empty')!;
+  const status = document.getElementById('cat-status')!;
+  const initialStatus = status.textContent;
+  const cards = Array.from(grid.querySelectorAll<HTMLLIElement>('[data-tool]'));
+  input.addEventListener('input', () => {
+    const q = input.value.trim();
+    const scored = cards.map((c, i) => ({ c, i, s: q ? scoreMatch(q, c.dataset.name!, c.dataset.search!) : 1 }));
+    const shown = scored.filter((x) => x.s > 0).sort((a, b) => (q ? b.s - a.s : a.i - b.i));
+    grid.replaceChildren(...shown.map((x) => x.c));
+    empty.hidden = shown.length > 0;
+    status.textContent = q ? `${shown.length} matching tool${shown.length === 1 ? '' : 's'}` : initialStatus;
+  });
+</script>

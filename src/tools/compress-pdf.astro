@@ -1,0 +1,80 @@
+---
+import Dropzone from '../components/Dropzone.astro';
+import FileResults from '../components/FileResults.astro';
+---
+<div id="cp" class="space-y-5">
+  <div class="card p-5">
+    <fieldset>
+      <legend class="label">Compression level</legend>
+      <div class="grid gap-2 sm:grid-cols-3" role="radiogroup">
+        {[
+          ['low', 'Light', 'Best quality, smaller savings'],
+          ['recommended', 'Recommended', 'Good quality, good savings'],
+          ['extreme', 'Strong', 'Smallest file, lower image quality'],
+        ].map(([v, t, d]) => (
+          <label class="relative flex cursor-pointer flex-col rounded-[10px] border border-line-strong p-3.5 has-[:checked]:border-[var(--ring)] has-[:checked]:bg-brand-soft has-[:focus-visible]:outline has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-[var(--ring)]">
+            <input type="radio" name="cp-level" value={v} checked={v === 'recommended'} class="absolute opacity-0" />
+            <span class="font-semibold">{t}</span>
+            <span class="text-sm text-muted">{d}</span>
+          </label>
+        ))}
+      </div>
+    </fieldset>
+  </div>
+  <div data-step="pick">
+    <Dropzone id="cp-drop" accept="application/pdf,.pdf" formats="PDF files" maxLabel="200 MB each" multiple label="Choose PDF files" icon="Minimize2" />
+  </div>
+  <div class="alert alert-error" data-error hidden role="alert"><span data-msg></span></div>
+  <FileResults id="cp-results" />
+</div>
+
+<script>
+  import { initDropzone } from '../lib/dropzone';
+  import { createResults, type ResultItem } from '../lib/file-results';
+  import { pdfBlob, PdfPasswordError, loadPdfLibDoc } from '../lib/pdf';
+  import { baseName, showError } from '../lib/ui';
+
+  const root = document.getElementById('cp')!;
+  const pick = root.querySelector<HTMLElement>('[data-step=pick]')!;
+  const err = root.querySelector<HTMLElement>('[data-error]')!;
+  let files: File[] = [];
+  let run = 0;
+
+  const results = createResults(document.getElementById('cp-results')!, {
+    zipName: 'compressed-pdfs.zip',
+    onReset: () => { files = []; pick.hidden = false; showError(err, null); },
+  });
+
+  async function process() {
+    if (!files.length) return;
+    const id = ++run;
+    pick.hidden = true;
+    const { compressPdf, LEVELS } = await import('../lib/pdf-compress');
+    const level = LEVELS[root.querySelector<HTMLInputElement>('input[name=cp-level]:checked')!.value];
+    const out: ResultItem[] = [];
+    for (let i = 0; i < files.length; i++) {
+      const f = files[i];
+      const label = files.length > 1 ? `Compressing file ${i + 1} of ${files.length}` : 'Compressing PDF';
+      results.setProgress(0, 1, `${label}…`);
+      try {
+        const buf = await f.arrayBuffer();
+        await loadPdfLibDoc(buf); // friendly errors for damaged or locked files
+        const r = await compressPdf(buf, level, (d, t) => { if (id === run) results.setProgress(d, t || 1, `${label}: image ${Math.min(d + 1, t)} of ${t}…`); });
+        if (id !== run) return;
+        const outName = `${baseName(f.name)}-compressed.pdf`;
+        if (r.bytes.length >= f.size) out.push({ name: f.name, originalSize: f.size, blob: f, outName, note: r.images ? 'Already well optimized, original kept' : 'No images to compress, original kept' });
+        else out.push({ name: f.name, originalSize: f.size, blob: pdfBlob(r.bytes), outName, note: r.changed ? `${r.changed} image${r.changed === 1 ? '' : 's'} optimized` : 'Structure optimized' });
+      } catch (e) {
+        out.push({ name: f.name, originalSize: f.size, error: e instanceof PdfPasswordError ? 'Password protected. Unlock it first.' : (e as Error).message });
+      }
+    }
+    if (id === run) results.render(out);
+  }
+
+  root.querySelectorAll<HTMLInputElement>('input[name=cp-level]').forEach((r) => r.addEventListener('change', process));
+  initDropzone(document.getElementById('cp-drop')!, {
+    accept: ['application/pdf', '.pdf'], multiple: true, maxBytes: 200 * 1024 * 1024,
+    onFiles: (f) => { files = f; process(); },
+    onError: (m) => showError(err, m || null),
+  });
+</script>

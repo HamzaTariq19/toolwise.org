@@ -1,0 +1,112 @@
+---
+import Icon from '../components/Icon.astro';
+---
+<div id="mw" class="grid gap-5 md:grid-cols-2 md:items-start">
+  <section class="card p-5" aria-labelledby="mw-cam-h">
+    <h2 id="mw-cam-h" class="flex items-center gap-2 text-lg font-bold"><Icon name="Video" size={20} />Camera</h2>
+    <div class="relative mt-4 flex aspect-video items-center justify-center overflow-hidden rounded-xl bg-[#0b0f17]">
+      <video data-video playsinline muted class="h-full w-full -scale-x-100 object-cover" hidden></video>
+      <p class="px-4 text-center text-sm text-gray-300" data-cam-idle>Your camera preview appears here.</p>
+    </div>
+    <p class="mt-2 min-h-5 text-sm text-muted" data-cam-info></p>
+    <div class="mt-3" data-cam-sel-wrap hidden><label for="mw-cam" class="label">Camera</label><select id="mw-cam" class="select"></select></div>
+    <p class="alert alert-error mt-3" data-cam-err hidden role="alert"></p>
+    <button type="button" class="btn btn-primary btn-lg mt-4 w-full" data-cam><Icon name="Video" size={18} /><span data-label>Test camera</span></button>
+  </section>
+
+  <section class="card p-5" aria-labelledby="mw-mic-h">
+    <h2 id="mw-mic-h" class="flex items-center gap-2 text-lg font-bold"><Icon name="Mic" size={20} />Microphone</h2>
+    <div class="mt-4 rounded-xl bg-surface-2 p-4">
+      <div class="flex h-24 items-end gap-1" data-bars aria-hidden="true"></div>
+      <p class="mt-3 text-sm font-medium" data-mic-status aria-live="polite">Press Test microphone, then speak.</p>
+    </div>
+    <div class="mt-3" data-mic-sel-wrap hidden><label for="mw-mic" class="label">Microphone</label><select id="mw-mic" class="select"></select></div>
+    <p class="alert alert-error mt-3" data-mic-err hidden role="alert"></p>
+    <button type="button" class="btn btn-primary btn-lg mt-4 w-full" data-mic><Icon name="Mic" size={18} /><span data-label>Test microphone</span></button>
+    <button type="button" class="btn btn-secondary mt-3 w-full" data-rec hidden><Icon name="CircleDot" size={18} /><span data-label>Record 5 seconds and play back</span></button>
+    <audio data-audio controls class="mt-3 w-full" hidden></audio>
+  </section>
+  <p class="flex items-center gap-1.5 text-sm text-muted md:col-span-2"><Icon name="ShieldCheck" size={16} class="text-success" />Video and sound stay on your device. Nothing is recorded or uploaded unless you press record, and even then it stays in your browser.</p>
+</div>
+<script>
+  const root = document.getElementById('mw')!;
+  const q = <T extends HTMLElement>(s: string) => root.querySelector<T>(s)!;
+  const video = q<HTMLVideoElement>('[data-video]');
+  let camStream: MediaStream | null = null, micStream: MediaStream | null = null, ctx: AudioContext | null = null, raf = 0;
+  const bars = q('[data-bars]');
+  bars.innerHTML = Array.from({ length: 32 }, () => '<span class="flex-1 rounded-sm bg-[var(--border-strong)]" style="height:4%"></span>').join('');
+
+  function friendly(e: unknown, what: 'camera' | 'microphone') {
+    const n = (e as DOMException)?.name;
+    if (!navigator.mediaDevices?.getUserMedia) return `Your browser does not support ${what} access. Try the latest Chrome, Edge, Firefox or Safari.`;
+    if (n === 'NotAllowedError' || n === 'SecurityError') return `Access to the ${what} was blocked. Click the camera or lock icon in your browser's address bar, allow the ${what}, then try again. On phones, also check your system settings for this browser.`;
+    if (n === 'NotFoundError' || n === 'OverconstrainedError') return `No ${what} was found. Check that it is connected and switched on.`;
+    if (n === 'NotReadableError' || n === 'AbortError') return `The ${what} is being used by another app (for example Zoom or Teams). Close that app and try again.`;
+    return `The ${what} could not be started. Please try again.`;
+  }
+  async function fillDevices(kind: MediaDeviceKind, sel: HTMLSelectElement, current?: string) {
+    const devs = (await navigator.mediaDevices.enumerateDevices()).filter((d) => d.kind === kind);
+    sel.innerHTML = devs.map((d, i) => `<option value="${d.deviceId}">${d.label || `${kind === 'videoinput' ? 'Camera' : 'Microphone'} ${i + 1}`}</option>`).join('');
+    if (current) sel.value = current;
+    (sel.closest('[data-cam-sel-wrap],[data-mic-sel-wrap]') as HTMLElement).hidden = devs.length < 2;
+  }
+
+  async function startCam(deviceId?: string) {
+    const err = q('[data-cam-err]'); err.hidden = true;
+    camStream?.getTracks().forEach((t) => t.stop());
+    try {
+      camStream = await navigator.mediaDevices.getUserMedia({ video: deviceId ? { deviceId: { exact: deviceId } } : { width: { ideal: 1920 }, height: { ideal: 1080 } } });
+      video.srcObject = camStream; video.hidden = false; q('[data-cam-idle]').hidden = true;
+      await video.play();
+      const s = camStream.getVideoTracks()[0].getSettings();
+      q('[data-cam-info]').innerHTML = `<span class="font-semibold text-success">✓ Camera works.</span> ${s.width ?? video.videoWidth} × ${s.height ?? video.videoHeight}${s.frameRate ? ` at ${Math.round(s.frameRate)} fps` : ''}`;
+      await fillDevices('videoinput', q('#mw-cam'), s.deviceId);
+      q('[data-cam] [data-label]').textContent = 'Stop camera';
+    } catch (e) { err.hidden = false; err.textContent = friendly(e, 'camera'); }
+  }
+  function stopCam() { camStream?.getTracks().forEach((t) => t.stop()); camStream = null; video.hidden = true; q('[data-cam-idle]').hidden = false; q('[data-cam] [data-label]').textContent = 'Test camera'; q('[data-cam-info]').textContent = ''; }
+  q('[data-cam]').addEventListener('click', () => (camStream ? stopCam() : startCam()));
+  q<HTMLSelectElement>('#mw-cam').addEventListener('change', (e) => startCam((e.target as HTMLSelectElement).value));
+
+  async function startMic(deviceId?: string) {
+    const err = q('[data-mic-err]'); err.hidden = true;
+    stopMic(false);
+    try {
+      micStream = await navigator.mediaDevices.getUserMedia({ audio: deviceId ? { deviceId: { exact: deviceId } } : true });
+      ctx = new AudioContext();
+      const an = ctx.createAnalyser(); an.fftSize = 64;
+      ctx.createMediaStreamSource(micStream).connect(an);
+      const data = new Uint8Array(an.frequencyBinCount), els = Array.from(bars.children) as HTMLElement[];
+      let heard = false;
+      const loop = () => {
+        an.getByteFrequencyData(data);
+        els.forEach((el, i) => { const v = data[i] / 255; el.style.height = `${4 + v * 96}%`; el.style.background = v > 0.15 ? 'var(--brand)' : ''; });
+        const peak = Math.max(...data);
+        if (peak > 60 && !heard) { heard = true; q('[data-mic-status]').innerHTML = '<span class="text-success font-semibold">✓ Your microphone works.</span> The bars move when you speak.'; }
+        raf = requestAnimationFrame(loop);
+      };
+      loop();
+      q('[data-mic-status]').textContent = 'Listening… say something.';
+      await fillDevices('audioinput', q('#mw-mic'), micStream.getAudioTracks()[0].getSettings().deviceId);
+      q('[data-mic] [data-label]').textContent = 'Stop microphone';
+      q('[data-rec]').hidden = typeof MediaRecorder === 'undefined';
+    } catch (e) { err.hidden = false; err.textContent = friendly(e, 'microphone'); }
+  }
+  function stopMic(reset = true) {
+    cancelAnimationFrame(raf); micStream?.getTracks().forEach((t) => t.stop()); micStream = null; ctx?.close(); ctx = null;
+    if (reset) { q('[data-mic] [data-label]').textContent = 'Test microphone'; q('[data-mic-status]').textContent = 'Press Test microphone, then speak.'; q('[data-rec]').hidden = true; (Array.from(bars.children) as HTMLElement[]).forEach((el) => { el.style.height = '4%'; el.style.background = ''; }); }
+  }
+  q('[data-mic]').addEventListener('click', () => (micStream ? stopMic() : startMic()));
+  q<HTMLSelectElement>('#mw-mic').addEventListener('change', (e) => startMic((e.target as HTMLSelectElement).value));
+  q('[data-rec]').addEventListener('click', () => {
+    if (!micStream) return;
+    const btn = q<HTMLButtonElement>('[data-rec]'), label = btn.querySelector('[data-label]')!;
+    const rec = new MediaRecorder(micStream), chunks: Blob[] = [];
+    rec.ondataavailable = (e) => chunks.push(e.data);
+    rec.onstop = () => { const a = q<HTMLAudioElement>('[data-audio]'); a.src = URL.createObjectURL(new Blob(chunks, { type: rec.mimeType })); a.hidden = false; a.play().catch(() => {}); btn.disabled = false; label.textContent = 'Record 5 seconds and play back'; };
+    rec.start(); btn.disabled = true;
+    let s = 5; label.textContent = `Recording… ${s}`;
+    const iv = setInterval(() => { s--; label.textContent = `Recording… ${s}`; if (s <= 0) { clearInterval(iv); rec.stop(); } }, 1000);
+  });
+  addEventListener('pagehide', () => { stopCam(); stopMic(); });
+</script>

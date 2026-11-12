@@ -1,0 +1,29 @@
+---
+import Page from '../layouts/Page.astro';
+import { tools } from '../lib/tools';
+---
+<Page title="About toolwise: free, private online tools" heading="About toolwise" description="toolwise is a collection of free, fast and private browser-based tools for PDFs, images, text, calculators and converters. No signup, no uploads.">
+  <p>
+    toolwise is a collection of {tools.length} free online tools for the small jobs that come up every day: shrinking a photo for a form,
+    merging two PDFs, counting the words in an essay, working out a loan payment or converting a recipe from cups to grams.
+  </p>
+  <h2>What makes toolwise different</h2>
+  <ul>
+    <li><strong>Your files stay on your device.</strong> Our tools run inside your web browser. When you compress an image or merge a PDF, the work happens on your own phone or computer, and the file is never sent to our servers.</li>
+    <li><strong>No signup and no limits.</strong> You do not need an account, an email address or an app. Open a tool and use it as often as you like.</li>
+    <li><strong>Easy for everyone.</strong> Each tool does one job, with plain-language buttons and clear results. If a tool needs more than a few seconds to figure out, we consider that a bug.</li>
+    <li><strong>Fast.</strong> Pages are lightweight and load quickly even on slow mobile connections. Heavy libraries load only on the pages that need them.</li>
+  </ul>
+  <h2>How toolwise is funded</h2>
+  <p>
+    toolwise is free because it is supported by advertising. Ads are kept away from the tools themselves: they never cover a tool,
+    never pop up and never sit between your file and the Download button. You can read more in our <a href="/privacy-policy">Privacy Policy</a>.
+  </p>
+  <h2>About accuracy</h2>
+  <p>
+    We test every tool with real files and edge cases before it goes live. Calculators give estimates to help you plan; they are not
+    financial, medical or legal advice. See our <a href="/disclaimer">Disclaimer</a> for details.
+  </p>
+  <h2>Get in touch</h2>
+  <p>Found a bug, or want a tool we do not have yet? We would love to hear from you on our <a href="/contact">contact page</a>.</p>
+</Page>

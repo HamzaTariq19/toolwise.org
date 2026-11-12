@@ -1,0 +1,66 @@
+---
+import Icon from '../components/Icon.astro';
+---
+<div id="sw" class="card p-5 text-center sm:p-8">
+  <p class="mono select-all text-[3.25rem] font-bold leading-none tracking-tight tabular sm:text-7xl" data-display aria-live="off">00:00.00</p>
+  <p class="sr-only" aria-live="polite" data-sr></p>
+  <div class="mx-auto mt-8 grid max-w-sm grid-cols-2 gap-3">
+    <button type="button" class="btn btn-primary btn-lg" data-start><Icon name="Play" size={20} /><span data-label>Start</span></button>
+    <button type="button" class="btn btn-secondary btn-lg" data-lap disabled><Icon name="Flag" size={18} /><span data-lap-label>Lap</span></button>
+  </div>
+  <p class="mt-4 text-sm text-subtle">Keyboard: <kbd class="rounded border border-line px-1.5">Space</kbd> start/stop · <kbd class="rounded border border-line px-1.5">L</kbd> lap · <kbd class="rounded border border-line px-1.5">R</kbd> reset</p>
+  <div class="mx-auto mt-6 max-w-md text-left" data-laps-wrap hidden>
+    <table class="w-full text-[0.9375rem] tabular">
+      <thead class="text-sm text-subtle"><tr><th class="py-2 text-left font-semibold">Lap</th><th class="py-2 text-right font-semibold">Lap time</th><th class="py-2 text-right font-semibold">Total</th></tr></thead>
+      <tbody class="divide-y divide-[var(--border)]" data-laps></tbody>
+    </table>
+    <button type="button" class="btn btn-ghost btn-sm mt-3" data-copy><Icon name="Copy" size={16} /><span data-label>Copy laps</span></button>
+  </div>
+</div>
+<script>
+  import { copyText } from '../lib/ui';
+  const root = document.getElementById('sw')!;
+  const display = root.querySelector<HTMLElement>('[data-display]')!;
+  const startBtn = root.querySelector<HTMLButtonElement>('[data-start]')!, lapBtn = root.querySelector<HTMLButtonElement>('[data-lap]')!;
+  const lapLabel = root.querySelector<HTMLElement>('[data-lap-label]')!;
+  let running = false, startAt = 0, elapsed = 0, raf = 0;
+  let laps: number[] = [];
+  const now = () => performance.now();
+  const total = () => elapsed + (running ? now() - startAt : 0);
+  function fmt(ms: number) {
+    const h = Math.floor(ms / 3600000), m = Math.floor((ms % 3600000) / 60000), s = Math.floor((ms % 60000) / 1000), cs = Math.floor((ms % 1000) / 10);
+    const p = (n: number) => String(n).padStart(2, '0');
+    return `${h ? h + ':' : ''}${p(m)}:${p(s)}.${p(cs)}`;
+  }
+  const tick = () => { display.textContent = fmt(total()); if (running) raf = requestAnimationFrame(tick); };
+  function toggle() {
+    if (running) { elapsed += now() - startAt; running = false; cancelAnimationFrame(raf); }
+    else { startAt = now(); running = true; tick(); }
+    startBtn.querySelector('[data-label]')!.textContent = running ? 'Stop' : elapsed ? 'Resume' : 'Start';
+    startBtn.classList.toggle('btn-primary', !running); startBtn.classList.toggle('!bg-[#dc2626]', running); startBtn.classList.toggle('!text-white', running);
+    lapLabel.textContent = running ? 'Lap' : 'Reset';
+    lapBtn.disabled = !running && !elapsed;
+    root.querySelector('[data-sr]')!.textContent = running ? 'Started' : `Stopped at ${fmt(total())}`;
+    display.textContent = fmt(total());
+  }
+  function lapOrReset() {
+    if (running) { laps.push(total()); renderLaps(); }
+    else { elapsed = 0; laps = []; renderLaps(); display.textContent = fmt(0); lapBtn.disabled = true; startBtn.querySelector('[data-label]')!.textContent = 'Start'; }
+  }
+  function renderLaps() {
+    root.querySelector<HTMLElement>('[data-laps-wrap]')!.hidden = !laps.length;
+    const splits = laps.map((t, i) => t - (laps[i - 1] ?? 0));
+    const best = Math.min(...splits), worst = Math.max(...splits);
+    root.querySelector('[data-laps]')!.innerHTML = laps.map((t, i) => ({ t, i, s: splits[i] })).reverse()
+      .map(({ t, i, s }) => `<tr><td class="py-2">${i + 1}</td><td class="py-2 text-right ${laps.length > 2 && s === best ? 'text-success font-semibold' : laps.length > 2 && s === worst ? 'text-danger' : ''}">${fmt(s)}</td><td class="py-2 text-right text-muted">${fmt(t)}</td></tr>`).join('');
+  }
+  startBtn.addEventListener('click', toggle);
+  lapBtn.addEventListener('click', lapOrReset);
+  root.querySelector('[data-copy]')!.addEventListener('click', (e) => copyText(laps.map((t, i) => `Lap ${i + 1}\t${fmt(t - (laps[i - 1] ?? 0))}\t${fmt(t)}`).join('\n'), e.currentTarget as HTMLElement));
+  document.addEventListener('keydown', (e) => {
+    if ((e.target as HTMLElement).closest('input,textarea,select,button,[contenteditable]') || e.metaKey || e.ctrlKey) return;
+    if (e.code === 'Space') { e.preventDefault(); toggle(); }
+    else if (e.key.toLowerCase() === 'l' && running) lapOrReset();
+    else if (e.key.toLowerCase() === 'r' && !running) { elapsed = 1; lapOrReset(); }
+  });
+</script>

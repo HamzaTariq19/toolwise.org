@@ -1,0 +1,112 @@
+---
+import Icon from '../components/Icon.astro';
+---
+<div id="gpa" class="grid gap-5 md:grid-cols-[1fr_300px] md:items-start">
+  <div class="card p-4 sm:p-5">
+    <div class="flex flex-wrap items-center justify-between gap-3">
+      <h2 class="text-base font-semibold">Your courses</h2>
+      <div class="flex items-center gap-2 text-sm">
+        <label for="gpa-scale" class="text-muted">Scale</label>
+        <select id="gpa-scale" class="select !min-h-9 !w-auto !py-1 !text-sm">
+          <option value="4">4.0 (A+ = 4.0)</option>
+          <option value="4.3">4.3 (A+ = 4.3)</option>
+        </select>
+      </div>
+    </div>
+    <div class="mt-4 hidden grid-cols-[1fr_6.5rem_5.5rem_2.75rem] gap-2 px-1 text-sm font-semibold text-muted sm:grid">
+      <span>Course (optional)</span><span>Grade</span><span>Credits</span><span></span>
+    </div>
+    <ul class="mt-2 space-y-3 sm:space-y-2" data-rows></ul>
+    <button type="button" class="btn btn-secondary mt-4" data-add><Icon name="Plus" size={18} />Add course</button>
+
+    <details class="mt-5 rounded-[10px] border border-line">
+      <summary class="flex min-h-12 cursor-pointer list-none items-center justify-between px-4 font-semibold [&::-webkit-details-marker]:hidden">Include previous semesters <span class="text-sm font-normal text-subtle">optional</span></summary>
+      <div class="grid grid-cols-2 gap-3 border-t border-line p-4">
+        <div><label for="gpa-prev" class="label">Current GPA</label><input id="gpa-prev" class="input tabular" inputmode="decimal" placeholder="3.20" /></div>
+        <div><label for="gpa-prevc" class="label">Credits completed</label><input id="gpa-prevc" class="input tabular" inputmode="decimal" placeholder="45" /></div>
+      </div>
+    </details>
+  </div>
+
+  <aside class="card p-5 md:sticky md:top-24" aria-live="polite">
+    <p class="text-sm font-medium text-muted">Semester GPA</p>
+    <p class="mt-1 text-5xl font-extrabold tracking-tight tabular" data-gpa>–</p>
+    <p class="mt-1 text-muted" data-credits></p>
+    <div class="stat mt-4" data-cum-wrap hidden><p class="stat-label">Cumulative GPA</p><p class="text-2xl font-bold tabular" data-cum></p></div>
+    <p class="alert alert-error mt-4" data-msg hidden></p>
+    <button type="button" class="btn btn-ghost btn-sm mt-4" data-reset><Icon name="RotateCcw" size={16} />Clear all</button>
+  </aside>
+</div>
+
+<script>
+  import { num, fmt, store } from '../lib/ui';
+
+  const GRADES: [string, number][] = [['A+', 4.0], ['A', 4.0], ['A-', 3.7], ['B+', 3.3], ['B', 3.0], ['B-', 2.7], ['C+', 2.3], ['C', 2.0], ['C-', 1.7], ['D+', 1.3], ['D', 1.0], ['D-', 0.7], ['F', 0]];
+  const root = document.getElementById('gpa')!;
+  const rowsEl = root.querySelector<HTMLUListElement>('[data-rows]')!;
+  const scale = document.getElementById('gpa-scale') as HTMLSelectElement;
+  type Row = { name: string; grade: string; credits: string };
+  let rows: Row[] = store.get<Row[]>('tw-gpa-rows', []);
+  if (!rows.length) rows = [{ name: '', grade: 'A', credits: '3' }, { name: '', grade: 'B+', credits: '3' }, { name: '', grade: 'A-', credits: '4' }, { name: '', grade: '', credits: '' }];
+  scale.value = store.get('tw-gpa-scale', '4');
+
+  const points = (g: string) => (g === 'A+' && scale.value === '4.3' ? 4.3 : GRADES.find(([k]) => k === g)?.[1]);
+
+  function render(focusLast = false) {
+    rowsEl.innerHTML = rows.map((r, i) => `
+      <li class="grid grid-cols-[1fr_6.5rem] gap-2 rounded-[10px] border border-line p-2 sm:grid-cols-[1fr_6.5rem_5.5rem_2.75rem] sm:border-0 sm:p-0" data-i="${i}">
+        <input class="input col-span-2 sm:col-span-1" placeholder="Course ${i + 1}" aria-label="Course ${i + 1} name" data-f="name" value="${r.name.replace(/"/g, '&quot;')}" />
+        <select class="select" aria-label="Course ${i + 1} grade" data-f="grade">
+          <option value="">Grade</option>${GRADES.map(([g]) => `<option ${g === r.grade ? 'selected' : ''}>${g}</option>`).join('')}
+        </select>
+        <div class="flex gap-2 sm:contents">
+          <input class="input tabular" inputmode="decimal" placeholder="Credits" aria-label="Course ${i + 1} credits" data-f="credits" value="${r.credits}" />
+          <button type="button" class="btn btn-ghost h-11 w-11 flex-none !p-0" data-del aria-label="Remove course ${i + 1}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg></button>
+        </div>
+      </li>`).join('');
+    if (focusLast) rowsEl.querySelector<HTMLInputElement>('li:last-child input')?.focus();
+    calc();
+  }
+
+  function calc() {
+    store.set('tw-gpa-rows', rows);
+    store.set('tw-gpa-scale', scale.value);
+    let q = 0, c = 0, bad = '';
+    rows.forEach((r, i) => {
+      const cr = num(r.credits);
+      if (!r.grade && !r.credits.trim()) return;
+      if (!r.grade) { bad ||= `Choose a grade for course ${i + 1}.`; return; }
+      if (!(cr > 0) || cr > 30) { bad ||= `Enter the credits for course ${i + 1}, for example 3.`; return; }
+      q += points(r.grade)! * cr; c += cr;
+    });
+    const msg = root.querySelector<HTMLElement>('[data-msg]')!;
+    msg.hidden = !bad; msg.textContent = bad;
+    root.querySelector('[data-gpa]')!.textContent = c ? fmt(q / c, 2, 2) : '–';
+    root.querySelector('[data-credits]')!.textContent = c ? `${fmt(c)} credit${c === 1 ? '' : 's'}` : 'Add a grade and credits';
+    const pg = num((document.getElementById('gpa-prev') as HTMLInputElement).value), pc = num((document.getElementById('gpa-prevc') as HTMLInputElement).value);
+    const cumWrap = root.querySelector<HTMLElement>('[data-cum-wrap]')!;
+    cumWrap.hidden = !(pg >= 0 && pg <= Number(scale.value) && pc > 0 && c > 0);
+    if (!cumWrap.hidden) root.querySelector('[data-cum]')!.textContent = fmt((pg * pc + q) / (pc + c), 2, 2);
+  }
+
+  rowsEl.addEventListener('input', (e) => {
+    const t = e.target as HTMLInputElement;
+    const li = t.closest('li');
+    if (!li || !t.dataset.f) return;
+    const i = Number(li.dataset.i);
+    (rows[i] as Record<string, string>)[t.dataset.f!] = t.value;
+    calc();
+  });
+  rowsEl.addEventListener('click', (e) => {
+    const b = (e.target as HTMLElement).closest('[data-del]');
+    if (!b) return;
+    rows.splice(Number(b.closest('li')!.dataset.i), 1);
+    if (!rows.length) rows.push({ name: '', grade: '', credits: '' });
+    render();
+  });
+  root.querySelector('[data-add]')!.addEventListener('click', () => { rows.push({ name: '', grade: '', credits: '3' }); render(true); });
+  root.querySelector('[data-reset]')!.addEventListener('click', () => { rows = [{ name: '', grade: '', credits: '' }]; render(); });
+  scale.addEventListener('change', calc);
+  root.querySelectorAll('#gpa-prev, #gpa-prevc').forEach((el) => el.addEventListener('input', calc));
+  render();
+</script>

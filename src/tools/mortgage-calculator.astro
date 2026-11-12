@@ -1,0 +1,143 @@
+---
+import CalcLayout from '../components/CalcLayout.astro';
+import CurrencySelect from '../components/CurrencySelect.astro';
+---
+<CalcLayout id="mc">
+  <Fragment slot="inputs">
+    <CurrencySelect id="mc-cur" />
+    <div>
+      <label for="mc-price" class="label">Home price</label>
+      <div class="input-group"><span class="addon addon-left" data-sym>$</span><input id="mc-price" class="input tabular" inputmode="decimal" value="400,000" /></div>
+    </div>
+    <div>
+      <label for="mc-down" class="label">Down payment</label>
+      <div class="grid grid-cols-[1fr_7rem] gap-2">
+        <div class="input-group"><span class="addon addon-left" data-sym>$</span><input id="mc-down" class="input tabular" inputmode="decimal" value="80,000" /></div>
+        <div class="input-group"><input id="mc-downpct" class="input tabular" inputmode="decimal" value="20" aria-label="Down payment percent" /><span class="addon">%</span></div>
+      </div>
+    </div>
+    <div class="grid grid-cols-2 gap-3">
+      <div>
+        <label for="mc-rate" class="label">Interest rate</label>
+        <div class="input-group"><input id="mc-rate" class="input tabular" inputmode="decimal" value="6.5" /><span class="addon">%</span></div>
+      </div>
+      <div>
+        <label for="mc-term" class="label">Loan term</label>
+        <select id="mc-term" class="select">
+          <option value="30" selected>30 years</option><option value="25">25 years</option><option value="20">20 years</option>
+          <option value="15">15 years</option><option value="10">10 years</option>
+        </select>
+      </div>
+    </div>
+    <details class="group rounded-[10px] border border-line">
+      <summary class="flex min-h-12 cursor-pointer list-none items-center justify-between px-4 font-semibold [&::-webkit-details-marker]:hidden">Taxes, insurance and fees <span class="text-sm font-normal text-subtle">optional</span></summary>
+      <div class="grid grid-cols-2 gap-3 border-t border-line p-4">
+        <div>
+          <label for="mc-tax" class="label">Property tax / year</label>
+          <div class="input-group"><span class="addon addon-left" data-sym>$</span><input id="mc-tax" class="input tabular" inputmode="decimal" value="0" /></div>
+        </div>
+        <div>
+          <label for="mc-ins" class="label">Insurance / year</label>
+          <div class="input-group"><span class="addon addon-left" data-sym>$</span><input id="mc-ins" class="input tabular" inputmode="decimal" value="0" /></div>
+        </div>
+        <div>
+          <label for="mc-hoa" class="label">HOA / month</label>
+          <div class="input-group"><span class="addon addon-left" data-sym>$</span><input id="mc-hoa" class="input tabular" inputmode="decimal" value="0" /></div>
+        </div>
+        <div>
+          <label for="mc-extra" class="label">Extra payment / month</label>
+          <div class="input-group"><span class="addon addon-left" data-sym>$</span><input id="mc-extra" class="input tabular" inputmode="decimal" value="0" /></div>
+        </div>
+      </div>
+    </details>
+  </Fragment>
+
+  <Fragment slot="results">
+    <div data-ok>
+      <p class="text-sm font-medium text-muted">Estimated monthly payment</p>
+      <p class="mt-1 text-4xl font-extrabold tracking-tight tabular" data-monthly>–</p>
+      <div class="mt-5 flex h-3 overflow-hidden rounded-full bg-surface-2" data-bar aria-hidden="true"></div>
+      <ul class="mt-3 space-y-1.5 text-[0.9375rem]" data-legend></ul>
+      <dl class="mt-5 grid grid-cols-2 gap-3">
+        <div class="stat"><dt class="stat-label">Loan amount</dt><dd class="text-lg font-bold tabular" data-loan>–</dd></div>
+        <div class="stat"><dt class="stat-label">Total interest</dt><dd class="text-lg font-bold tabular" data-interest>–</dd></div>
+        <div class="stat"><dt class="stat-label">Total of payments</dt><dd class="text-lg font-bold tabular" data-total>–</dd></div>
+        <div class="stat"><dt class="stat-label">Paid off by</dt><dd class="text-lg font-bold" data-payoff>–</dd></div>
+      </dl>
+      <p class="mt-3 text-sm text-success" data-saved hidden></p>
+    </div>
+    <p class="alert alert-info" data-msg hidden></p>
+  </Fragment>
+</CalcLayout>
+
+<details class="card mt-5 group">
+  <summary class="flex min-h-14 cursor-pointer list-none items-center justify-between px-5 font-semibold [&::-webkit-details-marker]:hidden">Yearly amortization schedule <span class="text-sm font-normal text-subtle">Show</span></summary>
+  <div class="overflow-x-auto border-t border-line">
+    <table class="w-full text-right text-[0.9375rem] tabular">
+      <thead class="bg-surface-2 text-sm text-muted"><tr><th class="px-4 py-2 text-left font-semibold">Year</th><th class="px-4 py-2 font-semibold">Principal</th><th class="px-4 py-2 font-semibold">Interest</th><th class="px-4 py-2 font-semibold">Balance</th></tr></thead>
+      <tbody data-table class="divide-y divide-[var(--border)]"></tbody>
+    </table>
+  </div>
+</details>
+
+<script>
+  import { amortizeYearly, payment, bindCurrency, live, addMonths, monthYear } from '../lib/calc';
+  import { num, money } from '../lib/ui';
+
+  const root = document.getElementById('mc')!;
+  const q = <T extends HTMLElement = HTMLInputElement>(s: string) => document.querySelector<T>(s)!;
+  const price = q('#mc-price'), down = q('#mc-down'), downPct = q('#mc-downpct'), rate = q('#mc-rate');
+  const term = q<HTMLSelectElement>('#mc-term');
+  const cur = bindCurrency(q<HTMLSelectElement>('#mc-cur'), () => calc());
+  const ok = root.querySelector<HTMLElement>('[data-ok]')!, msg = root.querySelector<HTMLElement>('[data-msg]')!;
+  const set = (s: string, v: string) => (root.querySelector(s)!.textContent = v);
+
+  // Keep down payment amount and percent in sync
+  down.addEventListener('input', () => { const p = num(price.value), d = num(down.value); if (p > 0 && d >= 0) downPct.value = String(+((d / p) * 100).toFixed(2)); });
+  downPct.addEventListener('input', () => { const p = num(price.value), d = num(downPct.value); if (p > 0 && d >= 0) down.value = Math.round((p * d) / 100).toLocaleString(); });
+  price.addEventListener('input', () => { const p = num(price.value), d = num(downPct.value); if (p > 0 && d >= 0) down.value = Math.round((p * d) / 100).toLocaleString(); });
+
+  function fail(text: string) { ok.hidden = true; msg.hidden = false; msg.textContent = text; document.querySelector('[data-table]')!.innerHTML = ''; }
+
+  function calc() {
+    const c = cur();
+    root.querySelectorAll('[data-sym]').forEach((el) => (el.textContent = c || '#'));
+    const P = num(price.value), D = num(down.value) || 0, R = num(rate.value), years = Number(term.value);
+    const tax = num(q('#mc-tax').value) || 0, ins = num(q('#mc-ins').value) || 0, hoa = num(q('#mc-hoa').value) || 0, extra = num(q('#mc-extra').value) || 0;
+    if (!(P > 0)) return fail('Enter the home price to see your monthly payment.');
+    if (D >= P) return fail('The down payment is the same as or more than the home price, so no loan is needed.');
+    if (D < 0) return fail('The down payment cannot be negative.');
+    if (!(R >= 0) || R > 50) return fail('Enter an interest rate between 0% and 50%, for example 6.5.');
+    const loan = P - D, months = years * 12;
+    const pi = payment(loan, R, months);
+    const parts = [
+      { label: 'Principal and interest', v: pi, color: 'var(--brand)' },
+      { label: 'Property tax', v: tax / 12, color: '#f59e0b' },
+      { label: 'Insurance', v: ins / 12, color: '#10b981' },
+      { label: 'HOA fees', v: hoa, color: '#a855f7' },
+    ].filter((x) => x.v > 0);
+    const monthly = parts.reduce((s, x) => s + x.v, 0) + extra;
+    const am = amortizeYearly(loan, R, months, extra);
+    const base = amortizeYearly(loan, R, months, 0);
+    ok.hidden = false; msg.hidden = true;
+    set('[data-monthly]', money(monthly, c));
+    set('[data-loan]', money(loan, c, 0));
+    set('[data-interest]', money(am.totalInterest, c, 0));
+    set('[data-total]', money(loan + am.totalInterest, c, 0));
+    set('[data-payoff]', monthYear(addMonths(new Date(), am.months)));
+    const saved = root.querySelector<HTMLElement>('[data-saved]')!;
+    saved.hidden = !(extra > 0 && base.totalInterest - am.totalInterest > 1);
+    saved.textContent = `Paying ${money(extra, c, 0)} extra each month saves ${money(base.totalInterest - am.totalInterest, c, 0)} in interest and pays the loan off ${Math.floor((base.months - am.months) / 12)} years and ${(base.months - am.months) % 12} months sooner.`;
+    const bar = root.querySelector('[data-bar]')!;
+    const total = parts.reduce((s, x) => s + x.v, 0);
+    bar.innerHTML = parts.map((x) => `<span style="width:${(x.v / total) * 100}%;background:${x.color}"></span>`).join('');
+    root.querySelector('[data-legend]')!.innerHTML = parts
+      .concat(extra > 0 ? [{ label: 'Extra payment', v: extra, color: 'var(--border-strong)' }] : [])
+      .map((x) => `<li class="flex items-center justify-between gap-3"><span class="flex items-center gap-2"><span class="h-2.5 w-2.5 rounded-full" style="background:${x.color}"></span>${x.label}</span><span class="font-semibold tabular">${money(x.v, c)}</span></li>`)
+      .join('');
+    document.querySelector('[data-table]')!.innerHTML = am.rows
+      .map((r) => `<tr><td class="px-4 py-2 text-left">${r.year}</td><td class="px-4 py-2">${money(r.principal, c, 0)}</td><td class="px-4 py-2">${money(r.interest, c, 0)}</td><td class="px-4 py-2">${money(r.balance, c, 0)}</td></tr>`)
+      .join('');
+  }
+  live(root.querySelector('[data-inputs]')!, calc);
+</script>

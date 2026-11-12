@@ -1,0 +1,2714 @@
+[
+  {
+    "id": 1,
+    "name": "Merge PDF",
+    "slug": "merge-pdf",
+    "category": "pdf",
+    "shortDescription": "Combine several PDF files into one document in the order you choose.",
+    "icon": "FileStack",
+    "priority": 2,
+    "keywords": [
+      "combine pdf",
+      "join pdf",
+      "merge pdf files",
+      "put pdfs together",
+      "append pdf"
+    ],
+    "status": "planned"
+  },
+  {
+    "id": 2,
+    "name": "Split PDF",
+    "slug": "split-pdf",
+    "category": "pdf",
+    "shortDescription": "Split a PDF into separate files by page ranges or single pages.",
+    "icon": "Scissors",
+    "priority": 20,
+    "keywords": [
+      "separate pdf",
+      "divide pdf",
+      "break pdf",
+      "cut pdf",
+      "split pages"
+    ],
+    "status": "planned"
+  },
+  {
+    "id": 3,
+    "name": "Compress PDF",
+    "slug": "compress-pdf",
+    "category": "pdf",
+    "shortDescription": "Make PDF files smaller so they are easier to email and upload.",
+    "icon": "Minimize2",
+    "priority": 4,
+    "keywords": [
+      "reduce pdf size",
+      "shrink pdf",
+      "smaller pdf",
+      "pdf compressor",
+      "optimize pdf"
+    ],
+    "status": "planned"
+  },
+  {
+    "id": 4,
+    "name": "Image to PDF",
+    "slug": "image-to-pdf",
+    "category": "pdf",
+    "shortDescription": "Turn JPG, PNG and other photos into a single PDF document.",
+    "icon": "FileImage",
+    "priority": 3,
+    "keywords": [
+      "jpg to pdf",
+      "png to pdf",
+      "photo to pdf",
+      "picture to pdf",
+      "convert image to pdf",
+      "scan to pdf"
+    ],
+    "status": "planned"
+  },
+  {
+    "id": 5,
+    "name": "PDF to Image",
+    "slug": "pdf-to-image",
+    "category": "pdf",
+    "shortDescription": "Convert every PDF page into a high-quality JPG or PNG image.",
+    "icon": "Images",
+    "priority": 21,
+    "keywords": [
+      "pdf to jpg",
+      "pdf to png",
+      "convert pdf to picture",
+      "pdf pages to images"
+    ],
+    "status": "planned"
+  },
+  {
+    "id": 6,
+    "name": "Rotate PDF",
+    "slug": "rotate-pdf",
+    "category": "pdf",
+    "shortDescription": "Rotate all or selected PDF pages by 90, 180 or 270 degrees.",
+    "icon": "RotateCw",
+    "priority": 106,
+    "keywords": [
+      "turn pdf",
+      "rotate pdf pages",
+      "flip pdf orientation",
+      "sideways pdf"
+    ],
+    "status": "planned"
+  },
+  {
+    "id": 7,
+    "name": "Delete PDF Pages",
+    "slug": "delete-pdf-pages",
+    "category": "pdf",
+    "shortDescription": "Remove unwanted pages from a PDF and keep the rest.",
+    "icon": "FileMinus2",
+    "priority": 107,
+    "keywords": [
+      "remove pages from pdf",
+      "delete page pdf",
+      "drop pdf pages"
+    ],
+    "status": "planned"
+  },
+  {
+    "id": 8,
+    "name": "Reorder PDF Pages",
+    "slug": "reorder-pdf-pages",
+    "category": "pdf",
+    "shortDescription": "Drag pages into a new order and save the rearranged PDF.",
+    "icon": "ArrowUpDown",
+    "priority": 108,
+    "keywords": [
+      "rearrange pdf",
+      "sort pdf pages",
+      "move pdf pages",
+      "organize pdf"
+    ],
+    "status": "planned"
+  },
+  {
+    "id": 9,
+    "name": "Extract PDF Pages",
+    "slug": "extract-pdf-pages",
+    "category": "pdf",
+    "shortDescription": "Pull selected pages out of a PDF into a new file.",
+    "icon": "FileOutput",
+    "priority": 109,
+    "keywords": [
+      "extract pages",
+      "save pages from pdf",
+      "copy pdf pages",
+      "pick pages"
+    ],
+    "status": "planned"
+  },
+  {
+    "id": 10,
+    "name": "Add Page Numbers to PDF",
+    "slug": "add-page-numbers-pdf",
+    "category": "pdf",
+    "shortDescription": "Number the pages of a PDF with your choice of position and style.",
+    "icon": "ListOrdered",
+    "priority": 110,
+    "keywords": [
+      "pdf page numbers",
+      "paginate pdf",
+      "number pdf pages",
+      "bates"
+    ],
+    "status": "planned"
+  },
+  {
+    "id": 11,
+    "name": "Add Watermark to PDF",
+    "slug": "watermark-pdf",
+    "category": "pdf",
+    "shortDescription": "Stamp text such as \"Confidential\" or \"Draft\" across PDF pages.",
+    "icon": "Stamp",
+    "priority": 111,
+    "keywords": [
+      "pdf watermark",
+      "stamp pdf",
+      "confidential pdf",
+      "draft watermark"
+    ],
+    "status": "planned"
+  },
+  {
+    "id": 12,
+    "name": "Sign PDF",
+    "slug": "sign-pdf",
+    "category": "pdf",
+    "shortDescription": "Draw or type your signature and place it on any PDF page.",
+    "icon": "Signature",
+    "priority": 22,
+    "keywords": [
+      "esign pdf",
+      "signature pdf",
+      "sign document",
+      "electronic signature",
+      "sign contract"
+    ],
+    "status": "planned"
+  },
+  {
+    "id": 13,
+    "name": "Fill PDF Form",
+    "slug": "fill-pdf-form",
+    "category": "pdf",
+    "shortDescription": "Type into fillable PDF form fields and save the completed form.",
+    "icon": "FormInput",
+    "priority": 113,
+    "keywords": [
+      "pdf form filler",
+      "complete pdf form",
+      "fillable pdf",
+      "type on pdf"
+    ],
+    "status": "planned"
+  },
+  {
+    "id": 14,
+    "name": "Protect PDF",
+    "slug": "protect-pdf",
+    "category": "pdf",
+    "shortDescription": "Add a password so only people you trust can open your PDF.",
+    "icon": "FileLock2",
+    "priority": 114,
+    "keywords": [
+      "encrypt pdf",
+      "password protect pdf",
+      "lock pdf",
+      "secure pdf"
+    ],
+    "status": "planned"
+  },
+  {
+    "id": 15,
+    "name": "Unlock PDF",
+    "slug": "unlock-pdf",
+    "category": "pdf",
+    "shortDescription": "Remove the password from a PDF you are allowed to open.",
+    "icon": "LockOpen",
+    "priority": 115,
+    "keywords": [
+      "remove pdf password",
+      "decrypt pdf",
+      "unlock pdf file",
+      "unprotect pdf"
+    ],
+    "status": "planned"
+  },
+  {
+    "id": 16,
+    "name": "PDF to Text",
+    "slug": "pdf-to-text",
+    "category": "pdf",
+    "shortDescription": "Extract the plain text from a PDF so you can copy and edit it.",
+    "icon": "FileText",
+    "priority": 116,
+    "keywords": [
+      "pdf text extractor",
+      "copy text from pdf",
+      "pdf to txt",
+      "read pdf text"
+    ],
+    "status": "planned"
+  },
+  {
+    "id": 17,
+    "name": "Crop PDF",
+    "slug": "crop-pdf",
+    "category": "pdf",
+    "shortDescription": "Trim the margins of PDF pages to focus on what matters.",
+    "icon": "Crop",
+    "priority": 117,
+    "keywords": [
+      "trim pdf margins",
+      "crop pdf pages",
+      "cut pdf edges",
+      "resize pdf page"
+    ],
+    "status": "planned"
+  },
+  {
+    "id": 18,
+    "name": "Flatten PDF",
+    "slug": "flatten-pdf",
+    "category": "pdf",
+    "shortDescription": "Merge form fields and annotations into the page so they cannot be edited.",
+    "icon": "Layers",
+    "priority": 118,
+    "keywords": [
+      "flatten pdf form",
+      "lock pdf fields",
+      "make pdf uneditable"
+    ],
+    "status": "planned"
+  },
+  {
+    "id": 19,
+    "name": "Compress Image",
+    "slug": "compress-image",
+    "category": "image",
+    "shortDescription": "Reduce photo file size without visible loss of quality.",
+    "icon": "Minimize2",
+    "priority": 1,
+    "keywords": [
+      "shrink photo",
+      "reduce image size",
+      "smaller picture",
+      "compress jpg",
+      "compress png",
+      "image compressor",
+      "optimize image",
+      "make photo smaller"
+    ],
+    "status": "planned"
+  },
+  {
+    "id": 20,
+    "name": "Resize Image",
+    "slug": "resize-image",
+    "category": "image",
+    "shortDescription": "Change image width and height in pixels or by percentage.",
+    "icon": "Maximize2",
+    "priority": 6,
+    "keywords": [
+      "change image size",
+      "scale photo",
+      "image dimensions",
+      "enlarge picture",
+      "shrink picture",
+      "resize photo"
+    ],
+    "status": "planned"
+  },
+  {
+    "id": 21,
+    "name": "Crop Image",
+    "slug": "crop-image",
+    "category": "image",
+    "shortDescription": "Cut out part of a picture or crop it to a common aspect ratio.",
+    "icon": "Crop",
+    "priority": 121,
+    "keywords": [
+      "trim photo",
+      "crop photo",
+      "cut image",
+      "square crop",
+      "aspect ratio"
+    ],
+    "status": "planned"
+  },
+  {
+    "id": 22,
+    "name": "JPG to PNG",
+    "slug": "jpg-to-png",
+    "category": "image",
+    "shortDescription": "Convert JPG photos to PNG format right in your browser.",
+    "icon": "Repeat",
+    "priority": 122,
+    "keywords": [
+      "jpeg to png",
+      "convert jpg",
+      "change jpg to png"
+    ],
+    "status": "planned"
+  },
+  {
+    "id": 23,
+    "name": "PNG to JPG",
+    "slug": "png-to-jpg",
+    "category": "image",
+    "shortDescription": "Convert PNG images to smaller JPG files.",
+    "icon": "Repeat",
+    "priority": 123,
+    "keywords": [
+      "png to jpeg",
+      "convert png",
+      "change png to jpg"
+    ],
+    "status": "planned"
+  },
+  {
+    "id": 24,
+    "name": "WebP to JPG",
+    "slug": "webp-to-jpg",
+    "category": "image",
+    "shortDescription": "Convert WebP images to JPG so they open everywhere.",
+    "icon": "Repeat",
+    "priority": 23,
+    "keywords": [
+      "webp to jpeg",
+      "convert webp",
+      "open webp file",
+      "webp converter"
+    ],
+    "status": "planned"
+  },
+  {
+    "id": 25,
+    "name": "HEIC to JPG",
+    "slug": "heic-to-jpg",
+    "category": "image",
+    "shortDescription": "Convert iPhone HEIC photos to standard JPG images.",
+    "icon": "Smartphone",
+    "priority": 8,
+    "keywords": [
+      "iphone photo to jpg",
+      "heif to jpg",
+      "convert heic",
+      "apple photo format",
+      "open heic"
+    ],
+    "status": "planned"
+  },
+  {
+    "id": 26,
+    "name": "Passport Photo Maker",
+    "slug": "passport-photo-maker",
+    "category": "image",
+    "shortDescription": "Create passport and ID photos in the correct size for many countries.",
+    "icon": "IdCard",
+    "priority": 24,
+    "keywords": [
+      "passport picture",
+      "visa photo",
+      "id photo",
+      "passport size photo",
+      "2x2 photo",
+      "35x45"
+    ],
+    "status": "planned"
+  },
+  {
+    "id": 27,
+    "name": "Compress Image to 20KB, 50KB or 100KB",
+    "slug": "compress-image-to-kb",
+    "category": "image",
+    "shortDescription": "Shrink a photo to an exact size limit such as 20KB, 50KB or 100KB.",
+    "icon": "Gauge",
+    "priority": 25,
+    "keywords": [
+      "compress to 20kb",
+      "compress to 50kb",
+      "compress to 100kb",
+      "image under 100kb",
+      "reduce photo to kb",
+      "form upload photo size",
+      "shrink photo"
+    ],
+    "status": "planned"
+  },
+  {
+    "id": 28,
+    "name": "Rotate and Flip Image",
+    "slug": "rotate-flip-image",
+    "category": "image",
+    "shortDescription": "Rotate a picture or flip it horizontally and vertically.",
+    "icon": "FlipHorizontal2",
+    "priority": 128,
+    "keywords": [
+      "turn image",
+      "mirror image",
+      "flip photo",
+      "rotate photo"
+    ],
+    "status": "planned"
+  },
+  {
+    "id": 29,
+    "name": "Add Text to Image",
+    "slug": "add-text-to-image",
+    "category": "image",
+    "shortDescription": "Write text on a photo with your choice of font, size and color.",
+    "icon": "Type",
+    "priority": 129,
+    "keywords": [
+      "write on photo",
+      "caption image",
+      "text on picture",
+      "label photo"
+    ],
+    "status": "planned"
+  },
+  {
+    "id": 30,
+    "name": "Add Watermark to Image",
+    "slug": "watermark-image",
+    "category": "image",
+    "shortDescription": "Protect your photos with a text or logo watermark.",
+    "icon": "Stamp",
+    "priority": 130,
+    "keywords": [
+      "image watermark",
+      "photo watermark",
+      "copyright photo",
+      "logo on image"
+    ],
+    "status": "planned"
+  },
+  {
+    "id": 31,
+    "name": "Blur Image",
+    "slug": "blur-image",
+    "category": "image",
+    "shortDescription": "Blur a whole image or hide faces and private details.",
+    "icon": "Droplets",
+    "priority": 131,
+    "keywords": [
+      "blur photo",
+      "censor image",
+      "pixelate",
+      "hide face",
+      "blur background"
+    ],
+    "status": "planned"
+  },
+  {
+    "id": 32,
+    "name": "Image to Base64",
+    "slug": "image-to-base64",
+    "category": "image",
+    "shortDescription": "Encode an image as a Base64 data URL for HTML or CSS.",
+    "icon": "Binary",
+    "priority": 132,
+    "keywords": [
+      "base64 image",
+      "data uri",
+      "image encoder",
+      "embed image"
+    ],
+    "status": "planned"
+  },
+  {
+    "id": 33,
+    "name": "Meme Generator",
+    "slug": "meme-generator",
+    "category": "image",
+    "shortDescription": "Add top and bottom captions to any picture to make a meme.",
+    "icon": "Laugh",
+    "priority": 133,
+    "keywords": [
+      "make meme",
+      "meme maker",
+      "funny caption",
+      "meme creator"
+    ],
+    "status": "planned"
+  },
+  {
+    "id": 34,
+    "name": "Collage Maker",
+    "slug": "collage-maker",
+    "category": "image",
+    "shortDescription": "Arrange several photos into a tidy grid collage.",
+    "icon": "LayoutGrid",
+    "priority": 134,
+    "keywords": [
+      "photo collage",
+      "picture grid",
+      "combine photos",
+      "photo layout"
+    ],
+    "status": "planned"
+  },
+  {
+    "id": 35,
+    "name": "Color Picker from Image",
+    "slug": "image-color-picker",
+    "category": "image",
+    "shortDescription": "Click anywhere on an image to get its HEX and RGB color code.",
+    "icon": "Pipette",
+    "priority": 135,
+    "keywords": [
+      "get color from image",
+      "eyedropper",
+      "hex from photo",
+      "color code from picture"
+    ],
+    "status": "planned"
+  },
+  {
+    "id": 36,
+    "name": "Black and White Converter",
+    "slug": "black-and-white-image",
+    "category": "image",
+    "shortDescription": "Turn color photos into black and white or grayscale.",
+    "icon": "Contrast",
+    "priority": 136,
+    "keywords": [
+      "grayscale image",
+      "monochrome photo",
+      "remove color",
+      "b&w photo"
+    ],
+    "status": "planned"
+  },
+  {
+    "id": 37,
+    "name": "Round Image Corners",
+    "slug": "round-image-corners",
+    "category": "image",
+    "shortDescription": "Give an image rounded corners or a circle shape.",
+    "icon": "SquareRoundCorner",
+    "priority": 137,
+    "keywords": [
+      "rounded corners",
+      "circle image",
+      "round photo",
+      "profile picture circle"
+    ],
+    "status": "planned"
+  },
+  {
+    "id": 38,
+    "name": "Image Metadata Viewer",
+    "slug": "image-metadata-viewer",
+    "category": "image",
+    "shortDescription": "See EXIF data such as camera, date and GPS location of a photo.",
+    "icon": "Info",
+    "priority": 138,
+    "keywords": [
+      "exif viewer",
+      "photo info",
+      "image details",
+      "camera data",
+      "gps photo"
+    ],
+    "status": "planned"
+  },
+  {
+    "id": 39,
+    "name": "Remove EXIF Data",
+    "slug": "remove-exif-data",
+    "category": "image",
+    "shortDescription": "Strip hidden location and camera data from photos before sharing.",
+    "icon": "ShieldOff",
+    "priority": 139,
+    "keywords": [
+      "delete exif",
+      "remove metadata",
+      "remove gps from photo",
+      "privacy photo"
+    ],
+    "status": "planned"
+  },
+  {
+    "id": 40,
+    "name": "Background Remover",
+    "slug": "background-remover",
+    "category": "image",
+    "shortDescription": "Remove the background from a photo automatically.",
+    "icon": "Eraser",
+    "priority": 940,
+    "keywords": [
+      "remove background",
+      "transparent background",
+      "cut out person",
+      "bg remover"
+    ],
+    "status": "later"
+  },
+  {
+    "id": 41,
+    "name": "Word Counter",
+    "slug": "word-counter",
+    "category": "text",
+    "shortDescription": "Count words, characters, sentences and reading time as you type.",
+    "icon": "FileText",
+    "priority": 5,
+    "keywords": [
+      "count words",
+      "word count",
+      "how many words",
+      "character count",
+      "essay length"
+    ],
+    "status": "planned"
+  },
+  {
+    "id": 42,
+    "name": "Character Counter",
+    "slug": "character-counter",
+    "category": "text",
+    "shortDescription": "Count characters with and without spaces for any text limit.",
+    "icon": "Hash",
+    "priority": 142,
+    "keywords": [
+      "count characters",
+      "letter count",
+      "character limit",
+      "chars"
+    ],
+    "status": "planned"
+  },
+  {
+    "id": 43,
+    "name": "Case Converter",
+    "slug": "case-converter",
+    "category": "text",
+    "shortDescription": "Change text to UPPERCASE, lowercase, Title Case or Sentence case.",
+    "icon": "CaseSensitive",
+    "priority": 143,
+    "keywords": [
+      "uppercase",
+      "lowercase",
+      "title case",
+      "sentence case",
+      "capitalize text",
+      "change case"
+    ],
+    "status": "planned"
+  },
+  {
+    "id": 44,
+    "name": "Remove Duplicate Lines",
+    "slug": "remove-duplicate-lines",
+    "category": "text",
+    "shortDescription": "Delete repeated lines from a list and keep only unique entries.",
+    "icon": "CopyMinus",
+    "priority": 144,
+    "keywords": [
+      "dedupe",
+      "unique lines",
+      "remove duplicates",
+      "duplicate remover"
+    ],
+    "status": "planned"
+  },
+  {
+    "id": 45,
+    "name": "Text Compare",
+    "slug": "text-compare",
+    "category": "text",
+    "shortDescription": "Compare two texts side by side and highlight the differences.",
+    "icon": "GitCompare",
+    "priority": 145,
+    "keywords": [
+      "diff checker",
+      "compare text",
+      "find differences",
+      "text diff"
+    ],
+    "status": "planned"
+  },
+  {
+    "id": 46,
+    "name": "Sort Lines",
+    "slug": "sort-lines",
+    "category": "text",
+    "shortDescription": "Sort lines alphabetically, by length, numerically or randomly.",
+    "icon": "ArrowDownAZ",
+    "priority": 146,
+    "keywords": [
+      "alphabetize list",
+      "sort list",
+      "order lines",
+      "a to z"
+    ],
+    "status": "planned"
+  },
+  {
+    "id": 47,
+    "name": "Remove Extra Spaces",
+    "slug": "remove-extra-spaces",
+    "category": "text",
+    "shortDescription": "Clean up double spaces, tabs and blank lines in your text.",
+    "icon": "Space",
+    "priority": 147,
+    "keywords": [
+      "trim spaces",
+      "clean text",
+      "remove whitespace",
+      "remove blank lines"
+    ],
+    "status": "planned"
+  },
+  {
+    "id": 48,
+    "name": "Find and Replace",
+    "slug": "find-and-replace",
+    "category": "text",
+    "shortDescription": "Find words in your text and replace them all at once.",
+    "icon": "Replace",
+    "priority": 148,
+    "keywords": [
+      "search and replace",
+      "replace text",
+      "substitute words"
+    ],
+    "status": "planned"
+  },
+  {
+    "id": 49,
+    "name": "Reverse Text",
+    "slug": "reverse-text",
+    "category": "text",
+    "shortDescription": "Reverse the order of letters, words or lines in your text.",
+    "icon": "Undo2",
+    "priority": 149,
+    "keywords": [
+      "backwards text",
+      "mirror text",
+      "flip text",
+      "reverse string"
+    ],
+    "status": "planned"
+  },
+  {
+    "id": 50,
+    "name": "Text to Speech",
+    "slug": "text-to-speech",
+    "category": "text",
+    "shortDescription": "Have your text read aloud with natural-sounding voices.",
+    "icon": "Volume2",
+    "priority": 150,
+    "keywords": [
+      "read aloud",
+      "tts",
+      "speak text",
+      "voice reader",
+      "text reader"
+    ],
+    "status": "planned"
+  },
+  {
+    "id": 51,
+    "name": "Speech to Text",
+    "slug": "speech-to-text",
+    "category": "text",
+    "shortDescription": "Dictate with your microphone and get typed text.",
+    "icon": "Mic",
+    "priority": 151,
+    "keywords": [
+      "dictation",
+      "voice typing",
+      "voice to text",
+      "transcribe speech"
+    ],
+    "status": "planned"
+  },
+  {
+    "id": 52,
+    "name": "Lorem Ipsum Generator",
+    "slug": "lorem-ipsum-generator",
+    "category": "text",
+    "shortDescription": "Generate placeholder text by paragraphs, sentences or words.",
+    "icon": "AlignLeft",
+    "priority": 152,
+    "keywords": [
+      "dummy text",
+      "placeholder text",
+      "filler text",
+      "lorem"
+    ],
+    "status": "planned"
+  },
+  {
+    "id": 53,
+    "name": "Readability Checker",
+    "slug": "readability-checker",
+    "category": "text",
+    "shortDescription": "Check how easy your writing is to read with Flesch and grade scores.",
+    "icon": "BookOpen",
+    "priority": 153,
+    "keywords": [
+      "flesch reading ease",
+      "reading level",
+      "grade level",
+      "readability score"
+    ],
+    "status": "planned"
+  },
+  {
+    "id": 54,
+    "name": "Word Frequency Counter",
+    "slug": "word-frequency-counter",
+    "category": "text",
+    "shortDescription": "See which words appear most often in your text.",
+    "icon": "BarChart3",
+    "priority": 154,
+    "keywords": [
+      "word frequency",
+      "most used words",
+      "word occurrences",
+      "keyword count"
+    ],
+    "status": "planned"
+  },
+  {
+    "id": 55,
+    "name": "Fancy Text Generator",
+    "slug": "fancy-text-generator",
+    "category": "text",
+    "shortDescription": "Turn plain text into stylish fonts to copy and paste anywhere.",
+    "icon": "Sparkles",
+    "priority": 26,
+    "keywords": [
+      "cool fonts",
+      "fancy fonts",
+      "stylish text",
+      "instagram fonts",
+      "bold text",
+      "cursive text",
+      "font changer"
+    ],
+    "status": "planned"
+  },
+  {
+    "id": 56,
+    "name": "Small Text Generator",
+    "slug": "small-text-generator",
+    "category": "text",
+    "shortDescription": "Create tiny superscript and small caps text to copy and paste.",
+    "icon": "ALargeSmall",
+    "priority": 156,
+    "keywords": [
+      "tiny text",
+      "superscript text",
+      "small caps",
+      "mini font"
+    ],
+    "status": "planned"
+  },
+  {
+    "id": 57,
+    "name": "Line Counter",
+    "slug": "line-counter",
+    "category": "text",
+    "shortDescription": "Count total, non-empty and blank lines in any text.",
+    "icon": "Rows3",
+    "priority": 157,
+    "keywords": [
+      "count lines",
+      "number of lines",
+      "line count"
+    ],
+    "status": "planned"
+  },
+  {
+    "id": 58,
+    "name": "Text to Slug",
+    "slug": "text-to-slug",
+    "category": "text",
+    "shortDescription": "Turn titles into clean, URL-friendly slugs.",
+    "icon": "Link",
+    "priority": 158,
+    "keywords": [
+      "slug generator",
+      "url slug",
+      "permalink",
+      "slugify"
+    ],
+    "status": "planned"
+  },
+  {
+    "id": 59,
+    "name": "Mortgage Calculator",
+    "slug": "mortgage-calculator",
+    "category": "finance",
+    "shortDescription": "Estimate your monthly mortgage payment, total interest and payoff schedule.",
+    "icon": "Home",
+    "priority": 27,
+    "keywords": [
+      "home loan",
+      "house payment",
+      "mortgage payment",
+      "amortization",
+      "monthly payment"
+    ],
+    "status": "planned"
+  },
+  {
+    "id": 60,
+    "name": "Loan Calculator",
+    "slug": "loan-calculator",
+    "category": "finance",
+    "shortDescription": "Calculate monthly payments and total interest for any loan.",
+    "icon": "Landmark",
+    "priority": 160,
+    "keywords": [
+      "personal loan",
+      "loan payment",
+      "emi calculator",
+      "interest calculator"
+    ],
+    "status": "planned"
+  },
+  {
+    "id": 61,
+    "name": "Car Loan Calculator",
+    "slug": "car-loan-calculator",
+    "category": "finance",
+    "shortDescription": "Work out monthly car payments including trade-in and down payment.",
+    "icon": "Car",
+    "priority": 161,
+    "keywords": [
+      "auto loan",
+      "vehicle finance",
+      "car payment",
+      "car finance"
+    ],
+    "status": "planned"
+  },
+  {
+    "id": 62,
+    "name": "Compound Interest Calculator",
+    "slug": "compound-interest-calculator",
+    "category": "finance",
+    "shortDescription": "See how savings grow with compound interest and regular deposits.",
+    "icon": "TrendingUp",
+    "priority": 28,
+    "keywords": [
+      "investment growth",
+      "interest on interest",
+      "savings growth",
+      "compounding"
+    ],
+    "status": "planned"
+  },
+  {
+    "id": 63,
+    "name": "Savings Goal Calculator",
+    "slug": "savings-goal-calculator",
+    "category": "finance",
+    "shortDescription": "Find out how much to save each month to reach a goal.",
+    "icon": "PiggyBank",
+    "priority": 163,
+    "keywords": [
+      "save money",
+      "savings plan",
+      "monthly savings",
+      "goal saving"
+    ],
+    "status": "planned"
+  },
+  {
+    "id": 64,
+    "name": "Retirement Calculator",
+    "slug": "retirement-calculator",
+    "category": "finance",
+    "shortDescription": "Estimate how much you will have saved by retirement.",
+    "icon": "Palmtree",
+    "priority": 164,
+    "keywords": [
+      "retirement savings",
+      "pension",
+      "401k",
+      "nest egg"
+    ],
+    "status": "planned"
+  },
+  {
+    "id": 65,
+    "name": "Credit Card Payoff Calculator",
+    "slug": "credit-card-payoff-calculator",
+    "category": "finance",
+    "shortDescription": "See how long it takes to pay off a credit card balance.",
+    "icon": "CreditCard",
+    "priority": 165,
+    "keywords": [
+      "credit card debt",
+      "pay off card",
+      "card interest",
+      "minimum payment"
+    ],
+    "status": "planned"
+  },
+  {
+    "id": 66,
+    "name": "Debt Snowball Calculator",
+    "slug": "debt-snowball-calculator",
+    "category": "finance",
+    "shortDescription": "Plan a debt payoff order with the snowball or avalanche method.",
+    "icon": "Snowflake",
+    "priority": 166,
+    "keywords": [
+      "debt payoff",
+      "pay off debt",
+      "debt avalanche",
+      "debt plan"
+    ],
+    "status": "planned"
+  },
+  {
+    "id": 67,
+    "name": "Inflation Calculator",
+    "slug": "inflation-calculator",
+    "category": "finance",
+    "shortDescription": "See how inflation changes the value of money over time.",
+    "icon": "Flame",
+    "priority": 167,
+    "keywords": [
+      "purchasing power",
+      "value of money",
+      "price increase",
+      "cost of living"
+    ],
+    "status": "planned"
+  },
+  {
+    "id": 68,
+    "name": "ROI Calculator",
+    "slug": "roi-calculator",
+    "category": "finance",
+    "shortDescription": "Calculate return on investment and annualized return.",
+    "icon": "ChartPie",
+    "priority": 168,
+    "keywords": [
+      "return on investment",
+      "investment return",
+      "profit percentage"
+    ],
+    "status": "planned"
+  },
+  {
+    "id": 69,
+    "name": "Salary to Hourly Calculator",
+    "slug": "salary-to-hourly-calculator",
+    "category": "finance",
+    "shortDescription": "Convert an annual salary to hourly, weekly and monthly pay.",
+    "icon": "Clock",
+    "priority": 169,
+    "keywords": [
+      "hourly wage",
+      "pay converter",
+      "annual to hourly",
+      "income calculator"
+    ],
+    "status": "planned"
+  },
+  {
+    "id": 70,
+    "name": "Discount Calculator",
+    "slug": "discount-calculator",
+    "category": "finance",
+    "shortDescription": "Find the sale price and how much you save with a discount.",
+    "icon": "Tag",
+    "priority": 170,
+    "keywords": [
+      "sale price",
+      "percent off",
+      "savings",
+      "price after discount"
+    ],
+    "status": "planned"
+  },
+  {
+    "id": 71,
+    "name": "Tip Calculator",
+    "slug": "tip-calculator",
+    "category": "finance",
+    "shortDescription": "Calculate the tip and split the bill between friends.",
+    "icon": "HandCoins",
+    "priority": 171,
+    "keywords": [
+      "gratuity",
+      "split bill",
+      "restaurant tip",
+      "bill splitter"
+    ],
+    "status": "planned"
+  },
+  {
+    "id": 72,
+    "name": "Profit Margin Calculator",
+    "slug": "profit-margin-calculator",
+    "category": "finance",
+    "shortDescription": "Calculate profit margin, markup and selling price.",
+    "icon": "Percent",
+    "priority": 172,
+    "keywords": [
+      "margin",
+      "markup",
+      "gross profit",
+      "selling price"
+    ],
+    "status": "planned"
+  },
+  {
+    "id": 73,
+    "name": "VAT and Sales Tax Calculator",
+    "slug": "sales-tax-calculator",
+    "category": "finance",
+    "shortDescription": "Add or remove VAT and sales tax from any price.",
+    "icon": "Receipt",
+    "priority": 173,
+    "keywords": [
+      "vat calculator",
+      "gst",
+      "sales tax",
+      "tax inclusive",
+      "tax exclusive"
+    ],
+    "status": "planned"
+  },
+  {
+    "id": 74,
+    "name": "BMI Calculator",
+    "slug": "bmi-calculator",
+    "category": "health",
+    "shortDescription": "Calculate your body mass index in metric or imperial units.",
+    "icon": "Scale",
+    "priority": 11,
+    "keywords": [
+      "body mass index",
+      "healthy weight",
+      "bmi chart",
+      "weight check"
+    ],
+    "status": "planned"
+  },
+  {
+    "id": 75,
+    "name": "Calorie Calculator",
+    "slug": "calorie-calculator",
+    "category": "health",
+    "shortDescription": "Estimate how many calories you need per day.",
+    "icon": "Apple",
+    "priority": 175,
+    "keywords": [
+      "daily calories",
+      "tdee",
+      "bmr",
+      "calorie needs",
+      "diet calories"
+    ],
+    "status": "planned"
+  },
+  {
+    "id": 76,
+    "name": "Body Fat Calculator",
+    "slug": "body-fat-calculator",
+    "category": "health",
+    "shortDescription": "Estimate body fat percentage with the US Navy method.",
+    "icon": "Activity",
+    "priority": 176,
+    "keywords": [
+      "body fat percentage",
+      "navy method",
+      "fat calculator"
+    ],
+    "status": "planned"
+  },
+  {
+    "id": 77,
+    "name": "Pregnancy Due Date Calculator",
+    "slug": "pregnancy-due-date-calculator",
+    "category": "health",
+    "shortDescription": "Estimate your baby's due date and see your pregnancy timeline.",
+    "icon": "Baby",
+    "priority": 29,
+    "keywords": [
+      "due date",
+      "pregnancy calculator",
+      "conception",
+      "how many weeks pregnant"
+    ],
+    "status": "planned"
+  },
+  {
+    "id": 78,
+    "name": "Ovulation Calculator",
+    "slug": "ovulation-calculator",
+    "category": "health",
+    "shortDescription": "Estimate your fertile window and next ovulation date.",
+    "icon": "CalendarHeart",
+    "priority": 178,
+    "keywords": [
+      "fertile days",
+      "ovulation date",
+      "fertility calendar",
+      "cycle"
+    ],
+    "status": "planned"
+  },
+  {
+    "id": 79,
+    "name": "Water Intake Calculator",
+    "slug": "water-intake-calculator",
+    "category": "health",
+    "shortDescription": "Estimate how much water to drink each day.",
+    "icon": "GlassWater",
+    "priority": 179,
+    "keywords": [
+      "hydration",
+      "daily water",
+      "how much water",
+      "drink water"
+    ],
+    "status": "planned"
+  },
+  {
+    "id": 80,
+    "name": "Sleep Cycle Calculator",
+    "slug": "sleep-calculator",
+    "category": "health",
+    "shortDescription": "Find the best time to go to bed or wake up refreshed.",
+    "icon": "Moon",
+    "priority": 180,
+    "keywords": [
+      "bedtime",
+      "wake up time",
+      "sleep cycles",
+      "sleep schedule"
+    ],
+    "status": "planned"
+  },
+  {
+    "id": 81,
+    "name": "Age Calculator",
+    "slug": "age-calculator",
+    "category": "math",
+    "shortDescription": "Calculate exact age in years, months and days from a birth date.",
+    "icon": "Cake",
+    "priority": 10,
+    "keywords": [
+      "how old am i",
+      "birthday",
+      "age from date of birth",
+      "date of birth"
+    ],
+    "status": "planned"
+  },
+  {
+    "id": 82,
+    "name": "Percentage Calculator",
+    "slug": "percentage-calculator",
+    "category": "math",
+    "shortDescription": "Work out percentages, percentage change and percent of a number.",
+    "icon": "Percent",
+    "priority": 9,
+    "keywords": [
+      "percent",
+      "what percent",
+      "percentage change",
+      "percent increase",
+      "percent off"
+    ],
+    "status": "planned"
+  },
+  {
+    "id": 83,
+    "name": "GPA Calculator",
+    "slug": "gpa-calculator",
+    "category": "math",
+    "shortDescription": "Calculate your grade point average from courses and credits.",
+    "icon": "GraduationCap",
+    "priority": 30,
+    "keywords": [
+      "grade point average",
+      "college gpa",
+      "cumulative gpa",
+      "semester gpa"
+    ],
+    "status": "planned"
+  },
+  {
+    "id": 84,
+    "name": "Grade Calculator",
+    "slug": "grade-calculator",
+    "category": "math",
+    "shortDescription": "Find your weighted grade and what you need on the final exam.",
+    "icon": "ClipboardCheck",
+    "priority": 184,
+    "keywords": [
+      "final grade",
+      "weighted grade",
+      "final exam",
+      "test score"
+    ],
+    "status": "planned"
+  },
+  {
+    "id": 85,
+    "name": "Date Difference Calculator",
+    "slug": "date-difference-calculator",
+    "category": "math",
+    "shortDescription": "Count the days, weeks and months between two dates.",
+    "icon": "CalendarRange",
+    "priority": 185,
+    "keywords": [
+      "days between dates",
+      "date duration",
+      "count days",
+      "how many days"
+    ],
+    "status": "planned"
+  },
+  {
+    "id": 86,
+    "name": "Fraction Calculator",
+    "slug": "fraction-calculator",
+    "category": "math",
+    "shortDescription": "Add, subtract, multiply and divide fractions with steps.",
+    "icon": "Divide",
+    "priority": 186,
+    "keywords": [
+      "fractions",
+      "mixed numbers",
+      "simplify fraction"
+    ],
+    "status": "planned"
+  },
+  {
+    "id": 87,
+    "name": "Scientific Calculator",
+    "slug": "scientific-calculator",
+    "category": "math",
+    "shortDescription": "A full scientific calculator with trig, logs and powers.",
+    "icon": "Calculator",
+    "priority": 187,
+    "keywords": [
+      "calculator",
+      "trigonometry",
+      "sin cos tan",
+      "log",
+      "exponent"
+    ],
+    "status": "planned"
+  },
+  {
+    "id": 88,
+    "name": "Random Number Generator",
+    "slug": "random-number-generator",
+    "category": "math",
+    "shortDescription": "Pick random numbers in any range, with or without repeats.",
+    "icon": "Dices",
+    "priority": 188,
+    "keywords": [
+      "random number",
+      "rng",
+      "number picker",
+      "lottery numbers"
+    ],
+    "status": "planned"
+  },
+  {
+    "id": 89,
+    "name": "Length Converter",
+    "slug": "length-converter",
+    "category": "converters",
+    "shortDescription": "Convert between meters, feet, inches, miles and more.",
+    "icon": "Ruler",
+    "priority": 189,
+    "keywords": [
+      "cm to inches",
+      "feet to meters",
+      "km to miles",
+      "distance converter"
+    ],
+    "status": "planned"
+  },
+  {
+    "id": 90,
+    "name": "Weight Converter",
+    "slug": "weight-converter",
+    "category": "converters",
+    "shortDescription": "Convert kilograms, pounds, ounces, stones and grams.",
+    "icon": "Weight",
+    "priority": 190,
+    "keywords": [
+      "kg to lbs",
+      "pounds to kg",
+      "mass converter",
+      "grams to ounces"
+    ],
+    "status": "planned"
+  },
+  {
+    "id": 91,
+    "name": "Temperature Converter",
+    "slug": "temperature-converter",
+    "category": "converters",
+    "shortDescription": "Convert between Celsius, Fahrenheit and Kelvin.",
+    "icon": "Thermometer",
+    "priority": 191,
+    "keywords": [
+      "celsius to fahrenheit",
+      "fahrenheit to celsius",
+      "kelvin"
+    ],
+    "status": "planned"
+  },
+  {
+    "id": 92,
+    "name": "Area Converter",
+    "slug": "area-converter",
+    "category": "converters",
+    "shortDescription": "Convert square meters, square feet, acres and hectares.",
+    "icon": "Square",
+    "priority": 192,
+    "keywords": [
+      "sq ft to sq m",
+      "acres",
+      "hectares",
+      "square meters"
+    ],
+    "status": "planned"
+  },
+  {
+    "id": 93,
+    "name": "Volume Converter",
+    "slug": "volume-converter",
+    "category": "converters",
+    "shortDescription": "Convert liters, gallons, milliliters and cubic units.",
+    "icon": "Beaker",
+    "priority": 193,
+    "keywords": [
+      "liters to gallons",
+      "ml to oz",
+      "cubic meters"
+    ],
+    "status": "planned"
+  },
+  {
+    "id": 94,
+    "name": "Speed Converter",
+    "slug": "speed-converter",
+    "category": "converters",
+    "shortDescription": "Convert km/h, mph, m/s and knots.",
+    "icon": "Wind",
+    "priority": 194,
+    "keywords": [
+      "kmh to mph",
+      "mph to kmh",
+      "knots",
+      "velocity"
+    ],
+    "status": "planned"
+  },
+  {
+    "id": 95,
+    "name": "Time Converter",
+    "slug": "time-converter",
+    "category": "converters",
+    "shortDescription": "Convert seconds, minutes, hours, days and years.",
+    "icon": "Hourglass",
+    "priority": 195,
+    "keywords": [
+      "seconds to minutes",
+      "hours to days",
+      "time units"
+    ],
+    "status": "planned"
+  },
+  {
+    "id": 96,
+    "name": "Data Size Converter",
+    "slug": "data-size-converter",
+    "category": "converters",
+    "shortDescription": "Convert bytes, KB, MB, GB and TB in decimal or binary.",
+    "icon": "HardDrive",
+    "priority": 196,
+    "keywords": [
+      "mb to gb",
+      "kb to mb",
+      "bytes",
+      "storage converter"
+    ],
+    "status": "planned"
+  },
+  {
+    "id": 97,
+    "name": "Cooking Measurement Converter",
+    "slug": "cooking-converter",
+    "category": "converters",
+    "shortDescription": "Convert cups, tablespoons, grams and ounces for recipes.",
+    "icon": "CookingPot",
+    "priority": 31,
+    "keywords": [
+      "cups to grams",
+      "tablespoons",
+      "teaspoons",
+      "recipe converter",
+      "baking conversion",
+      "ml to cups"
+    ],
+    "status": "planned"
+  },
+  {
+    "id": 98,
+    "name": "Shoe Size Converter",
+    "slug": "shoe-size-converter",
+    "category": "converters",
+    "shortDescription": "Convert shoe sizes between US, UK, EU and centimeters.",
+    "icon": "Footprints",
+    "priority": 198,
+    "keywords": [
+      "shoe size chart",
+      "eu to us shoe size",
+      "uk shoe size"
+    ],
+    "status": "planned"
+  },
+  {
+    "id": 99,
+    "name": "Clothing Size Converter",
+    "slug": "clothing-size-converter",
+    "category": "converters",
+    "shortDescription": "Compare clothing sizes across US, UK, EU and other regions.",
+    "icon": "Shirt",
+    "priority": 199,
+    "keywords": [
+      "dress size",
+      "clothing size chart",
+      "international sizes"
+    ],
+    "status": "planned"
+  },
+  {
+    "id": 100,
+    "name": "Time Zone Converter",
+    "slug": "time-zone-converter",
+    "category": "converters",
+    "shortDescription": "Convert a time between cities and time zones worldwide.",
+    "icon": "Globe",
+    "priority": 32,
+    "keywords": [
+      "time difference",
+      "meeting planner",
+      "est to pst",
+      "utc converter",
+      "world time"
+    ],
+    "status": "planned"
+  },
+  {
+    "id": 101,
+    "name": "Number to Words Converter",
+    "slug": "number-to-words",
+    "category": "converters",
+    "shortDescription": "Spell out numbers in words, for checks and documents.",
+    "icon": "Languages",
+    "priority": 201,
+    "keywords": [
+      "number in words",
+      "spell number",
+      "cheque writing",
+      "amount in words"
+    ],
+    "status": "planned"
+  },
+  {
+    "id": 102,
+    "name": "Roman Numeral Converter",
+    "slug": "roman-numeral-converter",
+    "category": "converters",
+    "shortDescription": "Convert numbers to Roman numerals and back.",
+    "icon": "Columns3",
+    "priority": 202,
+    "keywords": [
+      "roman numerals",
+      "numbers to roman",
+      "xiv"
+    ],
+    "status": "planned"
+  },
+  {
+    "id": 103,
+    "name": "Binary, Decimal and Hex Converter",
+    "slug": "number-base-converter",
+    "category": "converters",
+    "shortDescription": "Convert numbers between binary, decimal, hexadecimal and octal.",
+    "icon": "Binary",
+    "priority": 203,
+    "keywords": [
+      "binary to decimal",
+      "hex to decimal",
+      "decimal to binary",
+      "base converter"
+    ],
+    "status": "planned"
+  },
+  {
+    "id": 104,
+    "name": "Fuel Economy Converter",
+    "slug": "fuel-economy-converter",
+    "category": "converters",
+    "shortDescription": "Convert MPG, liters per 100 km and km per liter.",
+    "icon": "Fuel",
+    "priority": 204,
+    "keywords": [
+      "mpg to l/100km",
+      "fuel consumption",
+      "gas mileage"
+    ],
+    "status": "planned"
+  },
+  {
+    "id": 105,
+    "name": "JSON Formatter",
+    "slug": "json-formatter",
+    "category": "developer",
+    "shortDescription": "Format, validate and beautify JSON with clear error messages.",
+    "icon": "Braces",
+    "priority": 33,
+    "keywords": [
+      "json beautifier",
+      "json validator",
+      "pretty print json",
+      "json viewer",
+      "json lint"
+    ],
+    "status": "planned"
+  },
+  {
+    "id": 106,
+    "name": "JSON to CSV",
+    "slug": "json-to-csv",
+    "category": "developer",
+    "shortDescription": "Convert a JSON array into a CSV file for spreadsheets.",
+    "icon": "Sheet",
+    "priority": 206,
+    "keywords": [
+      "json to excel",
+      "convert json",
+      "export json"
+    ],
+    "status": "planned"
+  },
+  {
+    "id": 107,
+    "name": "CSV to JSON",
+    "slug": "csv-to-json",
+    "category": "developer",
+    "shortDescription": "Convert CSV data into a JSON array of objects.",
+    "icon": "FileJson",
+    "priority": 207,
+    "keywords": [
+      "convert csv",
+      "csv parser",
+      "spreadsheet to json"
+    ],
+    "status": "planned"
+  },
+  {
+    "id": 108,
+    "name": "Base64 Encoder and Decoder",
+    "slug": "base64-encoder-decoder",
+    "category": "developer",
+    "shortDescription": "Encode text to Base64 or decode Base64 back to text.",
+    "icon": "Binary",
+    "priority": 208,
+    "keywords": [
+      "base64 encode",
+      "base64 decode",
+      "b64"
+    ],
+    "status": "planned"
+  },
+  {
+    "id": 109,
+    "name": "URL Encoder and Decoder",
+    "slug": "url-encoder-decoder",
+    "category": "developer",
+    "shortDescription": "Encode or decode text for safe use in URLs.",
+    "icon": "Link2",
+    "priority": 209,
+    "keywords": [
+      "percent encoding",
+      "urlencode",
+      "urldecode",
+      "uri encode"
+    ],
+    "status": "planned"
+  },
+  {
+    "id": 110,
+    "name": "QR Code Generator",
+    "slug": "qr-code-generator",
+    "category": "developer",
+    "shortDescription": "Create QR codes for links, text, Wi-Fi and more, free to download.",
+    "icon": "QrCode",
+    "priority": 7,
+    "keywords": [
+      "make qr code",
+      "qr maker",
+      "qr code creator",
+      "wifi qr",
+      "url to qr"
+    ],
+    "status": "planned"
+  },
+  {
+    "id": 111,
+    "name": "Barcode Generator",
+    "slug": "barcode-generator",
+    "category": "developer",
+    "shortDescription": "Generate barcodes such as EAN-13, UPC and Code 128.",
+    "icon": "Barcode",
+    "priority": 211,
+    "keywords": [
+      "ean barcode",
+      "upc barcode",
+      "code 128",
+      "barcode maker"
+    ],
+    "status": "planned"
+  },
+  {
+    "id": 112,
+    "name": "Color Picker",
+    "slug": "color-picker",
+    "category": "developer",
+    "shortDescription": "Pick a color and get HEX, RGB and HSL codes.",
+    "icon": "Palette",
+    "priority": 212,
+    "keywords": [
+      "hex color",
+      "rgb picker",
+      "color codes",
+      "hsl converter"
+    ],
+    "status": "planned"
+  },
+  {
+    "id": 113,
+    "name": "CSS Gradient Generator",
+    "slug": "css-gradient-generator",
+    "category": "developer",
+    "shortDescription": "Design linear and radial CSS gradients and copy the code.",
+    "icon": "Paintbrush",
+    "priority": 213,
+    "keywords": [
+      "gradient maker",
+      "linear gradient",
+      "background gradient"
+    ],
+    "status": "planned"
+  },
+  {
+    "id": 114,
+    "name": "HTML Minifier",
+    "slug": "html-minifier",
+    "category": "developer",
+    "shortDescription": "Minify HTML by removing whitespace and comments.",
+    "icon": "FileCode",
+    "priority": 214,
+    "keywords": [
+      "compress html",
+      "minify html",
+      "html compressor"
+    ],
+    "status": "planned"
+  },
+  {
+    "id": 115,
+    "name": "CSS Minifier",
+    "slug": "css-minifier",
+    "category": "developer",
+    "shortDescription": "Minify CSS to make stylesheets smaller and faster.",
+    "icon": "Brackets",
+    "priority": 215,
+    "keywords": [
+      "compress css",
+      "minify css",
+      "css compressor"
+    ],
+    "status": "planned"
+  },
+  {
+    "id": 116,
+    "name": "JavaScript Minifier",
+    "slug": "js-minifier",
+    "category": "developer",
+    "shortDescription": "Minify JavaScript code to reduce file size.",
+    "icon": "Code",
+    "priority": 216,
+    "keywords": [
+      "compress javascript",
+      "minify js",
+      "uglify"
+    ],
+    "status": "planned"
+  },
+  {
+    "id": 117,
+    "name": "Regex Tester",
+    "slug": "regex-tester",
+    "category": "developer",
+    "shortDescription": "Test regular expressions with live match highlighting.",
+    "icon": "Regex",
+    "priority": 217,
+    "keywords": [
+      "regular expression",
+      "regex checker",
+      "pattern matching"
+    ],
+    "status": "planned"
+  },
+  {
+    "id": 118,
+    "name": "UUID Generator",
+    "slug": "uuid-generator",
+    "category": "developer",
+    "shortDescription": "Generate random version 4 UUIDs in bulk.",
+    "icon": "Fingerprint",
+    "priority": 218,
+    "keywords": [
+      "guid generator",
+      "uuid v4",
+      "unique id"
+    ],
+    "status": "planned"
+  },
+  {
+    "id": 119,
+    "name": "Hash Generator",
+    "slug": "hash-generator",
+    "category": "developer",
+    "shortDescription": "Create SHA-256, SHA-1 and SHA-512 hashes of text or files.",
+    "icon": "KeyRound",
+    "priority": 219,
+    "keywords": [
+      "sha256",
+      "sha1",
+      "checksum",
+      "hash text",
+      "file hash"
+    ],
+    "status": "planned"
+  },
+  {
+    "id": 120,
+    "name": "Unix Timestamp Converter",
+    "slug": "timestamp-converter",
+    "category": "developer",
+    "shortDescription": "Convert Unix timestamps to human dates and back.",
+    "icon": "CalendarClock",
+    "priority": 220,
+    "keywords": [
+      "epoch converter",
+      "unix time",
+      "epoch time"
+    ],
+    "status": "planned"
+  },
+  {
+    "id": 121,
+    "name": "Password Generator",
+    "slug": "password-generator",
+    "category": "developer",
+    "shortDescription": "Create strong, random passwords you can trust.",
+    "icon": "KeyRound",
+    "priority": 12,
+    "keywords": [
+      "strong password",
+      "random password",
+      "secure password",
+      "password maker"
+    ],
+    "status": "planned"
+  },
+  {
+    "id": 122,
+    "name": "Markdown to HTML",
+    "slug": "markdown-to-html",
+    "category": "developer",
+    "shortDescription": "Convert Markdown to clean HTML with a live preview.",
+    "icon": "FileCode",
+    "priority": 222,
+    "keywords": [
+      "md to html",
+      "markdown converter",
+      "markdown preview"
+    ],
+    "status": "planned"
+  },
+  {
+    "id": 123,
+    "name": "Meta Tag Generator",
+    "slug": "meta-tag-generator",
+    "category": "seo",
+    "shortDescription": "Create title, description and social meta tags for any page.",
+    "icon": "Tags",
+    "priority": 223,
+    "keywords": [
+      "meta tags",
+      "seo tags",
+      "html meta",
+      "meta description"
+    ],
+    "status": "planned"
+  },
+  {
+    "id": 124,
+    "name": "Keyword Density Checker",
+    "slug": "keyword-density-checker",
+    "category": "seo",
+    "shortDescription": "See how often keywords and phrases appear in your content.",
+    "icon": "Search",
+    "priority": 224,
+    "keywords": [
+      "keyword density",
+      "keyword frequency",
+      "seo content check"
+    ],
+    "status": "planned"
+  },
+  {
+    "id": 125,
+    "name": "Robots.txt Generator",
+    "slug": "robots-txt-generator",
+    "category": "seo",
+    "shortDescription": "Create a robots.txt file to guide search engine crawlers.",
+    "icon": "Bot",
+    "priority": 225,
+    "keywords": [
+      "robots file",
+      "crawler rules",
+      "disallow",
+      "robots txt"
+    ],
+    "status": "planned"
+  },
+  {
+    "id": 126,
+    "name": "Sitemap Generator",
+    "slug": "sitemap-generator",
+    "category": "seo",
+    "shortDescription": "Build an XML sitemap from a list of page URLs.",
+    "icon": "Network",
+    "priority": 226,
+    "keywords": [
+      "xml sitemap",
+      "sitemap maker",
+      "sitemap xml"
+    ],
+    "status": "planned"
+  },
+  {
+    "id": 127,
+    "name": "Open Graph Preview",
+    "slug": "open-graph-preview",
+    "category": "seo",
+    "shortDescription": "Preview how your link looks when shared on social media.",
+    "icon": "Share2",
+    "priority": 227,
+    "keywords": [
+      "og tags",
+      "social preview",
+      "link preview",
+      "facebook preview"
+    ],
+    "status": "planned"
+  },
+  {
+    "id": 128,
+    "name": "YouTube Title Checker",
+    "slug": "youtube-title-checker",
+    "category": "seo",
+    "shortDescription": "Check your video title length and see how it will be cut off.",
+    "icon": "MonitorPlay",
+    "priority": 228,
+    "keywords": [
+      "video title length",
+      "youtube seo",
+      "title checker"
+    ],
+    "status": "planned"
+  },
+  {
+    "id": 129,
+    "name": "YouTube Thumbnail Checker",
+    "slug": "youtube-thumbnail-checker",
+    "category": "seo",
+    "shortDescription": "Preview your thumbnail in YouTube layouts before you upload.",
+    "icon": "Frame",
+    "priority": 229,
+    "keywords": [
+      "thumbnail preview",
+      "youtube thumbnail size",
+      "thumbnail test"
+    ],
+    "status": "planned"
+  },
+  {
+    "id": 130,
+    "name": "Post Character Counter for X",
+    "slug": "tweet-counter",
+    "category": "seo",
+    "shortDescription": "Count characters for posts on X (Twitter) with the 280 limit.",
+    "icon": "MessageSquare",
+    "priority": 230,
+    "keywords": [
+      "tweet length",
+      "twitter character count",
+      "x post counter",
+      "280 characters"
+    ],
+    "status": "planned"
+  },
+  {
+    "id": 131,
+    "name": "Instagram Caption Formatter",
+    "slug": "instagram-caption-formatter",
+    "category": "seo",
+    "shortDescription": "Keep line breaks and spacing in your Instagram captions.",
+    "icon": "Camera",
+    "priority": 231,
+    "keywords": [
+      "instagram line breaks",
+      "caption spacing",
+      "ig caption"
+    ],
+    "status": "planned"
+  },
+  {
+    "id": 132,
+    "name": "Hashtag Generator",
+    "slug": "hashtag-generator",
+    "category": "seo",
+    "shortDescription": "Turn keywords into ready-to-paste hashtag lists.",
+    "icon": "Hash",
+    "priority": 232,
+    "keywords": [
+      "hashtags",
+      "instagram hashtags",
+      "tiktok hashtags"
+    ],
+    "status": "planned"
+  },
+  {
+    "id": 133,
+    "name": "UTM Builder",
+    "slug": "utm-builder",
+    "category": "seo",
+    "shortDescription": "Build campaign URLs with UTM tracking parameters.",
+    "icon": "Link",
+    "priority": 233,
+    "keywords": [
+      "utm parameters",
+      "campaign url builder",
+      "google analytics utm"
+    ],
+    "status": "planned"
+  },
+  {
+    "id": 134,
+    "name": "Link Shortener",
+    "slug": "link-shortener",
+    "category": "seo",
+    "shortDescription": "Shorten long links into tidy, shareable URLs.",
+    "icon": "Link2",
+    "priority": 1034,
+    "keywords": [
+      "url shortener",
+      "short link",
+      "shorten url"
+    ],
+    "status": "later"
+  },
+  {
+    "id": 135,
+    "name": "Favicon Generator",
+    "slug": "favicon-generator",
+    "category": "seo",
+    "shortDescription": "Create favicons in every size from an image, text or emoji.",
+    "icon": "Star",
+    "priority": 34,
+    "keywords": [
+      "favicon maker",
+      "site icon",
+      "ico generator",
+      "apple touch icon"
+    ],
+    "status": "planned"
+  },
+  {
+    "id": 136,
+    "name": "Email Signature Generator",
+    "slug": "email-signature-generator",
+    "category": "seo",
+    "shortDescription": "Design a professional email signature for Gmail and Outlook.",
+    "icon": "Mail",
+    "priority": 236,
+    "keywords": [
+      "email signature",
+      "gmail signature",
+      "outlook signature"
+    ],
+    "status": "planned"
+  },
+  {
+    "id": 137,
+    "name": "Citation Generator",
+    "slug": "citation-generator",
+    "category": "student",
+    "shortDescription": "Create APA, MLA and Chicago citations for books and websites.",
+    "icon": "Quote",
+    "priority": 35,
+    "keywords": [
+      "apa citation",
+      "mla citation",
+      "chicago",
+      "bibliography",
+      "reference generator",
+      "cite website"
+    ],
+    "status": "planned"
+  },
+  {
+    "id": 138,
+    "name": "Flashcard Maker",
+    "slug": "flashcard-maker",
+    "category": "student",
+    "shortDescription": "Make flashcards and study them with flip and shuffle.",
+    "icon": "Layers2",
+    "priority": 238,
+    "keywords": [
+      "study cards",
+      "flash cards",
+      "memorize",
+      "revision"
+    ],
+    "status": "planned"
+  },
+  {
+    "id": 139,
+    "name": "Pomodoro Timer",
+    "slug": "pomodoro-timer",
+    "category": "student",
+    "shortDescription": "Study in focused 25-minute sessions with short breaks.",
+    "icon": "Timer",
+    "priority": 239,
+    "keywords": [
+      "focus timer",
+      "study timer",
+      "tomato timer",
+      "productivity"
+    ],
+    "status": "planned"
+  },
+  {
+    "id": 140,
+    "name": "Essay Word Counter",
+    "slug": "essay-word-counter",
+    "category": "student",
+    "shortDescription": "Track essay length against your word target and page estimate.",
+    "icon": "NotebookPen",
+    "priority": 240,
+    "keywords": [
+      "essay length",
+      "word target",
+      "pages to words",
+      "assignment word count"
+    ],
+    "status": "planned"
+  },
+  {
+    "id": 141,
+    "name": "Equation Solver",
+    "slug": "equation-solver",
+    "category": "student",
+    "shortDescription": "Solve linear and quadratic equations step by step.",
+    "icon": "Sigma",
+    "priority": 241,
+    "keywords": [
+      "quadratic formula",
+      "solve for x",
+      "algebra solver",
+      "linear equation"
+    ],
+    "status": "planned"
+  },
+  {
+    "id": 142,
+    "name": "Periodic Table",
+    "slug": "periodic-table",
+    "category": "student",
+    "shortDescription": "An interactive periodic table with element details.",
+    "icon": "Atom",
+    "priority": 242,
+    "keywords": [
+      "elements",
+      "chemistry",
+      "atomic number",
+      "atomic mass"
+    ],
+    "status": "planned"
+  },
+  {
+    "id": 143,
+    "name": "Unit Circle",
+    "slug": "unit-circle",
+    "category": "student",
+    "shortDescription": "An interactive unit circle with angles, radians, sine and cosine.",
+    "icon": "CircleDot",
+    "priority": 243,
+    "keywords": [
+      "trigonometry",
+      "radians",
+      "sin cos values",
+      "unit circle chart"
+    ],
+    "status": "planned"
+  },
+  {
+    "id": 144,
+    "name": "Multiplication Table",
+    "slug": "multiplication-table",
+    "category": "student",
+    "shortDescription": "Printable multiplication tables and quick practice.",
+    "icon": "Grid3x3",
+    "priority": 244,
+    "keywords": [
+      "times tables",
+      "multiplication chart",
+      "times table practice"
+    ],
+    "status": "planned"
+  },
+  {
+    "id": 145,
+    "name": "Typing Speed Test",
+    "slug": "typing-speed-test",
+    "category": "student",
+    "shortDescription": "Test your typing speed in words per minute and accuracy.",
+    "icon": "Keyboard",
+    "priority": 36,
+    "keywords": [
+      "wpm test",
+      "typing test",
+      "keyboard speed",
+      "typing practice"
+    ],
+    "status": "planned"
+  },
+  {
+    "id": 146,
+    "name": "Spelling Practice",
+    "slug": "spelling-practice",
+    "category": "student",
+    "shortDescription": "Practice spelling words read aloud with instant feedback.",
+    "icon": "SpellCheck",
+    "priority": 246,
+    "keywords": [
+      "spelling test",
+      "spelling words",
+      "spelling bee practice"
+    ],
+    "status": "planned"
+  },
+  {
+    "id": 147,
+    "name": "Quiz Maker",
+    "slug": "quiz-maker",
+    "category": "student",
+    "shortDescription": "Create a quick multiple-choice quiz and take it right away.",
+    "icon": "ListChecks",
+    "priority": 247,
+    "keywords": [
+      "make a quiz",
+      "test maker",
+      "quiz creator"
+    ],
+    "status": "planned"
+  },
+  {
+    "id": 148,
+    "name": "Homework Planner",
+    "slug": "homework-planner",
+    "category": "student",
+    "shortDescription": "Keep track of assignments and due dates in one place.",
+    "icon": "NotebookPen",
+    "priority": 248,
+    "keywords": [
+      "assignment tracker",
+      "study planner",
+      "homework list"
+    ],
+    "status": "planned"
+  },
+  {
+    "id": 149,
+    "name": "Stopwatch",
+    "slug": "stopwatch",
+    "category": "everyday",
+    "shortDescription": "A precise online stopwatch with lap times.",
+    "icon": "Watch",
+    "priority": 37,
+    "keywords": [
+      "online stopwatch",
+      "lap timer",
+      "chronometer",
+      "time tracker"
+    ],
+    "status": "planned"
+  },
+  {
+    "id": 150,
+    "name": "Countdown Timer",
+    "slug": "countdown-timer",
+    "category": "everyday",
+    "shortDescription": "Set a timer for minutes or hours with an alarm sound.",
+    "icon": "Hourglass",
+    "priority": 250,
+    "keywords": [
+      "online timer",
+      "kitchen timer",
+      "timer with alarm",
+      "minute timer"
+    ],
+    "status": "planned"
+  },
+  {
+    "id": 151,
+    "name": "Alarm Clock",
+    "slug": "alarm-clock",
+    "category": "everyday",
+    "shortDescription": "Set an online alarm that rings in your browser.",
+    "icon": "AlarmClock",
+    "priority": 251,
+    "keywords": [
+      "online alarm",
+      "wake up alarm",
+      "alarm sound"
+    ],
+    "status": "planned"
+  },
+  {
+    "id": 152,
+    "name": "Random Name Picker",
+    "slug": "random-name-picker",
+    "category": "everyday",
+    "shortDescription": "Pick a random winner or name from your list.",
+    "icon": "Users",
+    "priority": 38,
+    "keywords": [
+      "name picker",
+      "draw names",
+      "raffle",
+      "giveaway winner",
+      "random selector"
+    ],
+    "status": "planned"
+  },
+  {
+    "id": 153,
+    "name": "Spin the Wheel",
+    "slug": "spin-the-wheel",
+    "category": "everyday",
+    "shortDescription": "Spin a wheel with your own options to make a random choice.",
+    "icon": "LoaderPinwheel",
+    "priority": 39,
+    "keywords": [
+      "wheel spinner",
+      "decision wheel",
+      "prize wheel",
+      "random wheel",
+      "wheel of names"
+    ],
+    "status": "planned"
+  },
+  {
+    "id": 154,
+    "name": "Coin Flip",
+    "slug": "coin-flip",
+    "category": "everyday",
+    "shortDescription": "Flip a virtual coin for heads or tails.",
+    "icon": "Coins",
+    "priority": 254,
+    "keywords": [
+      "heads or tails",
+      "coin toss",
+      "flip a coin"
+    ],
+    "status": "planned"
+  },
+  {
+    "id": 155,
+    "name": "Dice Roller",
+    "slug": "dice-roller",
+    "category": "everyday",
+    "shortDescription": "Roll one or more virtual dice of any type.",
+    "icon": "Dice5",
+    "priority": 255,
+    "keywords": [
+      "roll dice",
+      "d20",
+      "virtual dice",
+      "random dice"
+    ],
+    "status": "planned"
+  },
+  {
+    "id": 156,
+    "name": "To-Do List",
+    "slug": "to-do-list",
+    "category": "everyday",
+    "shortDescription": "A simple to-do list saved in your browser.",
+    "icon": "ListTodo",
+    "priority": 256,
+    "keywords": [
+      "task list",
+      "checklist",
+      "todo app"
+    ],
+    "status": "planned"
+  },
+  {
+    "id": 157,
+    "name": "Online Notepad",
+    "slug": "notepad",
+    "category": "everyday",
+    "shortDescription": "Write quick notes that are saved automatically in your browser.",
+    "icon": "StickyNote",
+    "priority": 257,
+    "keywords": [
+      "notes",
+      "text pad",
+      "scratch pad",
+      "online notes"
+    ],
+    "status": "planned"
+  },
+  {
+    "id": 158,
+    "name": "Calendar Generator",
+    "slug": "calendar-generator",
+    "category": "everyday",
+    "shortDescription": "Create printable monthly or yearly calendars.",
+    "icon": "CalendarDays",
+    "priority": 258,
+    "keywords": [
+      "printable calendar",
+      "monthly calendar",
+      "yearly calendar"
+    ],
+    "status": "planned"
+  },
+  {
+    "id": 159,
+    "name": "World Clock",
+    "slug": "world-clock",
+    "category": "everyday",
+    "shortDescription": "See the current time in cities around the world.",
+    "icon": "Clock4",
+    "priority": 259,
+    "keywords": [
+      "current time",
+      "time in cities",
+      "world time"
+    ],
+    "status": "planned"
+  },
+  {
+    "id": 160,
+    "name": "Password Strength Checker",
+    "slug": "password-strength-checker",
+    "category": "everyday",
+    "shortDescription": "Check how strong your password is, privately in your browser.",
+    "icon": "ShieldCheck",
+    "priority": 260,
+    "keywords": [
+      "password checker",
+      "password test",
+      "how secure is my password"
+    ],
+    "status": "planned"
+  },
+  {
+    "id": 161,
+    "name": "Screen Tester",
+    "slug": "screen-tester",
+    "category": "everyday",
+    "shortDescription": "Check your display for dead pixels and color problems.",
+    "icon": "Monitor",
+    "priority": 261,
+    "keywords": [
+      "dead pixel test",
+      "monitor test",
+      "screen test",
+      "backlight bleed"
+    ],
+    "status": "planned"
+  },
+  {
+    "id": 162,
+    "name": "Mic and Webcam Test",
+    "slug": "mic-webcam-test",
+    "category": "everyday",
+    "shortDescription": "Check that your microphone and camera work before a call.",
+    "icon": "Video",
+    "priority": 40,
+    "keywords": [
+      "webcam test",
+      "microphone test",
+      "camera check",
+      "mic check"
+    ],
+    "status": "planned"
+  },
+  {
+    "id": 163,
+    "name": "Voice Recorder",
+    "slug": "voice-recorder",
+    "category": "audio-video",
+    "shortDescription": "Record audio from your microphone and download it.",
+    "icon": "Mic",
+    "priority": 41,
+    "keywords": [
+      "audio recorder",
+      "record voice",
+      "online recorder",
+      "sound recorder"
+    ],
+    "status": "planned"
+  },
+  {
+    "id": 164,
+    "name": "Screen Recorder",
+    "slug": "screen-recorder",
+    "category": "audio-video",
+    "shortDescription": "Record your screen with audio, right in the browser.",
+    "icon": "ScreenShare",
+    "priority": 42,
+    "keywords": [
+      "record screen",
+      "screen capture",
+      "screencast",
+      "record display"
+    ],
+    "status": "planned"
+  },
+  {
+    "id": 165,
+    "name": "Cut Audio",
+    "slug": "cut-audio",
+    "category": "audio-video",
+    "shortDescription": "Trim the start and end of an audio file.",
+    "icon": "AudioWaveform",
+    "priority": 1065,
+    "keywords": [
+      "trim audio",
+      "mp3 cutter",
+      "ringtone maker",
+      "audio cutter"
+    ],
+    "status": "later"
+  },
+  {
+    "id": 166,
+    "name": "MP3 Converter",
+    "slug": "mp3-converter",
+    "category": "audio-video",
+    "shortDescription": "Convert audio files to MP3.",
+    "icon": "Music",
+    "priority": 1066,
+    "keywords": [
+      "audio to mp3",
+      "wav to mp3",
+      "convert to mp3"
+    ],
+    "status": "later"
+  },
+  {
+    "id": 167,
+    "name": "Video to GIF",
+    "slug": "video-to-gif",
+    "category": "audio-video",
+    "shortDescription": "Turn a short video clip into an animated GIF.",
+    "icon": "Film",
+    "priority": 1067,
+    "keywords": [
+      "gif maker",
+      "mp4 to gif",
+      "animated gif"
+    ],
+    "status": "later"
+  },
+  {
+    "id": 168,
+    "name": "Compress Video",
+    "slug": "compress-video",
+    "category": "audio-video",
+    "shortDescription": "Make video files smaller for sharing.",
+    "icon": "Minimize2",
+    "priority": 1068,
+    "keywords": [
+      "reduce video size",
+      "shrink video",
+      "video compressor"
+    ],
+    "status": "later"
+  },
+  {
+    "id": 169,
+    "name": "Trim Video",
+    "slug": "trim-video",
+    "category": "audio-video",
+    "shortDescription": "Cut the start and end of a video clip.",
+    "icon": "Clapperboard",
+    "priority": 1069,
+    "keywords": [
+      "cut video",
+      "video cutter",
+      "shorten video"
+    ],
+    "status": "later"
+  },
+  {
+    "id": 170,
+    "name": "Extract Audio from Video",
+    "slug": "extract-audio",
+    "category": "audio-video",
+    "shortDescription": "Save the soundtrack of a video as an audio file.",
+    "icon": "FileAudio",
+    "priority": 1070,
+    "keywords": [
+      "video to audio",
+      "mp4 to mp3",
+      "extract sound"
+    ],
+    "status": "later"
+  }
+]

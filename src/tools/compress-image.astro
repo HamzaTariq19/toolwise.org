@@ -1,0 +1,126 @@
+---
+import Dropzone from '../components/Dropzone.astro';
+import FileResults from '../components/FileResults.astro';
+---
+<div id="ci" class="space-y-5">
+  <div data-step="pick">
+    <Dropzone id="ci-drop" accept="image/jpeg,image/png,image/webp,.jpg,.jpeg,.png,.webp" formats="JPG, PNG or WebP" maxLabel="50 MB each" multiple label="Choose images" icon="ImagePlus" />
+  </div>
+
+  <div class="alert alert-error" data-error hidden role="alert"><span data-msg></span></div>
+
+  <FileResults id="ci-results" />
+
+  <details class="card group" data-settings open>
+    <summary class="flex min-h-12 cursor-pointer list-none items-center justify-between px-5 py-3 font-semibold [&::-webkit-details-marker]:hidden">
+      Settings <span class="text-sm font-normal text-subtle">Changes apply instantly</span>
+    </summary>
+    <div class="grid gap-5 border-t border-line px-5 py-5 sm:grid-cols-3">
+      <div class="sm:col-span-3">
+        <div class="flex items-center justify-between">
+          <label for="ci-quality" class="label !mb-0">Quality</label>
+          <output for="ci-quality" class="tabular font-semibold" data-qout>75%</output>
+        </div>
+        <input id="ci-quality" type="range" min="10" max="95" step="5" value="75" class="mt-2 h-11 w-full accent-[var(--brand)]" />
+        <div class="flex justify-between text-sm text-subtle"><span>Smaller file</span><span>Better quality</span></div>
+      </div>
+      <div>
+        <label for="ci-format" class="label">Save as</label>
+        <select id="ci-format" class="select">
+          <option value="auto" selected>Same as original</option>
+          <option value="image/jpeg">JPG</option>
+          <option value="image/webp">WebP (smallest)</option>
+          <option value="image/png">PNG</option>
+        </select>
+      </div>
+      <div>
+        <label for="ci-max" class="label">Maximum size</label>
+        <select id="ci-max" class="select">
+          <option value="0" selected>Keep original size</option>
+          <option value="3840">3840 px (4K)</option>
+          <option value="2560">2560 px</option>
+          <option value="1920">1920 px (Full HD)</option>
+          <option value="1280">1280 px</option>
+          <option value="800">800 px</option>
+        </select>
+      </div>
+      <p class="hint self-end sm:pb-3">Reducing the size in pixels saves the most space for photos from phones and cameras.</p>
+    </div>
+  </details>
+</div>
+
+<script>
+  import { initDropzone } from '../lib/dropzone';
+  import { createResults, type ResultItem } from '../lib/file-results';
+  import { decodeImage, drawToCanvas, fitWithin, encode, hasTransparency, canEncodeWebP, MIME_EXT } from '../lib/image';
+  import { baseName, showError } from '../lib/ui';
+
+  const root = document.getElementById('ci')!;
+  const pick = root.querySelector<HTMLElement>('[data-step=pick]')!;
+  const err = root.querySelector<HTMLElement>('[data-error]')!;
+  const quality = document.getElementById('ci-quality') as HTMLInputElement;
+  const qout = root.querySelector<HTMLOutputElement>('[data-qout]')!;
+  const format = document.getElementById('ci-format') as HTMLSelectElement;
+  const max = document.getElementById('ci-max') as HTMLSelectElement;
+  if (!canEncodeWebP()) format.querySelector('option[value="image/webp"]')!.remove();
+
+  let files: File[] = [];
+  let run = 0;
+
+  const results = createResults(document.getElementById('ci-results')!, {
+    zipName: 'compressed-images.zip',
+    onReset: () => { files = []; pick.hidden = false; showError(err, null); },
+  });
+
+  async function compressOne(file: File): Promise<ResultItem> {
+    const q = Number(quality.value) / 100;
+    const maxPx = Number(max.value) || undefined;
+    const img = await decodeImage(file);
+    try {
+      const { width, height } = fitWithin(img.width, img.height, maxPx, maxPx);
+      let type = format.value === 'auto' ? file.type || 'image/jpeg' : format.value;
+      if (type === 'image/webp' && !canEncodeWebP()) type = 'image/jpeg';
+      let canvas = drawToCanvas(img, width, height);
+      if (type === 'image/jpeg' && hasTransparency(canvas)) canvas = drawToCanvas(img, width, height, '#ffffff');
+      let blob: Blob = await encode(canvas, type, q);
+      let note = width !== img.width ? `${width} × ${height} px` : '';
+      // Never hand back something bigger than the original when nothing else changed
+      if (blob.size >= file.size && width === img.width && type === file.type) {
+        blob = file;
+        note = 'Already well compressed, original kept';
+      }
+      return { name: file.name, originalSize: file.size, blob, outName: `${baseName(file.name)}-compressed.${MIME_EXT[type] ?? 'jpg'}`, note, thumb: true };
+    } finally {
+      img.close?.();
+    }
+  }
+
+  async function process() {
+    if (!files.length) return;
+    const id = ++run;
+    pick.hidden = true;
+    const out: ResultItem[] = [];
+    for (let i = 0; i < files.length; i++) {
+      if (id !== run) return;
+      results.setProgress(i, files.length, files.length > 1 ? `Compressing image ${i + 1} of ${files.length}…` : 'Compressing image…');
+      try { out.push(await compressOne(files[i])); }
+      catch (e) { out.push({ name: files[i].name, originalSize: files[i].size, error: (e as Error).message }); }
+    }
+    if (id === run) results.render(out);
+  }
+
+  initDropzone(document.getElementById('ci-drop')!, {
+    accept: ['image/jpeg', 'image/png', 'image/webp', '.jpg', '.jpeg', '.png', '.webp'],
+    multiple: true,
+    maxBytes: 50 * 1024 * 1024,
+    onFiles: (f) => { files = f; process(); },
+    onError: (m) => showError(err, m || null),
+  });
+
+  quality.addEventListener('input', () => (qout.textContent = `${quality.value}%`));
+  let t: number | undefined;
+  const reprocess = () => { clearTimeout(t); t = window.setTimeout(process, 250); };
+  quality.addEventListener('change', reprocess);
+  format.addEventListener('change', reprocess);
+  max.addEventListener('change', reprocess);
+</script>

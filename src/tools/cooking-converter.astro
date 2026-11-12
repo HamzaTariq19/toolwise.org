@@ -1,0 +1,62 @@
+---
+const ING = [
+  ['water', 'Water', 236.6], ['milk', 'Milk', 245], ['cream', 'Heavy cream', 238], ['yogurt', 'Yogurt', 245],
+  ['flour', 'All-purpose flour', 125], ['breadflour', 'Bread flour', 130], ['wwflour', 'Whole wheat flour', 120],
+  ['sugar', 'Granulated sugar', 200], ['brown', 'Brown sugar (packed)', 220], ['icing', 'Powdered sugar', 120],
+  ['butter', 'Butter', 227], ['oil', 'Vegetable oil', 218], ['honey', 'Honey', 340], ['maple', 'Maple syrup', 315],
+  ['rice', 'Rice (uncooked)', 185], ['oats', 'Rolled oats', 90], ['cocoa', 'Cocoa powder', 85], ['salt', 'Table salt', 292],
+  ['chips', 'Chocolate chips', 170], ['nuts', 'Chopped nuts', 120],
+] as const;
+const UNITS = [['cup', 'cups'], ['tbsp', 'tablespoons'], ['tsp', 'teaspoons'], ['ml', 'milliliters'], ['l', 'liters'], ['floz', 'fluid ounces'], ['g', 'grams'], ['kg', 'kilograms'], ['oz', 'ounces'], ['lb', 'pounds']];
+---
+<div id="ck" class="grid gap-5 md:grid-cols-2 md:items-start">
+  <form class="card space-y-5 p-5 sm:p-6" novalidate onsubmit="return false">
+    <div>
+      <label for="ck-ing" class="label">Ingredient</label>
+      <select id="ck-ing" class="select">{ING.map(([k, n, g]) => <option value={g} data-k={k} selected={k === 'flour'}>{n}</option>)}</select>
+    </div>
+    <div class="grid grid-cols-[1fr_1.3fr] gap-3">
+      <div><label for="ck-amt" class="label">Amount</label><input id="ck-amt" class="input tabular text-lg" inputmode="decimal" value="1" /></div>
+      <div><label for="ck-from" class="label">Unit</label><select id="ck-from" class="select">{UNITS.map(([k, n]) => <option value={k}>{n}</option>)}</select></div>
+    </div>
+    <p class="hint">You can type fractions such as 1/2 or 1 1/3. Cups are US cups (236.6 ml). Weights for dry ingredients assume spooned and leveled measuring.</p>
+  </form>
+  <section class="card p-5 sm:p-6" aria-live="polite">
+    <p class="text-sm font-medium text-muted" data-head></p>
+    <p class="mt-1 text-3xl font-extrabold tracking-tight tabular" data-main></p>
+    <p class="alert alert-error mt-3" data-err hidden></p>
+    <ul class="mt-4 divide-y divide-[var(--border)]" data-list></ul>
+  </section>
+</div>
+<script>
+  import { fmt } from '../lib/ui';
+  const ML: Record<string, number> = { cup: 236.588, tbsp: 14.7868, tsp: 4.92892, ml: 1, l: 1000, floz: 29.5735 };
+  const G: Record<string, number> = { g: 1, kg: 1000, oz: 28.3495, lb: 453.592 };
+  const NAMES: Record<string, [string, string]> = { cup: ['cup', 'cups'], tbsp: ['tablespoon', 'tablespoons'], tsp: ['teaspoon', 'teaspoons'], ml: ['ml', 'ml'], l: ['liter', 'liters'], floz: ['fl oz', 'fl oz'], g: ['g', 'g'], kg: ['kg', 'kg'], oz: ['oz', 'oz'], lb: ['lb', 'lb'] };
+  const root = document.getElementById('ck')!;
+  const ing = document.getElementById('ck-ing') as HTMLSelectElement, amt = document.getElementById('ck-amt') as HTMLInputElement, from = document.getElementById('ck-from') as HTMLSelectElement;
+  /** "1 1/2", "3/4", "0.5", "1,5" */
+  function parseAmount(s: string): number {
+    s = s.trim().replace(',', '.');
+    const m = s.match(/^(\d+(?:\.\d+)?)?\s*(?:(\d+)\s*\/\s*(\d+))?$/);
+    if (!m || (!m[1] && !m[2])) return NaN;
+    return (m[1] ? +m[1] : 0) + (m[2] ? +m[2] / +m[3] : 0);
+  }
+  const nice = (v: number) => fmt(v, v < 10 ? 2 : v < 100 ? 1 : 0);
+  function calc() {
+    const a = parseAmount(amt.value), err = root.querySelector<HTMLElement>('[data-err]')!;
+    const density = Number(ing.value) / 236.588; // g per ml
+    const name = ing.selectedOptions[0].textContent!;
+    if (!(a > 0)) { err.hidden = false; err.textContent = 'Enter an amount, for example 1, 0.5 or 1 1/2.'; root.querySelector('[data-list]')!.innerHTML = ''; root.querySelector('[data-main]')!.textContent = ''; return; }
+    err.hidden = true;
+    const ml = ML[from.value] ? a * ML[from.value] : (a * G[from.value]) / density;
+    const conv = (u: string) => (ML[u] ? ml / ML[u] : (ml * density) / G[u]);
+    const u = from.value;
+    root.querySelector('[data-head]')!.textContent = `${nice(a)} ${NAMES[u][a === 1 ? 0 : 1]} of ${name.toLowerCase()} is`;
+    const mainUnit = ML[u] ? 'g' : 'cup';
+    const mv = conv(mainUnit);
+    root.querySelector('[data-main]')!.textContent = `${nice(mv)} ${NAMES[mainUnit][Math.abs(mv - 1) < 1e-9 ? 0 : 1]}`;
+    root.querySelector('[data-list]')!.innerHTML = Object.keys(NAMES).filter((k) => k !== u).map((k) => { const v = conv(k); return `<li class="flex justify-between py-2.5"><span class="text-muted">${NAMES[k][1].replace(/^./, (c) => c.toUpperCase())}</span><span class="font-semibold tabular">${nice(v)}</span></li>`; }).join('');
+  }
+  root.addEventListener('input', calc); root.addEventListener('change', calc); calc();
+</script>

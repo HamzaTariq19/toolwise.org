@@ -1,0 +1,19 @@
+---
+import Icon from './Icon.astro';
+const items = [
+  { icon: 'BadgeCheck', title: '100% free', text: 'Every tool is free to use, with no limits on the number of uses.' },
+  { icon: 'UserX', title: 'No signup', text: 'No account, no email, no installs. Open a tool and use it.' },
+  { icon: 'ShieldCheck', title: 'Files stay on your device', text: 'Files are processed in your browser and never uploaded to a server.' },
+];
+---
+<section aria-label="Why toolwise" class="grid gap-4 sm:grid-cols-3">
+  {items.map((it) => (
+    <div class="card flex gap-3.5 p-5">
+      <span class="inline-flex h-10 w-10 flex-none items-center justify-center rounded-[10px] bg-brand-soft text-link"><Icon name={it.icon} size={20} /></span>
+      <div>
+        <h2 class="text-base font-semibold">{it.title}</h2>
+        <p class="mt-1 text-[0.9375rem] leading-snug text-muted">{it.text}</p>
+      </div>
+    </div>
+  ))}
+</section>

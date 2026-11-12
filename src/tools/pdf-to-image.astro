@@ -1,0 +1,122 @@
+---
+import Dropzone from '../components/Dropzone.astro';
+import FileResults from '../components/FileResults.astro';
+import PdfPicked from '../components/PdfPicked.astro';
+import Icon from '../components/Icon.astro';
+---
+<div id="pi" class="space-y-5">
+  <div data-step="pick">
+    <Dropzone id="pi-drop" accept="application/pdf,.pdf" formats="PDF file" maxLabel="200 MB" label="Choose PDF file" icon="Images" />
+  </div>
+  <div class="alert alert-error" data-error hidden role="alert"><span data-msg></span></div>
+
+  <form data-step="options" class="card p-5 sm:p-6" hidden novalidate>
+    <PdfPicked />
+    <div class="mt-5 grid gap-5 sm:grid-cols-2">
+      <fieldset>
+        <legend class="label">Image format</legend>
+        <div class="segmented">
+          <label><input type="radio" name="pi-fmt" value="image/jpeg" checked /><span>JPG</span></label>
+          <label><input type="radio" name="pi-fmt" value="image/png" /><span>PNG</span></label>
+        </div>
+      </fieldset>
+      <div>
+        <label for="pi-dpi" class="label">Image quality</label>
+        <select id="pi-dpi" class="select">
+          <option value="72">Small (72 DPI), for screens</option>
+          <option value="150" selected>Normal (150 DPI)</option>
+          <option value="300">High (300 DPI), for printing</option>
+        </select>
+      </div>
+      <div class="sm:col-span-2">
+        <label for="pi-pages" class="label">Pages</label>
+        <input id="pi-pages" class="input sm:max-w-md" placeholder="All pages" autocomplete="off" />
+        <p class="hint">Leave empty to convert every page, or type pages like <code>1-3, 5</code>.</p>
+      </div>
+    </div>
+    <p class="alert alert-error mt-5" data-opt-error hidden role="alert"><span data-msg></span></p>
+    <div class="mt-6 flex flex-col gap-3 sm:flex-row">
+      <button type="submit" class="btn btn-primary btn-lg"><Icon name="Images" size={18} />Convert to images</button>
+      <button type="button" class="btn btn-secondary btn-lg" data-cancel>Choose another file</button>
+    </div>
+  </form>
+
+  <FileResults id="pi-results" />
+</div>
+
+<script>
+  import { initDropzone } from '../lib/dropzone';
+  import { createResults, type ResultItem } from '../lib/file-results';
+  import { openPdf, renderPage, parseRanges } from '../lib/pdf';
+  import { toBlob, MAX_PIXELS } from '../lib/image';
+  import { baseName, formatBytes, showError } from '../lib/ui';
+  import type { PDFDocumentProxy } from 'pdfjs-dist/types/src/display/api';
+
+  const root = document.getElementById('pi')!;
+  const pick = root.querySelector<HTMLElement>('[data-step=pick]')!;
+  const form = root.querySelector<HTMLFormElement>('[data-step=options]')!;
+  const err = root.querySelector<HTMLElement>('[data-error]')!;
+  const optErr = root.querySelector<HTMLElement>('[data-opt-error]')!;
+  const pagesIn = document.getElementById('pi-pages') as HTMLInputElement;
+  let doc: PDFDocumentProxy | null = null;
+  let file: File | null = null;
+
+  const results = createResults(document.getElementById('pi-results')!, {
+    zipName: 'pdf-images.zip', showSavings: false,
+    summary: (items) => `${items.filter((i) => i.blob).length} image${items.length === 1 ? '' : 's'} ready`,
+    onReset: () => { pick.hidden = false; form.hidden = true; showError(err, null); },
+  });
+
+  form.addEventListener('input', () => { showError(optErr, null); pagesIn.removeAttribute('aria-invalid'); });
+  form.querySelector('[data-cancel]')!.addEventListener('click', () => { form.hidden = true; pick.hidden = false; });
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    if (!doc || !file) return;
+    let indexes: number[];
+    if (pagesIn.value.trim()) {
+      const r = parseRanges(pagesIn.value, doc.numPages);
+      if ('error' in r) { pagesIn.setAttribute('aria-invalid', 'true'); return showError(optErr, r.error); }
+      indexes = [...new Set(r.groups.flat())];
+    } else indexes = Array.from({ length: doc.numPages }, (_, i) => i);
+    const type = form.querySelector<HTMLInputElement>('input[name=pi-fmt]:checked')!.value;
+    const dpi = Number((document.getElementById('pi-dpi') as HTMLSelectElement).value);
+    form.hidden = true;
+    const out: ResultItem[] = [];
+    const name = baseName(file.name);
+    for (let k = 0; k < indexes.length; k++) {
+      results.setProgress(k, indexes.length, `Converting page ${k + 1} of ${indexes.length}…`);
+      try {
+        const page = await doc.getPage(indexes[k] + 1);
+        const vp = page.getViewport({ scale: 1 });
+        let scale = dpi / 72;
+        if (vp.width * vp.height * scale * scale > MAX_PIXELS) scale = Math.sqrt(MAX_PIXELS / (vp.width * vp.height));
+        const canvas = await renderPage(page, scale);
+        const blob = await toBlob(canvas, type, 0.9);
+        out.push({ name: file.name, originalSize: blob.size, blob, thumb: true, outName: `${name}-page-${indexes[k] + 1}.${type === 'image/png' ? 'png' : 'jpg'}`, note: `${canvas.width} × ${canvas.height} px` });
+        canvas.width = canvas.height = 0;
+        page.cleanup();
+      } catch {
+        out.push({ name: `Page ${indexes[k] + 1}`, originalSize: 0, error: 'This page could not be converted.' });
+      }
+    }
+    results.render(out);
+  });
+
+  initDropzone(document.getElementById('pi-drop')!, {
+    accept: ['application/pdf', '.pdf'], maxBytes: 200 * 1024 * 1024,
+    onFiles: async ([f]) => {
+      try {
+        showError(err, null);
+        await doc?.loadingTask.destroy();
+        doc = await openPdf(await f.arrayBuffer());
+        file = f;
+        root.querySelector('[data-fname]')!.textContent = f.name;
+        root.querySelector('[data-fmeta]')!.textContent = `${doc.numPages} page${doc.numPages === 1 ? '' : 's'} · ${formatBytes(f.size)}`;
+        pagesIn.value = '';
+        pick.hidden = true; form.hidden = false;
+      } catch (e) { showError(err, (e as Error).message); }
+    },
+    onError: (m) => showError(err, m || null),
+  });
+</script>

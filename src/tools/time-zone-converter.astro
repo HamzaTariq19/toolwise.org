@@ -1,0 +1,109 @@
+---
+import Icon from '../components/Icon.astro';
+---
+<div id="tz" class="space-y-5">
+  <form class="card grid gap-4 p-5 sm:grid-cols-3 sm:p-6" novalidate onsubmit="return false">
+    <div><label for="tz-date" class="label">Date</label><input id="tz-date" type="date" class="input" /></div>
+    <div><label for="tz-time" class="label">Time</label><input id="tz-time" type="time" class="input" /></div>
+    <div><label for="tz-from" class="label">Time zone</label><input id="tz-from" class="input" list="tz-list" autocomplete="off" spellcheck="false" /></div>
+    <div class="flex flex-wrap gap-2 sm:col-span-3">
+      <button type="button" class="btn btn-secondary btn-sm" data-now><Icon name="Clock" size={16} />Now</button>
+    </div>
+  </form>
+  <p class="alert alert-error" data-err hidden role="alert"></p>
+  <ul class="grid gap-3 sm:grid-cols-2" data-list aria-live="polite"></ul>
+  <form class="card flex flex-col gap-3 p-4 sm:flex-row sm:items-end" data-addform novalidate>
+    <div class="flex-1"><label for="tz-add" class="label">Add a city or time zone</label><input id="tz-add" class="input" list="tz-list" placeholder="e.g. Tokyo, Dubai, Los Angeles" autocomplete="off" spellcheck="false" /></div>
+    <button type="submit" class="btn btn-primary"><Icon name="Plus" size={18} />Add</button>
+  </form>
+  <datalist id="tz-list"></datalist>
+</div>
+<script>
+  import { store } from '../lib/ui';
+  const root = document.getElementById('tz')!;
+  const $ = <T extends HTMLElement = HTMLInputElement>(id: string) => document.getElementById(id) as unknown as T;
+  const dateIn = $('tz-date'), timeIn = $('tz-time'), fromIn = $('tz-from'), addIn = $('tz-add');
+  const local = Intl.DateTimeFormat().resolvedOptions().timeZone;
+  const zones: string[] = (Intl as any).supportedValuesOf ? (Intl as any).supportedValuesOf('timeZone') : ['UTC', 'America/New_York', 'America/Chicago', 'America/Denver', 'America/Los_Angeles', 'Europe/London', 'Europe/Paris', 'Europe/Berlin', 'Asia/Dubai', 'Asia/Kolkata', 'Asia/Singapore', 'Asia/Tokyo', 'Australia/Sydney'];
+  if (!zones.includes('UTC')) zones.unshift('UTC');
+  const label = (z: string) => z === 'UTC' ? 'UTC' : z.split('/').pop()!.replace(/_/g, ' ');
+  $('tz-list').innerHTML = zones.map((z) => `<option value="${z}">${label(z)}</option>`).join('');
+  let targets: string[] = store.get('tw-tz', ['UTC', 'America/New_York', 'Europe/London', 'Asia/Kolkata', 'Asia/Tokyo', 'Australia/Sydney']);
+
+  /** Find a zone from what a person typed: "tokyo", "Asia/Tokyo", "new york" */
+  const CITIES: Record<string, string> = {
+    kathmandu: 'Asia/Kathmandu', kolkata: 'Asia/Kolkata', calcutta: 'Asia/Kolkata', delhi: 'Asia/Kolkata', new_delhi: 'Asia/Kolkata', mumbai: 'Asia/Kolkata', bangalore: 'Asia/Kolkata', bengaluru: 'Asia/Kolkata', chennai: 'Asia/Kolkata',
+    beijing: 'Asia/Shanghai', hong_kong: 'Asia/Hong_Kong', ho_chi_minh: 'Asia/Ho_Chi_Minh', saigon: 'Asia/Ho_Chi_Minh', hanoi: 'Asia/Bangkok', kyiv: 'Europe/Kyiv', kiev: 'Europe/Kyiv',
+    san_francisco: 'America/Los_Angeles', seattle: 'America/Los_Angeles', las_vegas: 'America/Los_Angeles', washington: 'America/New_York', boston: 'America/New_York', miami: 'America/New_York', atlanta: 'America/New_York',
+    dallas: 'America/Chicago', houston: 'America/Chicago', austin: 'America/Chicago', phoenix: 'America/Phoenix', montreal: 'America/Toronto', rio: 'America/Sao_Paulo', rio_de_janeiro: 'America/Sao_Paulo',
+    munich: 'Europe/Berlin', frankfurt: 'Europe/Berlin', barcelona: 'Europe/Madrid', milan: 'Europe/Rome', geneva: 'Europe/Zurich', manchester: 'Europe/London', edinburgh: 'Europe/London',
+    abu_dhabi: 'Asia/Dubai', riyadh: 'Asia/Riyadh', melbourne: 'Australia/Melbourne', perth: 'Australia/Perth', auckland: 'Pacific/Auckland', lagos: 'Africa/Lagos', nairobi: 'Africa/Nairobi', cape_town: 'Africa/Johannesburg',
+    utc: 'UTC', gmt: 'UTC',
+  };
+  const valid = (z: string) => { try { new Intl.DateTimeFormat('en', { timeZone: z }); return true; } catch { return false; } };
+  function resolve(s: string): string | null {
+    const q = s.trim().toLowerCase().replace(/\s+/g, '_');
+    if (!q) return null;
+    if (CITIES[q] && valid(CITIES[q])) return CITIES[q];
+    if (s.includes('/') && valid(s.trim())) return s.trim();
+    return zones.find((z) => z.toLowerCase() === q) ?? zones.find((z) => z.toLowerCase().endsWith('/' + q)) ?? zones.find((z) => z.toLowerCase().includes(q)) ?? null;
+  }
+  function offsetMin(zone: string, at: number) {
+    const p = Object.fromEntries(new Intl.DateTimeFormat('en-US', { timeZone: zone, hourCycle: 'h23', year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit' }).formatToParts(at).map((x) => [x.type, x.value]));
+    return (Date.UTC(+p.year, +p.month - 1, +p.day, +p.hour % 24, +p.minute, +p.second) - Math.floor(at / 1000) * 1000) / 60000;
+  }
+  /** Wall-clock time in a zone -> UTC timestamp */
+  function toUtc(y: number, mo: number, d: number, h: number, mi: number, zone: string) {
+    const guess = Date.UTC(y, mo - 1, d, h, mi);
+    let t = guess - offsetMin(zone, guess) * 60000;
+    t = guess - offsetMin(zone, t) * 60000;
+    return t;
+  }
+  const pad = (n: number) => String(n).padStart(2, '0');
+  function setNow() {
+    const n = new Date();
+    dateIn.value = `${n.getFullYear()}-${pad(n.getMonth() + 1)}-${pad(n.getDate())}`;
+    timeIn.value = `${pad(n.getHours())}:${pad(n.getMinutes())}`;
+    fromIn.value = local;
+    render();
+  }
+  const fmtOff = (m: number) => `UTC${m >= 0 ? '+' : '−'}${pad(Math.floor(Math.abs(m) / 60))}:${pad(Math.abs(m) % 60)}`;
+
+  function render() {
+    store.set('tw-tz', targets);
+    const err = root.querySelector<HTMLElement>('[data-err]')!;
+    const zone = resolve(fromIn.value);
+    if (!zone || !dateIn.value || !timeIn.value) { err.hidden = false; err.textContent = !zone ? 'Choose a time zone from the list, for example "Europe/London" or type a city like "Tokyo".' : 'Choose a date and time.'; return; }
+    err.hidden = true;
+    const [y, mo, d] = dateIn.value.split('-').map(Number), [h, mi] = timeIn.value.split(':').map(Number);
+    const utc = toUtc(y, mo, d, h, mi, zone);
+    const srcOff = offsetMin(zone, utc);
+    root.querySelector('[data-list]')!.innerHTML = targets.map((z, i) => {
+      const off = offsetMin(z, utc), diff = (off - srcOff) / 60;
+      const time = new Intl.DateTimeFormat(undefined, { timeZone: z, hour: 'numeric', minute: '2-digit' }).format(utc);
+      const date = new Intl.DateTimeFormat(undefined, { timeZone: z, weekday: 'short', month: 'short', day: 'numeric' }).format(utc);
+      const hour = Number(new Intl.DateTimeFormat('en-US', { timeZone: z, hour: 'numeric', hourCycle: 'h23' }).format(utc));
+      const night = hour < 7 || hour >= 22, work = hour >= 9 && hour < 17;
+      return `<li class="card flex items-center gap-3 p-4">
+        <div class="min-w-0 flex-1">
+          <p class="truncate font-semibold">${label(z)} <span class="text-sm font-normal text-subtle">${fmtOff(off)}</span></p>
+          <p class="text-2xl font-bold tabular">${time}</p>
+          <p class="text-sm text-muted">${date} · ${diff === 0 ? 'same time' : `${diff > 0 ? '+' : '−'}${Math.floor(Math.abs(diff))} h${Math.abs(diff) % 1 ? ` ${Math.round((Math.abs(diff) % 1) * 60)} min` : ''}`} · <span class="${night ? 'text-subtle' : work ? 'text-success' : ''}">${night ? 'night' : work ? 'working hours' : 'evening/morning'}</span></p>
+        </div>
+        <button type="button" class="btn btn-ghost h-11 w-11 !p-0" data-del="${i}" aria-label="Remove ${label(z)}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg></button>
+      </li>`;
+    }).join('');
+  }
+  root.querySelector('[data-list]')!.addEventListener('click', (e) => { const b = (e.target as HTMLElement).closest<HTMLElement>('[data-del]'); if (b) { targets.splice(Number(b.dataset.del), 1); render(); } });
+  root.querySelector('[data-addform]')!.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const z = resolve(addIn.value);
+    const err = root.querySelector<HTMLElement>('[data-err]')!;
+    if (!z) { err.hidden = false; err.textContent = `We could not find “${addIn.value}”. Try a major city in the same time zone, such as "Chicago" or "Paris".`; return; }
+    if (!targets.includes(z)) targets.push(z);
+    addIn.value = ''; render();
+  });
+  [dateIn, timeIn, fromIn].forEach((el) => el.addEventListener('input', render));
+  root.querySelector('[data-now]')!.addEventListener('click', setNow);
+  setNow();
+</script>

@@ -1,0 +1,106 @@
+---
+import CalcLayout from '../components/CalcLayout.astro';
+---
+<CalcLayout id="bmi">
+  <Fragment slot="inputs">
+    <fieldset>
+      <legend class="label">Units</legend>
+      <div class="segmented">
+        <label><input type="radio" name="bmi-u" value="metric" checked /><span>Metric (cm, kg)</span></label>
+        <label><input type="radio" name="bmi-u" value="imperial" /><span>US (ft, lb)</span></label>
+      </div>
+    </fieldset>
+    <div data-u="metric" class="grid grid-cols-2 gap-3">
+      <div>
+        <label for="bmi-cm" class="label">Height</label>
+        <div class="input-group"><input id="bmi-cm" class="input tabular" inputmode="decimal" placeholder="170" /><span class="addon">cm</span></div>
+      </div>
+      <div>
+        <label for="bmi-kg" class="label">Weight</label>
+        <div class="input-group"><input id="bmi-kg" class="input tabular" inputmode="decimal" placeholder="65" /><span class="addon">kg</span></div>
+      </div>
+    </div>
+    <div data-u="imperial" class="space-y-3" hidden>
+      <fieldset>
+        <legend class="label">Height</legend>
+        <div class="grid grid-cols-2 gap-3">
+          <div class="input-group"><input id="bmi-ft" class="input tabular" inputmode="numeric" placeholder="5" aria-label="Feet" /><span class="addon">ft</span></div>
+          <div class="input-group"><input id="bmi-in" class="input tabular" inputmode="decimal" placeholder="7" aria-label="Inches" /><span class="addon">in</span></div>
+        </div>
+      </fieldset>
+      <div>
+        <label for="bmi-lb" class="label">Weight</label>
+        <div class="input-group"><input id="bmi-lb" class="input tabular" inputmode="decimal" placeholder="150" /><span class="addon">lb</span></div>
+      </div>
+    </div>
+    <p class="hint">BMI is designed for adults aged 20 and over. For children and teens, doctors use age- and sex-specific growth charts.</p>
+  </Fragment>
+  <Fragment slot="results">
+    <div data-ok hidden>
+      <p class="text-sm font-medium text-muted">Your BMI</p>
+      <p class="mt-1 flex items-baseline gap-3"><span class="text-5xl font-extrabold tracking-tight tabular" data-bmi>–</span><span class="badge !px-3 !py-1 !text-sm" data-cat></span></p>
+      <div class="relative mt-6" aria-hidden="true">
+        <div class="flex h-3 overflow-hidden rounded-full">
+          <span class="bg-sky-400" style="width:17.5%"></span><span class="bg-emerald-500" style="width:32.5%"></span><span class="bg-amber-400" style="width:25%"></span><span class="bg-rose-500" style="width:25%"></span>
+        </div>
+        <span class="absolute -top-1.5 h-6 w-1.5 -translate-x-1/2 rounded-full bg-ink ring-2 ring-[var(--surface)]" data-marker></span>
+        <div class="mt-1.5 flex justify-between text-xs text-subtle tabular"><span>15</span><span>18.5</span><span>25</span><span>30</span><span>40</span></div>
+      </div>
+      <p class="mt-5 text-[0.9375rem]" data-text></p>
+      <div class="stat mt-4"><p class="stat-label">Healthy weight for your height</p><p class="text-lg font-bold tabular" data-range></p></div>
+    </div>
+    <div data-empty class="flex h-full flex-col items-center justify-center py-8 text-center text-muted">
+      <p class="text-lg font-semibold text-ink">Enter your height and weight</p>
+      <p class="mt-1">Your BMI appears here instantly.</p>
+    </div>
+    <p class="alert alert-error mt-3" data-msg hidden></p>
+  </Fragment>
+</CalcLayout>
+
+<script>
+  import { live } from '../lib/calc';
+  import { num, fmt } from '../lib/ui';
+
+  const root = document.getElementById('bmi')!;
+  const val = (id: string) => num((document.getElementById(id) as HTMLInputElement).value);
+  const unit = () => root.querySelector<HTMLInputElement>('input[name=bmi-u]:checked')!.value;
+  const ok = root.querySelector<HTMLElement>('[data-ok]')!, empty = root.querySelector<HTMLElement>('[data-empty]')!, msg = root.querySelector<HTMLElement>('[data-msg]')!;
+  root.querySelectorAll<HTMLInputElement>('input[name=bmi-u]').forEach((r) => r.addEventListener('change', () => {
+    root.querySelectorAll<HTMLElement>('[data-u]').forEach((el) => (el.hidden = el.dataset.u !== unit()));
+  }));
+
+  const CATS = [
+    { max: 18.5, label: 'Underweight', cls: '!bg-sky-100 !text-sky-800', text: 'A BMI below 18.5 is considered underweight. It can be worth talking to a doctor about healthy ways to reach a suitable weight.' },
+    { max: 25, label: 'Healthy weight', cls: '!bg-emerald-100 !text-emerald-800', text: 'A BMI between 18.5 and 24.9 is considered a healthy weight for most adults.' },
+    { max: 30, label: 'Overweight', cls: '!bg-amber-100 !text-amber-900', text: 'A BMI between 25 and 29.9 is considered overweight. Small, steady changes to diet and activity can make a real difference.' },
+    { max: Infinity, label: 'Obesity', cls: '!bg-rose-100 !text-rose-800', text: 'A BMI of 30 or more is in the obesity range. A doctor can help you understand what it means for your health.' },
+  ];
+
+  function calc() {
+    let m: number, kg: number;
+    const metric = unit() === 'metric';
+    if (metric) { m = val('bmi-cm') / 100; kg = val('bmi-kg'); }
+    else { const ft = val('bmi-ft') || 0, inch = val('bmi-in') || 0; m = (ft * 12 + inch) * 0.0254; kg = val('bmi-lb') * 0.45359237; }
+    msg.hidden = true;
+    if (!(m > 0) || !(kg > 0)) { ok.hidden = true; empty.hidden = false; return; }
+    if (m < 0.5 || m > 2.5) { ok.hidden = true; empty.hidden = true; msg.hidden = false; msg.textContent = metric ? 'Please check your height. Enter it in centimeters, for example 170.' : 'Please check your height in feet and inches, for example 5 ft 7 in.'; return; }
+    if (kg < 10 || kg > 400) { ok.hidden = true; empty.hidden = true; msg.hidden = false; msg.textContent = `Please check your weight. Enter it in ${metric ? 'kilograms, for example 65' : 'pounds, for example 150'}.`; return; }
+    const bmi = kg / (m * m);
+    const cat = CATS.find((c) => bmi < c.max)!;
+    ok.hidden = false; empty.hidden = true;
+    root.querySelector('[data-bmi]')!.textContent = fmt(bmi, 1, 1);
+    const badge = root.querySelector<HTMLElement>('[data-cat]')!;
+    badge.className = `badge !px-3 !py-1 !text-sm ${cat.cls}`;
+    badge.textContent = cat.label;
+    root.querySelector('[data-text]')!.textContent = cat.text;
+    // Scale from 15 to 40: segments 15-18.5 (17.5% of width? ) use piecewise mapping to match the drawn bands
+    const stops = [[15, 0], [18.5, 17.5], [25, 50], [30, 75], [40, 100]];
+    const b = Math.min(40, Math.max(15, bmi));
+    let pos = 100;
+    for (let i = 1; i < stops.length; i++) if (b <= stops[i][0]) { const [a0, p0] = stops[i - 1], [a1, p1] = stops[i]; pos = p0 + ((b - a0) / (a1 - a0)) * (p1 - p0); break; }
+    root.querySelector<HTMLElement>('[data-marker]')!.style.left = `${pos}%`;
+    const lo = 18.5 * m * m, hi = 24.9 * m * m;
+    root.querySelector('[data-range]')!.textContent = metric ? `${fmt(lo, 1)} – ${fmt(hi, 1)} kg` : `${fmt(lo / 0.45359237, 0)} – ${fmt(hi / 0.45359237, 0)} lb`;
+  }
+  live(root.querySelector('[data-inputs]')!, calc);
+</script>

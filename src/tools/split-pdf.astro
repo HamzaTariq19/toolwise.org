@@ -1,0 +1,133 @@
+---
+import Dropzone from '../components/Dropzone.astro';
+import FileResults from '../components/FileResults.astro';
+import PdfPicked from '../components/PdfPicked.astro';
+import Icon from '../components/Icon.astro';
+---
+<div id="sp" class="space-y-5">
+  <div data-step="pick">
+    <Dropzone id="sp-drop" accept="application/pdf,.pdf" formats="PDF file" maxLabel="200 MB" label="Choose PDF file" icon="Scissors" />
+  </div>
+  <div class="alert alert-error" data-error hidden role="alert"><span data-msg></span></div>
+
+  <form data-step="options" class="card p-5 sm:p-6" hidden novalidate>
+    <PdfPicked />
+    <fieldset class="mt-5">
+      <legend class="label">How do you want to split it?</legend>
+      <div class="segmented">
+        <label><input type="radio" name="sp-mode" value="ranges" checked /><span>Custom ranges</span></label>
+        <label><input type="radio" name="sp-mode" value="each" /><span>Every page</span></label>
+        <label><input type="radio" name="sp-mode" value="every" /><span>Every N pages</span></label>
+      </div>
+    </fieldset>
+    <div class="mt-5" data-mode="ranges">
+      <label for="sp-ranges" class="label">Page ranges</label>
+      <input id="sp-ranges" class="input sm:max-w-md" placeholder="e.g. 1-3, 4-6, 7" autocomplete="off" />
+      <p class="hint">Each range becomes a separate PDF. Example: <code>1-3, 4-6, 7</code> creates three files.</p>
+    </div>
+    <div class="mt-5" data-mode="each" hidden>
+      <p class="text-muted" data-each-text></p>
+    </div>
+    <div class="mt-5" data-mode="every" hidden>
+      <label for="sp-n" class="label">Pages per file</label>
+      <input id="sp-n" class="input w-32 tabular" inputmode="numeric" value="2" />
+      <p class="hint" data-every-text></p>
+    </div>
+    <p class="alert alert-error mt-5" data-opt-error hidden role="alert"><span data-msg></span></p>
+    <div class="mt-6 flex flex-col gap-3 sm:flex-row">
+      <button type="submit" class="btn btn-primary btn-lg"><Icon name="Scissors" size={18} />Split PDF</button>
+      <button type="button" class="btn btn-secondary btn-lg" data-cancel>Choose another file</button>
+    </div>
+  </form>
+
+  <FileResults id="sp-results" />
+</div>
+
+<script>
+  import { initDropzone } from '../lib/dropzone';
+  import { createResults, type ResultItem } from '../lib/file-results';
+  import { loadPdfLibDoc, getPdfLib, pdfBlob, parseRanges } from '../lib/pdf';
+  import { baseName, formatBytes, num, showError } from '../lib/ui';
+  import type { PDFDocument } from 'pdf-lib';
+
+  const root = document.getElementById('sp')!;
+  const pick = root.querySelector<HTMLElement>('[data-step=pick]')!;
+  const form = root.querySelector<HTMLFormElement>('[data-step=options]')!;
+  const err = root.querySelector<HTMLElement>('[data-error]')!;
+  const optErr = root.querySelector<HTMLElement>('[data-opt-error]')!;
+  const rangesIn = document.getElementById('sp-ranges') as HTMLInputElement;
+  const nIn = document.getElementById('sp-n') as HTMLInputElement;
+  let file: File | null = null;
+  let src: PDFDocument | null = null;
+  let pages = 0;
+
+  const mode = () => form.querySelector<HTMLInputElement>('input[name=sp-mode]:checked')!.value;
+  const results = createResults(document.getElementById('sp-results')!, {
+    zipName: 'split-pdf.zip', showSavings: false,
+    summary: (items) => `Split into ${items.length} PDF file${items.length === 1 ? '' : 's'}`,
+    onReset: () => { pick.hidden = false; form.hidden = true; showError(err, null); },
+  });
+
+  function updateTexts() {
+    root.querySelector('[data-each-text]')!.textContent = `Every page becomes its own PDF: ${pages} file${pages === 1 ? '' : 's'} in total.`;
+    const n = Math.floor(num(nIn.value));
+    root.querySelector('[data-every-text]')!.textContent = n >= 1 ? `This creates ${Math.ceil(pages / n)} file${Math.ceil(pages / n) === 1 ? '' : 's'}.` : '';
+  }
+
+  form.querySelectorAll<HTMLInputElement>('input[name=sp-mode]').forEach((r) => r.addEventListener('change', () => {
+    form.querySelectorAll<HTMLElement>('[data-mode]').forEach((el) => (el.hidden = el.dataset.mode !== mode()));
+    showError(optErr, null);
+  }));
+  nIn.addEventListener('input', updateTexts);
+  form.addEventListener('input', () => showError(optErr, null));
+  form.querySelector('[data-cancel]')!.addEventListener('click', () => { form.hidden = true; pick.hidden = false; });
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    if (!src || !file) return;
+    let groups: number[][];
+    if (mode() === 'each') groups = Array.from({ length: pages }, (_, i) => [i]);
+    else if (mode() === 'every') {
+      const n = Math.floor(num(nIn.value));
+      if (!(n >= 1)) return showError(optErr, 'Please enter how many pages each file should have, for example 2.');
+      groups = [];
+      for (let i = 0; i < pages; i += n) groups.push(Array.from({ length: Math.min(n, pages - i) }, (_, k) => i + k));
+    } else {
+      const r = parseRanges(rangesIn.value, pages);
+      if ('error' in r) { rangesIn.setAttribute('aria-invalid', 'true'); return showError(optErr, r.error); }
+      groups = r.groups;
+    }
+    rangesIn.removeAttribute('aria-invalid');
+    form.hidden = true;
+    const { PDFDocument } = await getPdfLib();
+    const out: ResultItem[] = [];
+    const name = baseName(file.name);
+    for (let i = 0; i < groups.length; i++) {
+      results.setProgress(i, groups.length, `Creating file ${i + 1} of ${groups.length}…`);
+      const g = groups[i];
+      const doc = await PDFDocument.create();
+      (await doc.copyPages(src, g)).forEach((p) => doc.addPage(p));
+      const bytes = await doc.save({ useObjectStreams: true });
+      const label = g.length === 1 ? `page-${g[0] + 1}` : `pages-${g[0] + 1}-${g[g.length - 1] + 1}`;
+      out.push({ name: file.name, originalSize: bytes.length, blob: pdfBlob(bytes), outName: `${name}-${label}.pdf`, note: `${g.length} page${g.length === 1 ? '' : 's'}` });
+    }
+    results.render(out);
+  });
+
+  initDropzone(document.getElementById('sp-drop')!, {
+    accept: ['application/pdf', '.pdf'], maxBytes: 200 * 1024 * 1024,
+    onFiles: async ([f]) => {
+      try {
+        src = await loadPdfLibDoc(await f.arrayBuffer());
+        file = f;
+        pages = src.getPageCount();
+        root.querySelector('[data-fname]')!.textContent = f.name;
+        root.querySelector('[data-fmeta]')!.textContent = `${pages} page${pages === 1 ? '' : 's'} · ${formatBytes(f.size)}`;
+        rangesIn.value = pages > 1 ? `1-${Math.ceil(pages / 2)}, ${Math.ceil(pages / 2) + 1}-${pages}` : '1';
+        if (pages < 2) showError(err, 'This PDF has only one page, so there is nothing to split.');
+        else { showError(err, null); pick.hidden = true; form.hidden = false; updateTexts(); }
+      } catch (e) { showError(err, (e as Error).message); }
+    },
+    onError: (m) => showError(err, m || null),
+  });
+</script>

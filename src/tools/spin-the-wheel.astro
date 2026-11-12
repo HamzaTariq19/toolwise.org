@@ -1,0 +1,98 @@
+---
+import Icon from '../components/Icon.astro';
+---
+<div id="wh" class="grid gap-5 md:grid-cols-[1fr_280px] md:items-start">
+  <div class="card flex flex-col items-center p-4 sm:p-6">
+    <div class="relative w-full max-w-[440px]">
+      <canvas data-wheel class="aspect-square w-full" role="img" aria-label="Wheel with your options"></canvas>
+      <svg class="absolute -right-1 top-1/2 h-10 w-10 -translate-y-1/2 drop-shadow" viewBox="0 0 40 40" aria-hidden="true"><path d="M4 20 36 6v28z" fill="var(--text)" stroke="var(--surface)" stroke-width="2.5" stroke-linejoin="round"/></svg>
+      <button type="button" class="absolute left-1/2 top-1/2 flex h-20 w-20 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border-4 border-[var(--surface)] bg-brand text-base font-bold text-white shadow-lg" data-spin>SPIN</button>
+    </div>
+    <div class="mt-4 min-h-16 text-center" aria-live="polite"><p class="text-sm font-semibold uppercase tracking-wide text-subtle" data-top></p><p class="text-3xl font-extrabold tracking-tight" data-result></p></div>
+    <button type="button" class="btn btn-secondary btn-sm" data-remove hidden><Icon name="Trash2" size={16} />Remove this option</button>
+  </div>
+  <div class="card p-5">
+    <div class="flex items-center justify-between"><label for="wh-list" class="label !mb-0">Options</label><span class="text-sm text-subtle" data-count></span></div>
+    <textarea id="wh-list" class="textarea mt-2 !min-h-[260px]" placeholder="One option per line">Pizza
+Sushi
+Tacos
+Burgers
+Pasta
+Salad</textarea>
+    <p class="hint">2 to 100 options. Changes show on the wheel instantly.</p>
+    <p class="alert alert-error mt-2" data-err hidden></p>
+  </div>
+</div>
+<script>
+  import { randInt, parseList, reducedMotion } from '../lib/random';
+  const root = document.getElementById('wh')!;
+  const canvas = root.querySelector<HTMLCanvasElement>('[data-wheel]')!;
+  const ta = document.getElementById('wh-list') as HTMLTextAreaElement;
+  const spinBtn = root.querySelector<HTMLButtonElement>('[data-spin]')!, removeBtn = root.querySelector<HTMLButtonElement>('[data-remove]')!;
+  const COLORS = ['#2563eb', '#f59e0b', '#10b981', '#ef4444', '#8b5cf6', '#06b6d4', '#ec4899', '#84cc16', '#f97316', '#6366f1'];
+  let items: string[] = [], angle = 0, spinning = false, winner = -1;
+
+  function draw() {
+    const size = canvas.getBoundingClientRect().width || 400, dpr = Math.min(2, devicePixelRatio || 1);
+    canvas.width = canvas.height = size * dpr;
+    const ctx = canvas.getContext('2d')!, r = (size * dpr) / 2, n = items.length;
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    if (!n) return;
+    const seg = (Math.PI * 2) / n;
+    for (let i = 0; i < n; i++) {
+      const a0 = angle + i * seg;
+      ctx.beginPath(); ctx.moveTo(r, r); ctx.arc(r, r, r - 2 * dpr, a0, a0 + seg); ctx.closePath();
+      ctx.fillStyle = n % COLORS.length === 1 && i === n - 1 ? COLORS[4] : COLORS[i % COLORS.length]; ctx.fill();
+      ctx.strokeStyle = '#fff'; ctx.lineWidth = 2 * dpr; ctx.stroke();
+      ctx.save(); ctx.translate(r, r); ctx.rotate(a0 + seg / 2);
+      ctx.fillStyle = '#fff'; ctx.textAlign = 'right'; ctx.textBaseline = 'middle';
+      const fs = Math.max(10, Math.min(22, (r * 0.9 * seg) / 1.6, 300 / n)) * dpr;
+      ctx.font = `600 ${fs}px Inter Variable, system-ui, sans-serif`;
+      let label = items[i];
+      while (ctx.measureText(label).width > r * 0.62 && label.length > 2) label = label.slice(0, -2) + '…';
+      ctx.fillText(label, r - 34 * dpr, 0);
+      ctx.restore();
+    }
+  }
+  function update() {
+    items = parseList(ta.value).slice(0, 100);
+    root.querySelector('[data-count]')!.textContent = `${items.length} option${items.length === 1 ? '' : 's'}`;
+    const err = root.querySelector<HTMLElement>('[data-err]')!;
+    err.hidden = items.length >= 2; err.textContent = 'Add at least two options, one per line.';
+    spinBtn.disabled = items.length < 2;
+    draw();
+  }
+  function spin() {
+    if (spinning || items.length < 2) return;
+    spinning = true; spinBtn.disabled = true; removeBtn.hidden = true;
+    root.querySelector('[data-top]')!.textContent = ''; root.querySelector('[data-result]')!.textContent = '';
+    const n = items.length, seg = (Math.PI * 2) / n;
+    winner = randInt(n);
+    // Pointer is at angle 0 (right side). Land the winner's segment center there, with a little random offset.
+    const offset = (randInt(1000) / 1000 - 0.5) * seg * 0.7;
+    const target = -(winner * seg + seg / 2) + offset;
+    const start = angle, turns = 6 + randInt(3);
+    let end = target + Math.PI * 2 * Math.ceil((start - target) / (Math.PI * 2));
+    end += turns * Math.PI * 2;
+    const dur = reducedMotion() ? 1 : 4800, t0 = performance.now();
+    const step = (t: number) => {
+      const p = Math.min(1, (t - t0) / dur), e = 1 - Math.pow(1 - p, 4);
+      angle = start + (end - start) * e; draw();
+      if (p < 1) requestAnimationFrame(step);
+      else {
+        angle %= Math.PI * 2; spinning = false; spinBtn.disabled = false;
+        root.querySelector('[data-top]')!.textContent = 'The wheel chose';
+        root.querySelector('[data-result]')!.textContent = items[winner];
+        removeBtn.hidden = false;
+      }
+    };
+    requestAnimationFrame(step);
+  }
+  spinBtn.addEventListener('click', spin);
+  canvas.addEventListener('click', spin);
+  removeBtn.addEventListener('click', () => { const l = parseList(ta.value); l.splice(winner, 1); ta.value = l.join('\n'); removeBtn.hidden = true; update(); });
+  ta.addEventListener('input', update);
+  window.addEventListener('resize', draw);
+  document.fonts?.ready.then(draw);
+  update();
+</script>
