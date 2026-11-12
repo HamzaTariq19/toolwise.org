@@ -1,0 +1,46 @@
+---
+import Icon from '../components/Icon.astro';
+---
+<div id="hs" class="space-y-5">
+  <div class="card space-y-4 p-4 sm:p-5">
+    <div><label for="hs-in" class="label">Describe your post or list keywords</label><textarea id="hs-in" class="textarea !min-h-24" placeholder="e.g. homemade sourdough bread baking weekend">homemade sourdough bread, weekend baking in London</textarea><p class="hint">toolwise turns your own words into clean hashtags. It does not invent trending tags.</p></div>
+    <div class="flex flex-wrap items-end gap-4">
+      <div><label for="hs-plat" class="label">Platform</label><select id="hs-plat" class="select !w-auto"><option value="ig">Instagram (3 to 10)</option><option value="tt">TikTok (3 to 6)</option><option value="x">X (1 to 2)</option><option value="li">LinkedIn (3 to 5)</option><option value="yt">YouTube (up to 15)</option></select></div>
+      <div><label for="hs-case" class="label">Style</label><select id="hs-case" class="select !w-auto"><option value="camel">#CamelCase (accessible)</option><option value="lower">#lowercase</option></select></div>
+    </div>
+  </div>
+  <section class="card p-5" aria-live="polite">
+    <div class="flex flex-wrap items-center justify-between gap-2"><h2 class="text-base font-semibold">Your hashtags</h2><span class="text-sm text-muted" data-sel></span></div>
+    <p class="hint !mt-0">Tap to remove or add. Selected tags are copied.</p>
+    <div class="mt-3 flex flex-wrap gap-2" data-tags></div>
+    <div class="mt-4 flex flex-col gap-3 sm:flex-row"><button type="button" class="btn btn-primary btn-lg" data-copy><Icon name="Copy" size={18} /><span data-label>Copy selected</span></button></div>
+  </section>
+</div>
+<script>
+  import { copyText } from '../lib/ui';
+  const STOP = new Set('a an and the of to in on at for with by from is are was were be my your our this that these those it its me we you they i just very really so some any into out up about over after before new get got make made how what why when where who which'.split(' '));
+  const root = document.getElementById('hs')!, q = (s: string) => root.querySelector<HTMLElement>(s)!, ta = document.getElementById('hs-in') as HTMLTextAreaElement;
+  const LIMIT: Record<string, number> = { ig: 10, tt: 6, x: 2, li: 5, yt: 15 };
+  let tags: string[] = [], off = new Set<string>();
+  const fmt = (ws: string[]) => (document.getElementById('hs-case') as HTMLSelectElement).value === 'camel' ? ws.map((w) => w[0].toUpperCase() + w.slice(1)).join('') : ws.join('');
+  function generate() {
+    const raw = ta.value.toLowerCase().normalize('NFKD').replace(/[̀-ͯ]/g, '');
+    const phrases = raw.split(/[,;\n.]+/).map((p) => p.split(/[^\p{L}\p{N}]+/u).filter((w) => w && !STOP.has(w))).filter((p) => p.length);
+    const words = [...new Set(phrases.flat().filter((w) => w.length > 2))];
+    const out: string[] = [];
+    phrases.forEach((p) => { if (p.length >= 2 && p.length <= 3) out.push(fmt(p)); for (let i = 0; i + 1 < p.length; i++) out.push(fmt([p[i], p[i + 1]])); });
+    words.forEach((w) => out.push(fmt([w])));
+    tags = [...new Map(out.filter((t) => t.length >= 3 && t.length <= 30).map((t) => [t.toLowerCase(), t])).values()];
+    off = new Set(tags.slice(LIMIT[(document.getElementById('hs-plat') as HTMLSelectElement).value]));
+    render();
+  }
+  function render() {
+    q('[data-tags]').innerHTML = tags.length ? tags.map((t) => `<button type="button" class="chip ${off.has(t) ? 'opacity-60 line-through' : ''}" aria-pressed="${!off.has(t)}" data-t="${t}">#${t}</button>`).join('') : '<p class="text-muted">Type a few words about your post.</p>';
+    const n = tags.filter((t) => !off.has(t)).length, lim = LIMIT[(document.getElementById('hs-plat') as HTMLSelectElement).value];
+    q('[data-sel]').textContent = `${n} selected${n > lim ? ` · more than the ${lim} usually recommended` : ''}`;
+  }
+  q('[data-tags]').addEventListener('click', (e) => { const b = (e.target as HTMLElement).closest<HTMLElement>('[data-t]'); if (!b) return; const t = b.dataset.t!; off.has(t) ? off.delete(t) : off.add(t); render(); });
+  ta.addEventListener('input', generate); root.addEventListener('change', generate);
+  q('[data-copy]').addEventListener('click', (e) => copyText(tags.filter((t) => !off.has(t)).map((t) => `#${t}`).join(' '), e.currentTarget as HTMLElement));
+  generate();
+</script>

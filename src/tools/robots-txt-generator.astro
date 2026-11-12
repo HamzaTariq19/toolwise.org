@@ -1,0 +1,50 @@
+---
+import CodeOutput from '../components/CodeOutput.astro';
+import Icon from '../components/Icon.astro';
+const AI = ['GPTBot', 'ChatGPT-User', 'OAI-SearchBot', 'ClaudeBot', 'anthropic-ai', 'Google-Extended', 'CCBot', 'PerplexityBot', 'Bytespider', 'Applebot-Extended', 'meta-externalagent'];
+---
+<div id="rb" class="grid grid-cols-1 gap-5 lg:grid-cols-2 lg:items-start" data-ai={JSON.stringify(AI)}>
+  <form class="card space-y-5 p-5 sm:p-6" novalidate onsubmit="return false">
+    <fieldset><legend class="label">Default for all crawlers</legend>
+      <div class="segmented"><label><input type="radio" name="rb-def" value="allow" checked /><span>Allow everything</span></label><label><input type="radio" name="rb-def" value="block" /><span>Block everything</span></label></div>
+    </fieldset>
+    <div><label for="rb-dis" class="label">Folders or pages to block</label><textarea id="rb-dis" class="textarea mono !min-h-24 text-sm" placeholder="/admin/&#10;/cart&#10;/search">/admin/
+/cart
+/*?sessionid=</textarea><p class="hint">One path per line, starting with /. Use * as a wildcard and $ for "ends with".</p></div>
+    <div><label for="rb-allow" class="label">Exceptions to allow (optional)</label><textarea id="rb-allow" class="textarea mono !min-h-16 text-sm" placeholder="/admin/public/"></textarea></div>
+    <label class="flex min-h-11 items-start gap-3 text-[0.9375rem]"><input type="checkbox" id="rb-ai" class="mt-0.5 h-5 w-5 flex-none accent-[var(--brand)]" /><span>Block AI training and AI search crawlers (GPTBot, ClaudeBot, Google-Extended, CCBot and others)</span></label>
+    <div><label for="rb-map" class="label">Sitemap URL</label><input id="rb-map" class="input" inputmode="url" placeholder="https://example.com/sitemap.xml" /></div>
+    <div><label for="rb-delay" class="label">Crawl delay in seconds (optional)</label><input id="rb-delay" class="input w-28 tabular" inputmode="numeric" placeholder="none" /><p class="hint">Ignored by Google; some other crawlers respect it.</p></div>
+    <p class="alert alert-error" data-err hidden></p>
+  </form>
+  <div class="space-y-3">
+    <CodeOutput id="rb-out" label="robots.txt" file="robots.txt" copyLabel="Copy robots.txt" />
+    <p class="flex gap-2 text-sm text-muted"><Icon name="Info" size={16} class="mt-0.5 flex-none" />Upload the file to the root of your site so it opens at yourdomain.com/robots.txt. robots.txt asks well-behaved crawlers to stay away; it does not hide or protect private pages.</p>
+  </div>
+</div>
+<script>
+  const root = document.getElementById('rb')!, AI = JSON.parse(root.dataset.ai!) as string[];
+  const $ = (id: string) => document.getElementById(id) as HTMLInputElement;
+  const lines = (id: string) => $(id).value.split('\n').map((l) => l.trim()).filter(Boolean);
+  function run() {
+    const errs: string[] = [];
+    const bad = [...lines('rb-dis'), ...lines('rb-allow')].filter((p) => !p.startsWith('/') && !p.startsWith('*'));
+    if (bad.length) errs.push(`Paths must start with / (check “${bad[0]}”). Use /folder/ rather than a full URL.`);
+    const map = $('rb-map').value.trim();
+    if (map && !/^https?:\/\/[^\s/]+\.[^\s/]+\//.test(map + '/')) errs.push('The sitemap must be a full URL, like https://example.com/sitemap.xml.');
+    const delay = $('rb-delay').value.trim();
+    if (delay && !/^\d{1,3}$/.test(delay)) errs.push('Crawl delay must be a whole number of seconds, such as 5.');
+    const err = root.querySelector<HTMLElement>('[data-err]')!; err.hidden = !errs.length; err.textContent = errs.join(' ');
+    const block = (root.querySelector('input[name=rb-def]:checked') as HTMLInputElement).value === 'block';
+    const out: string[] = ['User-agent: *'];
+    if (block) out.push('Disallow: /');
+    else { const d = lines('rb-dis'); if (!d.length) out.push('Disallow:'); d.forEach((p) => out.push(`Disallow: ${p}`)); }
+    lines('rb-allow').forEach((p) => out.push(`Allow: ${p}`));
+    if (delay && /^\d+$/.test(delay)) out.push(`Crawl-delay: ${delay}`);
+    if ($('rb-ai').checked) { out.push(''); AI.forEach((a) => out.push(`User-agent: ${a}`)); out.push('Disallow: /'); }
+    if (map) out.push('', `Sitemap: ${map}`);
+    root.querySelector('[data-code]')!.textContent = out.join('\n') + '\n';
+    root.querySelector('[data-note]')!.textContent = block ? 'Your whole site is blocked from search engines' : '';
+  }
+  root.addEventListener('input', run); root.addEventListener('change', run); run();
+</script>

@@ -1,0 +1,60 @@
+---
+import Icon from '../components/Icon.astro';
+const fields = [['es-name', 'Full name', 'Jordan Rivera'], ['es-title', 'Job title', 'Marketing Manager'], ['es-company', 'Company', 'Brightside Studio'], ['es-phone', 'Phone', '+1 555 012 3456'], ['es-email', 'Email', 'jordan@brightside.example'], ['es-web', 'Website', 'https://brightside.example'], ['es-addr', 'Address (optional)', ''], ['es-photo', 'Photo or logo URL (optional)', ''], ['es-li', 'LinkedIn URL (optional)', ''], ['es-x', 'X / Instagram URL (optional)', '']];
+---
+<div id="esg" class="grid grid-cols-1 gap-5 lg:grid-cols-2 lg:items-start">
+  <form class="card space-y-4 p-5 sm:p-6" novalidate onsubmit="return false">
+    {fields.map(([id, l, v]) => <div><label for={id} class="label">{l}</label><input id={id} class="input" value={v} autocomplete="off" /></div>)}
+    <p class="hint !-mt-2">Images must be hosted online (for example on your website). Email apps block images stored inside the signature.</p>
+    <div class="grid grid-cols-2 gap-3">
+      <div><label for="es-layout" class="label">Layout</label><select id="es-layout" class="select"><option value="side">Photo on the left</option><option value="stack">Stacked</option><option value="line">Compact line</option></select></div>
+      <div><label for="es-color" class="label">Accent color</label><input id="es-color" type="color" value="#1d4ed8" class="h-11 w-full cursor-pointer rounded-[10px] border border-line-strong bg-surface p-1" /></div>
+    </div>
+  </form>
+  <div class="space-y-4">
+    <section class="card p-5"><h2 class="text-base font-semibold">Preview</h2><div class="mt-3 overflow-x-auto rounded-lg border border-line bg-white p-4" data-preview></div>
+      <div class="mt-4 flex flex-col gap-3 sm:flex-row"><button type="button" class="btn btn-primary btn-lg" data-copy><Icon name="Copy" size={18} /><span data-label>Copy signature</span></button><button type="button" class="btn btn-secondary btn-lg" data-copy-html><Icon name="Code" size={18} /><span data-label>Copy HTML</span></button></div>
+      <p class="alert alert-error mt-3" data-err hidden></p></section>
+    <details class="card group"><summary class="flex min-h-12 cursor-pointer list-none items-center justify-between px-5 font-semibold [&::-webkit-details-marker]:hidden">How to add it to Gmail, Outlook or Apple Mail</summary>
+      <div class="prose-tw border-t border-line px-5 py-4 text-[0.9375rem]"><p><strong>Gmail:</strong> Settings → See all settings → General → Signature → Create new, then paste.</p><p><strong>Outlook (web and new Outlook):</strong> Settings → Account → Signatures → New signature, then paste.</p><p><strong>Apple Mail:</strong> Mail → Settings → Signatures → +, untick "Always match my default message font", then paste.</p></div></details>
+  </div>
+</div>
+<script>
+  import { copyText } from '../lib/ui';
+  const root = document.getElementById('esg')!, $ = (id: string) => (document.getElementById(id) as HTMLInputElement).value.trim(), q = (s: string) => root.querySelector<HTMLElement>(s)!;
+  const e = (s: string) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/"/g, '&quot;');
+  const safeUrl = (u: string) => (/^https?:\/\//i.test(u) ? u : u && /^[\w.-]+\.[a-z]{2,}/i.test(u) ? `https://${u}` : '');
+  let html = '';
+  function build() {
+    const c = (document.getElementById('es-color') as HTMLInputElement).value, layout = (document.getElementById('es-layout') as HTMLSelectElement).value;
+    const name = $('es-name'), title = $('es-title'), company = $('es-company'), phone = $('es-phone'), email = $('es-email'), web = safeUrl($('es-web')), photo = safeUrl($('es-photo'));
+    const font = 'font-family:Arial,Helvetica,sans-serif;font-size:14px;line-height:1.45;color:#333333;';
+    const a = (href: string, text: string) => `<a href="${e(href)}" style="color:${c};text-decoration:none;">${e(text)}</a>`;
+    const contact = [phone && a(`tel:${phone.replace(/[^\d+]/g, '')}`, phone), email && a(`mailto:${email}`, email), web && a(web, web.replace(/^https?:\/\//, '').replace(/\/$/, ''))].filter(Boolean);
+    const social = [[safeUrl($('es-li')), 'LinkedIn'], [safeUrl($('es-x')), 'Social']].filter(([u]) => u).map(([u, l]) => a(u, l));
+    const role = [title, company].filter(Boolean).map(e).join(' · ');
+    if (layout === 'line') html = `<table cellpadding="0" cellspacing="0" style="${font}"><tr><td><strong style="color:#111111;">${e(name)}</strong>${role ? ` · ${role}` : ''}<br>${[...contact, ...social].join(' · ')}</td></tr></table>`;
+    else {
+      const text = `<strong style="font-size:16px;color:#111111;">${e(name)}</strong>${role ? `<br><span style="color:#666666;">${role}</span>` : ''}<div style="height:6px;line-height:6px;">&nbsp;</div>${contact.join('<br>')}${$('es-addr') ? `<br><span style="color:#666666;">${e($('es-addr'))}</span>` : ''}${social.length ? `<br>${social.join(' · ')}` : ''}`;
+      const img = photo ? `<img src="${e(photo)}" alt="${e(name)}" width="80" height="80" style="display:block;width:80px;height:80px;border-radius:40px;object-fit:cover;border:0;">` : '';
+      html = layout === 'side' && img ? `<table cellpadding="0" cellspacing="0" style="${font}"><tr><td style="padding-right:14px;vertical-align:top;">${img}</td><td style="border-left:3px solid ${c};padding-left:14px;vertical-align:top;">${text}</td></tr></table>`
+        : `<table cellpadding="0" cellspacing="0" style="${font}"><tr><td style="border-left:3px solid ${c};padding-left:12px;">${img ? `${img}<div style="height:8px;line-height:8px;">&nbsp;</div>` : ''}${text}</td></tr></table>`;
+    }
+    q('[data-preview]').innerHTML = html;
+    const err = q('[data-err]'); err.hidden = !!name; err.textContent = 'Add your name to create a signature.';
+  }
+  root.addEventListener('input', build); root.addEventListener('change', build);
+  q('[data-copy-html]').addEventListener('click', (ev) => copyText(html, ev.currentTarget as HTMLElement));
+  q('[data-copy]').addEventListener('click', async (ev) => {
+    const btn = ev.currentTarget as HTMLElement;
+    try {
+      // Copy as rich text so it pastes formatted into email settings
+      await navigator.clipboard.write([new ClipboardItem({ 'text/html': new Blob([html], { type: 'text/html' }), 'text/plain': new Blob([q('[data-preview]').innerText], { type: 'text/plain' }) })]);
+      const l = btn.querySelector('[data-label]')!; l.textContent = 'Copied'; setTimeout(() => (l.textContent = 'Copy signature'), 1400);
+    } catch {
+      const r = document.createRange(); r.selectNodeContents(q('[data-preview]')); const s = getSelection()!; s.removeAllRanges(); s.addRange(r); document.execCommand('copy'); s.removeAllRanges();
+      const l = btn.querySelector('[data-label]')!; l.textContent = 'Copied'; setTimeout(() => (l.textContent = 'Copy signature'), 1400);
+    }
+  });
+  build();
+</script>

@@ -1,0 +1,23 @@
+---
+// Read-only code result with Copy (primary) and Download buttons.
+import Icon from './Icon.astro';
+interface Props { id: string; label: string; file: string; mime?: string; copyLabel?: string }
+const { id, label, file, mime = 'text/plain', copyLabel = 'Copy code' } = Astro.props;
+---
+<section class="card p-4 sm:p-5" id={id} data-file={file} data-mime={mime}>
+  <div class="flex flex-wrap items-center justify-between gap-2"><h2 class="text-base font-semibold">{label}</h2><span class="text-sm text-subtle" data-note></span></div>
+  <pre class="mono mt-3 max-h-[420px] overflow-auto whitespace-pre-wrap break-all rounded-lg bg-surface-2 p-3 text-sm" data-code tabindex="0"></pre>
+  <div class="mt-4 flex flex-col gap-3 sm:flex-row">
+    <button type="button" class="btn btn-primary btn-lg" data-copy><Icon name="Copy" size={18} /><span data-label>{copyLabel}</span></button>
+    <button type="button" class="btn btn-secondary btn-lg" data-dl><Icon name="Download" size={18} />Download {file}</button>
+  </div>
+</section>
+<script>
+  import { copyText, downloadBlob } from '../lib/ui';
+  document.querySelectorAll<HTMLElement>('section[data-file]').forEach((s) => {
+    if (s.dataset.wired) return; s.dataset.wired = '1';
+    const code = () => s.querySelector('[data-code]')!.textContent ?? '';
+    s.querySelector('[data-copy]')!.addEventListener('click', (e) => copyText(code(), e.currentTarget as HTMLElement));
+    s.querySelector('[data-dl]')!.addEventListener('click', () => downloadBlob(new Blob([code()], { type: s.dataset.mime }), s.dataset.file!));
+  });
+</script>

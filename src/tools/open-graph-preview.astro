@@ -1,0 +1,70 @@
+---
+import Icon from '../components/Icon.astro';
+---
+<div id="og" class="grid gap-5 lg:grid-cols-[1fr_1.1fr] lg:items-start">
+  <form class="card space-y-4 p-5 sm:p-6" novalidate onsubmit="return false">
+    <div>
+      <label for="og-html" class="label">Paste your page's HTML (optional)</label>
+      <textarea id="og-html" class="textarea mono !min-h-24 text-xs" spellcheck="false" placeholder='<meta property="og:title" content="…">'></textarea>
+      <p class="hint">In your browser, open the page, press Ctrl+U (or ⌘+Option+U), copy everything and paste it here. The tags fill in below.</p>
+    </div>
+    <div><label for="og-title" class="label">Title (og:title)</label><input id="og-title" class="input" value="Free online tools for everyday tasks" /></div>
+    <div><label for="og-desc" class="label">Description (og:description)</label><textarea id="og-desc" class="textarea !min-h-20">Fast, private and free. No signup.</textarea></div>
+    <div><label for="og-url" class="label">Page URL (og:url)</label><input id="og-url" class="input" inputmode="url" value="https://example.com/" /></div>
+    <div><label for="og-img" class="label">Image URL (og:image)</label><input id="og-img" class="input" inputmode="url" placeholder="https://example.com/share.jpg" />
+      <label class="btn btn-ghost btn-sm relative mt-1 cursor-pointer"><Icon name="Upload" size={16} />Or test an image from your device<input type="file" accept="image/*" class="absolute inset-0 cursor-pointer opacity-0" data-file /></label></div>
+    <div><label for="og-site" class="label">Site name (og:site_name)</label><input id="og-site" class="input" value="Example" /></div>
+  </form>
+  <div class="space-y-4" aria-live="polite">
+    <ul class="card space-y-1 p-4 text-sm" data-checks></ul>
+    <section><h2 class="mb-2 text-sm font-semibold text-muted">Facebook and LinkedIn</h2>
+      <div class="overflow-hidden rounded-lg border border-[#dadde1] bg-[#f0f2f5] text-left font-[Helvetica,Arial,sans-serif]"><div class="aspect-[1.91/1] bg-[#e4e6eb] bg-cover bg-center" data-img></div><div class="border-t border-[#dadde1] px-3 py-2"><p class="truncate text-xs uppercase text-[#65676b]" data-host></p><p class="line-clamp-2 text-base font-semibold leading-snug text-[#050505] [overflow-wrap:anywhere]" data-title></p><p class="line-clamp-1 text-sm text-[#65676b] [overflow-wrap:anywhere]" data-desc></p></div></div></section>
+    <section><h2 class="mb-2 text-sm font-semibold text-muted">X (Twitter)</h2>
+      <div class="relative overflow-hidden rounded-2xl border border-[#cfd9de] bg-white"><div class="aspect-[1.91/1] bg-[#e1e8ed] bg-cover bg-center" data-img></div><span class="absolute bottom-3 left-3 max-w-[85%] truncate rounded bg-black/60 px-1.5 text-xs text-white" data-title></span></div>
+      <p class="mt-1 truncate text-xs text-[#536471]">From <span data-host></span></p></section>
+    <section><h2 class="mb-2 text-sm font-semibold text-muted">WhatsApp, iMessage and Slack</h2>
+      <div class="flex max-w-sm overflow-hidden rounded-xl bg-[#d9fdd3] p-1.5"><div class="flex w-full overflow-hidden rounded-lg bg-[#f1fef0]"><div class="h-20 w-20 flex-none bg-[#cfe9cf] bg-cover bg-center" data-img></div><div class="min-w-0 p-2"><p class="line-clamp-1 text-sm font-semibold text-[#111b21] [overflow-wrap:anywhere]" data-title></p><p class="line-clamp-2 text-xs text-[#667781] [overflow-wrap:anywhere]" data-desc></p><p class="truncate text-xs text-[#667781]" data-host></p></div></div></div></section>
+    <p class="text-xs text-subtle">Previews are close approximations. Each platform caches link previews; after changing your tags, use the platform's own debugger (such as Facebook's Sharing Debugger) to refresh them.</p>
+  </div>
+</div>
+<script>
+  const root = document.getElementById('og')!, $ = (id: string) => document.getElementById(id) as HTMLInputElement;
+  let localUrl = '', imgSize = { w: 0, h: 0, failed: false };
+  function fromHtml() {
+    const doc = new DOMParser().parseFromString($('og-html').value, 'text/html');
+    const meta = (k: string) => doc.querySelector<HTMLMetaElement>(`meta[property="${k}"], meta[name="${k}"]`)?.content?.trim() ?? '';
+    const map: Record<string, string> = { 'og-title': meta('og:title') || meta('twitter:title') || doc.title, 'og-desc': meta('og:description') || meta('description'), 'og-url': meta('og:url') || doc.querySelector<HTMLLinkElement>('link[rel=canonical]')?.getAttribute('href') || '', 'og-img': meta('og:image') || meta('twitter:image'), 'og-site': meta('og:site_name') };
+    for (const [id, v] of Object.entries(map)) if (v) $(id).value = v;
+    if (map['og-img']) { localUrl = ''; loadImage(map['og-img']); } else run();
+  }
+  function loadImage(src: string) {
+    imgSize = { w: 0, h: 0, failed: false };
+    if (!src || !/^(https?:|blob:|data:image\/)/i.test(src)) return run();
+    const i = new Image(); i.onload = () => { imgSize = { w: i.naturalWidth, h: i.naturalHeight, failed: false }; checks(); }; i.onerror = () => { imgSize.failed = true; checks(); }; i.src = src;
+  }
+  function checks() {
+    const t = $('og-title').value.trim(), d = $('og-desc').value.trim(), img = localUrl || $('og-img').value.trim();
+    const c: [boolean | null, string][] = [
+      [!!t && t.length <= 70, !t ? 'Missing og:title.' : t.length > 70 ? `Title is ${t.length} characters and may be cut off; aim for under 60.` : 'Title is set.'],
+      [!!d && d.length <= 200, !d ? 'Missing og:description.' : d.length > 200 ? 'Description is long and will be shortened on most platforms.' : 'Description is set.'],
+      !localUrl && img && !/^https?:\/\//i.test(img) ? [false, 'og:image must be a full URL starting with https://. Platforms cannot load relative paths like /image.jpg.'] :
+      [!!img && !imgSize.failed, !img ? 'Missing og:image. Links without an image get far fewer clicks.' : imgSize.failed ? 'The image could not be loaded. Check that the URL is public and correct.' : imgSize.w ? (imgSize.w < 600 ? `Image is only ${imgSize.w} × ${imgSize.h} px; use at least 1200 × 630.` : Math.abs(imgSize.w / imgSize.h - 1.91) > 0.25 ? `Image is ${imgSize.w} × ${imgSize.h} px; a 1.91:1 ratio (1200 × 630) avoids cropping.` : `Image size ${imgSize.w} × ${imgSize.h} px looks good.`) : 'Loading image…'],
+      [/^https:\/\//.test($('og-url').value.trim()) ? true : null, /^https:\/\//.test($('og-url').value.trim()) ? 'Page URL uses https.' : 'Add the full page URL starting with https://.'],
+    ];
+    root.querySelector('[data-checks]')!.innerHTML = c.map(([ok, m]) => `<li class="${ok ? 'text-success' : 'text-[#b45309] dark:text-[#fbbf24]'}">${ok ? '✓' : '!'} ${m}</li>`).join('');
+  }
+  function run() {
+    const t = $('og-title').value.trim() || 'Page title', d = $('og-desc').value.trim(), img = localUrl || $('og-img').value.trim();
+    let host = 'example.com'; try { host = new URL($('og-url').value.trim()).host.replace(/^www\./, ''); } catch {}
+    root.querySelectorAll<HTMLElement>('[data-title]').forEach((e) => (e.textContent = t));
+    root.querySelectorAll<HTMLElement>('[data-desc]').forEach((e) => (e.textContent = d));
+    root.querySelectorAll<HTMLElement>('[data-host]').forEach((e) => (e.textContent = host));
+    root.querySelectorAll<HTMLElement>('[data-img]').forEach((e) => (e.style.backgroundImage = img && /^(https?:|blob:|data:image\/)/i.test(img) ? `url("${img.replace(/"/g, '%22')}")` : ''));
+    checks();
+  }
+  $('og-html').addEventListener('input', fromHtml);
+  root.addEventListener('input', (e) => { const id = (e.target as HTMLElement).id; if (id === 'og-img') { localUrl = ''; loadImage($('og-img').value.trim()); } if (id !== 'og-html') run(); });
+  const f = root.querySelector<HTMLInputElement>('[data-file]')!;
+  f.addEventListener('change', () => { const file = f.files?.[0]; if (!file) return; URL.revokeObjectURL(localUrl); localUrl = URL.createObjectURL(file); loadImage(localUrl); run(); });
+  run();
+</script>

@@ -1,0 +1,62 @@
+---
+import Dropzone from '../components/Dropzone.astro';
+import Icon from '../components/Icon.astro';
+---
+<div id="yth" class="space-y-5">
+  <div data-step="pick"><Dropzone id="yth-drop" accept="image/jpeg,image/png,image/gif,image/webp,.jpg,.jpeg,.png,.gif,.webp" formats="JPG, PNG, GIF or WebP" maxLabel="10 MB" label="Choose thumbnail" icon="Frame" /></div>
+  <div class="alert alert-error" data-error hidden role="alert"><span data-msg></span></div>
+  <div data-step="done" class="space-y-5" hidden>
+    <div class="grid gap-5 lg:grid-cols-[320px_1fr]">
+      <div class="card space-y-3 p-5">
+        <div><label for="yth-title" class="label">Video title (for the preview)</label><input id="yth-title" class="input" value="My new video title goes here" /></div>
+        <div><label for="yth-len" class="label">Video length</label><input id="yth-len" class="input w-28" value="12:34" /></div>
+        <ul class="space-y-1.5 text-sm" data-checks></ul>
+        <button type="button" class="btn btn-secondary w-full" data-reset><Icon name="RotateCcw" size={18} />Try another image</button>
+      </div>
+      <div class="space-y-5">
+        <div class="grid gap-4 sm:grid-cols-2">
+          <section><h2 class="mb-2 text-sm font-semibold text-muted">Home page, light</h2><div class="rounded-lg bg-white p-2" data-card="light"></div></section>
+          <section><h2 class="mb-2 text-sm font-semibold text-muted">Home page, dark mode</h2><div class="rounded-lg bg-[#0f0f0f] p-2" data-card="dark"></div></section>
+        </div>
+        <section><h2 class="mb-2 text-sm font-semibold text-muted">Small sizes (sidebar, search on phone)</h2><div class="flex flex-wrap items-end gap-4 rounded-lg bg-white p-3" data-small></div></section>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+  import { initDropzone } from '../lib/dropzone';
+  import { formatBytes, showError } from '../lib/ui';
+  const root = document.getElementById('yth')!, q = (s: string) => root.querySelector<HTMLElement>(s)!;
+  const $ = (id: string) => document.getElementById(id) as HTMLInputElement;
+  let url = '';
+  const esc = (s: string) => s.replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]!);
+  const thumb = (w: string) => `<div class="relative aspect-video overflow-hidden rounded-lg bg-black ${w}"><img src="${url}" alt="" class="h-full w-full object-cover" /><span class="absolute bottom-1 right-1 rounded bg-black/80 px-1 text-[11px] font-medium text-white">${esc($('yth-len').value)}</span></div>`;
+  function render() {
+    for (const mode of ['light', 'dark']) q(`[data-card=${mode}]`).innerHTML = `${thumb('w-full')}<div class="flex gap-2 pt-2"><div class="h-8 w-8 flex-none rounded-full ${mode === 'dark' ? 'bg-[#3f3f3f]' : 'bg-[#d9d9d9]'}"></div><div><p class="line-clamp-2 text-sm font-medium ${mode === 'dark' ? 'text-[#f1f1f1]' : 'text-[#0f0f0f]'}">${esc($('yth-title').value)}</p><p class="text-xs ${mode === 'dark' ? 'text-[#aaa]' : 'text-[#606060]'}">Your Channel · 10K views</p></div></div>`;
+    q('[data-small]').innerHTML = [168, 120, 96].map((w) => `<div style="width:${w}px">${thumb('w-full')}<p class="mt-1 text-center text-xs text-[#606060]">${w}px wide</p></div>`).join('');
+  }
+  root.addEventListener('input', render);
+  q('[data-reset]').addEventListener('click', () => { q('[data-step=done]').hidden = true; q('[data-step=pick]').hidden = false; });
+  initDropzone(document.getElementById('yth-drop')!, {
+    accept: ['image/jpeg', 'image/png', 'image/gif', 'image/webp', '.jpg', '.jpeg', '.png', '.gif', '.webp'], maxBytes: 10 * 1024 * 1024,
+    onFiles: async ([f]) => {
+      showError(q('[data-error]'), null);
+      URL.revokeObjectURL(url); url = URL.createObjectURL(f);
+      const img = new Image();
+      try { await new Promise((res, rej) => { img.onload = res; img.onerror = rej; img.src = url; }); }
+      catch { return showError(q('[data-error]'), `“${f.name}” could not be opened as an image.`); }
+      const w = img.naturalWidth, h = img.naturalHeight, ratio = w / h;
+      const c: [boolean, string][] = [
+        [w >= 1280 && h >= 720, w >= 1280 ? `Resolution ${w} × ${h} px: meets YouTube's recommended 1280 × 720.` : `Resolution ${w} × ${h} px: below the recommended 1280 × 720. It may look blurry on large screens.`],
+        [w >= 640, w >= 640 ? 'Above the 640 px minimum width.' : 'Below YouTube\'s minimum width of 640 px.'],
+        [Math.abs(ratio - 16 / 9) < 0.02, Math.abs(ratio - 16 / 9) < 0.02 ? 'Aspect ratio is 16:9.' : `Aspect ratio is ${ratio.toFixed(2)}:1, not 16:9 (1.78:1). Black bars or cropping may appear.`],
+        [f.size <= 2 * 1024 * 1024, f.size <= 2 * 1024 * 1024 ? `File size ${formatBytes(f.size)}: under the 2 MB limit.` : `File size ${formatBytes(f.size)}: over YouTube's 2 MB limit. Compress it first.`],
+        [/jpe?g|png|gif/i.test(f.type), /jpe?g|png|gif/i.test(f.type) ? 'File type is accepted by YouTube.' : 'YouTube thumbnails must be JPG, PNG or GIF. Convert it first.'],
+      ];
+      q('[data-checks]').innerHTML = c.map(([ok, m]) => `<li class="flex gap-2 ${ok ? '' : 'text-[#b45309] dark:text-[#fbbf24]'}"><span class="${ok ? 'text-success' : ''}">${ok ? '✓' : '!'}</span>${m}</li>`).join('');
+      q('[data-step=pick]').hidden = true; q('[data-step=done]').hidden = false;
+      render();
+    },
+    onError: (m) => showError(q('[data-error]'), m || null),
+  });
+</script>

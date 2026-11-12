@@ -81,7 +81,7 @@ if (live) {
           </div>
         </header>
 
-        <section class="[grid-area:tool]" aria-label={tool.name}>
+        <section class="min-w-0 [grid-area:tool] [overflow-wrap:anywhere]" aria-label={tool.name}>
           <ToolUI tool={tool} />
           {(tool.category === 'finance' || tool.category === 'health') && (
             <p class="mt-4 flex items-start gap-2 text-sm text-muted">

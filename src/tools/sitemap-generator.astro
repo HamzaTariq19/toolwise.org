@@ -1,0 +1,41 @@
+---
+import CodeOutput from '../components/CodeOutput.astro';
+---
+<div id="smg" class="grid grid-cols-1 gap-5 lg:grid-cols-2 lg:items-start">
+  <form class="card space-y-5 p-5 sm:p-6" novalidate onsubmit="return false">
+    <div><label for="smg-urls" class="label">Page URLs, one per line</label><textarea id="smg-urls" class="textarea mono !min-h-[220px] text-sm" spellcheck="false">https://example.com/
+https://example.com/about
+https://example.com/blog/first-post
+https://example.com/contact?ref=footer&amp;lang=en</textarea><p class="hint">Use full URLs including https://. Duplicates are removed automatically.</p></div>
+    <div class="grid gap-3 sm:grid-cols-3">
+      <div><label for="smg-mod" class="label">Last modified</label><select id="smg-mod" class="select"><option value="today">Today</option><option value="none">Leave out</option></select></div>
+      <div><label for="smg-freq" class="label">Change frequency</label><select id="smg-freq" class="select"><option value="">Leave out</option><option>daily</option><option>weekly</option><option selected>monthly</option><option>yearly</option></select></div>
+      <div><label for="smg-pri" class="label">Priority</label><select id="smg-pri" class="select"><option value="">Leave out</option><option value="auto" selected>Automatic (by depth)</option><option value="0.5">0.5 for all</option></select></div>
+    </div>
+    <p class="alert alert-error" data-err hidden></p>
+  </form>
+  <CodeOutput id="smg-out" label="sitemap.xml" file="sitemap.xml" mime="application/xml" copyLabel="Copy sitemap" />
+</div>
+<script>
+  const root = document.getElementById('smg')!, $ = (id: string) => document.getElementById(id) as HTMLInputElement;
+  const xmlEsc = (s: string) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&apos;');
+  function run() {
+    const raw = $('smg-urls').value.split('\n').map((l) => l.trim().replace(/&amp;/g, '&')).filter(Boolean);
+    const seen = new Set<string>(), urls: URL[] = [], bad: string[] = [];
+    for (const r of raw) { try { const u = new URL(r); if (!/^https?:$/.test(u.protocol)) throw 0; u.hash = ''; if (!seen.has(u.href)) { seen.add(u.href); urls.push(u); } } catch { bad.push(r); } }
+    const hosts = new Set(urls.map((u) => u.host));
+    const msgs: string[] = [];
+    if (bad.length) msgs.push(`${bad.length} line${bad.length > 1 ? 's are' : ' is'} not a full URL and ${bad.length > 1 ? 'were' : 'was'} skipped (first: “${bad[0].slice(0, 60)}”).`);
+    if (hosts.size > 1) msgs.push(`Your URLs use ${hosts.size} different domains. A sitemap should only list pages from one site.`);
+    if (urls.length > 50000) msgs.push('A sitemap can contain at most 50,000 URLs. Split it into several files.');
+    const err = root.querySelector<HTMLElement>('[data-err]')!; err.hidden = !msgs.length; err.textContent = msgs.join(' ');
+    const today = new Date().toISOString().slice(0, 10), mod = $('smg-mod').value, freq = $('smg-freq').value, pri = $('smg-pri').value;
+    const body = urls.slice(0, 50000).map((u) => {
+      const depth = u.pathname.split('/').filter(Boolean).length, p = pri === 'auto' ? Math.max(0.3, 1 - depth * 0.2).toFixed(1) : pri;
+      return `  <url>\n    <loc>${xmlEsc(u.href)}</loc>${mod === 'today' ? `\n    <lastmod>${today}</lastmod>` : ''}${freq ? `\n    <changefreq>${freq}</changefreq>` : ''}${p ? `\n    <priority>${p}</priority>` : ''}\n  </url>`;
+    }).join('\n');
+    root.querySelector('[data-code]')!.textContent = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${body}\n</urlset>\n`;
+    root.querySelector('[data-note]')!.textContent = `${urls.length} URL${urls.length === 1 ? '' : 's'}`;
+  }
+  root.addEventListener('input', run); root.addEventListener('change', run); run();
+</script>

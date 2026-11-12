@@ -1,0 +1,45 @@
+---
+import Icon from '../components/Icon.astro';
+---
+<div id="utm" class="grid grid-cols-1 gap-5 lg:grid-cols-2 lg:items-start">
+  <form class="card space-y-4 p-5 sm:p-6" novalidate onsubmit="return false">
+    <div><label for="utm-url" class="label">Website URL</label><input id="utm-url" class="input" inputmode="url" value="https://example.com/spring-sale" placeholder="https://example.com/page" /><p class="hint">Pasting a link that already has UTM tags fills in the fields below.</p></div>
+    <div><label for="utm-source" class="label">Campaign source <span class="font-normal text-subtle">(required)</span></label><input id="utm-source" class="input" list="utm-sources" value="newsletter" placeholder="google, facebook, newsletter" /><datalist id="utm-sources"><option>google</option><option>facebook</option><option>instagram</option><option>linkedin</option><option>x</option><option>tiktok</option><option>youtube</option><option>newsletter</option><option>qr</option></datalist></div>
+    <div><label for="utm-medium" class="label">Campaign medium <span class="font-normal text-subtle">(required)</span></label><input id="utm-medium" class="input" list="utm-mediums" value="email" placeholder="cpc, email, social" /><datalist id="utm-mediums"><option>cpc</option><option>email</option><option>social</option><option>paid_social</option><option>organic_social</option><option>referral</option><option>display</option><option>affiliate</option><option>print</option></datalist></div>
+    <div><label for="utm-campaign" class="label">Campaign name <span class="font-normal text-subtle">(required)</span></label><input id="utm-campaign" class="input" value="Spring Sale 2026" /></div>
+    <div class="grid gap-3 sm:grid-cols-2"><div><label for="utm-term" class="label">Term (paid keywords)</label><input id="utm-term" class="input" /></div><div><label for="utm-content" class="label">Content (which link)</label><input id="utm-content" class="input" placeholder="header-button" /></div></div>
+    <label class="flex min-h-11 items-center gap-3 text-[0.9375rem]"><input type="checkbox" id="utm-clean" class="h-5 w-5 accent-[var(--brand)]" checked />Lowercase and replace spaces with hyphens</label>
+  </form>
+  <section class="card space-y-4 p-5" aria-live="polite">
+    <h2 class="text-base font-semibold">Your campaign URL</h2>
+    <p class="mono break-all rounded-lg bg-surface-2 p-3 text-sm" data-out></p>
+    <p class="alert alert-error" data-err hidden></p>
+    <ul class="space-y-1 text-sm text-muted" data-parts></ul>
+    <div class="flex flex-col gap-3 sm:flex-row"><button type="button" class="btn btn-primary btn-lg" data-copy><Icon name="Copy" size={18} /><span data-label>Copy URL</span></button><a class="btn btn-secondary btn-lg" href="/qr-code-generator" data-qr><Icon name="QrCode" size={18} />Make a QR code</a></div>
+  </section>
+</div>
+<script>
+  import { copyText } from '../lib/ui';
+  const root = document.getElementById('utm')!, $ = (id: string) => document.getElementById(id) as HTMLInputElement, q = (s: string) => root.querySelector<HTMLElement>(s)!;
+  const KEYS = ['source', 'medium', 'campaign', 'term', 'content'];
+  let result = '';
+  const clean = (v: string) => ($('utm-clean').checked ? v.trim().toLowerCase().replace(/\s+/g, '-') : v.trim());
+  function fromUrl() { try { const u = new URL($('utm-url').value.trim()); let found = false; for (const k of KEYS) { const v = u.searchParams.get(`utm_${k}`); if (v !== null) { $(`utm-${k}`).value = v; found = true; } } if (found) { KEYS.forEach((k) => u.searchParams.delete(`utm_${k}`)); $('utm-url').value = u.href; } } catch {} }
+  function run() {
+    const err = q('[data-err]'); err.hidden = true; result = '';
+    let u: URL;
+    try { const raw = $('utm-url').value.trim(); u = new URL(/^https?:\/\//i.test(raw) ? raw : `https://${raw}`); if (!u.hostname.includes('.')) throw 0; }
+    catch { q('[data-out]').textContent = '–'; err.hidden = false; err.textContent = 'Enter a valid website address, like https://example.com/page.'; return; }
+    const missing = ['source', 'medium', 'campaign'].filter((k) => !$(`utm-${k}`).value.trim());
+    for (const k of KEYS) { u.searchParams.delete(`utm_${k}`); const v = clean($(`utm-${k}`).value); if (v) u.searchParams.set(`utm_${k}`, v); }
+    result = u.href;
+    q('[data-out]').textContent = result;
+    q('[data-qr]').setAttribute('href', '/qr-code-generator');
+    if (missing.length) { err.hidden = false; err.textContent = `Add the campaign ${missing.join(', ')}. Google Analytics needs source, medium and campaign to report the link correctly.`; }
+    q('[data-parts]').innerHTML = KEYS.filter((k) => u.searchParams.get(`utm_${k}`)).map((k) => `<li><code>utm_${k}</code> = ${u.searchParams.get(`utm_${k}`)!.replace(/</g, '&lt;')}</li>`).join('');
+  }
+  $('utm-url').addEventListener('change', () => { fromUrl(); run(); });
+  root.addEventListener('input', run);
+  q('[data-copy]').addEventListener('click', (e) => { if (result) copyText(result, e.currentTarget as HTMLElement); });
+  run();
+</script>

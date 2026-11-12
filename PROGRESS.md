@@ -10,9 +10,10 @@ Status of each tool lives in `src/data/tools.json` (`"status": "built"` = live, 
 - Batch 4, Calculators (23): loan, car loan, savings goal, retirement, credit card payoff, debt snowball, inflation (bundled BLS CPI data), ROI, salary to hourly, discount, tip, profit margin, VAT/sales tax, calorie, body fat, ovulation, water intake, sleep, grade, date difference, fraction, scientific, random number
 - Batch 5, Converters (14): length, weight, temperature, area, volume, speed, time, data size (decimal + binary), fuel economy, shoe size, clothing size, number to words, Roman numerals, number bases
 - Batch 6, Developer (15): JSON→CSV, CSV→JSON, Base64, URL encode, barcode, color picker, CSS gradient, HTML/CSS/JS minifiers, regex tester, UUID, hash (MD5/SHA), timestamp, Markdown→HTML (sanitized)
+- Batch 7, SEO & Social (12): meta tags, keyword density, robots.txt, sitemap, Open Graph preview, YouTube title + thumbnail checkers, X character counter + thread splitter, Instagram caption formatter, hashtag generator, UTM builder, email signature. New shared `CodeOutput.astro`.
 
 ## Next
-- Batch 7 SEO (12) → Batch 8 Student (10) → Batch 9 Everyday (10) → Batch 10 Heavy (8; ask before building the link shortener)
+- Batch 8 Student (10) → Batch 9 Everyday (10) → Batch 10 Heavy (8; ask before building the link shortener)
 
 ## How each tool is built (keep it consistent)
 1. `src/tools/<slug>.astro`: UI + `<script>`. Reuse components:
@@ -36,3 +37,4 @@ Health/finance calculators: the tool page template shows the estimates disclaime
 - Astro treats backslashes in plain attribute strings as escapes: use `value={'\\d+'}` expressions for regex or JSON samples.
 - Never self-close `<select … set:html>`; wrap options in `<Fragment set:html>` inside a real `<select></select>`.
 - pdf-lib `form.flatten()` leaves dangling widget refs; use `flattenForm()` from lib/pdf.ts.
+- Phone overflow: `.grid` defaults to `minmax(0,1fr)` (base layer), `.card` has `min-width:0`, the tool area and `.prose-tw` use `overflow-wrap:anywhere`. Test with 300-char unbroken input at 360px (scratchpad `allovf.cjs` checks every built page).

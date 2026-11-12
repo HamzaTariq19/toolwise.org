@@ -1,0 +1,68 @@
+---
+import CodeOutput from '../components/CodeOutput.astro';
+---
+<div id="mt" class="grid grid-cols-1 gap-5 lg:grid-cols-2 lg:items-start">
+  <form class="card space-y-4 p-5 sm:p-6" novalidate onsubmit="return false">
+    <div><div class="flex justify-between"><label for="mt-title" class="label">Page title</label><span class="text-sm tabular" data-c="title"></span></div><input id="mt-title" class="input" value="Free Online Tools for Everyday Tasks | toolwise" /><p class="hint">Aim for 50 to 60 characters. Put the main topic first.</p></div>
+    <div><div class="flex justify-between"><label for="mt-desc" class="label">Meta description</label><span class="text-sm tabular" data-c="desc"></span></div><textarea id="mt-desc" class="textarea !min-h-24">Fast, private and free tools for PDFs, images, text and calculations. No signup, and your files never leave your device.</textarea><p class="hint">Aim for 120 to 160 characters that make people want to click.</p></div>
+    <div><label for="mt-url" class="label">Page URL (canonical)</label><input id="mt-url" class="input" inputmode="url" placeholder="https://example.com/page" value="https://example.com/" /></div>
+    <div><label for="mt-img" class="label">Social share image URL</label><input id="mt-img" class="input" inputmode="url" placeholder="https://example.com/og-image.jpg" /><p class="hint">Ideal size 1200 × 630 pixels.</p></div>
+    <div class="grid gap-3 sm:grid-cols-2">
+      <div><label for="mt-site" class="label">Site name</label><input id="mt-site" class="input" placeholder="toolwise" /></div>
+      <div><label for="mt-tw" class="label">X (Twitter) handle</label><input id="mt-tw" class="input" placeholder="@yourbrand" /></div>
+      <div><label for="mt-type" class="label">Content type</label><select id="mt-type" class="select"><option value="website">Website / page</option><option value="article">Article / blog post</option><option value="product">Product</option></select></div>
+      <div><label for="mt-lang" class="label">Language</label><input id="mt-lang" class="input" value="en" /></div>
+    </div>
+    <div class="flex flex-wrap gap-x-6">
+      <label class="flex min-h-11 items-center gap-3 text-[0.9375rem]"><input type="checkbox" id="mt-index" class="h-5 w-5 accent-[var(--brand)]" checked />Allow search engines to index</label>
+      <label class="flex min-h-11 items-center gap-3 text-[0.9375rem]"><input type="checkbox" id="mt-follow" class="h-5 w-5 accent-[var(--brand)]" checked />Allow following links</label>
+    </div>
+  </form>
+  <div class="space-y-5">
+    <section class="card p-5"><h2 class="text-base font-semibold">Google search preview</h2>
+      <div class="mt-3 rounded-lg border border-line bg-white p-4 text-left font-[arial,sans-serif]" aria-hidden="true">
+        <p class="truncate text-[14px] text-[#202124]" data-p="url"></p>
+        <p class="mt-1 line-clamp-1 text-[20px] leading-snug text-[#1a0dab] [overflow-wrap:anywhere]" data-p="title"></p>
+        <p class="mt-1 line-clamp-2 text-[14px] leading-snug text-[#4d5156] [overflow-wrap:anywhere]" data-p="desc"></p>
+      </div>
+      <ul class="mt-3 space-y-1 text-sm" data-checks></ul>
+    </section>
+    <CodeOutput id="mt-out" label="Your meta tags" file="meta-tags.html" mime="text/html" />
+  </div>
+</div>
+<script>
+  const $ = (id: string) => document.getElementById(id) as HTMLInputElement;
+  const root = document.getElementById('mt')!, q = (s: string) => root.querySelector<HTMLElement>(s)!;
+  const esc = (s: string) => s.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;');
+  function run() {
+    const title = $('mt-title').value.trim(), desc = $('mt-desc').value.trim().replace(/\s+/g, ' '), url = $('mt-url').value.trim(), img = $('mt-img').value.trim();
+    const site = $('mt-site').value.trim(), tw = $('mt-tw').value.trim().replace(/^([^@])/, '@$1'), type = $('mt-type').value, lang = $('mt-lang').value.trim();
+    const count = (k: string, n: number, lo: number, hi: number) => { const el = q(`[data-c=${k}]`); el.textContent = `${n} characters`; el.className = `text-sm tabular ${n === 0 ? 'text-subtle' : n < lo || n > hi ? 'text-[#b45309] dark:text-[#fbbf24]' : 'text-success'}`; };
+    count('title', title.length, 30, 60); count('desc', desc.length, 70, 160);
+    let host = ''; try { host = url ? new URL(url).host : ''; } catch { /* shown below */ }
+    q('[data-p=url]').textContent = url ? url.replace(/^https?:\/\//, '').replace(/\/$/, '').replace(/\//g, ' › ') : 'example.com';
+    q('[data-p=title]').textContent = title || 'Page title';
+    q('[data-p=desc]').textContent = desc.length > 160 ? desc.slice(0, 157) + '…' : desc || 'Your meta description appears here.';
+    const checks: [boolean, string][] = [
+      [title.length >= 30 && title.length <= 60, title.length > 60 ? `Title is ${title.length} characters; Google usually cuts titles off after about 60.` : title.length < 30 ? 'Title is short. Add a descriptive keyword or your brand.' : 'Title length looks good.'],
+      [desc.length >= 70 && desc.length <= 160, desc.length > 160 ? `Description is ${desc.length} characters; it may be cut off after about 155 to 160.` : desc.length < 70 ? 'Description is short. Summarize the page and give a reason to click.' : 'Description length looks good.'],
+      [!url || !!host, url && !host ? 'The page URL is not valid. Include https:// at the start.' : 'URL is valid.'],
+      [!!img, img ? 'Social image set.' : 'Add a share image so links look good on social media and chat apps.'],
+    ];
+    q('[data-checks]').innerHTML = checks.map(([ok, m]) => `<li class="${ok ? 'text-success' : 'text-[#b45309] dark:text-[#fbbf24]'}">${ok ? '✓' : '!'} ${m}</li>`).join('');
+    const robots = `${$('mt-index').checked ? 'index' : 'noindex'}, ${$('mt-follow').checked ? 'follow' : 'nofollow'}`;
+    const L: string[] = ['<meta charset="utf-8">', '<meta name="viewport" content="width=device-width, initial-scale=1">', `<title>${esc(title)}</title>`, `<meta name="description" content="${esc(desc)}">`];
+    if (robots !== 'index, follow') L.push(`<meta name="robots" content="${robots}">`);
+    if (url) L.push(`<link rel="canonical" href="${esc(url)}">`);
+    L.push('', '<!-- Open Graph (Facebook, LinkedIn, WhatsApp, Slack) -->', `<meta property="og:type" content="${type}">`, `<meta property="og:title" content="${esc(title)}">`, `<meta property="og:description" content="${esc(desc)}">`);
+    if (url) L.push(`<meta property="og:url" content="${esc(url)}">`);
+    if (img) L.push(`<meta property="og:image" content="${esc(img)}">`, '<meta property="og:image:width" content="1200">', '<meta property="og:image:height" content="630">');
+    if (site) L.push(`<meta property="og:site_name" content="${esc(site)}">`);
+    if (lang) L.push(`<meta property="og:locale" content="${esc(lang.replace('-', '_'))}">`);
+    L.push('', '<!-- X (Twitter) -->', `<meta name="twitter:card" content="${img ? 'summary_large_image' : 'summary'}">`);
+    if (tw.length > 1) L.push(`<meta name="twitter:site" content="${esc(tw)}">`);
+    q('[data-code]').textContent = L.join('\n');
+    q('[data-note]').textContent = 'Paste inside <head>';
+  }
+  root.addEventListener('input', run); root.addEventListener('change', run); run();
+</script>

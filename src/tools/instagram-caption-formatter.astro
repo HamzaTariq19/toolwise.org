@@ -1,0 +1,62 @@
+---
+import Icon from '../components/Icon.astro';
+---
+<div id="ig" class="grid grid-cols-1 gap-5 lg:grid-cols-2 lg:items-start">
+  <div class="card space-y-4 p-4 sm:p-5">
+    <label for="ig-in" class="label">Your caption</label>
+    <textarea id="ig-in" class="textarea -mt-2 !min-h-[260px]" placeholder="Write your caption with empty lines between paragraphs…">Sunday reset ☀️
+
+Three things that made this week better:
+1. Morning walks
+2. Cooking at home
+3. Phones off after 9pm
+
+What's your favorite small habit? Tell me below 👇
+
+#sundayreset #slowliving #habits</textarea>
+    <div class="flex flex-wrap gap-x-6">
+      <label class="flex min-h-11 items-center gap-3 text-[0.9375rem]"><input type="checkbox" id="ig-blank" class="h-5 w-5 accent-[var(--brand)]" checked />Keep empty lines (invisible character)</label>
+      <label class="flex min-h-11 items-center gap-3 text-[0.9375rem]"><input type="checkbox" id="ig-tags" class="h-5 w-5 accent-[var(--brand)]" />Move hashtags to the end</label>
+    </div>
+    <dl class="grid grid-cols-3 gap-2 text-sm" aria-live="polite">
+      <div class="stat"><dt class="stat-label">Characters</dt><dd class="font-bold tabular" data-k="chars"></dd></div>
+      <div class="stat"><dt class="stat-label">Hashtags</dt><dd class="font-bold tabular" data-k="tags"></dd></div>
+      <div class="stat"><dt class="stat-label">Mentions</dt><dd class="font-bold tabular" data-k="mentions"></dd></div>
+    </dl>
+    <ul class="space-y-1 text-sm" data-checks></ul>
+  </div>
+  <div class="space-y-4">
+    <section><h2 class="mb-2 text-sm font-semibold text-muted">Preview</h2>
+      <div class="rounded-lg border border-line bg-white p-4 text-[14px] leading-[18px] text-[#262626]"><p class="whitespace-pre-wrap break-words" data-preview></p></div>
+      <p class="mt-1 text-xs text-subtle">The first part shows in the feed; the rest appears after "more".</p></section>
+    <button type="button" class="btn btn-primary btn-lg w-full" data-copy><Icon name="Copy" size={18} /><span data-label>Copy formatted caption</span></button>
+  </div>
+</div>
+<script>
+  import { copyText } from '../lib/ui';
+  const root = document.getElementById('ig')!, ta = document.getElementById('ig-in') as HTMLTextAreaElement, q = (s: string) => root.querySelector<HTMLElement>(s)!;
+  const BLANK = '⠀'; // Braille blank: shows as empty but is not removed by Instagram
+  let result = '';
+  const esc = (s: string) => s.replace(/[&<>]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' })[c]!);
+  function run() {
+    let lines = ta.value.replace(/\r/g, '').split('\n').map((l) => l.replace(/\s+$/, ''));
+    if ((document.getElementById('ig-tags') as HTMLInputElement).checked) {
+      const tags: string[] = [];
+      lines = lines.map((l) => l.replace(/(^|\s)(#[\p{L}\p{N}_]+)/gu, (_m, s, tag) => { tags.push(tag); return s; }).replace(/\s+$/, ''));
+      while (lines.length && !lines[lines.length - 1].trim()) lines.pop();
+      if (tags.length) lines.push('', [...new Set(tags)].join(' '));
+    }
+    while (lines.length && !lines[0].trim()) lines.shift();
+    if ((document.getElementById('ig-blank') as HTMLInputElement).checked) lines = lines.map((l) => (l.trim() ? l : BLANK));
+    result = lines.join('\n');
+    const chars = [...result].length, tags = (result.match(/#[\p{L}\p{N}_]+/gu) ?? []).length, mentions = (result.match(/@[\w.]+/g) ?? []).length;
+    q('[data-k=chars]').textContent = `${chars} / 2,200`; q('[data-k=tags]').textContent = `${tags} / 30`; q('[data-k=mentions]').textContent = `${mentions} / 20`;
+    const c: [boolean, string][] = [[chars <= 2200, chars > 2200 ? `${chars - 2200} characters over Instagram's 2,200 limit.` : 'Within the 2,200-character limit.'], [tags <= 30, tags > 30 ? 'More than 30 hashtags: Instagram will not post the caption.' : tags > 10 ? 'Many hashtags. 3 to 5 relevant ones often work better than dozens.' : 'Hashtag count is fine.'], [mentions <= 20, mentions > 20 ? 'More than 20 mentions are not allowed.' : 'Mentions are fine.']];
+    q('[data-checks]').innerHTML = c.map(([ok, m]) => `<li class="${ok ? 'text-success' : 'text-[#b45309] dark:text-[#fbbf24]'}">${ok ? '✓' : '!'} ${m}</li>`).join('');
+    const shown = result.replace(new RegExp(BLANK, 'g'), ' '), cut = 125;
+    q('[data-preview]').innerHTML = `<strong>yourname</strong> ${esc(shown.length > cut ? shown.slice(0, cut).split('\n').slice(0, 2).join('\n') : shown)}${shown.length > cut ? '<span class="text-[#8e8e8e]">… more</span>' : ''}`;
+  }
+  root.addEventListener('input', run); root.addEventListener('change', run);
+  q('[data-copy]').addEventListener('click', (e) => copyText(result, e.currentTarget as HTMLElement));
+  run();
+</script>
