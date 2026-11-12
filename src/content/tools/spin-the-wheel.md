@@ -2,44 +2,59 @@
 seoTitle: "Spin the Wheel: Random Picker Wheel with Your Own Options | toolwise"
 metaDescription: "Type your options and spin a colorful wheel to make a random, fair choice. Perfect for decisions, classrooms, games and giveaways. Free and private."
 faqs:
-  - q: Is the wheel fair?
-    a: Yes. The winning option is chosen with your browser's cryptographically secure random number generator before the wheel starts spinning, and every option has an equal chance. The animation then lands on that option.
-  - q: How many options can I add?
-    a: Between 2 and 100. With many options, the labels get smaller and long ones are shortened on the wheel, but the full name is shown when it wins.
-  - q: Can I remove the winner and spin again?
-    a: Yes. After each spin, press "Remove this option" to take the winner off the wheel. This is handy for picking an order or making sure everyone gets a turn.
-  - q: Can I give an option a bigger chance?
-    a: Add it more than once. An option that appears twice gets two segments and twice the chance of winning.
-  - q: Is my list saved?
-    a: No. Your options exist only in this browser tab and are never uploaded.
+  - q: "Is the wheel fair?"
+    a: "Yes. The winner is chosen first with your browser's secure random number generator, giving every option exactly the same chance, and the wheel then spins to land on it. The spin's length and stopping point vary so it never looks predictable."
+  - q: "Can I give one option a bigger chance?"
+    a: "Yes. Add the same option more than once. An option listed twice gets two slices and twice the chance of winning."
+  - q: "How many options can the wheel have?"
+    a: "Between 2 and 100. With many options the slices get thin, so long labels are shortened on the wheel, but the full name appears as the result."
+  - q: "Can I remove the winner and spin again?"
+    a: "Yes. After a spin, press \"Remove this option\" to take the winner off the wheel, then spin again. It's handy for picking a running order or eliminating options one by one."
+  - q: "Does it work if I prefer less motion?"
+    a: "Yes. If your device is set to reduce motion, the wheel lands on the result straight away instead of spinning."
 ---
 
-## What this tool does
+## When to use it
 
-Spin the Wheel turns your list of options into a colorful prize-style wheel. Press **SPIN** and the wheel turns, slows down and lands on a random option. It is a fun, visual way to make a decision, pick a student, choose a prize, or settle a debate about where to eat.
+Spin the Wheel picks a random option with a colorful spinning wheel. It turns everyday decisions into something fun to watch: what to eat for dinner, which movie to see, who does the dishes, which game to play next, or which prize a contestant wins. Teachers use it for classroom games and choosing topics; streamers and presenters use it for live giveaways.
 
-## How to use it
+## How to spin the wheel
 
-1. Type your options in the box, one per line. A sample food list is ready to try.
-2. The wheel updates as you type.
-3. Press **SPIN** in the center of the wheel (or tap the wheel).
-4. The winning option appears below the wheel. Press **Remove this option** if you do not want it to come up again.
+1. Type your choices under **Options**, one per line. The wheel updates instantly with a slice for each (2 to 100 options).
+2. Press **SPIN** in the center, or tap the wheel.
+3. Wait a few seconds while it spins and slows down. The winner appears under "The wheel chose".
+4. To spin again without that option, press **Remove this option**.
 
-## Ideas for the wheel
+## A worked example
 
-- **Decisions:** what to eat, which movie to watch, where to go this weekend.
-- **Classrooms:** choose who answers next, pick a topic, or reward a prize. Projecting the wheel on a screen makes it exciting for students.
-- **Games and parties:** truth or dare, challenge wheels, or who goes first.
-- **Teams:** decide who presents or which task someone takes on.
-- **Giveaways:** spin for a winner live on a stream or video call.
+Your family can't decide what to eat. The wheel already has Pizza, Sushi, Tacos, Burgers, Pasta and Salad. Everyone agrees Salad is out tonight, so you delete that line, leaving five slices. Press **SPIN**: it lands on Tacos. Someone protests, so you agree on best of three; press **Remove this option** after each spin to keep things fair, or just spin again to let chance decide.
+
+## Fun ways to use it
+
+- **Classroom:** a wheel of student names, quiz topics or review questions.
+- **Chores:** list the jobs and let each person spin for theirs.
+- **Games night:** pick the next game, a dare or a category.
+- **Workouts:** spin for the next exercise.
+- **Giveaways:** add entrants' names and spin on stream; remove each winner before the next prize.
 
 ## Tips
 
-- Keep option names short so they fit nicely on the wheel.
-- If you have a long list of names, the [Random Name Picker](/random-name-picker) can pick several winners at once.
-- For yes-or-no choices, a [Coin Flip](/coin-flip) is quicker.
-- If you prefer less motion, your device's "reduce motion" setting makes the wheel stop almost instantly.
+- **Keep labels short** so they fit on the slices; one or two words work best.
+- **Add an option twice** to make it more likely, for a weighted choice.
+- **Show the screen** when using it for prizes, so everyone can see the spin.
+- **Use the name picker** if you need several winners at once.
 
-## Fair by design
+## Common mistakes
 
-The result is decided by secure randomness, not by how hard or how long you press. Your options are never stored or sent anywhere.
+- **Leaving blank lines** or accidental duplicates, which change the odds. Check the list before spinning.
+- **Spinning with only one option.** The wheel needs at least two.
+- **Expecting the wheel to remember options** after you close the page. Keep your list somewhere if you reuse it.
+- **Using it for serious, regulated prize draws** without checking the rules that apply.
+
+## Private by design
+
+Your options stay on the page in your browser and are never sent anywhere.
+
+## Related tools
+
+Pick several names at once with the [Random Name Picker](/random-name-picker), roll dice with the [Dice Roller](/dice-roller), or make a quick yes-or-no choice with the [Coin Flip](/coin-flip).

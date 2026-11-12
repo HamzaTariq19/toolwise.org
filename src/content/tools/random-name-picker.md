@@ -2,45 +2,57 @@
 seoTitle: "Random Name Picker: Pick a Winner from a List | toolwise"
 metaDescription: "Paste a list of names and pick one or more random winners fairly. Great for giveaways, classrooms and teams. Free, private and no signup."
 faqs:
-  - q: Is the name picker truly random and fair?
-    a: Yes. It uses your browser's cryptographically secure random number generator with an unbiased method, so every name has exactly the same chance of being picked. The short animation is only for fun and does not affect the result.
-  - q: Can I pick more than one winner?
-    a: Yes. Enter how many names to pick. The same name is never picked twice in one draw.
-  - q: What happens if a name appears twice in my list?
-    a: Each line counts as a separate entry, so a name listed twice has twice the chance. This is useful for giving extra entries, but remove duplicates if everyone should have an equal chance. Our Remove Duplicate Lines tool can help.
-  - q: Can I paste names from a spreadsheet?
-    a: Yes. Copy a column from Excel or Google Sheets and paste it into the box; each cell becomes one line. Comma-separated lists work too.
-  - q: Is my list saved or shared?
-    a: No. Your list stays in your browser and is never uploaded.
+  - q: "Is the name picker truly random and fair?"
+    a: "Yes. Every name has the same chance, using your browser's cryptographically secure random number generator. The short shuffle animation is just for show; the result is chosen fairly behind it."
+  - q: "Can the same person be picked twice?"
+    a: "Not within one draw: when you pick several names at once, each is different. Between draws, tick \"Remove picked names\" to take winners off the list so they can't be chosen again."
+  - q: "What happens if a name is on the list twice?"
+    a: "It counts as two entries, so that person has twice the chance. You can use this on purpose, for example to give extra entries in a giveaway."
+  - q: "Can I paste names from a spreadsheet?"
+    a: "Yes. Copy a column of names from Excel, Google Sheets or a class list and paste it into the box, one name per line. A single line of names separated by commas works too."
+  - q: "Are the names saved or uploaded?"
+    a: "No. The names stay on this page in your browser and are never sent anywhere."
 ---
 
-## What this tool does
+## When to use it
 
-The random name picker chooses one or more names from a list at random. It is a quick, fair and transparent way to draw a giveaway winner, choose a student to answer, assign tasks, or decide who goes first in a game.
+The random name picker chooses one or more names fairly from a list. Teachers use it to pick students to answer or present, team leaders to choose who goes first in a meeting, families to decide chores, and creators to draw giveaway winners. Because the choice is visibly random, nobody can say it was rigged.
 
-## How to use it
+## How to pick a random name
 
-1. Type or paste your names into the box, one per line. A sample list is already there to try.
-2. Choose **how many to pick**.
-3. Tick **Remove picked names** if you want each name to be drawn only once across several draws.
-4. Press **Pick a name**.
+1. Type or paste names into **Names**, one per line (or separated by commas). The count updates as you type.
+2. Set **How many to pick**, such as 1 for a single winner or 3 for a top three.
+3. Tick **Remove picked names** if winners shouldn't be chosen again.
+4. Press **Pick a name**. The names shuffle briefly, then the winner (or winners) appear.
+5. Check **Picked so far** for everyone chosen in this session.
+6. Use **Shuffle list** to mix up the order, for example to set a random speaking order.
 
-The winners appear in large text, and the **Picked so far** list keeps track of every draw in this session.
+## A worked example
 
-## Ideas for using it
+A teacher has 24 students and wants a random order for presentations over three days, eight per day. Paste the class list, set **How many to pick** to 8 and tick **Remove picked names**. Press **Pick a name** three times: each press picks eight different students for that day, and the list shrinks so nobody is picked twice. The **Picked so far** list keeps the full order to share with the class.
 
-- **Giveaways and raffles:** paste the names or usernames of everyone who entered.
-- **Classrooms:** pick students to answer questions, present or lead an activity. With "Remove picked names" on, everyone gets a turn before anyone is picked twice.
-- **Teams and meetings:** decide who speaks first or who takes notes.
-- **Secret gift exchanges and games:** draw names one at a time.
+## Ideas
 
-## Running a fair giveaway
+- **Classroom cold calling:** pick one student per question, with removal on so everyone gets a turn.
+- **Secret Santa or gift swaps:** shuffle the list and pair each person with the next name.
+- **Giveaways and raffles:** paste entrants and pick winners live on screen.
+- **Team splitting:** shuffle the list and split it into halves.
+- **Meeting order:** shuffle who speaks first in a stand-up.
 
-- Announce the rules and the closing time before you start.
-- Remove duplicate entries unless extra entries are part of the rules.
-- Consider sharing your screen or recording the draw so participants can see it is fair.
-- Draw a reserve winner in case the first winner does not reply.
+## Tips
+
+- **Show the screen while you pick** so participants can see it's fair.
+- **Copy the "Picked so far" list** before refreshing the page, because it isn't saved.
+- **Remove duplicates** first if each person should have one entry only.
+- **For a visual spinner,** try Spin the Wheel instead.
+
+## Common mistakes
+
+- **Leaving "Remove picked names" off** when you need everyone to get exactly one turn.
+- **Asking for more names than are left;** the tool tells you how many remain.
+- **Pasting names with extra blank lines;** they're ignored, but check the count matches your list.
+- **Using it for prize draws with legal rules** without checking those rules; some competitions need an independent draw.
 
 ## Related tools
 
-Prefer something more visual? [Spin the Wheel](/spin-the-wheel) shows your options on a spinning wheel. Need numbers instead of names? Use the [Random Number Generator](/random-number-generator), or settle a two-way choice with a [Coin Flip](/coin-flip).
+Spin a colorful wheel with [Spin the Wheel](/spin-the-wheel), pick numbers with the [Random Number Generator](/random-number-generator), or settle a simple choice with the [Coin Flip](/coin-flip).

@@ -2,47 +2,59 @@
 seoTitle: "Mic and Webcam Test: Check Your Camera and Microphone | toolwise"
 metaDescription: "Test your webcam and microphone online before a video call. See a live preview, resolution and sound level, and record a quick playback. Private, no upload."
 faqs:
-  - q: Is the video or audio recorded or sent anywhere?
-    a: No. The camera preview and sound meter run entirely in your browser. Nothing is uploaded. The optional 5-second recording is kept in your browser only so you can hear yourself, and it disappears when you leave the page.
-  - q: Why does it say access is blocked?
-    a: Your browser asks permission before any website can use your camera or microphone. If you pressed Block, click the camera or lock icon in the address bar, change the setting to Allow and try again. On phones, also check that your browser has camera and microphone permission in the system settings.
-  - q: My camera works in other apps but not here. What should I do?
-    a: Usually another app such as Zoom, Teams or Skype is already using the camera. Close it completely and try again. On Windows, also check Settings, Privacy, Camera to make sure browser access is allowed.
-  - q: Why is my microphone so quiet?
-    a: Check the input volume in your computer's sound settings, make sure the right microphone is selected, and that it is not muted with a hardware switch. Headset microphones usually work best close to your mouth.
-  - q: Why is the video mirrored?
-    a: The preview is mirrored like a bathroom mirror, which feels natural. Other people on a call usually see you the right way round.
+  - q: "Why does my browser ask for permission?"
+    a: "Browsers never let a website use your camera or microphone without asking. Choose Allow to run the test. The video and sound stay on your device and stop as soon as you leave the page or press stop."
+  - q: "It says access was blocked. How do I fix it?"
+    a: "Click the camera or lock icon in the address bar, set the camera and microphone to Allow, and reload the page. On a phone, also check the system settings for your browser (Settings, then your browser, then Camera and Microphone). On a Mac, check System Settings, Privacy & Security."
+  - q: "The camera works here but not in my video call app. Why?"
+    a: "Another app may be using the camera, or the call app is set to a different device. Close other apps that might use it, and pick the same camera and microphone in the call app's settings as the ones that worked here."
+  - q: "Is the 5-second recording uploaded?"
+    a: "No. It's kept in your browser only so you can play it back, and it disappears when you leave the page."
+  - q: "How can I make my microphone sound better?"
+    a: "Get closer to it (about a hand's width for headsets, 30 to 50 cm for laptop microphones), reduce background noise, and use a headset to stop echo from your speakers."
 ---
 
-## What this tool does
+## When to use it
 
-The mic and webcam test lets you check that your camera and microphone work before an important video call, online class, interview or recording. You see a live camera preview with its resolution and frame rate, and a sound meter that moves when you speak. You can also record five seconds of audio and play it back to hear exactly how you sound.
+The mic and webcam test checks that your camera and microphone work before something important: a job interview, an online exam, a doctor's video appointment, a work meeting or a live stream. It shows your camera picture and its resolution, a live sound meter for your microphone, and lets you record five seconds to hear exactly how you sound.
 
 ## How to test your camera
 
-1. Press **Test camera**.
-2. When your browser asks, choose **Allow**.
-3. Your camera preview appears with a ✓ and its resolution, such as 1280 × 720.
-4. If you have more than one camera, pick another from the list.
+1. Under **Camera**, press **Test camera** and allow access when your browser asks.
+2. Your camera preview appears, with a line confirming it works and showing its resolution and frame rate (for example 1280 × 720 at 30 fps).
+3. Have more than one camera? Choose another from the **Camera** menu.
+4. Press the button again to stop the camera.
 
 ## How to test your microphone
 
-1. Press **Test microphone** and allow access.
-2. Speak normally. The bars should move as you talk.
-3. Press **Record 5 seconds and play back** to hear yourself.
-4. If you have several microphones (for example, a laptop microphone and a headset), choose the one you will use on your call.
+1. Under **Microphone**, press **Test microphone** and allow access.
+2. Speak normally. The bars move with your voice, and a message confirms "Your microphone works" when sound is picked up.
+3. Choose another microphone from the menu if you have several, such as a headset and a built-in mic.
+4. Press **Record 5 seconds and play back** to hear how you sound to others.
 
-## Common problems and fixes
+## A worked example
 
-- **Blocked permission:** click the icon on the left of the address bar and allow the camera and microphone for this site.
-- **Black screen:** a privacy shutter or keyboard camera switch may be closed. Some laptops have a function key that turns the camera off.
-- **Camera in use:** close other video apps, then try again.
-- **Echo or noise:** use headphones to stop the speakers feeding back into the microphone.
-- **Wrong device:** choose the right camera or microphone from the list, and select the same device in your meeting app.
+You have a video interview in an hour on a laptop with a USB headset. Press **Test camera**: the preview shows the built-in camera at 1280 × 720, so lighting and framing look fine. Press **Test microphone**: the bars barely move, because the laptop's built-in mic is selected. Choose the headset in the **Microphone** menu, speak again, and the bars jump. Record five seconds and play it back: clear voice, no echo. In the interview app, select the same headset.
 
-## Tips for looking and sounding good on calls
+## Tips for looking and sounding good
 
-- Face a window or lamp so light falls on your face, not behind you.
-- Raise the camera to eye level by placing your laptop on books.
-- Use a headset or earbuds with a microphone for clearer sound.
-- Check your display too with our [Screen Tester](/screen-tester), or record a longer clip with the [Voice Recorder](/voice-recorder).
+- **Face a window or lamp** so light falls on your face, not behind you.
+- **Put the camera at eye level;** stack books under a laptop if needed.
+- **Use a headset or earphones** to avoid echo and background noise.
+- **Close other apps** that might be using the camera, like other video call apps.
+- **Test on the same device and network** you'll use for the call.
+
+## Common mistakes
+
+- **Clicking "Block" by accident** when the permission prompt appears. Use the address-bar icon to change it.
+- **Testing the wrong device.** Laptops often have several microphones; pick the one you'll use.
+- **Leaving the camera covered** by a privacy shutter.
+- **Testing only the camera.** Most call problems are about sound.
+
+## Private by design
+
+Video and sound stay on your device. Nothing is recorded or uploaded unless you press record, and even then it stays in your browser.
+
+## Related tools
+
+Record your voice with the [Voice Recorder](/voice-recorder), capture your screen with the [Screen Recorder](/screen-recorder), or check your display with the [Screen Tester](/screen-tester).

@@ -44,7 +44,7 @@ Your landlord emails a 6-page lease to sign on page 5 and initial at the bottom 
 
 - **Signing the wrong page.** Check the page numbers on the document before you download.
 - **Uploading a photo with shadows.** Shadows can leave grey patches; retake it in even light.
-- **Forgetting to fill in the date or name fields** next to the signature. Use Fill PDF Form or Add Text to PDF first.
+- **Forgetting to fill in the date or name fields** next to the signature. If the PDF has form fields, complete them with Fill PDF Form first.
 - **Sending the unsigned copy.** Attach the downloaded file, which ends in "-signed.pdf".
 
 ## Private by design
@@ -53,4 +53,4 @@ Your PDF and signature are processed only in your browser. Nothing is uploaded, 
 
 ## Related tools
 
-Complete form fields with [Fill PDF Form](/fill-pdf-form), add dates or notes with [Add Text to PDF](/add-text-to-pdf), or lock the signed copy with [Protect PDF](/protect-pdf).
+Complete form fields with [Fill PDF Form](/fill-pdf-form), number the pages with [Add Page Numbers](/add-page-numbers-pdf), or lock the signed copy with [Protect PDF](/protect-pdf).

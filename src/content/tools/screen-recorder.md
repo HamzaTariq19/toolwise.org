@@ -2,43 +2,62 @@
 seoTitle: "Free Online Screen Recorder: No Install, No Watermark | toolwise"
 metaDescription: "Record your screen, a window or a browser tab with sound, right in your browser. No download, no watermark, no time limit. Videos stay on your device."
 faqs:
-  - q: Do I need to install anything?
-    a: No. The screen recorder uses the screen capture feature built into modern browsers. It works in Chrome, Edge, Firefox and Safari on Windows, Mac, Linux and ChromeOS.
-  - q: Is there a watermark or time limit?
-    a: No watermark and no fixed time limit. Long recordings are kept in your computer's memory, so for sessions longer than an hour it is a good idea to record in parts.
-  - q: Why is there no sound from my computer?
-    a: Browsers only share sound in some cases. In Chrome and Edge, sound is available when you share a browser tab (tick "Share tab audio") and, on Windows, when you share the entire screen. Sharing a single app window usually has no sound. Firefox and Safari currently do not share system sound.
-  - q: Can I record my screen on a phone?
-    a: Phone and tablet browsers do not allow websites to record the screen. Use the built-in recorder instead, found in Control Center on iPhone and iPad, or in Quick Settings on most Android phones.
-  - q: Is my recording uploaded?
-    a: No. The video is recorded and stored in your browser only, and saved to your computer when you press Download. Nothing is sent to a server.
+  - q: "Can I record my screen on a phone or iPad?"
+    a: "Not with a website. Phone and tablet browsers don't allow web pages to record the screen. Use the built-in recorder instead, in Control Center on iPhone and iPad or Quick Settings on Android."
+  - q: "Why is there no sound from my video or game?"
+    a: "Tick \"Include sound from the screen or tab\" before starting, and when the browser asks what to share, turn on its \"Share audio\" option. Chrome and Edge can share sound from a tab or, on Windows, the whole screen; on a Mac, only tab sound is available."
+  - q: "What format is the video?"
+    a: "WebM in Chrome, Edge and Firefox, or MP4 in Safari. Most players and sites like YouTube accept both. To trim it or make an MP4, use Trim Video or Compress Video."
+  - q: "Is the recording uploaded?"
+    a: "No. The video is recorded in your browser and stays there until you press Download video. Close the page without downloading and it's gone."
+  - q: "How long can I record?"
+    a: "There's no fixed limit, but screen video takes memory: roughly 5 to 20 MB per minute depending on what's on screen. Keep recordings under about 30 minutes on computers with little memory."
 ---
 
-## What this tool does
+## When to use it
 
-The screen recorder captures what is on your screen and saves it as a video, without installing any software. You can record your entire screen, a single window or one browser tab, with optional sound from your microphone and from the screen or tab. It is ideal for tutorials, bug reports, presentations, recording a video call for your own notes, or showing someone how to do something.
+The screen recorder captures your whole screen, a single window or one browser tab as a video, optionally with your voice. Use it to record a how-to guide for a colleague, report a bug with the exact steps, record a presentation with narration, capture a webinar you're allowed to save, or send feedback on a design instead of writing a long email. It works in desktop browsers with nothing to install.
 
 ## How to record your screen
 
-1. Choose whether to include **your microphone** and **sound from the screen or tab**.
+1. Choose your sound options:
+   - Tick **Include my microphone** to narrate.
+   - Tick **Include sound from the screen or tab** to capture audio from videos or apps.
 2. Press **Start recording**.
-3. Your browser asks what to share. Pick **Entire screen**, a **Window** or a **Tab**, then press **Share**.
-4. Do what you want to record. A red timer shows the recording is running.
-5. Press **Stop recording** here, or **Stop sharing** in the browser's bar.
-6. Watch the preview, then press **Download video**.
+3. Your browser asks what to share: an entire screen, a window or a tab. Pick one and press **Share**. If you want screen sound, switch on "Share audio" in that dialog.
+4. Do what you want to record. The timer shows how long you've been recording.
+5. Press stop, or the browser's "Stop sharing" button.
+6. Watch the preview, then press **Download video**, or **Record again** to start over.
 
-## Tips for great screen recordings
+## A worked example
 
-- **Close what you don't want to show:** notifications, private tabs and personal messages. Turn on Do Not Disturb.
-- **Share a tab or window** instead of the entire screen when possible. It keeps the video focused and protects your privacy.
-- **Plan briefly:** jot down the steps you will show so the video stays short and clear.
-- **Use a headset microphone** for clear narration without keyboard noise.
-- **Increase text size** or zoom the browser to 125% so text is easy to read in the video.
+A customer can't find the export button in your web app. Tick **Include my microphone**, press **Start recording**, choose the browser tab with the app, and talk them through it: "Open Reports, then the three dots, then Export". Stop after 40 seconds and download the video, about 6 MB. Send it with a short message; it's clearer than any written instructions.
 
-## About the video format
+## Choosing what to share
 
-Chrome, Edge and Firefox save WebM videos, which play in browsers, VLC and most modern players and can be uploaded to YouTube, Google Drive and many other services. Safari saves MP4. If an app needs MP4 specifically, a video converter can change the format.
+- **A tab** is best for web apps and sites; it hides notifications and other windows, and can include the tab's sound.
+- **A window** records one app, such as a slideshow or spreadsheet.
+- **The entire screen** is for switching between several apps; tidy your desktop first.
+
+## Tips
+
+- **Close private tabs and silence notifications** before recording the whole screen.
+- **Zoom your browser to 125%** so text is readable in the video.
+- **Plan the steps** and keep recordings short: 1 to 3 minutes holds attention.
+- **Use a headset microphone** for clearer narration.
+- **Trim the start and end** afterwards with Trim Video.
+
+## Common mistakes
+
+- **Forgetting "Share audio"** in the browser's dialog when you need screen sound.
+- **Recording passwords or personal messages** that pop up on screen.
+- **Recording on a phone browser,** which isn't supported; use the phone's own recorder.
+- **Not downloading** before closing the page.
+
+## Private by design
+
+Your video is recorded in your browser and never uploaded.
 
 ## Related tools
 
-Record audio only with the [Voice Recorder](/voice-recorder), or check your microphone and camera first with the [Mic and Webcam Test](/mic-webcam-test).
+Cut the clip with [Trim Video](/trim-video), shrink it with [Compress Video](/compress-video), or turn a moment into a GIF with [Video to GIF](/video-to-gif).
