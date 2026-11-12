@@ -1,0 +1,56 @@
+---
+import Icon from '../components/Icon.astro';
+import Dropzone from '../components/Dropzone.astro';
+import FileResults from '../components/FileResults.astro';
+---
+<div id="m3" class="space-y-5">
+  <p class="alert alert-error" data-unsupported hidden role="alert"><Icon name="CircleAlert" size={18} class="mt-0.5 flex-none" /><span>This browser can't convert audio. Please use the latest Chrome, Edge, Firefox or Safari.</span></p>
+  <div class="card grid gap-3 p-4 sm:grid-cols-2 sm:p-5">
+    <div><label for="m3-br" class="label">Quality</label><select id="m3-br" class="select"><option value="128">128 kbps (smaller files, speech)</option><option value="192" selected>192 kbps (recommended)</option><option value="256">256 kbps</option><option value="320">320 kbps (best quality)</option></select></div>
+    <div><label for="m3-ch" class="label">Channels</label><select id="m3-ch" class="select"><option value="keep">Keep stereo or mono</option><option value="mono">Mono (half the size)</option></select></div>
+  </div>
+  <div data-step="pick">
+    <Dropzone id="m3-drop" accept="audio/*,video/mp4,video/webm,.wav,.m4a,.aac,.ogg,.oga,.opus,.flac,.weba,.mp4,.webm,.mov" formats="WAV, M4A, AAC, OGG, FLAC, WebM, MP4 and more" maxLabel="100 MB each" multiple icon="Music" label="Choose audio files" />
+  </div>
+  <div class="alert alert-error" data-error hidden role="alert"><Icon name="CircleAlert" size={18} class="mt-0.5 flex-none" /><span data-msg></span></div>
+  <FileResults id="m3-results" />
+</div>
+<script>
+  import { initDropzone } from '../lib/dropzone';
+  import { createResults, type ResultItem } from '../lib/file-results';
+  import { audioSupported, decodeFile, slice, encodeMp3 } from '../lib/audio';
+  import { baseName, showError } from '../lib/ui';
+  import { fmtTime } from '../lib/clip-range';
+  const root = document.getElementById('m3')!, pick = root.querySelector<HTMLElement>('[data-step=pick]')!, err = root.querySelector<HTMLElement>('[data-error]')!;
+  if (!audioSupported()) { root.querySelector<HTMLElement>('[data-unsupported]')!.hidden = false; pick.hidden = true; }
+  let files: File[] = [], runId = 0;
+  const results = createResults(document.getElementById('m3-results')!, { zipName: 'mp3-files.zip', onReset: () => { files = []; pick.hidden = false; showError(err, null); } });
+  async function process() {
+    if (!files.length) return;
+    const id = ++runId; pick.hidden = true;
+    const kbps = +root.querySelector<HTMLSelectElement>('#m3-br')!.value, mono = root.querySelector<HTMLSelectElement>('#m3-ch')!.value === 'mono';
+    const out: ResultItem[] = [];
+    // Files with the same name but different formats (song.wav, song.flac) get the format added to the MP3 name
+    const names = files.map((f) => baseName(f.name).toLowerCase()), dup = new Set(names.filter((n, i) => names.indexOf(n) !== i));
+    for (let i = 0; i < files.length; i++) {
+      const f = files[i], label = files.length > 1 ? `File ${i + 1} of ${files.length}` : 'Converting';
+      results.setProgress(i, files.length, `${label}: reading “${f.name}”…`);
+      try {
+        const buf = await decodeFile(f);
+        if (buf.duration > 3 * 3600) throw new Error('Longer than 3 hours. Split it into shorter parts first.');
+        const chans = slice(buf, 0, buf.duration, 0, 0, mono);
+        const blob = await encodeMp3(chans, buf.sampleRate, kbps, (p) => { if (id === runId) results.setProgress(i + p, files.length, `${label}: converting “${f.name}”… ${Math.round(p * 100)}%`); });
+        if (id !== runId) return;
+        out.push({ name: f.name, originalSize: f.size, blob, outName: dup.has(baseName(f.name).toLowerCase()) ? `${baseName(f.name)}-${(f.name.split('.').pop() ?? 'audio').toLowerCase()}.mp3` : `${baseName(f.name)}.mp3`, note: `${fmtTime(buf.duration)} · ${kbps} kbps${chans.length === 1 ? ' mono' : ' stereo'}` });
+      } catch (e) {
+        out.push({ name: f.name, originalSize: f.size, error: /memory|allocation/i.test(String(e)) ? 'Too large for your device to convert.' : (e as Error).message });
+      }
+    }
+    if (id === runId) results.render(out);
+  }
+  initDropzone(document.getElementById('m3-drop')!, {
+    accept: ['audio/*', 'video/mp4', 'video/webm', 'video/quicktime', '.wav', '.m4a', '.aac', '.ogg', '.oga', '.opus', '.flac', '.weba', '.mp4', '.webm', '.mov'], multiple: true, maxBytes: 100 * 1024 * 1024,
+    onFiles: (f) => { if (f.length > 30) { showError(err, 'Convert up to 30 files at a time.'); return; } files = f; process(); },
+    onError: (m) => showError(err, m || null),
+  });
+</script>

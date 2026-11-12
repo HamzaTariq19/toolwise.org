@@ -1,0 +1,93 @@
+---
+import Icon from '../components/Icon.astro';
+import Dropzone from '../components/Dropzone.astro';
+import TaskProgress from '../components/TaskProgress.astro';
+import ClipRange from '../components/ClipRange.astro';
+---
+<div id="ca" class="space-y-4">
+  <p class="alert alert-error" data-unsupported hidden role="alert"><Icon name="CircleAlert" size={18} class="mt-0.5 flex-none" /><span>This browser can't edit audio. Please use the latest Chrome, Edge, Firefox or Safari.</span></p>
+  <Dropzone id="ca-drop" accept="audio/*,.mp3,.wav,.m4a,.aac,.ogg,.oga,.opus,.flac,.weba" formats="MP3, WAV, M4A, OGG, FLAC and more" maxLabel="100 MB" icon="FileAudio" label="Choose audio" />
+  <p class="alert alert-error" data-error hidden role="alert"><Icon name="CircleAlert" size={18} class="mt-0.5 flex-none" /><span data-msg></span></p>
+  <section class="card space-y-4 p-4 sm:p-5" data-opts hidden>
+    <div class="flex items-start gap-3"><div class="min-w-0 flex-1"><p class="truncate font-semibold" data-name></p><p class="text-sm text-muted" data-meta></p></div><button type="button" class="btn btn-ghost btn-sm" data-change>Change</button></div>
+    <canvas class="block h-24 w-full cursor-pointer rounded-xl bg-surface-2" data-wave aria-label="Waveform. Click to move the playback position." role="img"></canvas>
+    <ClipRange id="ca-clip" audio />
+    <div class="grid grid-cols-2 gap-3 sm:grid-cols-4">
+      <div><label for="ca-fi" class="label">Fade in</label><select id="ca-fi" class="select"><option value="0">None</option><option value="0.5">0.5 s</option><option value="1">1 s</option><option value="2">2 s</option><option value="3">3 s</option></select></div>
+      <div><label for="ca-fo" class="label">Fade out</label><select id="ca-fo" class="select"><option value="0">None</option><option value="0.5">0.5 s</option><option value="1">1 s</option><option value="2">2 s</option><option value="3">3 s</option></select></div>
+      <div><label for="ca-fmt" class="label">Save as</label><select id="ca-fmt" class="select"><option value="mp3">MP3</option><option value="wav">WAV</option></select></div>
+      <div data-brbox><label for="ca-br" class="label">MP3 quality</label><select id="ca-br" class="select"><option value="128">128 kbps</option><option value="192" selected>192 kbps</option><option value="320">320 kbps</option></select></div>
+    </div>
+    <button type="button" class="btn btn-primary btn-lg w-full sm:w-auto" data-go><Icon name="Scissors" size={18} />Cut audio</button>
+  </section>
+  <TaskProgress id="ca-task" />
+  <section class="card space-y-4 p-4 sm:p-5" data-result hidden aria-live="polite">
+    <div class="flex items-center gap-2 text-success"><Icon name="CircleCheck" size={22} /><p class="font-semibold text-[var(--text)]" data-rsum></p></div>
+    <audio controls class="w-full" data-player></audio>
+    <div class="flex flex-col gap-3 sm:flex-row"><button type="button" class="btn btn-primary btn-lg" data-dl><Icon name="Download" size={18} />Download</button><button type="button" class="btn btn-secondary btn-lg" data-edit><Icon name="Scissors" size={18} />Change the cut</button><button type="button" class="btn btn-ghost btn-lg" data-again>Another file</button></div>
+  </section>
+</div>
+<script>
+  import { initDropzone } from '../lib/dropzone';
+  import { taskProgress } from '../lib/task-progress';
+  import { clipRange, fmtTime } from '../lib/clip-range';
+  import { audioSupported, decodeFile, slice, encodeWav, encodeMp3, cancelMp3, peaks } from '../lib/audio';
+  import { showError, formatBytes, baseName, downloadBlob } from '../lib/ui';
+  const root = document.getElementById('ca')!, q = <T extends HTMLElement = HTMLElement>(s: string) => root.querySelector(s) as T;
+  const drop = q('#ca-drop'), opts = q('[data-opts]'), result = q('[data-result]'), err = q('[data-error]'), wave = q<HTMLCanvasElement>('[data-wave]');
+  let buf: AudioBuffer | null = null, file: File | null = null, out: { blob: Blob; name: string } | null = null, cancelled = false, url = '', pk: Float32Array | null = null;
+  const clip = clipRange(q('#ca-clip'), { onChange: () => draw() });
+  const player = q('#ca-clip').querySelector('audio') as HTMLAudioElement;
+  const task = taskProgress(q('#ca-task'), () => { cancelled = true; cancelMp3(); task.hide(); opts.hidden = !buf; showError(err, 'Cancelled.'); });
+  if (!audioSupported()) { q('[data-unsupported]').hidden = false; drop.hidden = true; }
+  function draw() {
+    if (!buf) return;
+    const dpr = devicePixelRatio || 1, w = Math.round(wave.clientWidth * dpr), h = Math.round(wave.clientHeight * dpr);
+    if (!w || !h) return;
+    if (wave.width !== w || !pk) { wave.width = w; wave.height = h; pk = peaks(buf, w); }
+    const c = wave.getContext('2d')!, cs = getComputedStyle(root), cat = cs.getPropertyValue('--cat').trim() || '#2563eb', sub = cs.getPropertyValue('--border-strong').trim() || '#cbd5e1';
+    c.clearRect(0, 0, w, h);
+    const a = (clip.start / buf.duration) * w, b = (clip.end / buf.duration) * w;
+    for (let x = 0; x < w; x++) { const mn = pk[x * 2], mx = pk[x * 2 + 1]; c.fillStyle = x >= a && x <= b ? cat : sub; c.fillRect(x, (1 - mx) * h / 2, 1, Math.max(1, (mx - mn) * h / 2)); }
+    const t = (player.currentTime / buf.duration) * w; c.fillStyle = cs.getPropertyValue('--text').trim() || '#000'; c.fillRect(Math.round(t), 0, Math.max(1, dpr), h);
+  }
+  player.addEventListener('timeupdate', draw); addEventListener('resize', () => { pk = null; draw(); });
+  wave.addEventListener('click', (e) => { if (!buf) return; const r = wave.getBoundingClientRect(); player.currentTime = ((e.clientX - r.left) / r.width) * buf.duration; draw(); });
+  q('#ca-fmt').addEventListener('change', () => (q('[data-brbox]').hidden = q<HTMLSelectElement>('#ca-fmt').value !== 'mp3'));
+  async function pick(f: File) {
+    file = f; out = null; cancelled = false; result.hidden = true; drop.hidden = true; showError(err, null); pk = null;
+    task.show('Reading the audio…'); q('[data-task-cancel]').hidden = true;
+    try {
+      buf = await decodeFile(f);
+      if (cancelled) return;
+      if (buf.duration > 3 * 3600) throw new Error('This recording is longer than 3 hours. Please cut it into shorter parts first.');
+      q('[data-name]').textContent = f.name;
+      q('[data-meta]').textContent = `${formatBytes(f.size)} · ${fmtTime(buf.duration)} · ${buf.numberOfChannels > 1 ? 'stereo' : 'mono'}`;
+      await clip.load(f, buf.duration); if (!clip.duration) clip.setDuration(buf.duration);
+      requestAnimationFrame(draw);
+      task.hide(); opts.hidden = false;
+    } catch (e) { task.hide(); drop.hidden = false; opts.hidden = true; buf = null; showError(err, /memory|allocation/i.test(String(e)) ? 'This file is too large for your device to edit. Try a shorter recording.' : (e as Error).message); }
+    finally { q('[data-task-cancel]').hidden = false; }
+  }
+  q('[data-go]').addEventListener('click', async () => {
+    if (!buf || !file) return;
+    const a = clip.start, b = clip.end, fmt = q<HTMLSelectElement>('#ca-fmt').value;
+    if (b - a < 0.05) return showError(err, 'Choose a longer section.');
+    cancelled = false; opts.hidden = true; showError(err, null); player.pause();
+    const chans = slice(buf, a, b, +q<HTMLSelectElement>('#ca-fi').value, +q<HTMLSelectElement>('#ca-fo').value);
+    task.show(fmt === 'mp3' ? 'Saving as MP3…' : 'Saving as WAV…');
+    try {
+      const blob = fmt === 'wav' ? encodeWav(chans, buf.sampleRate) : await encodeMp3(chans, buf.sampleRate, +q<HTMLSelectElement>('#ca-br').value, (p) => task.set('Saving as MP3…', p));
+      if (cancelled) return;
+      out = { blob, name: `${baseName(file.name)}-cut.${fmt}` };
+      task.hide(); result.hidden = false;
+      q('[data-rsum]').textContent = `${out.name} · ${fmtTime(b - a)} · ${formatBytes(blob.size)}`;
+      URL.revokeObjectURL(url); url = URL.createObjectURL(blob); q<HTMLAudioElement>('[data-player]').src = url;
+    } catch (e) { if (cancelled) return; task.hide(); opts.hidden = false; showError(err, (e as Error).message); }
+  });
+  q('[data-dl]').addEventListener('click', () => out && downloadBlob(out.blob, out.name));
+  q('[data-edit]').addEventListener('click', () => { result.hidden = true; opts.hidden = false; q<HTMLAudioElement>('[data-player]').pause(); requestAnimationFrame(draw); });
+  const reset = () => { buf = null; file = null; out = null; result.hidden = true; opts.hidden = true; drop.hidden = false; showError(err, null); clip.clear(); q<HTMLAudioElement>('[data-player]').removeAttribute('src'); };
+  q('[data-again]').addEventListener('click', reset); q('[data-change]').addEventListener('click', reset);
+  initDropzone(drop, { accept: ['audio/*', '.mp3', '.wav', '.m4a', '.aac', '.ogg', '.oga', '.opus', '.flac', '.weba'], maxBytes: 100 * 1024 * 1024, onFiles: (f) => pick(f[0]), onError: (m) => showError(err, m || null) });
+</script>

@@ -13,9 +13,14 @@ Status of each tool lives in `src/data/tools.json` (`"status": "built"` = live, 
 - Batch 7, SEO & Social (12): meta tags, keyword density, robots.txt, sitemap, Open Graph preview, YouTube title + thumbnail checkers, X character counter + thread splitter, Instagram caption formatter, hashtag generator, UTM builder, email signature. New shared `CodeOutput.astro`.
 - Batch 8, Student (10): flashcards, Pomodoro, essay word counter, equation solver (lib/equation.ts, exact fractions + steps), periodic table (src/data/elements.ts), unit circle, multiplication table (print + practice), spelling practice, quiz maker, homework planner. New shared `LocalNote.astro` (device-only storage note), `printElement()` + `esc()` in lib/ui.ts, `shuffle()` in lib/random.ts.
 - Batch 9, Everyday (10): countdown timer, alarm clock, coin flip, dice roller, to-do list, notepad, calendar generator (print with @page size), world clock (lib/cities.ts), password strength checker (lib/password-strength.ts, offline estimator), screen tester. New lib/sound.ts (Web Audio alarm tones, wake lock). `printElement(el, pageCss)` now takes optional @page CSS. Password checker + generator pages render no ad slots and no ad script (`noAds` in [slug].astro / Base.astro).
+- Batch 10, Heavy (7 of 8): cut audio + MP3 converter (Web Audio decode + lamejs worker, src/lib/audio.ts, src/workers/mp3.ts); trim video, compress video, video to GIF, extract audio (ffmpeg.wasm single-thread core, src/lib/ffmpeg.ts, no COOP/COEP needed); background remover (ISNet quint8 + onnxruntime-web wasm in src/workers/bg-remove.ts). Link shortener skipped.
+  - scripts/vendor-assets.mjs (prebuild/predev) copies @ffmpeg/core and onnxruntime-web wasm into public/vendor/<pkg>/<version>/, splitting files over 20 MiB (Cloudflare Pages 25 MiB limit). public/vendor is gitignored.
+  - public/models/isnet-general-use-q8/: committed model parts + README with source, license and how it was quantized.
+  - lib/fetch-parts.ts joins split files, reports progress, caches in the Cache API ("toolwise-heavy-v1").
+  - Shared: TaskProgress.astro + lib/task-progress.ts (progress with Cancel and ETA), ClipRange.astro + lib/clip-range.ts (start/end selector), FfmpegNote.astro (GPL notice + source link).
 
 ## Next
-- Batch 10 Heavy (8; ask before building the link shortener)
+- Final full-site check, Lighthouse on 10 tool pages, final report. (Link shortener skipped at the user's request; its page stays "coming soon", noindex, out of the sitemap.)
 
 ## How each tool is built (keep it consistent)
 1. `src/tools/<slug>.astro`: UI + `<script>`. Reuse components:
@@ -42,3 +47,5 @@ Health/finance calculators: the tool page template shows the estimates disclaime
 - Phone overflow: `.grid` defaults to `minmax(0,1fr)` (base layer), `.card` has `min-width:0`, the tool area and `.prose-tw` use `overflow-wrap:anywhere`. Test with 300-char unbroken input at 360px (scratchpad `allovf.cjs` checks every built page).
 - Printing: `printElement(el)` clones el into `.print-host` and hides everything else via @media print (dark tokens reset to light).
 - Read tool caches images by path: use a new filename when re-checking a screenshot.
+- Show the options of media tools only after the clip's duration is known, or a typed start time gets reset by the late metadata load.
+- Single-thread ffmpeg.wasm compresses 40 s of 1080p in about 70 s on a fast machine; phones are much slower, so the compress page shows a time estimate.

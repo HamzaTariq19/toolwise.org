@@ -1,0 +1,17 @@
+---
+// Progress panel for long jobs (library download, processing) with an optional Cancel button.
+interface Props { id: string }
+const { id } = Astro.props;
+---
+<div id={id} class="card p-5" hidden aria-live="polite" data-task>
+  <div class="flex items-center justify-between gap-3"><p class="font-semibold" data-task-label>Working…</p><p class="text-sm text-muted tabular" data-task-pct></p></div>
+  <div class="mt-3 h-2.5 overflow-hidden rounded-full bg-surface-2" role="progressbar" aria-valuemin="0" aria-valuemax="100" data-task-bar>
+    <div class="h-full w-0 rounded-full bg-brand transition-[width] duration-300" data-task-fill></div>
+  </div>
+  <div class="mt-3 flex items-center justify-between gap-3"><p class="text-sm text-subtle" data-task-note></p><button type="button" class="btn btn-ghost btn-sm" data-task-cancel>Cancel</button></div>
+</div>
+<style>
+  [data-task] [data-task-fill].indeterminate { width: 30% !important; animation: task-slide 1.2s ease-in-out infinite; }
+  @keyframes task-slide { from { transform: translateX(-100%); } to { transform: translateX(340%); } }
+  @media (prefers-reduced-motion: reduce) { [data-task] [data-task-fill].indeterminate { animation: none; width: 100% !important; opacity: .5; } }
+</style>

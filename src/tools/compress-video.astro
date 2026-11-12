@@ -1,0 +1,96 @@
+---
+import Icon from '../components/Icon.astro';
+import Dropzone from '../components/Dropzone.astro';
+import TaskProgress from '../components/TaskProgress.astro';
+import FfmpegNote from '../components/FfmpegNote.astro';
+---
+<div id="cv" class="space-y-4">
+  <p class="alert alert-error" data-unsupported hidden role="alert"><Icon name="CircleAlert" size={18} class="mt-0.5 flex-none" /><span>This browser can't run the video tools. Please use the latest Chrome, Edge, Firefox or Safari.</span></p>
+  <Dropzone id="cv-drop" accept="video/*,.mkv,.mov,.m4v,.avi,.wmv,.flv,.3gp,.ts,.mts" formats="MP4, MOV, WebM, MKV and more" maxLabel="1 GB" icon="FileVideo" label="Choose video" />
+  <p class="alert alert-error" data-error hidden role="alert"><Icon name="CircleAlert" size={18} class="mt-0.5 flex-none" /><span data-msg></span></p>
+  <section class="card space-y-4 p-4 sm:p-5" data-opts hidden>
+    <div class="flex items-start gap-3"><span class="icon-tile h-11 w-11"><Icon name="FileVideo" size={22} /></span><div class="min-w-0 flex-1"><p class="truncate font-semibold" data-name></p><p class="text-sm text-muted" data-meta></p></div><button type="button" class="btn btn-ghost btn-sm" data-change>Change</button></div>
+    <div><p class="label">Compression</p>
+      <div class="segmented" role="radiogroup" aria-label="Compression level">
+        <label><input type="radio" name="cv-q" value="31" /><span>Smallest file</span></label>
+        <label><input type="radio" name="cv-q" value="27" checked /><span>Balanced</span></label>
+        <label><input type="radio" name="cv-q" value="23" /><span>High quality</span></label>
+      </div></div>
+    <div class="grid gap-3 sm:grid-cols-2">
+      <div><label for="cv-res" class="label">Resolution</label><select id="cv-res" class="select"></select></div>
+      <div><label for="cv-audio" class="label">Sound</label><select id="cv-audio" class="select"><option value="128">Keep (good quality)</option><option value="64">Lower quality, smaller</option><option value="none">Remove the sound</option></select></div>
+    </div>
+    <p class="text-sm text-muted" data-est></p>
+    <button type="button" class="btn btn-primary btn-lg w-full sm:w-auto" data-go><Icon name="Minimize2" size={18} />Compress video</button>
+  </section>
+  <TaskProgress id="cv-task" />
+  <section class="card space-y-4 p-4 sm:p-5" data-result hidden aria-live="polite">
+    <div class="flex items-center gap-2" data-rhead><Icon name="CircleCheck" size={22} class="text-success" /><p class="font-semibold" data-rsum></p></div>
+    <p class="text-sm text-muted" data-rnote></p>
+    <video controls playsinline class="max-h-[50vh] w-full rounded-xl bg-black" data-player></video>
+    <div class="flex flex-col gap-3 sm:flex-row"><button type="button" class="btn btn-primary btn-lg" data-dl><Icon name="Download" size={18} />Download</button><button type="button" class="btn btn-secondary btn-lg" data-edit>Try other settings</button><button type="button" class="btn btn-ghost btn-lg" data-again>Another video</button></div>
+  </section>
+  <FfmpegNote />
+</div>
+<script>
+  import { initDropzone } from '../lib/dropzone';
+  import { taskProgress } from '../lib/task-progress';
+  import { fmtTime } from '../lib/clip-range';
+  import { showError, formatBytes, baseName, downloadBlob } from '../lib/ui';
+  import { ffmpegSupported, loadFFmpeg, probe, run, cancelFFmpeg, toBlob, type Probe } from '../lib/ffmpeg';
+  const root = document.getElementById('cv')!, q = <T extends HTMLElement = HTMLElement>(s: string) => root.querySelector(s) as T;
+  const drop = q('#cv-drop'), opts = q('[data-opts]'), result = q('[data-result]'), err = q('[data-error]');
+  let file: File | null = null, info: Probe | null = null, out: { blob: Blob; name: string } | null = null, cancelled = false, url = '';
+  const task = taskProgress(q('#cv-task'), () => { cancelled = true; cancelFFmpeg(); task.hide(); if (file && info) opts.hidden = false; else drop.hidden = false; showError(err, 'Cancelled.'); });
+  if (!ffmpegSupported()) { q('[data-unsupported]').hidden = false; drop.hidden = true; }
+  function estimate() {
+    if (!info?.video) return;
+    const short = Math.min(info.video.w, info.video.h), res = q<HTMLSelectElement>('#cv-res').value, target = res === 'keep' ? short : +res;
+    const px = (target / short) ** 2 * info.video.w * info.video.h, mins = info.duration / 60;
+    const secsPerMin = (px / (1280 * 720)) * 75; // rough single-thread speed in a browser
+    q('[data-est]').textContent = `Compressing in a browser is slower than in desktop apps. Expect roughly ${Math.max(1, Math.round((mins * secsPerMin) / 60))} minute${mins * secsPerMin >= 90 ? 's' : ''} on a recent computer, longer on phones. Keep this tab open.`;
+  }
+  async function pick(f: File) {
+    file = f; out = null; cancelled = false; result.hidden = true; drop.hidden = true; showError(err, null);
+    task.show('Getting the video tools ready…');
+    try {
+      await loadFFmpeg(task.download('video tools'));
+      task.set('Reading the video…', null, '');
+      info = await probe(f);
+      if (!info.video) throw new Error('This file has no video track. For audio, try the MP3 Converter.');
+      task.hide(); opts.hidden = false;
+      const { w, h } = info.video, short = Math.min(w, h);
+      q('[data-name]').textContent = f.name;
+      q('[data-meta]').textContent = `${formatBytes(f.size)} · ${fmtTime(info.duration)} · ${w} × ${h} · ${info.video.codec.toUpperCase()}`;
+      q('#cv-res').innerHTML = `<option value="keep">Keep ${short}p</option>` + [1080, 720, 480, 360].filter((r) => r < short).map((r) => `<option value="${r}" ${r === 720 && short > 720 ? 'selected' : ''}>${r}p${r === 1080 ? ' (Full HD)' : r === 720 ? ' (HD, good for sharing)' : r === 480 ? ' (small screens)' : ''}</option>`).join('');
+      if (!info.audio) { q<HTMLSelectElement>('#cv-audio').value = 'none'; q<HTMLSelectElement>('#cv-audio').disabled = true; } else q<HTMLSelectElement>('#cv-audio').disabled = false;
+      estimate();
+    } catch (e) { if (cancelled) return; task.hide(); drop.hidden = false; opts.hidden = true; file = null; showError(err, (e as Error).message || 'Something went wrong.'); }
+  }
+  q('#cv-res').addEventListener('change', estimate);
+  q('[data-go]').addEventListener('click', async () => {
+    if (!file || !info?.video) return;
+    cancelled = false; opts.hidden = true; showError(err, null);
+    const crf = (q<HTMLInputElement>('input[name=cv-q]:checked')).value, res = q<HTMLSelectElement>('#cv-res').value, au = q<HTMLSelectElement>('#cv-audio').value;
+    const portrait = info.video.h > info.video.w;
+    const scale = res === 'keep' ? [] : ['-vf', portrait ? `scale=${res}:-2` : `scale=-2:${res}`];
+    const audio = au === 'none' || !info.audio ? ['-an'] : ['-map', '0:a:0?', '-c:a', 'aac', '-b:a', `${au}k`, ...(au === '64' ? ['-ac', '1'] : [])];
+    const args = ['-i', '{in}', '-map', '0:v:0', ...audio, '-c:v', 'libx264', '-preset', 'veryfast', '-crf', crf, '-pix_fmt', 'yuv420p', ...scale, '-movflags', '+faststart', 'out.mp4'];
+    task.show('Compressing… (this can take a while)');
+    try {
+      const data = await run(file, args, 'out.mp4', info.duration, (p) => task.set('Compressing…', p));
+      out = { blob: toBlob(data, 'video/mp4'), name: `${baseName(file.name)}-compressed.mp4` };
+      task.hide(); result.hidden = false;
+      const saved = 1 - out.blob.size / file.size, smaller = saved > 0.02;
+      q('[data-rsum]').textContent = smaller ? `${formatBytes(file.size)} → ${formatBytes(out.blob.size)} (${Math.round(saved * 100)}% smaller)` : `The result is ${formatBytes(out.blob.size)}, not smaller than the original (${formatBytes(file.size)}).`;
+      q('[data-rhead]').querySelector('svg')!.classList.toggle('text-success', smaller);
+      q('[data-rnote]').textContent = smaller ? '' : 'This video is already well compressed. Try “Smallest file” or a lower resolution, or keep the original.';
+      URL.revokeObjectURL(url); url = URL.createObjectURL(out.blob); q<HTMLVideoElement>('[data-player]').src = url;
+    } catch (e) { if (cancelled) return; task.hide(); opts.hidden = false; showError(err, (e as Error).message); }
+  });
+  q('[data-dl]').addEventListener('click', () => out && downloadBlob(out.blob, out.name));
+  q('[data-edit]').addEventListener('click', () => { result.hidden = true; opts.hidden = false; q<HTMLVideoElement>('[data-player]').pause(); });
+  const reset = () => { file = null; info = null; out = null; result.hidden = true; opts.hidden = true; drop.hidden = false; showError(err, null); q<HTMLVideoElement>('[data-player]').removeAttribute('src'); };
+  q('[data-again]').addEventListener('click', reset); q('[data-change]').addEventListener('click', reset);
+  initDropzone(drop, { accept: ['video/*', '.mkv', '.mov', '.m4v', '.avi', '.wmv', '.flv', '.3gp', '.ts', '.mts', '.webm'], maxBytes: 1024 ** 3, onFiles: (f) => pick(f[0]), onError: (m) => showError(err, m || null) });
+</script>

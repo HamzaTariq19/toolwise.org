@@ -1,0 +1,91 @@
+---
+import Icon from '../components/Icon.astro';
+import Dropzone from '../components/Dropzone.astro';
+import TaskProgress from '../components/TaskProgress.astro';
+const swatches = ['transparent', '#ffffff', '#000000', '#f1f5f9', '#fde68a', '#bfdbfe', '#bbf7d0', '#fecaca'];
+---
+<div id="br" class="space-y-4">
+  <p class="alert alert-error" data-unsupported hidden role="alert"><Icon name="CircleAlert" size={18} class="mt-0.5 flex-none" /><span>This browser can't run the AI model. Please use the latest Chrome, Edge, Firefox or Safari.</span></p>
+  <Dropzone id="br-drop" accept="image/jpeg,image/png,image/webp,.heic,.heif" formats="JPG, PNG, WebP or HEIC" maxLabel="30 MB" icon="Eraser" label="Choose photo" />
+  <p class="alert alert-error" data-error hidden role="alert"><Icon name="CircleAlert" size={18} class="mt-0.5 flex-none" /><span data-msg></span></p>
+  <section class="card space-y-3 p-5 text-center" data-consent hidden>
+    <span class="icon-tile mx-auto h-12 w-12"><Icon name="Download" size={24} /></span>
+    <p class="font-semibold">One-time download of the AI model (about <span data-mb>61</span> MB)</p>
+    <p class="mx-auto max-w-md text-sm text-muted">Background removal runs entirely on your device, so your photo is never uploaded. The model is saved in your browser, so next time it starts straight away. On mobile data, you may prefer Wi-Fi.</p>
+    <div class="flex flex-col justify-center gap-3 sm:flex-row"><button type="button" class="btn btn-primary btn-lg" data-consentgo><Icon name="Eraser" size={18} />Download and remove background</button><button type="button" class="btn btn-ghost btn-lg" data-consentno>Not now</button></div>
+  </section>
+  <TaskProgress id="br-task" />
+  <section class="space-y-4" data-result hidden aria-live="polite">
+    <div class="segmented" role="radiogroup" aria-label="Show"><label><input type="radio" name="br-view" value="result" checked /><span>Result</span></label><label><input type="radio" name="br-view" value="original" /><span>Original</span></label></div>
+    <div class="br-stage card overflow-hidden p-2"><canvas class="mx-auto block h-auto max-h-[65vh] max-w-full" data-canvas></canvas></div>
+    <div><p class="label">Background</p>
+      <div class="flex flex-wrap items-center gap-2" role="radiogroup" aria-label="Background color">
+        {swatches.map((s, i) => <button type="button" class="br-sw h-10 w-10 rounded-full border-2 border-line-strong" data-bg={s} aria-pressed={i === 0 ? 'true' : 'false'} aria-label={s === 'transparent' ? 'Transparent' : `Color ${s}`} style={s === 'transparent' ? '' : `background:${s}`}></button>)}
+        <label class="br-sw relative h-10 w-10 cursor-pointer overflow-hidden rounded-full border-2 border-line-strong" title="Pick any color"><span class="sr-only">Pick any color</span><input type="color" value="#2563eb" class="absolute -inset-2 h-14 w-14 cursor-pointer" data-custom /></label>
+      </div></div>
+    <p class="text-sm text-muted" data-rsum></p>
+    <div class="flex flex-col gap-3 sm:flex-row"><button type="button" class="btn btn-primary btn-lg" data-dl><Icon name="Download" size={18} /><span data-label>Download PNG</span></button><button type="button" class="btn btn-secondary btn-lg" data-again><Icon name="RotateCcw" size={18} />Another photo</button></div>
+  </section>
+  <p class="text-xs text-subtle">AI model: IS-Net (<a class="underline" href="https://github.com/xuebinqin/DIS" rel="noopener">DIS</a>, Apache License 2.0), run with <a class="underline" href="https://onnxruntime.ai" rel="noopener">ONNX Runtime Web</a> (MIT). Works best on photos with a clear main subject.</p>
+</div>
+<style is:global>
+  #br .br-stage, #br [data-bg=transparent] { background-color: #fff; background-image: linear-gradient(45deg, #e5e7eb 25%, transparent 25%), linear-gradient(-45deg, #e5e7eb 25%, transparent 25%), linear-gradient(45deg, transparent 75%, #e5e7eb 75%), linear-gradient(-45deg, transparent 75%, #e5e7eb 75%); background-size: 16px 16px; background-position: 0 0, 0 8px, 8px -8px, -8px 0; }
+  #br .br-sw[aria-pressed=true], #br .br-sw:has(input:focus-visible) { outline: 3px solid var(--ring); outline-offset: 2px; }
+</style>
+<script>
+  import { initDropzone } from '../lib/dropzone';
+  import { taskProgress } from '../lib/task-progress';
+  import { bgSupported, modelCached, loadModel, stopModel, predict, cutout, MODEL_BYTES } from '../lib/bg-remove';
+  import { decodeAny, type Decoded } from '../lib/image';
+  import { showError, formatBytes, baseName, downloadBlob } from '../lib/ui';
+  const root = document.getElementById('br')!, q = <T extends HTMLElement = HTMLElement>(s: string) => root.querySelector(s) as T;
+  const drop = q('#br-drop'), err = q('[data-error]'), result = q('[data-result]'), consent = q('[data-consent]'), canvas = q<HTMLCanvasElement>('[data-canvas]');
+  q('[data-mb]').textContent = String(Math.round(MODEL_BYTES / 1e6));
+  const MAX_SIDE = 4096;
+  let file: File | null = null, img: Decoded | null = null, mask: HTMLCanvasElement | null = null, bg: string | null = null, cancelled = false, w = 0, h = 0;
+  const task = taskProgress(q('#br-task'), () => { cancelled = true; stopModel(); task.hide(); drop.hidden = false; showError(err, 'Cancelled.'); });
+  if (!bgSupported()) { q('[data-unsupported]').hidden = false; drop.hidden = true; }
+  async function pick(f: File) {
+    file = f; cancelled = false; showError(err, null); result.hidden = true; drop.hidden = true;
+    try {
+      task.show('Opening the photo…');
+      img?.close?.(); img = await decodeAny(f);
+      const s = Math.min(1, MAX_SIDE / Math.max(img.width, img.height)); w = Math.round(img.width * s); h = Math.round(img.height * s);
+      task.hide();
+      if (await modelCached()) return go(); else consent.hidden = false;
+    } catch (e) { task.hide(); drop.hidden = false; showError(err, (e as Error).message || 'This image could not be opened.'); }
+  }
+  async function go() {
+    if (!img) return;
+    consent.hidden = true; cancelled = false;
+    task.show('Getting the AI model ready…');
+    try {
+      await loadModel(task.download('the AI model'));
+      if (cancelled) return;
+      task.set('Removing the background…', null, 'This takes a few seconds, longer on phones.');
+      mask = await predict(img.source as CanvasImageSource & { width: number; height: number });
+      if (cancelled) return;
+      task.hide(); result.hidden = false; render();
+      q('[data-rsum]').textContent = `${w} × ${h} px${w < img.width ? ` (reduced from ${img.width} × ${img.height} for processing)` : ''}. Tip: transparent PNGs keep the cut-out for use in other designs.`;
+    } catch (e) { if (cancelled) return; task.hide(); drop.hidden = false; showError(err, /memory|allocation/i.test(String(e)) ? 'Your device ran out of memory. Try a smaller photo or close other tabs.' : (e as Error).message); }
+  }
+  function render() {
+    if (!img || !mask) return;
+    const view = (q<HTMLInputElement>('input[name=br-view]:checked')).value;
+    const out = view === 'original' ? (() => { const c = document.createElement('canvas'); c.width = w; c.height = h; c.getContext('2d')!.drawImage(img!.source, 0, 0, w, h); return c; })() : cutout(img.source, w, h, mask, bg);
+    canvas.width = w; canvas.height = h; const ctx = canvas.getContext('2d')!; ctx.clearRect(0, 0, w, h); ctx.drawImage(out, 0, 0);
+    q('[data-dl] [data-label]').textContent = bg ? 'Download JPG' : 'Download PNG';
+  }
+  root.querySelectorAll('input[name=br-view]').forEach((r) => r.addEventListener('change', render));
+  root.querySelectorAll<HTMLButtonElement>('[data-bg]').forEach((b) => b.addEventListener('click', () => { bg = b.dataset.bg === 'transparent' ? null : b.dataset.bg!; root.querySelectorAll('[data-bg]').forEach((x) => x.setAttribute('aria-pressed', String(x === b))); render(); }));
+  q('[data-custom]').addEventListener('input', (e) => { bg = (e.target as HTMLInputElement).value; root.querySelectorAll('[data-bg]').forEach((x) => x.setAttribute('aria-pressed', 'false')); render(); });
+  q('[data-dl]').addEventListener('click', () => {
+    if (!img || !mask || !file) return;
+    const c = cutout(img.source, w, h, mask, bg), type = bg ? 'image/jpeg' : 'image/png';
+    c.toBlob((b) => { if (b) { downloadBlob(b, `${baseName(file!.name)}-no-background.${bg ? 'jpg' : 'png'}`); q('[data-rsum]').textContent = `Saved ${formatBytes(b.size)}.`; } }, type, 0.92);
+  });
+  q('[data-consentgo]').addEventListener('click', go);
+  q('[data-consentno]').addEventListener('click', () => { consent.hidden = true; drop.hidden = false; });
+  q('[data-again]').addEventListener('click', () => { result.hidden = true; drop.hidden = false; mask = null; img?.close?.(); img = null; });
+  initDropzone(drop, { accept: ['image/jpeg', 'image/png', 'image/webp', '.heic', '.heif'], maxBytes: 30 * 1024 * 1024, onFiles: (f) => pick(f[0]), onError: (m) => showError(err, m || null) });
+</script>

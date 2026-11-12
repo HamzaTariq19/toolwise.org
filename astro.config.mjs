@@ -18,5 +18,8 @@ export default defineConfig({
     plugins: [tailwindcss()],
     // Heavy libraries (HEIC decoder, PDF.js) are lazy-loaded only on the page that needs them.
     build: { chunkSizeWarningLimit: 1600 },
+    // ffmpeg.wasm runs in a module worker; keep it out of dev pre-bundling.
+    worker: { format: 'es' },
+    optimizeDeps: { exclude: ['@ffmpeg/ffmpeg', '@ffmpeg/util'] },
   },
 });

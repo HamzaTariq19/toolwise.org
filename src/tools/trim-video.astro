@@ -1,0 +1,92 @@
+---
+import Icon from '../components/Icon.astro';
+import Dropzone from '../components/Dropzone.astro';
+import TaskProgress from '../components/TaskProgress.astro';
+import FfmpegNote from '../components/FfmpegNote.astro';
+import ClipRange from '../components/ClipRange.astro';
+---
+<div id="tv" class="space-y-4">
+  <p class="alert alert-error" data-unsupported hidden role="alert"><Icon name="CircleAlert" size={18} class="mt-0.5 flex-none" /><span>This browser can't run the video tools. Please use the latest Chrome, Edge, Firefox or Safari.</span></p>
+  <Dropzone id="tv-drop" accept="video/*,.mkv,.mov,.m4v,.avi,.wmv,.flv,.3gp,.ts,.mts" formats="MP4, MOV, WebM, MKV and more" maxLabel="2 GB" icon="FileVideo" label="Choose video" />
+  <p class="alert alert-error" data-error hidden role="alert"><Icon name="CircleAlert" size={18} class="mt-0.5 flex-none" /><span data-msg></span></p>
+  <section class="card space-y-4 p-4 sm:p-5" data-opts hidden>
+    <div class="flex items-start gap-3"><div class="min-w-0 flex-1"><p class="truncate font-semibold" data-name></p><p class="text-sm text-muted" data-meta></p></div><button type="button" class="btn btn-ghost btn-sm" data-change>Change</button></div>
+    <p class="alert alert-info" data-nopreview hidden><Icon name="Info" size={18} class="mt-0.5 flex-none" /><span>Your browser can't play this format, so there's no preview. You can still trim it by typing the start and end times.</span></p>
+    <ClipRange id="tv-clip" />
+    <div><p class="label">Cutting method</p>
+      <div class="segmented" role="radiogroup" aria-label="Cutting method"><label><input type="radio" name="tv-mode" value="fast" checked /><span>Fast, original quality</span></label><label><input type="radio" name="tv-mode" value="exact" /><span>Exact frame</span></label></div>
+      <p class="hint" data-modehint></p>
+    </div>
+    <label class="flex min-h-11 items-center gap-2.5 text-[0.9375rem]"><input type="checkbox" id="tv-mute" class="h-5 w-5 accent-[var(--brand)]" />Remove the sound</label>
+    <button type="button" class="btn btn-primary btn-lg w-full sm:w-auto" data-go><Icon name="Scissors" size={18} />Trim video</button>
+  </section>
+  <TaskProgress id="tv-task" />
+  <section class="card space-y-4 p-4 sm:p-5" data-result hidden aria-live="polite">
+    <div class="flex items-center gap-2 text-success"><Icon name="CircleCheck" size={22} /><p class="font-semibold text-[var(--text)]" data-rsum></p></div>
+    <video controls playsinline class="max-h-[50vh] w-full rounded-xl bg-black" data-player></video>
+    <div class="flex flex-col gap-3 sm:flex-row"><button type="button" class="btn btn-primary btn-lg" data-dl><Icon name="Download" size={18} />Download</button><button type="button" class="btn btn-secondary btn-lg" data-edit><Icon name="Scissors" size={18} />Change the cut</button><button type="button" class="btn btn-ghost btn-lg" data-again>Another video</button></div>
+  </section>
+  <FfmpegNote />
+</div>
+<script>
+  import { initDropzone } from '../lib/dropzone';
+  import { taskProgress } from '../lib/task-progress';
+  import { clipRange, fmtTime } from '../lib/clip-range';
+  import { showError, formatBytes, baseName, downloadBlob } from '../lib/ui';
+  import { ffmpegSupported, loadFFmpeg, probe, run, cancelFFmpeg, toBlob, sec, type Probe } from '../lib/ffmpeg';
+  const root = document.getElementById('tv')!, q = <T extends HTMLElement = HTMLElement>(s: string) => root.querySelector(s) as T;
+  const drop = q('#tv-drop'), opts = q('[data-opts]'), result = q('[data-result]'), err = q('[data-error]');
+  const clip = clipRange(q('#tv-clip'));
+  const KEEP = ['mp4', 'mov', 'm4v', 'webm', 'mkv'], TYPE: Record<string, string> = { mp4: 'video/mp4', m4v: 'video/mp4', mov: 'video/quicktime', webm: 'video/webm', mkv: 'video/x-matroska' };
+  let file: File | null = null, info: Probe | null = null, out: { blob: Blob; name: string } | null = null, cancelled = false, url = '';
+  const task = taskProgress(q('#tv-task'), () => { cancelled = true; cancelFFmpeg(); task.hide(); if (file && info) opts.hidden = false; else drop.hidden = false; showError(err, 'Cancelled.'); });
+  if (!ffmpegSupported()) { q('[data-unsupported]').hidden = false; drop.hidden = true; }
+  const mode = () => (q<HTMLInputElement>('input[name=tv-mode]:checked')).value;
+  const hint = () => (q('[data-modehint]').textContent = mode() === 'fast' ? 'Copies the video without re-encoding, so it is quick and keeps the original quality. The cut snaps to the nearest keyframe, so it can start up to a couple of seconds early.' : 'Re-encodes the clip so it starts and ends on exactly the frames you chose. Slower, and saved as MP4.');
+  root.querySelectorAll('input[name=tv-mode]').forEach((r) => r.addEventListener('change', hint)); hint();
+  async function pick(f: File) {
+    file = f; out = null; cancelled = false; result.hidden = true; drop.hidden = true; showError(err, null);
+    task.show('Getting the video tools ready…');
+    try {
+      await loadFFmpeg(task.download('video tools'));
+      task.set('Reading the video…', null, '');
+      info = await probe(f);
+      if (!info.video) throw new Error('This file has no video track. To cut audio, use the Cut Audio tool.');
+      q('[data-name]').textContent = f.name;
+      q('[data-meta]').textContent = `${formatBytes(f.size)} · ${fmtTime(info.duration)} · ${info.video.w} × ${info.video.h} · ${info.video.codec.toUpperCase()}${info.audio ? '' : ' · no sound'}`;
+      await clip.load(f, info.duration); if (!clip.duration) clip.setDuration(info.duration);
+      q('[data-nopreview]').hidden = clip.previewable();
+      task.hide(); opts.hidden = false;
+    } catch (e) { if (cancelled) return; task.hide(); drop.hidden = false; opts.hidden = true; file = null; showError(err, (e as Error).message || 'Something went wrong.'); }
+  }
+  q('[data-go]').addEventListener('click', async () => {
+    if (!file || !info) return;
+    const a = clip.start, b = clip.end, len = b - a, mute = q<HTMLInputElement>('#tv-mute').checked;
+    if (len < 0.1) return showError(err, 'Choose a longer section to keep.');
+    if (a < 0.05 && b > info.duration - 0.05 && !mute) return showError(err, 'The whole video is selected. Move the start or end handle to choose the part to keep.');
+    cancelled = false; opts.hidden = true; showError(err, null);
+    const ext0 = (file.name.split('.').pop() ?? '').toLowerCase(), fast = mode() === 'fast';
+    const ext = fast && KEEP.includes(ext0) ? ext0 : 'mp4', name = `out.${ext}`;
+    const audio = mute || !info.audio ? ['-an'] : ['-map', '0:a:0?'];
+    const args = fast
+      ? ['-ss', sec(a), '-i', '{in}', '-t', sec(len), '-map', '0:v:0', ...audio, '-c', 'copy', '-avoid_negative_ts', 'make_zero', ...(ext === 'webm' || ext === 'mkv' ? [] : ['-movflags', '+faststart']), name]
+      : ['-ss', sec(a), '-i', '{in}', '-t', sec(len), '-map', '0:v:0', ...audio, '-c:v', 'libx264', '-preset', 'veryfast', '-crf', '20', '-pix_fmt', 'yuv420p', ...(mute || !info.audio ? [] : ['-c:a', 'aac', '-b:a', '160k']), '-movflags', '+faststart', name];
+    task.show(fast ? 'Cutting the video…' : 'Re-encoding the clip…');
+    try {
+      const data = await run(file, args, name, len, (p) => task.set(fast ? 'Cutting the video…' : 'Re-encoding the clip…', p));
+      out = { blob: toBlob(data, TYPE[ext] ?? 'video/mp4'), name: `${baseName(file.name)}-trimmed.${ext}` };
+      task.hide(); result.hidden = false;
+      q('[data-rsum]').textContent = `${out.name} · ${fmtTime(len)} · ${formatBytes(out.blob.size)}`;
+      URL.revokeObjectURL(url); url = URL.createObjectURL(out.blob); q<HTMLVideoElement>('[data-player]').src = url;
+      q<HTMLButtonElement>('[data-dl]').focus();
+    } catch (e) {
+      if (cancelled) return; task.hide(); opts.hidden = false;
+      showError(err, fast ? `${(e as Error).message} Try the “Exact frame” method, which re-encodes the video.` : (e as Error).message);
+    }
+  });
+  q('[data-dl]').addEventListener('click', () => out && downloadBlob(out.blob, out.name));
+  q('[data-edit]').addEventListener('click', () => { result.hidden = true; opts.hidden = false; q<HTMLVideoElement>('[data-player]').pause(); });
+  const reset = () => { file = null; info = null; out = null; result.hidden = true; opts.hidden = true; drop.hidden = false; showError(err, null); clip.clear(); q<HTMLVideoElement>('[data-player]').removeAttribute('src'); };
+  q('[data-again]').addEventListener('click', reset); q('[data-change]').addEventListener('click', reset);
+  initDropzone(drop, { accept: ['video/*', '.mkv', '.mov', '.m4v', '.avi', '.wmv', '.flv', '.3gp', '.ts', '.mts', '.webm'], maxBytes: 2 * 1024 ** 3, onFiles: (f) => pick(f[0]), onError: (m) => showError(err, m || null) });
+</script>

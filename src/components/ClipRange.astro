@@ -1,0 +1,30 @@
+---
+// Video preview with a start/end range selector (two-thumb slider, time fields, "set from playhead" buttons).
+import Icon from './Icon.astro';
+interface Props { id: string; audio?: boolean }
+const { id, audio = false } = Astro.props;
+---
+<div id={id} class="space-y-3" data-clip>
+  {audio ? <audio class="w-full" controls preload="metadata" data-media></audio>
+    : <video class="max-h-[60vh] w-full rounded-xl bg-black" controls playsinline preload="metadata" data-media></video>}
+  <div class="clip-range relative h-11" data-track>
+    <div class="absolute inset-x-0 top-1/2 h-2 -translate-y-1/2 rounded-full bg-surface-2"></div>
+    <div class="absolute top-1/2 h-2 -translate-y-1/2 rounded-full bg-[var(--cat)]" data-sel></div>
+    <input type="range" min="0" max="1000" step="1" value="0" aria-label="Start time" data-r="a" />
+    <input type="range" min="0" max="1000" step="1" value="1000" aria-label="End time" data-r="b" />
+  </div>
+  <div class="grid grid-cols-2 gap-3">
+    <div><label class="label" for={`${id}-a`}>Start</label><div class="flex gap-1.5"><input id={`${id}-a`} class="input mono min-w-0 tabular" inputmode="decimal" data-t="a" /><button type="button" class="btn btn-secondary !px-3" data-set="a" title="Use the current playback position" aria-label="Set start to the current playback position"><Icon name="ArrowDownToDot" size={18} /></button></div></div>
+    <div><label class="label" for={`${id}-b`}>End</label><div class="flex gap-1.5"><input id={`${id}-b`} class="input mono min-w-0 tabular" inputmode="decimal" data-t="b" /><button type="button" class="btn btn-secondary !px-3" data-set="b" title="Use the current playback position" aria-label="Set end to the current playback position"><Icon name="ArrowDownToDot" size={18} /></button></div></div>
+  </div>
+  <div class="flex flex-wrap items-center justify-between gap-2 text-sm"><p class="text-muted" data-len></p><button type="button" class="btn btn-ghost btn-sm" data-preview><Icon name="Play" size={16} />Play selection</button></div>
+  <p class="text-sm text-danger" data-terr hidden></p>
+</div>
+<style is:global>
+  .clip-range input[type=range] { position: absolute; inset: 0; width: 100%; margin: 0; background: none; pointer-events: none; -webkit-appearance: none; appearance: none; height: 100%; }
+  .clip-range input[type=range]::-webkit-slider-runnable-track { background: none; height: 100%; }
+  .clip-range input[type=range]::-moz-range-track { background: none; }
+  .clip-range input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; pointer-events: auto; width: 22px; height: 30px; margin-top: 7px; border-radius: 7px; background: var(--surface); border: 2.5px solid var(--cat); box-shadow: 0 1px 4px rgb(0 0 0 / .25); cursor: ew-resize; }
+  .clip-range input[type=range]::-moz-range-thumb { pointer-events: auto; width: 18px; height: 26px; border-radius: 7px; background: var(--surface); border: 2.5px solid var(--cat); cursor: ew-resize; }
+  .clip-range input[type=range]:focus-visible::-webkit-slider-thumb { outline: 2.5px solid var(--ring); outline-offset: 2px; }
+</style>

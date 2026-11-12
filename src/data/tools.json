@@ -654,7 +654,7 @@
       "cut out person",
       "bg remover"
     ],
-    "status": "later"
+    "status": "built"
   },
   {
     "id": 41,
@@ -2634,7 +2634,7 @@
       "ringtone maker",
       "audio cutter"
     ],
-    "status": "later"
+    "status": "built"
   },
   {
     "id": 166,
@@ -2649,7 +2649,7 @@
       "wav to mp3",
       "convert to mp3"
     ],
-    "status": "later"
+    "status": "built"
   },
   {
     "id": 167,
@@ -2664,7 +2664,7 @@
       "mp4 to gif",
       "animated gif"
     ],
-    "status": "later"
+    "status": "built"
   },
   {
     "id": 168,
@@ -2679,7 +2679,7 @@
       "shrink video",
       "video compressor"
     ],
-    "status": "later"
+    "status": "built"
   },
   {
     "id": 169,
@@ -2694,7 +2694,7 @@
       "video cutter",
       "shorten video"
     ],
-    "status": "later"
+    "status": "built"
   },
   {
     "id": 170,
@@ -2709,6 +2709,6 @@
       "mp4 to mp3",
       "extract sound"
     ],
-    "status": "later"
+    "status": "built"
   }
 ]

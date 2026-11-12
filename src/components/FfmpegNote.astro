@@ -1,0 +1,11 @@
+---
+// License notice for pages that run FFmpeg in the browser (ffmpeg.wasm core is GPL-2.0-or-later).
+import vendor from '../data/vendor.json';
+const mb = Math.round(vendor.ffmpeg.size / 1e6);
+---
+<p class="text-xs text-subtle" data-noprint>
+  Uses <a class="underline" href="https://ffmpeg.org" rel="noopener">FFmpeg</a> compiled to WebAssembly
+  (<a class="underline" href="https://github.com/ffmpegwasm/ffmpeg.wasm" rel="noopener">ffmpeg.wasm</a>, core {vendor.ffmpeg.version}),
+  licensed under the GNU GPL v2 or later. <a class="underline" href="https://github.com/ffmpegwasm/ffmpeg.wasm/tree/main/src" rel="noopener">Source code</a>.
+  The first use downloads about {mb} MB, which your browser keeps for next time.
+</p>
