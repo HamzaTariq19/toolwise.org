@@ -83,7 +83,7 @@ if (live) {
           </div>
         </header>
 
-        <section class="min-w-0 [grid-area:tool] [overflow-wrap:anywhere]" aria-label={tool.name}>
+        <section class="tool-area min-w-0 [grid-area:tool] [overflow-wrap:anywhere]" aria-label={tool.name}>
           <ToolUI tool={tool} />
           {(tool.category === 'finance' || tool.category === 'health') && (
             <p class="mt-4 flex items-start gap-2 text-sm text-muted">
@@ -91,7 +91,7 @@ if (live) {
               <span>
                 Results are estimates for general information only and are not {tool.category === 'health' ? 'medical' : 'financial'} advice.
                 {tool.category === 'health' ? ' Talk to a doctor or other qualified health professional about your health.' : ' Check important figures with a qualified professional or your lender.'}{' '}
-                <a href="/disclaimer">Read our disclaimer</a>.
+                <a href="/disclaimer" class="font-medium underline underline-offset-2">Read our disclaimer</a>.
               </span>
             </p>
           )}

@@ -2,6 +2,8 @@
 import Logo from './Logo.astro';
 import Icon from './Icon.astro';
 import { categories } from '../data/categories';
+import { tools, isLive } from '../lib/tools';
+const liveCount = tools.filter(isLive).length;
 
 const primary = ['pdf', 'image', 'text', 'finance', 'converters', 'developer'];
 const navItems = primary.map((s) => categories.find((c) => c.slug === s)!);
@@ -55,7 +57,7 @@ const path = Astro.url.pathname;
     <div class="flex items-center gap-2 border-b border-line px-3">
       <Icon name="Search" size={20} class="ml-1 text-subtle" />
       <label for="search-dialog-input" class="sr-only">Search tools</label>
-      <input id="search-dialog-input" type="search" autocomplete="off" spellcheck="false" placeholder="Search 170 free tools…"
+      <input id="search-dialog-input" type="search" autocomplete="off" spellcheck="false" placeholder={`Search ${liveCount} free tools…`}
         class="h-14 min-w-0 flex-1 bg-transparent text-[1.0625rem] text-ink outline-none placeholder:text-subtle" />
       <button type="button" class="btn btn-ghost btn-sm" data-search-close>Close</button>
     </div>

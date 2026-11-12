@@ -1,5 +1,7 @@
 ---
 import Icon from '../components/Icon.astro';
+// Default 12 × 12 chart rendered at build time (the script redraws the same markup)
+const N = 12, R = Array.from({ length: N }, (_, i) => i + 1);
 ---
 <div id="mx" class="space-y-4">
   <div class="segmented" role="radiogroup" aria-label="Mode">
@@ -16,7 +18,7 @@ import Icon from '../components/Icon.astro';
     <p class="min-h-6 text-center font-semibold tabular" data-hover aria-live="polite">Tap a square to see the fact.</p>
     <div class="overflow-x-auto" data-printable>
       <h2 class="mb-2 hidden text-lg font-bold print:block" data-ptitle>Multiplication table</h2>
-      <div data-chart></div>
+      <div data-chart><table class="mxt" aria-label="Multiplication chart"><thead><tr><th scope="col">×</th>{R.map((j) => <th scope="col">{j}</th>)}</tr></thead><tbody>{R.map((i) => <tr><th scope="row">{i}</th>{R.map((j) => <td data-i={i} data-j={j} class={i === j ? 'sq' : ''}>{i * j}</td>)}</tr>)}</tbody></table></div>
     </div>
   </section>
 

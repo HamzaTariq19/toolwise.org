@@ -10,14 +10,15 @@ export interface Tool {
   icon: string;
   priority: number;
   keywords: string[];
-  /** "built" when the tool is finished (needs src/tools/<slug>.astro + src/content/tools/<slug>.md) */
-  status: 'planned' | 'later' | 'built';
+  /** "built" when the tool is finished (needs src/tools/<slug>.astro + src/content/tools/<slug>.md).
+   *  "skipped" tools are left out of the site entirely: no page, listing or search entry. */
+  status: 'planned' | 'later' | 'built' | 'skipped';
 }
 
 const implementations = import.meta.glob('../tools/*.astro');
 const builtSlugs = new Set(Object.keys(implementations).map((p) => p.split('/').pop()!.replace('.astro', '')));
 
-export const tools: Tool[] = toolsData as Tool[];
+export const tools: Tool[] = (toolsData as Tool[]).filter((t) => t.status !== 'skipped');
 
 for (const t of tools) {
   if (t.status === 'built' && !builtSlugs.has(t.slug)) throw new Error(`${t.slug} is marked "built" but src/tools/${t.slug}.astro is missing`);

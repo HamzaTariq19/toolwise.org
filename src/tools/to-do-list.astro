@@ -19,7 +19,7 @@ import LocalNote from '../components/LocalNote.astro';
     <div class="segmented" role="radiogroup" aria-label="Show"><label><input type="radio" name="td-f" value="all" checked /><span>All</span></label><label><input type="radio" name="td-f" value="active" /><span>To do</span></label><label><input type="radio" name="td-f" value="done" /><span>Done</span></label></div>
     <p class="text-sm text-muted" data-count aria-live="polite"></p>
   </div>
-  <ul class="card divide-y divide-[var(--border)] overflow-hidden" data-items></ul>
+  <ul class="card divide-y divide-[var(--border)] overflow-hidden" data-items><li class="px-5 py-8 text-center text-muted">No tasks yet. Add your first one above.</li></ul>
   <div class="flex flex-wrap gap-2">
     <button type="button" class="btn btn-ghost btn-sm" data-cleardone><Icon name="ListX" size={16} />Remove completed</button>
     <button type="button" class="btn btn-ghost btn-sm" data-copy><Icon name="Copy" size={16} /><span data-label>Copy as text</span></button>

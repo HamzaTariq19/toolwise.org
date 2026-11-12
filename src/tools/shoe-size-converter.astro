@@ -3,6 +3,10 @@
 const W = [[5, 2.5, 35.5, 22], [5.5, 3, 36, 22.5], [6, 3.5, 36.5, 23], [6.5, 4, 37, 23.5], [7, 4.5, 37.5, 24], [7.5, 5, 38, 24.5], [8, 5.5, 38.5, 25], [8.5, 6, 39, 25.5], [9, 6.5, 40, 26], [9.5, 7, 40.5, 26.5], [10, 7.5, 41, 27], [10.5, 8, 42, 27.5], [11, 8.5, 42.5, 28], [12, 9.5, 44, 29]];
 const M = [[6, 5.5, 39, 24], [6.5, 6, 39.5, 24.5], [7, 6.5, 40, 25], [7.5, 7, 40.5, 25.5], [8, 7.5, 41, 26], [8.5, 8, 42, 26.5], [9, 8.5, 42.5, 27], [9.5, 9, 43, 27.5], [10, 9.5, 44, 28], [10.5, 10, 44.5, 28.5], [11, 10.5, 45, 29], [11.5, 11, 45.5, 29.5], [12, 11.5, 46, 30], [13, 12.5, 47.5, 31], [14, 13.5, 48.5, 32]];
 const K = [[10, 9.5, 27, 16.5], [11, 10.5, 28, 17], [12, 11.5, 30, 18], [13, 12.5, 31, 19], [1, 13.5, 32, 20], [2, 1.5, 33, 20.5], [3, 2.5, 34, 21.5], [4, 3.5, 36, 22.5], [5, 4.5, 37, 23.5], [6, 5.5, 38, 24]];
+// Initial state (Women, US, middle size) rendered at build time so nothing shifts when the script runs
+const NAMES = ['US', 'UK', 'EU', 'Foot length'];
+const lab = (row: number[], i: number) => (i === 3 ? `${row[3]} cm` : String(row[i]));
+const mid = Math.floor(W.length / 2), init = W[mid];
 ---
 <div id="ss" class="space-y-5" data-charts={JSON.stringify({ W, M, K })}>
   <div class="card grid gap-4 p-5 sm:grid-cols-3 sm:p-6">
@@ -10,16 +14,16 @@ const K = [[10, 9.5, 27, 16.5], [11, 10.5, 28, 17], [12, 11.5, 30, 18], [13, 12.
       <div class="segmented"><label><input type="radio" name="ss-g" value="W" checked /><span>Women</span></label><label><input type="radio" name="ss-g" value="M" /><span>Men</span></label><label><input type="radio" name="ss-g" value="K" /><span>Kids</span></label></div>
     </fieldset>
     <div><label for="ss-sys" class="label">I know my size in</label><select id="ss-sys" class="select"><option value="0">US</option><option value="1">UK</option><option value="2">EU</option><option value="3">Foot length (cm)</option></select></div>
-    <div><label for="ss-size" class="label">Size</label><select id="ss-size" class="select"></select></div>
+    <div><label for="ss-size" class="label">Size</label><select id="ss-size" class="select">{W.map((r, i) => <option value={i} selected={i === mid}>US {lab(r, 0)}</option>)}</select></div>
     <div class="flex items-end"><p class="hint">Between sizes? Choose the larger one, especially for walking and running shoes.</p></div>
   </div>
   <section class="card p-5" aria-live="polite">
     <p class="text-sm font-medium text-muted">Your size in other systems</p>
-    <dl class="mt-3 grid grid-cols-2 gap-3 sm:grid-cols-4" data-out></dl>
+    <dl class="mt-3 grid grid-cols-2 gap-3 sm:grid-cols-4" data-out>{[0, 1, 2, 3].map((k) => <div class:list={['stat', k === 0 && 'ring-2 ring-[var(--ring)]']}><dt class="stat-label">{NAMES[k]}</dt><dd class="text-2xl font-bold tabular">{lab(init, k)}</dd></div>)}</dl>
   </section>
   <section class="card overflow-hidden" aria-labelledby="ss-chart">
-    <h2 id="ss-chart" class="border-b border-line px-5 py-3 text-base font-semibold" data-chart-title>Full size chart</h2>
-    <div class="overflow-x-auto"><table class="w-full text-center text-[0.9375rem] tabular"><thead class="bg-surface-2 text-sm text-muted"><tr><th class="px-3 py-2">US</th><th class="px-3 py-2">UK</th><th class="px-3 py-2">EU</th><th class="px-3 py-2">Foot (cm)</th></tr></thead><tbody class="divide-y divide-[var(--border)]" data-table></tbody></table></div>
+    <h2 id="ss-chart" class="border-b border-line px-5 py-3 text-base font-semibold" data-chart-title>Women's shoe size chart</h2>
+    <div class="overflow-x-auto"><table class="w-full text-center text-[0.9375rem] tabular"><thead class="bg-surface-2 text-sm text-muted"><tr><th class="px-3 py-2">US</th><th class="px-3 py-2">UK</th><th class="px-3 py-2">EU</th><th class="px-3 py-2">Foot (cm)</th></tr></thead><tbody class="divide-y divide-[var(--border)]" data-table>{W.map((r, j) => <tr class={j === mid ? 'bg-brand-soft font-semibold' : ''}>{[0, 1, 2, 3].map((k) => <td class="px-3 py-2">{lab(r, k).replace(' cm', '')}</td>)}</tr>)}</tbody></table></div>
   </section>
 </div>
 <script>

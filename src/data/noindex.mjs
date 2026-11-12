@@ -7,4 +7,4 @@ import { fileURLToPath } from 'node:url';
 const here = path.dirname(fileURLToPath(import.meta.url));
 const tools = JSON.parse(fs.readFileSync(path.join(here, 'tools.json'), 'utf8'));
 
-export const noindexPaths = new Set(tools.filter((t) => t.status !== 'built').map((t) => `/${t.slug}`));
+export const noindexPaths = new Set(tools.filter((t) => t.status !== 'built' && t.status !== 'skipped').map((t) => `/${t.slug}`));

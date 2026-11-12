@@ -1,5 +1,6 @@
 ---
 import Icon from '../components/Icon.astro';
+import { rowsHtml, DEFAULT_ROWS } from '../lib/gpa-rows';
 ---
 <div id="gpa" class="grid gap-5 md:grid-cols-[1fr_300px] md:items-start">
   <div class="card p-4 sm:p-5">
@@ -16,7 +17,7 @@ import Icon from '../components/Icon.astro';
     <div class="mt-4 hidden grid-cols-[1fr_6.5rem_5.5rem_2.75rem] gap-2 px-1 text-sm font-semibold text-muted sm:grid">
       <span>Course (optional)</span><span>Grade</span><span>Credits</span><span></span>
     </div>
-    <ul class="mt-2 space-y-3 sm:space-y-2" data-rows></ul>
+    <ul class="mt-2 space-y-3 sm:space-y-2" data-rows set:html={rowsHtml(DEFAULT_ROWS)}></ul>
     <button type="button" class="btn btn-secondary mt-4" data-add><Icon name="Plus" size={18} />Add course</button>
 
     <details class="mt-5 rounded-[10px] border border-line">
@@ -40,30 +41,19 @@ import Icon from '../components/Icon.astro';
 
 <script>
   import { num, fmt, store } from '../lib/ui';
+  import { GRADES, DEFAULT_ROWS, rowsHtml, type Row } from '../lib/gpa-rows';
 
-  const GRADES: [string, number][] = [['A+', 4.0], ['A', 4.0], ['A-', 3.7], ['B+', 3.3], ['B', 3.0], ['B-', 2.7], ['C+', 2.3], ['C', 2.0], ['C-', 1.7], ['D+', 1.3], ['D', 1.0], ['D-', 0.7], ['F', 0]];
   const root = document.getElementById('gpa')!;
   const rowsEl = root.querySelector<HTMLUListElement>('[data-rows]')!;
   const scale = document.getElementById('gpa-scale') as HTMLSelectElement;
-  type Row = { name: string; grade: string; credits: string };
   let rows: Row[] = store.get<Row[]>('tw-gpa-rows', []);
-  if (!rows.length) rows = [{ name: '', grade: 'A', credits: '3' }, { name: '', grade: 'B+', credits: '3' }, { name: '', grade: 'A-', credits: '4' }, { name: '', grade: '', credits: '' }];
+  if (!rows.length) rows = DEFAULT_ROWS.map((r) => ({ ...r }));
   scale.value = store.get('tw-gpa-scale', '4');
 
   const points = (g: string) => (g === 'A+' && scale.value === '4.3' ? 4.3 : GRADES.find(([k]) => k === g)?.[1]);
 
   function render(focusLast = false) {
-    rowsEl.innerHTML = rows.map((r, i) => `
-      <li class="grid grid-cols-[1fr_6.5rem] gap-2 rounded-[10px] border border-line p-2 sm:grid-cols-[1fr_6.5rem_5.5rem_2.75rem] sm:border-0 sm:p-0" data-i="${i}">
-        <input class="input col-span-2 sm:col-span-1" placeholder="Course ${i + 1}" aria-label="Course ${i + 1} name" data-f="name" value="${r.name.replace(/"/g, '&quot;')}" />
-        <select class="select" aria-label="Course ${i + 1} grade" data-f="grade">
-          <option value="">Grade</option>${GRADES.map(([g]) => `<option ${g === r.grade ? 'selected' : ''}>${g}</option>`).join('')}
-        </select>
-        <div class="flex gap-2 sm:contents">
-          <input class="input tabular" inputmode="decimal" placeholder="Credits" aria-label="Course ${i + 1} credits" data-f="credits" value="${r.credits}" />
-          <button type="button" class="btn btn-ghost h-11 w-11 flex-none !p-0" data-del aria-label="Remove course ${i + 1}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg></button>
-        </div>
-      </li>`).join('');
+    rowsEl.innerHTML = rowsHtml(rows);
     if (focusLast) rowsEl.querySelector<HTMLInputElement>('li:last-child input')?.focus();
     calc();
   }

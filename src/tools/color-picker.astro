@@ -1,8 +1,11 @@
 ---
+import { colorViews } from '../lib/color-picker-view';
+// Default color rendered at build time so the panels don't shift in when the script runs
+const init = colorViews({ r: 29, g: 78, b: 216, a: 1 });
 ---
 <div id="cpk" class="grid gap-5 md:grid-cols-[300px_1fr] md:items-start">
   <div class="card space-y-4 p-5">
-    <label class="relative block h-40 w-full cursor-pointer overflow-hidden rounded-xl border border-line" data-swatch>
+    <label class="relative block h-40 w-full cursor-pointer overflow-hidden rounded-xl border border-line" style="background:#1D4ED8" data-swatch>
       <input type="color" id="cpk-native" value="#1d4ed8" class="absolute inset-0 h-full w-full cursor-pointer opacity-0" aria-label="Open color picker" />
       <span class="absolute bottom-2 left-2 rounded-md bg-black/50 px-2 py-1 text-sm font-medium text-white">Tap to pick</span>
     </label>
@@ -11,34 +14,28 @@
     <div><div class="flex justify-between"><label for="cpk-a" class="label">Opacity</label><output class="text-sm font-semibold tabular" data-aout>100%</output></div><input id="cpk-a" type="range" min="0" max="100" value="100" class="h-11 w-full accent-[var(--brand)]" /></div>
   </div>
   <div class="space-y-5">
-    <section class="card p-5"><h2 class="text-base font-semibold">Color codes</h2><ul class="mt-3 space-y-2" data-codes></ul></section>
-    <section class="card p-5"><h2 class="text-base font-semibold">Shades and tints</h2><div class="mt-3 grid grid-cols-9 overflow-hidden rounded-lg" data-shades></div><p class="hint">Tap a swatch to use it.</p></section>
-    <section class="card p-5"><h2 class="text-base font-semibold">Matching colors</h2><div class="mt-3 grid gap-3 sm:grid-cols-2" data-harmony></div></section>
-    <section class="card p-5"><h2 class="text-base font-semibold">Text contrast (WCAG)</h2><div class="mt-3 grid gap-3 sm:grid-cols-2" data-contrast></div></section>
+    <section class="card p-5"><h2 class="text-base font-semibold">Color codes</h2><ul class="mt-3 space-y-2" data-codes set:html={init.codes}></ul></section>
+    <section class="card p-5"><h2 class="text-base font-semibold">Shades and tints</h2><div class="mt-3 grid grid-cols-9 overflow-hidden rounded-lg" data-shades set:html={init.shades}></div><p class="hint">Tap a swatch to use it.</p></section>
+    <section class="card p-5"><h2 class="text-base font-semibold">Matching colors</h2><div class="mt-3 grid gap-3 sm:grid-cols-2" data-harmony set:html={init.harmony}></div></section>
+    <section class="card p-5"><h2 class="text-base font-semibold">Text contrast (WCAG)</h2><div class="mt-3 grid gap-3 sm:grid-cols-2" data-contrast set:html={init.contrast}></div></section>
   </div>
 </div>
 <script>
-  import { parseColor, toHex, rgbToHsl, hslToRgb, contrast, type RGB } from '../lib/color';
+  import { parseColor, toHex, type RGB } from '../lib/color';
+  import { colorViews } from '../lib/color-picker-view';
   import { copyText, store } from '../lib/ui';
   const root = document.getElementById('cpk')!, native = document.getElementById('cpk-native') as HTMLInputElement, input = document.getElementById('cpk-in') as HTMLInputElement, alpha = document.getElementById('cpk-a') as HTMLInputElement;
   const q = (s: string) => root.querySelector<HTMLElement>(s)!;
   let cur: RGB = parseColor(store.get('tw-color', '#1D4ED8')) ?? { r: 29, g: 78, b: 216, a: 1 };
-  const sw = (c: RGB, label = '') => `<button type="button" class="aspect-square min-h-10" style="background:${toHex(c)}" data-use="${toHex(c)}" title="${toHex(c)}" aria-label="Use ${toHex(c)}${label}"></button>`;
   function show(updateInput = true) {
     store.set('tw-color', toHex({ ...cur, a: 1 }));
-    const hex = toHex(cur), hsl = rgbToHsl(cur), solid = toHex({ ...cur, a: 1 });
+    const hex = toHex(cur), solid = toHex({ ...cur, a: 1 });
     q('[data-swatch]').style.background = `linear-gradient(${hex},${hex}), repeating-conic-gradient(#ddd 0 25%, #fff 0 50%) 50%/16px 16px`;
     native.value = solid.toLowerCase();
     if (updateInput) input.value = hex;
     alpha.value = String(Math.round(cur.a * 100)); q('[data-aout]').textContent = `${alpha.value}%`;
-    const a = cur.a < 1 ? cur.a.toFixed(2).replace(/0+$/, '').replace(/\.$/, '') : '';
-    const codes = [['HEX', hex], ['RGB', a ? `rgb(${cur.r} ${cur.g} ${cur.b} / ${a})` : `rgb(${cur.r}, ${cur.g}, ${cur.b})`], ['HSL', a ? `hsl(${hsl.h} ${hsl.s}% ${hsl.l}% / ${a})` : `hsl(${hsl.h}, ${hsl.s}%, ${hsl.l}%)`], ['CSS variable', `--color-brand: ${hex};`]];
-    q('[data-codes]').innerHTML = codes.map(([k, v]) => `<li class="flex items-center justify-between gap-2 rounded-lg bg-surface-2 px-3 py-1.5"><span class="w-24 flex-none text-sm text-muted">${k}</span><code class="mono min-w-0 flex-1 truncate text-sm">${v}</code><button type="button" class="btn btn-ghost btn-sm" data-copy="${v}"><span data-label>Copy</span></button></li>`).join('');
-    q('[data-shades]').innerHTML = [95, 85, 72, 60, hsl.l, 40, 30, 20, 10].map((l) => sw({ ...hslToRgb(hsl.h, hsl.s, l), a: 1 })).join('');
-    const H = (d: number) => ({ ...hslToRgb(hsl.h + d, hsl.s, hsl.l), a: 1 });
-    q('[data-harmony]').innerHTML = [['Complementary', [0, 180]], ['Analogous', [-30, 0, 30]], ['Triadic', [0, 120, 240]], ['Split complementary', [0, 150, 210]]].map(([n, ds]) => `<div><p class="mb-1 text-sm text-muted">${n}</p><div class="grid overflow-hidden rounded-lg" style="grid-template-columns:repeat(${(ds as number[]).length},1fr)">${(ds as number[]).map((d) => sw(H(d))).join('')}</div></div>`).join('');
-    const white = { r: 255, g: 255, b: 255, a: 1 }, black = { r: 0, g: 0, b: 0, a: 1 }, base = { ...cur, a: 1 };
-    q('[data-contrast]').innerHTML = [['White text', white], ['Black text', black]].map(([n, t]) => { const r = contrast(base, t as RGB); return `<div class="rounded-lg p-3" style="background:${solid};color:${toHex(t as RGB)}"><p class="font-semibold">${n} on this color</p><p class="text-sm">Contrast ${r.toFixed(2)}:1 · ${r >= 7 ? 'AAA' : r >= 4.5 ? 'AA' : r >= 3 ? 'AA for large text only' : 'Not readable'}</p></div>`; }).join('');
+    const v = colorViews(cur);
+    q('[data-codes]').innerHTML = v.codes; q('[data-shades]').innerHTML = v.shades; q('[data-harmony]').innerHTML = v.harmony; q('[data-contrast]').innerHTML = v.contrast;
   }
   input.addEventListener('input', () => { const c = parseColor(input.value); q('[data-err]').hidden = !!c || !input.value.trim(); q('[data-err]').textContent = 'That color format is not recognized. Try #1D4ED8, rgb(29, 78, 216), hsl(224, 76%, 48%) or a name like teal.'; if (c) { cur = c; show(false); } });
   native.addEventListener('input', () => { cur = { ...parseColor(native.value)!, a: cur.a }; show(); });

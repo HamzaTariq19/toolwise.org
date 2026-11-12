@@ -91,8 +91,14 @@ import Icon from '../components/Icon.astro';
     q('[data-time]').textContent = String(dur); q('[data-result]').hidden = true;
     newPassage(); render();
   }
-  input.addEventListener('input', () => {
+  // Pasting is allowed by the browser but doesn't count: the pasted text is removed again
+  let before = '';
+  input.addEventListener('beforeinput', () => { before = input.value; });
+  input.addEventListener('input', (e) => {
     if (done) return;
+    if ((e as InputEvent).inputType?.startsWith('insertFromPaste') || (e as InputEvent).inputType === 'insertFromDrop') {
+      input.value = before; q('[data-hint]').textContent = 'Pasted text doesn’t count. Type the passage yourself.'; return;
+    }
     if (!started && input.value) {
       started = performance.now();
       timer = window.setInterval(() => { const left = Math.max(0, Math.ceil(dur - (performance.now() - started) / 1000)); q('[data-time]').textContent = String(left); render(); if (left <= 0) finish(); }, 250);
@@ -100,7 +106,6 @@ import Icon from '../components/Icon.astro';
     if (input.value.length >= passage.length) { render(); finish(); return; }
     render();
   });
-  input.addEventListener('paste', (e) => e.preventDefault());
   root.querySelectorAll('input[name=ty-dur]').forEach((r) => r.addEventListener('change', reset));
   q('[data-again]').addEventListener('click', () => { reset(); input.focus(); });
   reset();
