@@ -1,0 +1,55 @@
+---
+import Icon from '../components/Icon.astro';
+---
+<div id="uu" class="space-y-4">
+  <div class="card flex flex-wrap items-end gap-4 p-4 sm:p-5">
+    <div><label for="uu-v" class="label">Version</label><select id="uu-v" class="select !w-auto"><option value="4">v4 (random)</option><option value="7">v7 (time-ordered)</option></select></div>
+    <div><label for="uu-n" class="label">How many</label><input id="uu-n" class="input w-24 tabular" inputmode="numeric" value="5" /></div>
+    <div><label for="uu-fmt" class="label">Format</label><select id="uu-fmt" class="select !w-auto"><option value="lower">lowercase</option><option value="upper">UPPERCASE</option><option value="nodash">No hyphens</option><option value="braces">With &#123;braces&#125;</option></select></div>
+    <button type="button" class="btn btn-secondary" data-gen><Icon name="RefreshCw" size={18} />Generate new</button>
+  </div>
+  <p class="alert alert-error" data-err hidden></p>
+  <label for="uu-out" class="sr-only">Generated UUIDs</label>
+  <textarea id="uu-out" class="textarea mono !min-h-[220px] text-sm" readonly spellcheck="false"></textarea>
+  <div class="flex flex-col gap-3 sm:flex-row"><button type="button" class="btn btn-primary btn-lg" data-copy><Icon name="Copy" size={18} /><span data-label>Copy all</span></button><button type="button" class="btn btn-secondary btn-lg" data-dl><Icon name="Download" size={18} />Download .txt</button></div>
+  <section class="card p-4"><label for="uu-check" class="label">Check a UUID</label><input id="uu-check" class="input mono" placeholder="Paste a UUID to validate it" autocomplete="off" spellcheck="false" /><p class="mt-2 text-sm" data-check></p></section>
+</div>
+<script>
+  import { copyText, downloadBlob, num } from '../lib/ui';
+  const root = document.getElementById('uu')!, q = (s: string) => root.querySelector<HTMLElement>(s)!;
+  const $ = (id: string) => document.getElementById(id) as HTMLInputElement;
+  const hex = (b: Uint8Array) => Array.from(b, (x) => x.toString(16).padStart(2, '0')).join('');
+  const shape = (h: string) => `${h.slice(0, 8)}-${h.slice(8, 12)}-${h.slice(12, 16)}-${h.slice(16, 20)}-${h.slice(20)}`;
+  function v4() { const b = crypto.getRandomValues(new Uint8Array(16)); b[6] = (b[6] & 0x0f) | 0x40; b[8] = (b[8] & 0x3f) | 0x80; return shape(hex(b)); }
+  let lastMs = 0, seq = 0;
+  function v7() {
+    const b = crypto.getRandomValues(new Uint8Array(16));
+    let ms = Date.now(); if (ms <= lastMs) { ms = lastMs; seq++; } else { lastMs = ms; seq = 0; }
+    const ts = BigInt(ms); for (let i = 0; i < 6; i++) b[i] = Number((ts >> BigInt(8 * (5 - i))) & 0xffn);
+    b[6] = 0x70 | ((seq >> 8) & 0x0f); b[7] = seq & 0xff; // monotonic counter within the same millisecond
+    b[8] = (b[8] & 0x3f) | 0x80;
+    return shape(hex(b));
+  }
+  function gen() {
+    const n = Math.floor(num($('uu-n').value)), err = q('[data-err]');
+    if (!(n >= 1 && n <= 10000)) { err.hidden = false; err.textContent = 'Choose how many UUIDs to create, from 1 to 10,000.'; return; }
+    err.hidden = true;
+    const f = $('uu-fmt').value, make = $('uu-v').value === '7' ? v7 : v4;
+    ($('uu-out') as unknown as HTMLTextAreaElement).value = Array.from({ length: n }, () => { const u = make(); return f === 'upper' ? u.toUpperCase() : f === 'nodash' ? u.replace(/-/g, '') : f === 'braces' ? `{${u}}` : u; }).join('\n');
+  }
+  root.querySelector('[data-gen]')!.addEventListener('click', gen);
+  ['uu-v', 'uu-n', 'uu-fmt'].forEach((id) => $(id).addEventListener('input', gen));
+  q('[data-copy]').addEventListener('click', (e) => copyText($('uu-out').value, e.currentTarget as HTMLElement));
+  q('[data-dl]').addEventListener('click', () => downloadBlob(new Blob([$('uu-out').value], { type: 'text/plain' }), 'uuids.txt'));
+  $('uu-check').addEventListener('input', () => {
+    const s = $('uu-check').value.trim().replace(/^\{|\}$/g, ''), el = q('[data-check]');
+    const m = s.match(/^[0-9a-f]{8}-?[0-9a-f]{4}-?([0-9a-f])[0-9a-f]{3}-?([0-9a-f])[0-9a-f]{3}-?[0-9a-f]{12}$/i);
+    if (!s) { el.textContent = ''; return; }
+    if (!m) { el.innerHTML = '<span class="text-danger">✗ Not a valid UUID. It should be 32 hexadecimal digits, usually written 8-4-4-4-12.</span>'; return; }
+    const v = parseInt(m[1], 16), variant = parseInt(m[2], 16);
+    let extra = '';
+    if (v === 7) { const ms = parseInt(s.replace(/-/g, '').slice(0, 12), 16); extra = ` Created ${new Date(ms).toLocaleString()}.`; }
+    el.innerHTML = `<span class="text-success font-semibold">✓ Valid UUID</span> · version ${v}${variant >= 8 && variant <= 11 ? ' (RFC 9562)' : ''}.${extra}`;
+  });
+  gen();
+</script>

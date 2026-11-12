@@ -1,0 +1,56 @@
+---
+import Icon from '../components/Icon.astro';
+---
+<div id="ts" class="space-y-5">
+  <section class="card flex flex-wrap items-center justify-between gap-3 p-4"><div><p class="text-sm text-muted">Current Unix time</p><p class="mono text-2xl font-bold tabular" data-now></p></div><button type="button" class="btn btn-secondary btn-sm" data-copy-now><Icon name="Copy" size={16} /><span data-label>Copy</span></button></section>
+  <div class="grid gap-5 md:grid-cols-2 md:items-start">
+    <section class="card space-y-4 p-5">
+      <h2 class="text-base font-semibold">Timestamp to date</h2>
+      <div><label for="ts-in" class="label">Unix timestamp</label><input id="ts-in" class="input mono text-lg" inputmode="numeric" autocomplete="off" /><p class="hint" data-unit>Seconds or milliseconds are detected automatically.</p></div>
+      <p class="alert alert-error" data-err hidden></p>
+      <dl class="space-y-2 text-[0.9375rem]" data-out></dl>
+    </section>
+    <section class="card space-y-4 p-5">
+      <h2 class="text-base font-semibold">Date to timestamp</h2>
+      <div class="grid grid-cols-2 gap-3"><div><label for="ts-d" class="label">Date</label><input id="ts-d" type="date" class="input" /></div><div><label for="ts-t" class="label">Time</label><input id="ts-t" type="time" step="1" class="input" /></div></div>
+      <fieldset><legend class="label">Time zone</legend><div class="segmented"><label><input type="radio" name="ts-z" value="local" checked /><span>My local time</span></label><label><input type="radio" name="ts-z" value="utc" /><span>UTC</span></label></div></fieldset>
+      <dl class="space-y-2 text-[0.9375rem]" data-out2></dl>
+    </section>
+  </div>
+</div>
+<script>
+  import { copyText } from '../lib/ui';
+  const root = document.getElementById('ts')!, q = (s: string) => root.querySelector<HTMLElement>(s)!;
+  const $ = (id: string) => document.getElementById(id) as HTMLInputElement;
+  const p2 = (n: number) => String(n).padStart(2, '0');
+  const row = (k: string, v: string) => `<div class="flex items-start justify-between gap-3 rounded-lg bg-surface-2 px-3 py-2"><dt class="text-muted">${k}</dt><dd class="flex items-center gap-1 text-right"><span class="mono break-all">${v}</span><button type="button" class="btn btn-ghost h-8 w-8 flex-none !min-h-0 !p-0" data-copy="${v}" aria-label="Copy ${k}"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="8" y="8" width="14" height="14" rx="2"/><path d="M4 16V4a2 2 0 0 1 2-2h10"/></svg></button></dd></div>`;
+  function rel(ms: number) { const d = (ms - Date.now()) / 1000, a = Math.abs(d), rtf = new Intl.RelativeTimeFormat(undefined, { numeric: 'auto' }); const [n, u] = a < 60 ? [d, 'second'] : a < 3600 ? [d / 60, 'minute'] : a < 86400 ? [d / 3600, 'hour'] : a < 2629746 ? [d / 86400, 'day'] : a < 31556952 ? [d / 2629746, 'month'] : [d / 31556952, 'year']; return rtf.format(Math.round(n), u as Intl.RelativeTimeFormatUnit); }
+  function toDate() {
+    const raw = $('ts-in').value.trim(), err = q('[data-err]'); err.hidden = true;
+    if (!raw) { q('[data-out]').innerHTML = ''; return; }
+    if (!/^-?\d+(\.\d+)?$/.test(raw)) { err.hidden = false; err.textContent = 'A Unix timestamp is a number, like 1767225600.'; q('[data-out]').innerHTML = ''; return; }
+    const n = Number(raw), digits = raw.replace(/^-|\..*$/g, '').length;
+    const unit = digits > 16 ? 'µs' : digits > 13 ? 'µs?' : digits > 11 ? 'ms' : 's';
+    const ms = unit === 's' ? n * 1000 : unit === 'ms' ? n : n / 1000;
+    const d = new Date(ms);
+    if (isNaN(d.getTime())) { err.hidden = false; err.textContent = 'That timestamp is out of range.'; return; }
+    q('[data-unit]').textContent = `Read as ${unit === 's' ? 'seconds' : unit === 'ms' ? 'milliseconds' : 'microseconds'} since 1 January 1970 (UTC).`;
+    q('[data-out]').innerHTML = [row('Your time', d.toLocaleString(undefined, { dateStyle: 'full', timeStyle: 'long' })), row('UTC', d.toUTCString()), row('ISO 8601', d.toISOString()), row('Relative', rel(ms)), row('Seconds', String(Math.floor(ms / 1000))), row('Milliseconds', String(Math.round(ms)))].join('');
+  }
+  function toTs() {
+    if (!$('ts-d').value) { q('[data-out2]').innerHTML = ''; return; }
+    const [y, m, d] = $('ts-d').value.split('-').map(Number), [h = 0, mi = 0, s = 0] = ($('ts-t').value || '00:00:00').split(':').map(Number);
+    const utc = (root.querySelector('input[name=ts-z]:checked') as HTMLInputElement).value === 'utc';
+    const ms = utc ? Date.UTC(y, m - 1, d, h, mi, s) : new Date(y, m - 1, d, h, mi, s).getTime();
+    q('[data-out2]').innerHTML = [row('Seconds', String(Math.floor(ms / 1000))), row('Milliseconds', String(ms)), row('ISO 8601', new Date(ms).toISOString())].join('');
+  }
+  const now = new Date();
+  $('ts-in').value = String(Math.floor(now.getTime() / 1000));
+  $('ts-d').value = `${now.getFullYear()}-${p2(now.getMonth() + 1)}-${p2(now.getDate())}`; $('ts-t').value = `${p2(now.getHours())}:${p2(now.getMinutes())}:00`;
+  const tick = () => (q('[data-now]').textContent = String(Math.floor(Date.now() / 1000)));
+  tick(); setInterval(tick, 1000);
+  $('ts-in').addEventListener('input', toDate); root.addEventListener('input', (e) => { if (e.target !== $('ts-in')) toTs(); }); root.addEventListener('change', toTs);
+  root.addEventListener('click', (e) => { const b = (e.target as HTMLElement).closest<HTMLElement>('[data-copy]'); if (b) copyText(b.dataset.copy!, b); });
+  q('[data-copy-now]').addEventListener('click', (e) => copyText(q('[data-now]').textContent ?? '', e.currentTarget as HTMLElement));
+  toDate(); toTs();
+</script>

@@ -1,0 +1,53 @@
+---
+import Icon from '../components/Icon.astro';
+const formats = [['CODE128', 'Code 128 (letters and numbers)', 'TOOLWISE-2026'], ['EAN13', 'EAN-13 (retail, 12 or 13 digits)', '590123412345'], ['UPC', 'UPC-A (US retail, 11 or 12 digits)', '03600029145'], ['EAN8', 'EAN-8 (small products, 7 or 8 digits)', '9638507'], ['CODE39', 'Code 39 (A–Z, 0–9, - . $ / + % space)', 'ABC-123'], ['ITF14', 'ITF-14 (shipping cartons, 13 or 14 digits)', '1540014128876'], ['codabar', 'Codabar (libraries, blood banks)', 'A40156B']];
+---
+<div id="bc" class="grid gap-5 md:grid-cols-[1fr_340px] md:items-start">
+  <form class="card space-y-5 p-5 sm:p-6" novalidate onsubmit="return false" data-formats={JSON.stringify(formats)}>
+    <div><label for="bc-fmt" class="label">Barcode type</label><select id="bc-fmt" class="select">{formats.map(([v, l]) => <option value={v}>{l}</option>)}</select></div>
+    <div><label for="bc-val" class="label">Content</label><input id="bc-val" class="input mono text-lg" value="TOOLWISE-2026" autocomplete="off" spellcheck="false" /><p class="hint" data-hint></p></div>
+    <div class="grid grid-cols-2 gap-3">
+      <div><label for="bc-h" class="label">Height</label><input id="bc-h" type="range" min="40" max="200" value="100" class="h-11 w-full accent-[var(--brand)]" /></div>
+      <div><label for="bc-w" class="label">Bar width</label><input id="bc-w" type="range" min="1" max="4" value="2" class="h-11 w-full accent-[var(--brand)]" /></div>
+    </div>
+    <label class="flex min-h-11 items-center gap-3 text-[0.9375rem]"><input type="checkbox" id="bc-text" class="h-5 w-5 accent-[var(--brand)]" checked />Show the text under the bars</label>
+  </form>
+  <aside class="card p-5 md:sticky md:top-24">
+    <div class="flex min-h-40 items-center justify-center overflow-x-auto rounded-lg bg-white p-3"><svg data-svg role="img" aria-label="Barcode preview"></svg></div>
+    <p class="alert alert-error mt-3" data-err hidden role="alert"></p>
+    <button type="button" class="btn btn-primary btn-lg mt-4 w-full" data-png><Icon name="Download" size={18} />Download PNG</button>
+    <button type="button" class="btn btn-secondary mt-2 w-full" data-svgdl>Download SVG</button>
+    <p class="hint">Scan the preview with a phone barcode app to test it before printing.</p>
+  </aside>
+</div>
+<script>
+  import JsBarcode from 'jsbarcode';
+  import { downloadBlob } from '../lib/ui';
+  const root = document.getElementById('bc')!, svg = root.querySelector<SVGSVGElement>('[data-svg]')!, err = root.querySelector<HTMLElement>('[data-err]')!;
+  const formats = JSON.parse(root.querySelector<HTMLElement>('[data-formats]')!.dataset.formats!) as string[][];
+  const $ = (id: string) => document.getElementById(id) as HTMLInputElement;
+  const fmt = $('bc-fmt') as unknown as HTMLSelectElement;
+  const HINTS: Record<string, string> = { EAN13: 'Enter 12 digits and the check digit is added for you, or all 13 to verify them.', UPC: 'Enter 11 digits and the check digit is added, or all 12.', EAN8: 'Enter 7 digits, or 8 including the check digit.', ITF14: 'Enter 13 digits, or 14 including the check digit.', CODE39: 'Uppercase letters, digits and - . $ / + % and space.', codabar: 'Digits and - $ : / . +, starting and ending with A, B, C or D.', CODE128: 'Any letters, numbers and symbols on a standard keyboard.' };
+  let ok = false;
+  function render() {
+    root.querySelector('[data-hint]')!.textContent = HINTS[fmt.value];
+    const opts = { format: fmt.value, height: Number($('bc-h').value), width: Number($('bc-w').value), displayValue: $('bc-text').checked, margin: 12, background: '#ffffff', lineColor: '#000000', font: 'monospace', fontSize: 18 };
+    ok = true;
+    try {
+      if (!$('bc-val').value.trim()) throw new Error('Enter the content for the barcode.');
+      JsBarcode(svg, fmt.value === 'CODE39' ? $('bc-val').value.toUpperCase() : $('bc-val').value, { ...opts, valid: (v: boolean) => { ok = v; } });
+      if (!ok) throw new Error(`That content isn't valid for ${formats.find((f) => f[0] === fmt.value)![1].split(' (')[0]}. ${HINTS[fmt.value]}`);
+      err.hidden = true;
+    } catch (e) { ok = false; err.hidden = false; err.textContent = (e as Error).message; svg.innerHTML = ''; }
+    root.querySelectorAll<HTMLButtonElement>('[data-png],[data-svgdl]').forEach((b) => (b.disabled = !ok));
+  }
+  fmt.addEventListener('change', () => { $('bc-val').value = formats.find((f) => f[0] === fmt.value)![2]; render(); });
+  root.addEventListener('input', render);
+  root.querySelector('[data-svgdl]')!.addEventListener('click', () => downloadBlob(new Blob([new XMLSerializer().serializeToString(svg)], { type: 'image/svg+xml' }), `barcode-${fmt.value.toLowerCase()}.svg`));
+  root.querySelector('[data-png]')!.addEventListener('click', () => {
+    const c = document.createElement('canvas');
+    JsBarcode(c, fmt.value === 'CODE39' ? $('bc-val').value.toUpperCase() : $('bc-val').value, { format: fmt.value, height: Number($('bc-h').value) * 3, width: Number($('bc-w').value) * 3, displayValue: $('bc-text').checked, margin: 36, fontSize: 54, font: 'monospace' });
+    c.toBlob((b) => b && downloadBlob(b, `barcode-${fmt.value.toLowerCase()}.png`));
+  });
+  render();
+</script>

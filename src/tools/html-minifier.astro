@@ -1,0 +1,23 @@
+---
+import TextTransform from '../components/TextTransform.astro';
+---
+<TextTransform id="hm" mono outLabel="Minified HTML" downloadLabel="Download .html" placeholder="Paste your HTML here…" sample={'<!DOCTYPE html>\n<html>\n  <head>\n    <title>My page</title>\n    <style>\n      body { margin: 0px; color: #333333; }\n    </style>\n  </head>\n  <body>\n    <!-- Navigation -->\n    <nav>\n      <a href="/">Home</a>\n      <a href="/about">About</a>\n    </nav>\n    <pre>\n  keep   this   spacing\n    </pre>\n    <p>Hello   <strong>world</strong>!</p>\n  </body>\n</html>'}>
+  <div class="flex flex-wrap gap-x-6">
+    <label class="flex min-h-11 items-center gap-3 text-[0.9375rem]"><input type="checkbox" id="hm-com" class="h-5 w-5 accent-[var(--brand)]" checked />Remove comments</label>
+    <label class="flex min-h-11 items-center gap-3 text-[0.9375rem]"><input type="checkbox" id="hm-css" class="h-5 w-5 accent-[var(--brand)]" checked />Minify CSS in &lt;style&gt; tags</label>
+  </div>
+</TextTransform>
+<script>
+  import { initTextTransform } from '../lib/text-transform';
+  import { minifyHtml } from '../lib/minify';
+  import { formatBytes } from '../lib/ui';
+  const on = (id: string) => (document.getElementById(id) as HTMLInputElement).checked;
+  initTextTransform('hm', {
+    fileName: 'index.min.html', mime: 'text/html',
+    transform: (t) => {
+      const out = minifyHtml(t, { comments: on('hm-com'), css: on('hm-css') });
+      const a = new Blob([t]).size, b = new Blob([out]).size;
+      return { out, note: `${formatBytes(a)} → ${formatBytes(b)} (${Math.round((1 - b / a) * 100)}% smaller)` };
+    },
+  });
+</script>

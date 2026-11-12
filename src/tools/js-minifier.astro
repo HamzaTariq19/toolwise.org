@@ -1,0 +1,29 @@
+---
+import TextTransform from '../components/TextTransform.astro';
+---
+<TextTransform id="jm" mono outLabel="Minified JavaScript" downloadLabel="Download .js" placeholder="Paste your JavaScript here…" sample={'// Add two numbers and log the result\nfunction addNumbers(firstNumber, secondNumber) {\n  const total = firstNumber + secondNumber;\n  console.log("The total is " + total);\n  return total;\n}\n\nconst items = [1, 2, 3].map((value) => value * 2);\naddNumbers(items[0], items[1]);'}>
+  <div class="flex flex-wrap gap-x-6">
+    <label class="flex min-h-11 items-center gap-3 text-[0.9375rem]"><input type="checkbox" id="jm-mangle" class="h-5 w-5 accent-[var(--brand)]" checked />Shorten variable names</label>
+    <label class="flex min-h-11 items-center gap-3 text-[0.9375rem]"><input type="checkbox" id="jm-console" class="h-5 w-5 accent-[var(--brand)]" />Remove console.log calls</label>
+    <label class="flex min-h-11 items-center gap-3 text-[0.9375rem]"><input type="checkbox" id="jm-module" class="h-5 w-5 accent-[var(--brand)]" />Code is an ES module (import/export)</label>
+  </div>
+</TextTransform>
+<script>
+  import { initTextTransform } from '../lib/text-transform';
+  import { formatBytes } from '../lib/ui';
+  const on = (id: string) => (document.getElementById(id) as HTMLInputElement).checked;
+  initTextTransform('jm', {
+    fileName: 'script.min.js', mime: 'text/javascript',
+    transform: async (t) => {
+      const { minify } = await import('terser');
+      try {
+        const r = await minify(t, { module: on('jm-module') || /^\s*(import|export)\s/m.test(t), mangle: on('jm-mangle'), compress: { drop_console: on('jm-console'), passes: 2 }, format: { comments: /^!|@license|@preserve/ } });
+        const out = r.code ?? '', a = new Blob([t]).size, b = new Blob([out]).size;
+        return { out, note: `${formatBytes(a)} → ${formatBytes(b)} (${Math.round((1 - b / a) * 100)}% smaller)` };
+      } catch (e) {
+        const er = e as { message: string; line?: number; col?: number };
+        return { out: '', error: `Your JavaScript has a syntax error${er.line ? ` on line ${er.line}, column ${(er.col ?? 0) + 1}` : ''}: ${er.message}. Fix it and the code will be minified automatically.` };
+      }
+    },
+  });
+</script>

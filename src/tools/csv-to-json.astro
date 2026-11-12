@@ -1,0 +1,31 @@
+---
+import TextTransform from '../components/TextTransform.astro';
+import Icon from '../components/Icon.astro';
+---
+<TextTransform id="cj" mono outLabel="JSON" downloadLabel="Download .json" placeholder="Paste CSV with a header row…" sample={'name,age,city,active\n"Lee, Ann",31,Paris,true\nBo,27,Oslo,false\nCara,,"New York",true'}>
+  <div class="flex flex-wrap items-end gap-x-6 gap-y-2">
+    <div><label for="cj-sep" class="label">Separator</label><select id="cj-sep" class="select !w-auto"><option value="">Detect automatically</option><option value=",">Comma</option><option value=";">Semicolon</option><option value="&#9;">Tab</option><option value="|">Pipe ( | )</option></select></div>
+    <div><label for="cj-shape" class="label">Output</label><select id="cj-shape" class="select !w-auto"><option value="objects">Array of objects</option><option value="arrays">Array of arrays</option></select></div>
+    <label class="flex min-h-11 items-center gap-3 text-[0.9375rem]"><input type="checkbox" id="cj-types" class="h-5 w-5 accent-[var(--brand)]" checked />Convert numbers and true/false</label>
+    <label class="btn btn-secondary relative cursor-pointer"><Icon name="Upload" size={18} />Open .csv file<input type="file" accept=".csv,.tsv,.txt,text/csv" class="absolute inset-0 cursor-pointer opacity-0" data-file /></label>
+  </div>
+</TextTransform>
+<script>
+  import { initTextTransform } from '../lib/text-transform';
+  const $ = (id: string) => document.getElementById(id) as HTMLInputElement;
+  const tt = initTextTransform('cj', {
+    fileName: 'data.json', mime: 'application/json',
+    transform: async (t) => {
+      const Papa = (await import('papaparse')).default;
+      const objects = $('cj-shape').value === 'objects';
+      const r = Papa.parse<Record<string, unknown> | unknown[]>(t.replace(/^﻿/, ''), { header: objects, delimiter: $('cj-sep').value, skipEmptyLines: 'greedy', dynamicTyping: $('cj-types').checked, transformHeader: (h) => h.trim() });
+      const serious = r.errors.filter((e) => e.type !== 'Delimiter');
+      if (!r.data.length) return { out: '', error: 'No rows were found. Make sure the first line is a header row, such as name,age,city.' };
+      const out = JSON.stringify(r.data, (_k, v) => (v === null ? null : v), 2);
+      const warn = serious.length ? ` · ${serious.length} row${serious.length > 1 ? 's have' : ' has'} a different number of columns (first at row ${(serious[0].row ?? 0) + 2})` : '';
+      return { out, note: `${r.data.length} rows${objects ? ` · ${r.meta.fields?.length ?? 0} columns` : ''}${warn}` };
+    },
+  });
+  const f = document.querySelector<HTMLInputElement>('#cj [data-file]')!;
+  f.addEventListener('change', async () => { const file = f.files?.[0]; f.value = ''; if (!file) return; if (file.size > 30e6) { const e = document.querySelector<HTMLElement>('#cj [data-error]')!; e.hidden = false; e.textContent = 'This file is larger than 30 MB, which is too big to convert in the browser.'; return; } tt.input.value = await file.text(); tt.run(); });
+</script>

@@ -1,0 +1,55 @@
+---
+import Icon from '../components/Icon.astro';
+---
+<div id="hg" class="space-y-4">
+  <div class="card space-y-4 p-4 sm:p-5">
+    <div class="segmented"><label><input type="radio" name="hg-m" value="text" checked /><span>Text</span></label><label><input type="radio" name="hg-m" value="file" /><span>File</span></label></div>
+    <div data-m="text"><label for="hg-in" class="label">Text to hash</label><textarea id="hg-in" class="textarea mono !min-h-32 text-sm" spellcheck="false">hello world</textarea><p class="hint">Text is hashed as UTF-8, exactly as typed (including spaces and line breaks).</p></div>
+    <div data-m="file" hidden>
+      <label class="btn btn-secondary relative cursor-pointer"><Icon name="Upload" size={18} /><span data-fname>Choose a file</span><input type="file" class="absolute inset-0 cursor-pointer opacity-0" data-file /></label>
+      <p class="hint">Files up to 1 GB. The file is read on your device and never uploaded.</p>
+      <div class="mt-3 h-2 overflow-hidden rounded-full bg-surface-2" data-prog hidden><div class="h-full w-0 bg-brand" data-fill></div></div>
+    </div>
+    <label class="flex min-h-11 items-center gap-3 text-[0.9375rem]"><input type="checkbox" id="hg-up" class="h-5 w-5 accent-[var(--brand)]" />Uppercase letters</label>
+  </div>
+  <p class="alert alert-error" data-err hidden></p>
+  <ul class="card divide-y divide-[var(--border)]" data-out aria-live="polite"></ul>
+  <section class="card p-4"><label for="hg-cmp" class="label">Compare with an expected hash</label><input id="hg-cmp" class="input mono" placeholder="Paste a checksum from a download page" autocomplete="off" spellcheck="false" /><p class="mt-2 text-sm font-semibold" data-cmp></p></section>
+  <p class="text-sm text-subtle">MD5 and SHA-1 are fine for checking file integrity but are no longer secure for passwords or signatures. Use SHA-256 or stronger where security matters.</p>
+</div>
+<script>
+  import SparkMD5 from 'spark-md5';
+  import { copyText, showError } from '../lib/ui';
+  const root = document.getElementById('hg')!, q = (s: string) => root.querySelector<HTMLElement>(s)!;
+  const ta = document.getElementById('hg-in') as HTMLTextAreaElement, up = document.getElementById('hg-up') as HTMLInputElement, cmp = document.getElementById('hg-cmp') as HTMLInputElement;
+  const ALGOS = ['MD5', 'SHA-1', 'SHA-256', 'SHA-384', 'SHA-512'];
+  let hashes: Record<string, string> = {};
+  const hex = (b: ArrayBuffer) => Array.from(new Uint8Array(b), (x) => x.toString(16).padStart(2, '0')).join('');
+  const mode = () => (root.querySelector('input[name=hg-m]:checked') as HTMLInputElement).value;
+  function show() {
+    const u = (h: string) => (up.checked ? h.toUpperCase() : h);
+    q('[data-out]').innerHTML = Object.keys(hashes).length ? ALGOS.map((a) => `<li class="flex items-center gap-3 px-4 py-2.5"><span class="w-20 flex-none text-sm font-semibold text-muted">${a}</span><code class="mono min-w-0 flex-1 break-all text-sm">${u(hashes[a])}</code><button type="button" class="btn btn-ghost btn-sm flex-none" data-copy="${a}"><span data-label>Copy</span></button></li>`).join('') : '<li class="px-4 py-6 text-center text-muted">Type text or choose a file.</li>';
+    const want = cmp.value.trim().toLowerCase().replace(/^[a-z0-9-]+[:=]\s*/, '');
+    const match = want && Object.entries(hashes).find(([, h]) => h === want);
+    q('[data-cmp]').innerHTML = !want ? '' : match ? `<span class="text-success">✓ Match: this is the ${match[0]} hash.</span>` : '<span class="text-danger">✗ No match. The file or text is different, or the checksum uses another algorithm.</span>';
+  }
+  async function fromBuffer(buf: ArrayBuffer) {
+    const out: Record<string, string> = { MD5: SparkMD5.ArrayBuffer.hash(buf) };
+    for (const a of ALGOS.slice(1)) out[a] = hex(await crypto.subtle.digest(a, buf));
+    hashes = out; show();
+  }
+  async function fromText() { await fromBuffer(new TextEncoder().encode(ta.value).buffer as ArrayBuffer); }
+  async function fromFile(f: File) {
+    showError(q('[data-err]'), null);
+    if (f.size > 1024 ** 3) return showError(q('[data-err]'), 'This file is larger than 1 GB, which is too big to hash in the browser.');
+    q('[data-fname]').textContent = f.name; q('[data-prog]').hidden = false; q('[data-fill]').style.width = '30%';
+    try { const buf = await f.arrayBuffer(); q('[data-fill]').style.width = '70%'; await fromBuffer(buf); q('[data-fill]').style.width = '100%'; }
+    catch { showError(q('[data-err]'), 'This file could not be read. It may be too large for your device\'s memory.'); }
+    setTimeout(() => (q('[data-prog]').hidden = true), 500);
+  }
+  root.addEventListener('change', (e) => { if ((e.target as HTMLElement).matches('input[name=hg-m]')) { root.querySelectorAll<HTMLElement>('[data-m]').forEach((el) => (el.hidden = el.dataset.m !== mode())); hashes = {}; if (mode() === 'text') fromText(); else show(); } });
+  ta.addEventListener('input', fromText); up.addEventListener('change', show); cmp.addEventListener('input', show);
+  const fi = q('[data-file]') as HTMLInputElement; fi.addEventListener('change', () => { const f = fi.files?.[0]; if (f) fromFile(f); fi.value = ''; });
+  root.addEventListener('click', (e) => { const b = (e.target as HTMLElement).closest<HTMLElement>('[data-copy]'); if (b) copyText(up.checked ? hashes[b.dataset.copy!].toUpperCase() : hashes[b.dataset.copy!], b); });
+  fromText();
+</script>

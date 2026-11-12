@@ -1,0 +1,29 @@
+---
+import TextTransform from '../components/TextTransform.astro';
+---
+<TextTransform id="md" mono outLabel="HTML" downloadLabel="Download .html" copyLabel="Copy HTML" placeholder="Write or paste Markdown…" sample={'# Trip notes\n\nA **bold** idea and an *italic* thought, with a [link](https://example.com).\n\n## Packing list\n\n- Passport\n- Charger\n- [x] Tickets booked\n\n| Day | City |\n|-----|------|\n| 1 | Lisbon |\n| 2 | Porto |\n\n```js\nconsole.log("hello");\n```\n\n<script>alert("this is removed")</script>'}>
+  <div class="flex flex-wrap items-center gap-x-6 gap-y-2">
+    <div class="segmented"><label><input type="radio" name="md-v" value="preview" checked /><span>Show preview</span></label><label><input type="radio" name="md-v" value="code" /><span>Show HTML code</span></label></div>
+    <label class="flex min-h-11 items-center gap-3 text-[0.9375rem]"><input type="checkbox" id="md-breaks" class="h-5 w-5 accent-[var(--brand)]" />Line breaks become &lt;br&gt;</label>
+  </div>
+  <div slot="after-output" class="prose-tw card mt-3 max-w-none overflow-auto p-4 [&_table]:w-full [&_td]:border [&_td]:border-line [&_td]:px-2 [&_th]:border [&_th]:border-line [&_th]:px-2 [&_pre]:overflow-x-auto [&_pre]:rounded-lg [&_pre]:bg-surface-2 [&_pre]:p-3 [&_img]:max-w-full" data-preview aria-label="Preview"></div>
+</TextTransform>
+<p class="mt-3 text-sm text-subtle">The HTML is sanitized: scripts, event handlers and other unsafe code are removed, so it is safe to paste into a website.</p>
+<script>
+  import { initTextTransform } from '../lib/text-transform';
+  const preview = document.querySelector<HTMLElement>('#md [data-preview]')!, out = document.getElementById('md-out') as HTMLTextAreaElement;
+  const view = () => (document.querySelector('input[name=md-v]:checked') as HTMLInputElement).value;
+  const sync = () => { preview.hidden = view() !== 'preview'; out.hidden = view() === 'preview'; };
+  document.getElementById('md')!.addEventListener('change', sync); sync();
+  initTextTransform('md', {
+    fileName: 'document.html', mime: 'text/html',
+    transform: async (t) => {
+      const [{ marked }, { default: DOMPurify }] = await Promise.all([import('marked'), import('dompurify')]);
+      const raw = await marked.parse(t, { gfm: true, breaks: (document.getElementById('md-breaks') as HTMLInputElement).checked });
+      const clean = DOMPurify.sanitize(raw, { USE_PROFILES: { html: true }, ADD_ATTR: ['target'] });
+      preview.innerHTML = clean;
+      preview.querySelectorAll('a').forEach((a) => a.setAttribute('rel', 'noopener noreferrer'));
+      return { out: clean.trim(), note: `${(t.match(/^#{1,6}\s/gm) ?? []).length} headings · ${new Blob([clean]).size} bytes` };
+    },
+  });
+</script>

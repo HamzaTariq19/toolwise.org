@@ -1,0 +1,33 @@
+---
+import TextTransform from '../components/TextTransform.astro';
+---
+<TextTransform id="ue" mono sample="https://example.com/search?q=café & crème&tag=50% off">
+  <div class="flex flex-wrap items-center gap-x-6 gap-y-2">
+    <div class="segmented"><label><input type="radio" name="ue-m" value="enc" checked /><span>Encode</span></label><label><input type="radio" name="ue-m" value="dec" /><span>Decode</span></label></div>
+    <div data-for="enc"><label for="ue-what" class="sr-only">What to encode</label><select id="ue-what" class="select !w-auto"><option value="component">A value (query parameter, path part)</option><option value="uri">A whole URL (keep : / ? & =)</option></select></div>
+    <label class="flex min-h-11 items-center gap-3 text-[0.9375rem]" data-for="dec"><input type="checkbox" id="ue-plus" class="h-5 w-5 accent-[var(--brand)]" checked />Treat + as a space</label>
+    <label class="flex min-h-11 items-center gap-3 text-[0.9375rem]" data-for="enc"><input type="checkbox" id="ue-space" class="h-5 w-5 accent-[var(--brand)]" />Write spaces as +</label>
+  </div>
+</TextTransform>
+<script>
+  import { initTextTransform } from '../lib/text-transform';
+  const $ = (id: string) => document.getElementById(id) as HTMLInputElement;
+  const mode = () => (document.querySelector('input[name=ue-m]:checked') as HTMLInputElement).value;
+  const sync = () => document.querySelectorAll<HTMLElement>('#ue [data-for]').forEach((e) => (e.hidden = e.dataset.for !== mode()));
+  document.getElementById('ue')!.addEventListener('change', sync); sync();
+  initTextTransform('ue', {
+    fileName: 'url.txt',
+    transform: (t) => {
+      if (mode() === 'enc') {
+        let o = t.split('\n').map((l) => ($('ue-what').value === 'uri' ? encodeURI(l) : encodeURIComponent(l))).join('\n');
+        if ($('ue-space').checked) o = o.replace(/%20/g, '+');
+        return { out: o };
+      }
+      const lines = t.split('\n').map((l, i) => {
+        try { return decodeURIComponent($('ue-plus').checked ? l.replace(/\+/g, ' ') : l); }
+        catch { throw new Error(`Line ${i + 1} contains an incomplete code like "%E2%8" or a lone "%". Every % must be followed by two hexadecimal digits.`); }
+      });
+      return { out: lines.join('\n') };
+    },
+  });
+</script>

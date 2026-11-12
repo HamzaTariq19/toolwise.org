@@ -1,0 +1,43 @@
+---
+---
+<div id="rx2" class="space-y-4">
+  <div class="card space-y-4 p-4 sm:p-5">
+    <div class="grid grid-cols-[1fr_auto] gap-2">
+      <div><label for="rx2-p" class="label">Regular expression</label><div class="input-group"><span class="addon addon-left mono">/</span><input id="rx2-p" class="input mono" value={'(\\w+)@(\\w+)\\.com'} autocomplete="off" spellcheck="false" /><span class="addon mono">/</span></div></div>
+      <div><label for="rx2-f" class="label">Flags</label><input id="rx2-f" class="input mono w-24" value="gi" autocomplete="off" spellcheck="false" /></div>
+    </div>
+    <div class="flex flex-wrap gap-x-5 text-sm text-muted"><span><code>g</code> all matches</span><span><code>i</code> ignore case</span><span><code>m</code> ^ $ per line</span><span><code>s</code> . matches newlines</span><span><code>u</code> Unicode</span></div>
+    <p class="alert alert-error" data-err hidden role="alert"></p>
+  </div>
+  <div class="grid gap-4 lg:grid-cols-2">
+    <div><label for="rx2-t" class="label">Test text</label><textarea id="rx2-t" class="textarea mono !min-h-[220px] text-sm" spellcheck="false">Contact anna@example.com or SUPPORT@toolwise.com.
+Not an email: hello@ world
+bob@test.org</textarea></div>
+    <div><p class="label" id="rx2-hl">Matches highlighted <span class="font-normal text-subtle" data-count></span></p><div class="mono min-h-[220px] whitespace-pre-wrap break-words rounded-[10px] border border-line bg-surface-2 p-3 text-sm leading-relaxed" aria-labelledby="rx2-hl" data-hl></div></div>
+  </div>
+  <section class="card overflow-hidden"><h2 class="border-b border-line px-4 py-3 text-base font-semibold">Match details</h2><div class="max-h-72 overflow-auto"><table class="w-full text-left text-sm"><thead class="sticky top-0 bg-surface-2 text-muted"><tr><th class="px-4 py-2">#</th><th class="px-4 py-2">Match</th><th class="px-4 py-2">Position</th><th class="px-4 py-2">Groups</th></tr></thead><tbody class="mono divide-y divide-[var(--border)]" data-table></tbody></table></div></section>
+  <section class="card p-4"><label for="rx2-r" class="label">Replace with (optional)</label><input id="rx2-r" class="input mono" placeholder="e.g. $1 at $2 dot com" autocomplete="off" spellcheck="false" /><pre class="mono mt-3 whitespace-pre-wrap break-words rounded-lg bg-surface-2 p-3 text-sm" data-rep></pre></section>
+</div>
+<script>
+  const root = document.getElementById('rx2')!, q = (s: string) => root.querySelector<HTMLElement>(s)!;
+  const $ = (id: string) => document.getElementById(id) as HTMLInputElement;
+  const esc = (s: string) => s.replace(/[&<>]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' })[c]!);
+  function run() {
+    const err = q('[data-err]'); err.hidden = true;
+    let re: RegExp;
+    const flags = $('rx2-f').value.trim();
+    if (/[^dgimsuyv]/.test(flags) || new Set(flags).size !== flags.length) { err.hidden = false; err.textContent = 'Flags can only be d, g, i, m, s, u, v or y, each used once.'; return; }
+    try { re = new RegExp($('rx2-p').value, flags.includes('g') ? flags : flags + 'g'); }
+    catch (e) { err.hidden = false; err.textContent = (e as Error).message.replace(/^Invalid regular expression: /, 'Invalid pattern: '); q('[data-hl]').textContent = $('rx2-t').value; q('[data-table]').innerHTML = ''; q('[data-count]').textContent = ''; return; }
+    const text = $('rx2-t').value, matches: RegExpExecArray[] = [];
+    if ($('rx2-p').value) { const t0 = performance.now(); let m: RegExpExecArray | null; while ((m = re.exec(text)) && matches.length < 5000) { matches.push(m); if (m[0] === '') re.lastIndex++; if (!flags.includes('g')) break; if (performance.now() - t0 > 1500) { err.hidden = false; err.textContent = 'This pattern is taking too long (it may cause catastrophic backtracking). Simplify it.'; break; } } }
+    let html = '', last = 0;
+    matches.forEach((m, i) => { html += esc(text.slice(last, m.index)) + `<mark class="rounded px-0.5 ${i % 2 ? 'bg-[#fde68a]' : 'bg-[#bfdbfe]'} text-[#0f172a]">${esc(m[0]) || '&#8203;'}</mark>`; last = m.index + m[0].length; });
+    q('[data-hl]').innerHTML = html + esc(text.slice(last));
+    q('[data-count]').textContent = `(${matches.length} match${matches.length === 1 ? '' : 'es'})`;
+    q('[data-table]').innerHTML = matches.slice(0, 500).map((m, i) => `<tr><td class="px-4 py-1.5 text-subtle">${i + 1}</td><td class="px-4 py-1.5">${esc(m[0])}</td><td class="px-4 py-1.5">${m.index}–${m.index + m[0].length}</td><td class="px-4 py-1.5">${m.slice(1).map((g, j) => `<span class="mr-2"><span class="text-subtle">$${j + 1}</span> ${g === undefined ? '<i>none</i>' : esc(g)}</span>`).join('')}${m.groups ? Object.entries(m.groups).map(([k, v]) => `<span class="mr-2"><span class="text-subtle">${esc(k)}</span> ${esc(v ?? '')}</span>`).join('') : ''}</td></tr>`).join('') || '<tr><td colspan="4" class="px-4 py-3 font-sans text-muted">No matches.</td></tr>';
+    const rep = $('rx2-r').value;
+    q('[data-rep]').textContent = rep ? text.replace(new RegExp(re.source, flags), rep) : 'Type a replacement to preview it here. Use $1, $2 for groups and $& for the whole match.';
+  }
+  root.addEventListener('input', run); run();
+</script>

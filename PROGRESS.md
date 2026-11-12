@@ -9,9 +9,10 @@ Status of each tool lives in `src/data/tools.json` (`"status": "built"` = live, 
 - Batch 3, Text (16): character counter, case converter, remove duplicates, text compare, sort lines, extra spaces, find & replace, reverse, text to speech, speech to text, lorem ipsum, readability, word frequency, small text, line counter, slug
 - Batch 4, Calculators (23): loan, car loan, savings goal, retirement, credit card payoff, debt snowball, inflation (bundled BLS CPI data), ROI, salary to hourly, discount, tip, profit margin, VAT/sales tax, calorie, body fat, ovulation, water intake, sleep, grade, date difference, fraction, scientific, random number
 - Batch 5, Converters (14): length, weight, temperature, area, volume, speed, time, data size (decimal + binary), fuel economy, shoe size, clothing size, number to words, Roman numerals, number bases
+- Batch 6, Developer (15): JSON→CSV, CSV→JSON, Base64, URL encode, barcode, color picker, CSS gradient, HTML/CSS/JS minifiers, regex tester, UUID, hash (MD5/SHA), timestamp, Markdown→HTML (sanitized)
 
 ## Next
-- Batch 6 Developer (15) → Batch 7 SEO (12) → Batch 8 Student (10) → Batch 9 Everyday (10) → Batch 10 Heavy (8; ask before building the link shortener)
+- Batch 7 SEO (12) → Batch 8 Student (10) → Batch 9 Everyday (10) → Batch 10 Heavy (8; ask before building the link shortener)
 
 ## How each tool is built (keep it consistent)
 1. `src/tools/<slug>.astro`: UI + `<script>`. Reuse components:
@@ -30,3 +31,8 @@ Status of each tool lives in `src/data/tools.json` (`"status": "built"` = live, 
 5. Commit + push to `origin main` (github.com/HamzaTariq19/toolwise.org).
 
 Health/finance calculators: the tool page template shows the estimates disclaimer automatically for those categories.
+
+## Gotchas learned
+- Astro treats backslashes in plain attribute strings as escapes: use `value={'\\d+'}` expressions for regex or JSON samples.
+- Never self-close `<select … set:html>`; wrap options in `<Fragment set:html>` inside a real `<select></select>`.
+- pdf-lib `form.flatten()` leaves dangling widget refs; use `flattenForm()` from lib/pdf.ts.

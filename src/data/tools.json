@@ -1713,7 +1713,7 @@
       "convert json",
       "export json"
     ],
-    "status": "planned"
+    "status": "built"
   },
   {
     "id": 107,
@@ -1728,7 +1728,7 @@
       "csv parser",
       "spreadsheet to json"
     ],
-    "status": "planned"
+    "status": "built"
   },
   {
     "id": 108,
@@ -1743,7 +1743,7 @@
       "base64 decode",
       "b64"
     ],
-    "status": "planned"
+    "status": "built"
   },
   {
     "id": 109,
@@ -1759,7 +1759,7 @@
       "urldecode",
       "uri encode"
     ],
-    "status": "planned"
+    "status": "built"
   },
   {
     "id": 110,
@@ -1792,7 +1792,7 @@
       "code 128",
       "barcode maker"
     ],
-    "status": "planned"
+    "status": "built"
   },
   {
     "id": 112,
@@ -1808,7 +1808,7 @@
       "color codes",
       "hsl converter"
     ],
-    "status": "planned"
+    "status": "built"
   },
   {
     "id": 113,
@@ -1823,7 +1823,7 @@
       "linear gradient",
       "background gradient"
     ],
-    "status": "planned"
+    "status": "built"
   },
   {
     "id": 114,
@@ -1838,7 +1838,7 @@
       "minify html",
       "html compressor"
     ],
-    "status": "planned"
+    "status": "built"
   },
   {
     "id": 115,
@@ -1853,7 +1853,7 @@
       "minify css",
       "css compressor"
     ],
-    "status": "planned"
+    "status": "built"
   },
   {
     "id": 116,
@@ -1868,7 +1868,7 @@
       "minify js",
       "uglify"
     ],
-    "status": "planned"
+    "status": "built"
   },
   {
     "id": 117,
@@ -1883,7 +1883,7 @@
       "regex checker",
       "pattern matching"
     ],
-    "status": "planned"
+    "status": "built"
   },
   {
     "id": 118,
@@ -1898,7 +1898,7 @@
       "uuid v4",
       "unique id"
     ],
-    "status": "planned"
+    "status": "built"
   },
   {
     "id": 119,
@@ -1915,7 +1915,7 @@
       "hash text",
       "file hash"
     ],
-    "status": "planned"
+    "status": "built"
   },
   {
     "id": 120,
@@ -1930,7 +1930,7 @@
       "unix time",
       "epoch time"
     ],
-    "status": "planned"
+    "status": "built"
   },
   {
     "id": 121,
@@ -1961,7 +1961,7 @@
       "markdown converter",
       "markdown preview"
     ],
-    "status": "planned"
+    "status": "built"
   },
   {
     "id": 123,

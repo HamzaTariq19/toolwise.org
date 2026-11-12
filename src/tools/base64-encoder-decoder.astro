@@ -1,0 +1,34 @@
+---
+import TextTransform from '../components/TextTransform.astro';
+---
+<TextTransform id="b6" mono sample="Hello, toolwise! Ünïcödé and emoji 🎉 work too.">
+  <div class="flex flex-wrap items-center gap-x-6 gap-y-2">
+    <div class="segmented"><label><input type="radio" name="b6-m" value="enc" checked /><span>Encode to Base64</span></label><label><input type="radio" name="b6-m" value="dec" /><span>Decode Base64</span></label></div>
+    <label class="flex min-h-11 items-center gap-3 text-[0.9375rem]"><input type="checkbox" id="b6-url" class="h-5 w-5 accent-[var(--brand)]" />URL-safe (- and _ instead of + and /)</label>
+    <label class="flex min-h-11 items-center gap-3 text-[0.9375rem]" data-wrapopt><input type="checkbox" id="b6-wrap" class="h-5 w-5 accent-[var(--brand)]" />Split into lines of 76 characters</label>
+  </div>
+</TextTransform>
+<script>
+  import { initTextTransform } from '../lib/text-transform';
+  const $ = (id: string) => document.getElementById(id) as HTMLInputElement;
+  const mode = () => (document.querySelector('input[name=b6-m]:checked') as HTMLInputElement).value;
+  function enc(text: string) {
+    const bytes = new TextEncoder().encode(text);
+    let bin = ''; for (let i = 0; i < bytes.length; i += 0x8000) bin += String.fromCharCode(...bytes.subarray(i, i + 0x8000));
+    let b = btoa(bin);
+    if ($('b6-url').checked) b = b.replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+    if ($('b6-wrap').checked) b = b.replace(/(.{76})/g, '$1\n');
+    return b;
+  }
+  function dec(text: string) {
+    let s = text.trim().replace(/^data:[^,]*;base64,/, '').replace(/\s+/g, '').replace(/-/g, '+').replace(/_/g, '/');
+    if (/[^A-Za-z0-9+/=]/.test(s)) throw new Error('This is not valid Base64. It contains characters other than A–Z, a–z, 0–9, +, / and =.');
+    s = s.replace(/=+$/, ''); if (s.length % 4 === 1) throw new Error('This Base64 text seems to be cut off or has extra characters at the end.');
+    s += '='.repeat((4 - (s.length % 4)) % 4);
+    const bin = atob(s), bytes = Uint8Array.from(bin, (c) => c.charCodeAt(0));
+    try { return new TextDecoder('utf-8', { fatal: true }).decode(bytes); }
+    catch { throw new Error(`Decoded ${bytes.length} bytes, but they are not readable text (it may be an image or other file). To decode Base64 files, paste a data URL into your browser's address bar.`); }
+  }
+  document.getElementById('b6')!.addEventListener('change', () => { (document.querySelector('#b6 [data-wrapopt]') as HTMLElement).hidden = mode() === 'dec'; });
+  initTextTransform('b6', { fileName: () => (mode() === 'enc' ? 'encoded-base64.txt' : 'decoded.txt'), transform: (t) => ({ out: mode() === 'enc' ? enc(t) : dec(t) }) });
+</script>

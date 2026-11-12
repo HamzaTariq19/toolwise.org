@@ -1,0 +1,35 @@
+---
+import TextTransform from '../components/TextTransform.astro';
+import Icon from '../components/Icon.astro';
+---
+<TextTransform id="jc" mono outLabel="CSV" downloadLabel="Download .csv" placeholder='Paste a JSON array, e.g. [{"name":"Ann","age":31}]' sample={'[{"name":"Ann Lee","age":31,"city":"Paris","tags":["admin","staff"]},{"name":"Bo","age":27,"address":{"city":"Oslo","zip":"0150"}},{"name":"Cara, Jr.","age":45,"note":"Said \\"hi\\""}]'}>
+  <div class="flex flex-wrap items-end gap-x-6 gap-y-3">
+    <div><label for="jc-sep" class="label">Separator</label><select id="jc-sep" class="select !w-auto"><option value=",">Comma ( , )</option><option value=";">Semicolon ( ; ) for Excel in Europe</option><option value="&#9;">Tab</option></select></div>
+    <label class="flex min-h-11 items-center gap-3 text-[0.9375rem]"><input type="checkbox" id="jc-flat" class="h-5 w-5 accent-[var(--brand)]" checked />Flatten nested objects (address.city)</label>
+    <label class="btn btn-secondary relative cursor-pointer"><Icon name="Upload" size={18} />Open .json file<input type="file" accept=".json,application/json" class="absolute inset-0 cursor-pointer opacity-0" data-file /></label>
+  </div>
+</TextTransform>
+<script>
+  import { initTextTransform } from '../lib/text-transform';
+  const $ = (id: string) => document.getElementById(id) as HTMLInputElement;
+  function flatten(o: unknown, pre = '', out: Record<string, unknown> = {}) {
+    if (o && typeof o === 'object' && !Array.isArray(o)) for (const [k, v] of Object.entries(o)) { const key = pre ? `${pre}.${k}` : k; if (v && typeof v === 'object' && !Array.isArray(v) && $('jc-flat').checked) flatten(v, key, out); else out[key] = v; }
+    return out;
+  }
+  const tt = initTextTransform('jc', {
+    fileName: 'data.csv', mime: 'text/csv;charset=utf-8',
+    transform: async (t) => {
+      let data: unknown;
+      try { data = JSON.parse(t); } catch (e) { return { out: '', error: `This is not valid JSON. ${(e as Error).message}. Check it with our JSON Formatter.` }; }
+      if (!Array.isArray(data)) { if (data && typeof data === 'object') { const arr = Object.values(data).find(Array.isArray); data = arr ?? [data]; } else return { out: '', error: 'Paste a JSON array of objects, like [{"name":"Ann"}, {"name":"Bo"}].' }; }
+      const rows = (data as unknown[]).map((r) => (r && typeof r === 'object' ? flatten(r) : { value: r }));
+      if (!rows.length) return { out: '', error: 'The array is empty, so there is nothing to convert.' };
+      const cols = [...new Set(rows.flatMap((r) => Object.keys(r)))];
+      const Papa = (await import('papaparse')).default;
+      const csv = Papa.unparse({ fields: cols, data: rows.map((r) => cols.map((c) => { const v = r[c]; return v === undefined || v === null ? '' : typeof v === 'object' ? JSON.stringify(v) : v; })) }, { delimiter: $('jc-sep').value, newline: '\r\n' });
+      return { out: csv, note: `${rows.length} rows · ${cols.length} columns` };
+    },
+  });
+  const f = document.querySelector<HTMLInputElement>('#jc [data-file]')!;
+  f.addEventListener('change', async () => { const file = f.files?.[0]; f.value = ''; if (!file) return; if (file.size > 30e6) { const e = document.querySelector<HTMLElement>('#jc [data-error]')!; e.hidden = false; e.textContent = 'This file is larger than 30 MB, which is too big to convert in the browser.'; return; } tt.input.value = await file.text(); tt.run(); });
+</script>

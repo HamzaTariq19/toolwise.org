@@ -1,0 +1,20 @@
+---
+import TextTransform from '../components/TextTransform.astro';
+---
+<TextTransform id="cm" mono outLabel="Minified CSS" downloadLabel="Download .css" placeholder="Paste your CSS here…" sample={'/* Main button */\n.button {\n  color: #ffffff;\n  padding: 0px 16px;\n  margin: 0.5em 0;\n  font-family: "Open Sans", sans-serif;\n}\n\n.button:hover {\n  background: url("img/bg one.png");\n}\n/*! License: keep me */\n@media (max-width: 600px) {\n  .button { display: block ; }\n}'}>
+  <label class="flex min-h-11 items-center gap-3 text-[0.9375rem]"><input type="checkbox" id="cm-lic" class="h-5 w-5 accent-[var(--brand)]" checked />Keep license comments (/*! … */)</label>
+</TextTransform>
+<script>
+  import { initTextTransform } from '../lib/text-transform';
+  import { minifyCss } from '../lib/minify';
+  import { formatBytes } from '../lib/ui';
+  initTextTransform('cm', {
+    fileName: 'styles.min.css', mime: 'text/css',
+    transform: (t) => {
+      const opens = (t.match(/{/g) ?? []).length, closes = (t.match(/}/g) ?? []).length;
+      const out = minifyCss(t, (document.getElementById('cm-lic') as HTMLInputElement).checked);
+      const a = new Blob([t]).size, b = new Blob([out]).size;
+      return { out, note: `${formatBytes(a)} → ${formatBytes(b)} (${Math.round((1 - b / a) * 100)}% smaller)${opens !== closes ? ' · warning: { and } brackets don\'t match' : ''}` };
+    },
+  });
+</script>
