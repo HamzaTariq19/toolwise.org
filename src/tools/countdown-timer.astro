@@ -1,0 +1,93 @@
+---
+import Icon from '../components/Icon.astro';
+import { TONES } from '../lib/sound';
+const presets: [string, number][] = [['1 min', 60], ['3 min', 180], ['5 min', 300], ['10 min', 600], ['15 min', 900], ['30 min', 1800], ['1 hour', 3600]];
+---
+<div id="cd" class="space-y-4">
+  <div class="card p-5 text-center sm:p-7" data-face>
+    <div class="grid grid-cols-3 gap-2 sm:mx-auto sm:max-w-md" data-setup>
+      <div><label for="cd-h" class="label text-center">Hours</label><input id="cd-h" class="input text-center text-2xl font-bold tabular" type="number" inputmode="numeric" min="0" max="99" value="0" /></div>
+      <div><label for="cd-m" class="label text-center">Minutes</label><input id="cd-m" class="input text-center text-2xl font-bold tabular" type="number" inputmode="numeric" min="0" max="59" value="5" /></div>
+      <div><label for="cd-s" class="label text-center">Seconds</label><input id="cd-s" class="input text-center text-2xl font-bold tabular" type="number" inputmode="numeric" min="0" max="59" value="0" /></div>
+    </div>
+    <div class="mt-3 flex flex-wrap justify-center gap-1.5" data-presets>{presets.map(([l, s]) => <button type="button" class="chip !min-h-9 text-sm" data-preset={s}>{l}</button>)}</div>
+    <div data-run hidden>
+      <p class="text-sm text-subtle" data-lbl></p>
+      <p class="mt-1 text-[clamp(3.25rem,17vw,6.5rem)] font-bold leading-none tracking-tight tabular" data-time role="timer">00:05:00</p>
+      <div class="mx-auto mt-5 h-2 max-w-md overflow-hidden rounded-full bg-surface-2"><div class="h-full rounded-full bg-[var(--cat)]" data-bar style="width:100%"></div></div>
+      <p class="mt-2 text-sm text-subtle" data-ends></p>
+    </div>
+    <p class="text-sm text-danger" data-err hidden role="alert"></p>
+    <div class="mx-auto mt-6 flex max-w-md flex-col gap-3 sm:flex-row">
+      <button type="button" class="btn btn-primary btn-lg flex-1" data-start><Icon name="Play" size={18} /><span data-label>Start</span></button>
+      <div class="flex gap-3" data-extra hidden><button type="button" class="btn btn-secondary btn-lg flex-1" data-plus>+1 min</button><button type="button" class="btn btn-secondary btn-lg flex-1" data-reset aria-label="Reset"><Icon name="RotateCcw" size={18} /></button></div>
+    </div>
+    <div class="mt-4 flex flex-wrap items-center justify-center gap-x-5 gap-y-2" data-opts>
+      <div class="flex items-center gap-2"><label for="cd-tone" class="text-sm text-muted">Sound</label><select id="cd-tone" class="select !min-h-10 w-auto py-1.5 text-sm">{Object.entries(TONES).map(([k, v]) => <option value={k}>{v}</option>)}</select><button type="button" class="btn btn-ghost btn-sm" data-test>Test</button></div>
+      <button type="button" class="btn btn-ghost btn-sm" data-fs><Icon name="Maximize" size={16} />Full screen</button>
+    </div>
+    <div class="mx-auto mt-4 max-w-md"><label for="cd-name" class="sr-only">Timer label (optional)</label><input id="cd-name" class="input text-center" placeholder="Label (optional), e.g. Pasta" maxlength="60" autocomplete="off" /></div>
+  </div>
+  <div class="fixed inset-0 z-50 flex flex-col items-center justify-center gap-6 bg-[var(--cat)] p-6 text-center text-white" data-ring hidden role="alertdialog" aria-labelledby="cd-ringt">
+    <p id="cd-ringt" class="text-4xl font-extrabold sm:text-6xl">Time's up!</p>
+    <p class="text-lg opacity-90" data-ringlbl></p>
+    <button type="button" class="btn btn-lg bg-white px-10 text-lg text-[var(--cat)]" data-stop><Icon name="BellOff" size={20} />Stop</button>
+  </div>
+</div>
+<script>
+  import { unlockAudio, startAlarm, stopAlarm, playOnce, setWakeWanted, type Tone } from '../lib/sound';
+  import { store } from '../lib/ui';
+  const root = document.getElementById('cd')!, q = <T extends HTMLElement = HTMLElement>(s: string) => root.querySelector(s) as T;
+  const h = q<HTMLInputElement>('#cd-h'), m = q<HTMLInputElement>('#cd-m'), s = q<HTMLInputElement>('#cd-s'), tone = q<HTMLSelectElement>('#cd-tone');
+  const KEY = 'tw-countdown', saved = store.get(KEY, { h: 0, m: 5, s: 0, tone: 'beep' });
+  h.value = String(saved.h); m.value = String(saved.m); s.value = String(saved.s); tone.value = saved.tone;
+  const baseTitle = document.title;
+  let total = 0, left = 0, endAt = 0, tick = 0;
+  const running = () => tick !== 0;
+  const fmt = (ms: number) => { const t = Math.max(0, Math.ceil(ms / 1000)), hh = Math.floor(t / 3600), mm = Math.floor((t % 3600) / 60), ss = t % 60; return `${hh ? String(hh).padStart(2, '0') + ':' : ''}${String(mm).padStart(2, '0')}:${String(ss).padStart(2, '0')}`; };
+  function read() {
+    const vals = [h, m, s].map((i) => i.value.trim() === '' ? 0 : Number(i.value));
+    const err = q('[data-err]');
+    const bad = vals.some((v) => !Number.isInteger(v) || v < 0) || vals[0] > 99 || vals[1] > 59 || vals[2] > 59;
+    const secs = vals[0] * 3600 + vals[1] * 60 + vals[2];
+    const msg = bad ? 'Use whole numbers: up to 99 hours, 59 minutes and 59 seconds.' : secs === 0 ? 'Set a time above zero, or tap a preset.' : '';
+    err.hidden = !msg; err.textContent = msg; return msg ? 0 : secs;
+  }
+  function render() {
+    q('[data-time]').textContent = fmt(left);
+    q('[data-bar]').style.width = `${total ? (left / total) * 100 : 0}%`;
+    q('[data-label]').textContent = running() ? 'Pause' : 'Resume';
+    q('[data-ends]').textContent = running() ? `Ends at ${new Date(endAt).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })}` : 'Paused';
+    document.title = running() ? `${fmt(left)} ⏳ ${q<HTMLInputElement>('#cd-name').value || 'Timer'}` : baseTitle;
+  }
+  function go() { endAt = Date.now() + left; tick = window.setInterval(() => { left = endAt - Date.now(); if (left <= 0) done(); else render(); }, 200); void setWakeWanted(true); render(); }
+  function pause() { clearInterval(tick); tick = 0; render(); }
+  function show(running: boolean) { q('[data-setup]').hidden = running; q('[data-presets]').hidden = running; q('[data-run]').hidden = !running; q('[data-extra]').hidden = !running; }
+  function reset() { clearInterval(tick); tick = 0; show(false); q('[data-label]').textContent = 'Start'; document.title = baseTitle; void setWakeWanted(false); }
+  function done() {
+    clearInterval(tick); tick = 0; left = 0; render(); document.title = `⏰ Time's up!`;
+    if (document.fullscreenElement) document.exitFullscreen().catch(() => {});
+    q('[data-ringlbl]').textContent = q<HTMLInputElement>('#cd-name').value; q('[data-ring]').hidden = false;
+    startAlarm(tone.value as Tone); q<HTMLButtonElement>('[data-stop]').focus();
+  }
+  q('[data-start]').addEventListener('click', () => {
+    unlockAudio();
+    if (running()) return pause();
+    if (!q('[data-run]').hidden && left > 0) return go();
+    const secs = read(); if (!secs) return;
+    store.set(KEY, { h: +h.value || 0, m: +m.value || 0, s: +s.value || 0, tone: tone.value });
+    total = left = secs * 1000; q('[data-lbl]').textContent = q<HTMLInputElement>('#cd-name').value; show(true); go();
+  });
+  q('[data-plus]').addEventListener('click', () => { total += 60_000; left += 60_000; if (running()) endAt += 60_000; render(); });
+  q('[data-reset]').addEventListener('click', reset);
+  q('[data-stop]').addEventListener('click', () => { stopAlarm(); q('[data-ring]').hidden = true; reset(); document.title = baseTitle; });
+  q('[data-ring]').addEventListener('keydown', (e) => { if (e.key === 'Escape') q<HTMLButtonElement>('[data-stop]').click(); });
+  root.querySelectorAll<HTMLButtonElement>('[data-preset]').forEach((b) => b.addEventListener('click', () => { const t = +b.dataset.preset!; h.value = String(Math.floor(t / 3600)); m.value = String(Math.floor((t % 3600) / 60)); s.value = String(t % 60); read(); q<HTMLButtonElement>('[data-start]').click(); }));
+  [h, m, s].forEach((i) => i.addEventListener('input', () => read()));
+  q('[data-test]').addEventListener('click', () => { unlockAudio(); playOnce(tone.value as Tone); store.set(KEY, { ...saved, tone: tone.value }); });
+  const fs = q<HTMLButtonElement>('[data-fs]'), face = q('[data-face]');
+  if (!document.fullscreenEnabled) fs.hidden = true;
+  fs.addEventListener('click', () => (document.fullscreenElement ? document.exitFullscreen() : face.requestFullscreen()).catch(() => {}));
+  document.addEventListener('fullscreenchange', () => { face.classList.toggle('!flex', !!document.fullscreenElement); face.classList.toggle('flex-col', !!document.fullscreenElement); face.classList.toggle('justify-center', !!document.fullscreenElement); });
+  window.addEventListener('beforeunload', (e) => { if (running()) e.preventDefault(); });
+</script>

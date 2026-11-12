@@ -1,0 +1,114 @@
+---
+import Icon from '../components/Icon.astro';
+import LocalNote from '../components/LocalNote.astro';
+import { TONES } from '../lib/sound';
+---
+<div id="al" class="space-y-4">
+  <div class="card p-5 text-center sm:p-7">
+    <p class="text-[clamp(3rem,15vw,5.5rem)] font-bold leading-none tracking-tight tabular" data-now>--:--</p>
+    <p class="mt-2 text-muted" data-date></p>
+    <p class="mt-1 text-sm text-subtle" data-next></p>
+  </div>
+  <form class="card space-y-3 p-4 sm:p-5" novalidate data-form>
+    <h2 class="text-base font-semibold">Set an alarm</h2>
+    <div class="grid gap-3 sm:grid-cols-[auto_1fr_auto] sm:items-end">
+      <div><label for="al-time" class="label">Time</label><input id="al-time" class="input text-lg font-semibold tabular" type="time" required /></div>
+      <div><label for="al-label" class="label">Label (optional)</label><input id="al-label" class="input" maxlength="60" placeholder="e.g. Take a break" autocomplete="off" /></div>
+      <div><label for="al-tone" class="label">Sound</label><select id="al-tone" class="select">{Object.entries(TONES).map(([k, v]) => <option value={k}>{v}</option>)}</select></div>
+    </div>
+    <p class="text-sm text-danger" data-err hidden role="alert"></p>
+    <div class="flex flex-wrap gap-3"><button type="submit" class="btn btn-primary btn-lg flex-1 sm:flex-none"><Icon name="AlarmClock" size={18} />Set alarm</button><button type="button" class="btn btn-secondary btn-lg" data-test><Icon name="Volume2" size={18} />Test sound</button></div>
+  </form>
+  <button type="button" class="alert alert-info w-full text-left" data-tap hidden><Icon name="Volume2" size={18} class="mt-0.5 flex-none" /><span><b>Tap here once to turn on alarm sound.</b> Browsers only allow a page to play sound after you have tapped or clicked it.</span></button>
+  <ul class="space-y-2" data-list aria-live="polite"></ul>
+  <div class="card space-y-2 p-4 text-sm">
+    <label class="flex min-h-11 items-center gap-2.5 text-[0.9375rem]" data-wakebox><input type="checkbox" id="al-wake" class="h-5 w-5 accent-[var(--brand)]" />Keep the screen on while this page is open</label>
+    <p class="flex items-start gap-2 text-muted"><Icon name="Info" size={16} class="mt-0.5 flex-none" /><span>Alarms ring only while this page stays open and your device is awake, with the volume up. Phones may pause pages in the background, so for important wake-ups use your phone's built-in clock app as well.</span></p>
+  </div>
+  <div class="fixed inset-0 z-50 flex flex-col items-center justify-center gap-5 bg-[var(--cat)] p-6 text-center text-white" data-ring hidden role="alertdialog" aria-labelledby="al-ringt">
+    <Icon name="AlarmClock" size={56} />
+    <p id="al-ringt" class="text-5xl font-extrabold tabular sm:text-7xl" data-ringtime></p>
+    <p class="text-xl opacity-90" data-ringlbl></p>
+    <div class="flex flex-col gap-3 sm:flex-row"><button type="button" class="btn btn-lg bg-white px-10 text-lg text-[var(--cat)]" data-stop><Icon name="BellOff" size={20} />Stop</button><button type="button" class="btn btn-lg border-white/60 bg-transparent px-8 text-lg text-white" data-snooze>Snooze 5 min</button></div>
+  </div>
+  <LocalNote what="Your alarms are" />
+</div>
+<script>
+  import { unlockAudio, startAlarm, stopAlarm, playOnce, setWakeWanted, wakeLockSupported, type Tone } from '../lib/sound';
+  import { store, esc } from '../lib/ui';
+  type Alarm = { id: string; time: string; label: string; tone: Tone; on: boolean; last?: string; snooze?: number };
+  const KEY = 'tw-alarms', root = document.getElementById('al')!, q = <T extends HTMLElement = HTMLElement>(s: string) => root.querySelector(s) as T;
+  let alarms = store.get<Alarm[]>(KEY, []); if (!Array.isArray(alarms)) alarms = [];
+  let ringing: Alarm | null = null;
+  const save = () => store.set(KEY, alarms);
+  const nice = (t: string) => { const [hh, mm] = t.split(':').map(Number); const d = new Date(); d.setHours(hh, mm, 0, 0); return d.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' }); };
+  const stamp = (d: Date) => `${d.toDateString()} ${d.getHours()}:${d.getMinutes()}`;
+  /** ms until this alarm next rings */
+  function until(a: Alarm, now = new Date()) {
+    if (a.snooze) return a.snooze - now.getTime();
+    const [hh, mm] = a.time.split(':').map(Number); const t = new Date(now); t.setHours(hh, mm, 0, 0);
+    if (t.getTime() <= now.getTime() || a.last === stamp(t)) t.setDate(t.getDate() + 1);
+    return t.getTime() - now.getTime();
+  }
+  /** A new or re-enabled alarm whose time already passed today waits for tomorrow */
+  function skipPast(a: Alarm) { const now = new Date(), [hh, mm] = a.time.split(':').map(Number), t = new Date(now); t.setHours(hh, mm, 0, 0); if (t.getTime() <= now.getTime()) a.last = stamp(t); }
+  const inWords = (ms: number) => { const mins = Math.ceil(ms / 60000), hh = Math.floor(mins / 60), mm = mins % 60; return hh ? `${hh} h ${mm} min` : `${mm} min`; };
+  function list() {
+    const ul = q('[data-list]');
+    ul.innerHTML = alarms.length ? [...alarms].sort((a, b) => a.time.localeCompare(b.time)).map((a) => `<li class="card flex items-center gap-3 px-4 py-3" data-id="${a.id}">
+      <div class="min-w-0 flex-1"><p class="text-2xl font-bold tabular ${a.on ? '' : 'text-subtle'}">${nice(a.time)}</p><p class="truncate text-sm text-muted">${esc(a.label || 'Alarm')}${a.on ? ` · rings in ${inWords(until(a))}` : ' · off'}${a.snooze ? ' (snoozed)' : ''}</p></div>
+      <label class="relative inline-flex h-7 w-12 flex-none cursor-pointer items-center"><input type="checkbox" class="peer sr-only" data-toggle ${a.on ? 'checked' : ''} aria-label="Alarm at ${nice(a.time)} on or off" /><span class="absolute inset-0 rounded-full bg-[var(--border-strong)] transition peer-checked:bg-[var(--cat)] peer-focus-visible:outline peer-focus-visible:outline-2 peer-focus-visible:outline-[var(--ring)]"></span><span class="absolute left-1 h-5 w-5 rounded-full bg-white shadow transition peer-checked:translate-x-5"></span></label>
+      <button type="button" class="btn btn-ghost btn-sm !px-2 text-danger" data-del aria-label="Delete alarm at ${nice(a.time)}">✕</button></li>`).join('')
+      : '<li class="card px-5 py-6 text-center text-muted">No alarms yet. Set one above.</li>';
+  }
+  function clock() {
+    const now = new Date();
+    q('[data-now]').textContent = now.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit', second: '2-digit' });
+    q('[data-date]').textContent = now.toLocaleDateString([], { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+    const on = alarms.filter((a) => a.on);
+    if (!ringing) for (const a of on) {
+      // Ring if the time was reached in the last 10 minutes (covers a tab that the browser slowed down)
+      const [hh, mm] = a.time.split(':').map(Number), t = new Date(now); t.setHours(hh, mm, 0, 0);
+      const due = a.snooze ? now.getTime() >= a.snooze : now.getTime() >= t.getTime() && now.getTime() - t.getTime() < 600_000 && a.last !== stamp(t);
+      if (due) { ring(a, now, t); break; }
+    }
+    const nx = on.map((a) => [a, until(a, now)] as const).sort((x, y) => x[1] - y[1])[0];
+    q('[data-next]').textContent = nx ? `Next alarm: ${nice(nx[0].time)}${nx[0].label ? ` (${nx[0].label})` : ''}, in ${inWords(nx[1])}` : 'No alarms set';
+    document.title = ringing ? `⏰ ${ringing.label || 'Alarm'}` : nx ? `⏰ ${nice(nx[0].time)} · Alarm clock` : baseTitle;
+    if (now.getSeconds() === 0) list();
+    q('[data-tap]').hidden = !on.length || ((navigator as any).userActivation?.hasBeenActive ?? true);
+  }
+  const baseTitle = document.title;
+  function ring(a: Alarm, now: Date, t: Date) {
+    ringing = a; if (!a.snooze) a.last = stamp(t); a.snooze = undefined; save();
+    q('[data-ringtime]').textContent = now.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' }); q('[data-ringlbl]').textContent = a.label;
+    q('[data-ring]').hidden = false; startAlarm(a.tone); q<HTMLButtonElement>('[data-stop]').focus();
+    if ('Notification' in window && Notification.permission === 'granted' && document.hidden) try { new Notification('Alarm', { body: a.label || nice(a.time) }); } catch {}
+  }
+  const endRing = () => { stopAlarm(); q('[data-ring]').hidden = true; ringing = null; list(); };
+  q('[data-stop]').addEventListener('click', endRing);
+  q('[data-snooze]').addEventListener('click', () => { if (ringing) { ringing.snooze = Date.now() + 5 * 60_000; save(); } endRing(); });
+  q('[data-form]').addEventListener('submit', (e) => {
+    e.preventDefault(); unlockAudio();
+    const t = q<HTMLInputElement>('#al-time').value, err = q('[data-err]');
+    const msg = !/^\d{2}:\d{2}/.test(t) ? 'Choose a time for the alarm.' : alarms.length >= 30 ? 'You can keep up to 30 alarms. Delete some first.' : '';
+    err.hidden = !msg; err.textContent = msg; q('#al-time').setAttribute('aria-invalid', String(!!msg)); if (msg) return;
+    const a: Alarm = { id: Date.now().toString(36), time: t.slice(0, 5), label: q<HTMLInputElement>('#al-label').value.trim(), tone: q<HTMLSelectElement>('#al-tone').value as Tone, on: true };
+    skipPast(a);
+    alarms.push(a); save(); list(); clock(); q<HTMLInputElement>('#al-label').value = '';
+  });
+  q('[data-list]').addEventListener('click', (e) => {
+    const t = e.target as HTMLElement, a = alarms.find((x) => x.id === t.closest<HTMLElement>('[data-id]')?.dataset.id); if (!a) return;
+    if (t.matches('[data-toggle]')) { unlockAudio(); a.on = (t as HTMLInputElement).checked; a.snooze = undefined; if (a.on) skipPast(a); save(); list(); clock(); }
+    else if (t.closest('[data-del]')) { alarms = alarms.filter((x) => x !== a); save(); list(); clock(); }
+  });
+  q('[data-test]').addEventListener('click', () => { unlockAudio(); playOnce(q<HTMLSelectElement>('#al-tone').value as Tone); });
+  if (!wakeLockSupported()) q('[data-wakebox]').hidden = true;
+  q('#al-wake').addEventListener('change', async (e) => { const el = e.target as HTMLInputElement; const ok = await setWakeWanted(el.checked); if (el.checked && !ok) el.checked = false; });
+  // Browsers need one tap before they allow sound; any tap on the page counts
+  document.addEventListener('pointerdown', () => { unlockAudio(); q('[data-tap]').hidden = true; }, { once: true });
+  q('[data-tap]').addEventListener('click', () => { unlockAudio(); q('[data-tap]').hidden = true; });
+  const d = new Date(Date.now() + 60 * 60_000); q<HTMLInputElement>('#al-time').value = `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`;
+  list(); clock();
+  setInterval(clock, 500);
+</script>

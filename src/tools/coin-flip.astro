@@ -1,0 +1,79 @@
+---
+import Icon from '../components/Icon.astro';
+---
+<div id="cf" class="space-y-4">
+  <div class="card p-5 text-center sm:p-7">
+    <button type="button" class="cf-coin mx-auto block" data-coin aria-label="Flip the coin">
+      <span class="cf-inner" data-inner><span class="cf-face cf-h"><span class="text-5xl font-black">H</span><span class="text-xs font-bold uppercase tracking-[.2em]">Heads</span></span><span class="cf-face cf-t"><span class="text-5xl font-black">T</span><span class="text-xs font-bold uppercase tracking-[.2em]">Tails</span></span></span>
+    </button>
+    <p class="mt-5 min-h-9 text-3xl font-extrabold" data-result aria-live="assertive">Tap to flip</p>
+    <div class="mx-auto mt-5 flex max-w-sm flex-col gap-3">
+      <button type="button" class="btn btn-primary btn-lg" data-flip><Icon name="Coins" size={18} />Flip coin</button>
+    </div>
+    <p class="mt-3 text-sm text-subtle">Press Space or Enter to flip again.</p>
+  </div>
+  <div class="grid gap-4 sm:grid-cols-2">
+    <section class="card p-4 sm:p-5">
+      <div class="flex items-center justify-between"><h2 class="text-base font-semibold">Your flips</h2><button type="button" class="btn btn-ghost btn-sm" data-clear>Reset</button></div>
+      <dl class="mt-3 grid grid-cols-3 gap-2 text-center">
+        <div class="stat"><dt class="stat-label">Heads</dt><dd class="stat-value" data-k="h">0</dd></div>
+        <div class="stat"><dt class="stat-label">Tails</dt><dd class="stat-value" data-k="t">0</dd></div>
+        <div class="stat"><dt class="stat-label">Streak</dt><dd class="stat-value" data-k="s">0</dd></div>
+      </dl>
+      <p class="mt-3 break-all font-mono text-sm tracking-wider text-muted" data-hist aria-label="Recent flips"></p>
+    </section>
+    <section class="card p-4 sm:p-5">
+      <h2 class="text-base font-semibold">Flip many at once</h2>
+      <div class="mt-3 flex items-end gap-2"><div class="flex-1"><label for="cf-n" class="label">Number of coins</label><input id="cf-n" class="input" type="number" inputmode="numeric" min="1" max="10000" value="10" /></div><button type="button" class="btn btn-secondary" data-many>Flip</button></div>
+      <p class="mt-1 text-sm text-danger" data-err hidden></p>
+      <div class="mt-3" data-manyout aria-live="polite"></div>
+    </section>
+  </div>
+</div>
+<style is:global>
+  #cf .cf-coin { width: 10rem; height: 10rem; perspective: 900px; border-radius: 999px; }
+  #cf .cf-coin:focus-visible { outline: 3px solid var(--ring); outline-offset: 6px; }
+  #cf .cf-inner { position: relative; display: block; width: 100%; height: 100%; transform-style: preserve-3d; }
+  #cf .cf-face { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: .1rem; border-radius: 999px; backface-visibility: hidden; -webkit-backface-visibility: hidden;
+    background: radial-gradient(circle at 35% 30%, #fde68a, #f59e0b 60%, #b45309); color: #78350f; box-shadow: inset 0 0 0 6px rgb(255 255 255 / .35), inset 0 0 0 9px rgb(120 53 15 / .25), 0 8px 20px -6px rgb(0 0 0 / .35); }
+  #cf .cf-t { transform: rotateY(180deg); background: radial-gradient(circle at 35% 30%, #e5e7eb, #9ca3af 60%, #4b5563); color: #1f2937; }
+  #cf .cf-inner.spin { animation: cf-spin 1s cubic-bezier(.25,.7,.3,1) forwards; }
+  @keyframes cf-spin { from { transform: rotateY(var(--from)) translateY(0); } 45% { transform: rotateY(calc((var(--from) + var(--to)) / 2)) translateY(-2.5rem) scale(1.08); } to { transform: rotateY(var(--to)); } }
+  @media (prefers-reduced-motion: reduce) { #cf .cf-inner.spin { animation-duration: 1ms; } }
+</style>
+<script>
+  import { randInt } from '../lib/random';
+  import { fmt } from '../lib/ui';
+  const root = document.getElementById('cf')!, q = <T extends HTMLElement = HTMLElement>(s: string) => root.querySelector(s) as T;
+  const inner = q('[data-inner]'), res = q('[data-result]');
+  let heads = 0, tails = 0, streak = 0, last = -1, angle = 0, busy = false; const hist: string[] = [];
+  function flip() {
+    if (busy) return; busy = true;
+    const r = randInt(2); // 0 heads, 1 tails, from the browser's secure random generator
+    inner.style.setProperty('--from', `${angle}deg`); inner.style.setProperty('--to', `${1800 + (r ? 180 : 0)}deg`);
+    inner.classList.remove('spin'); void inner.offsetWidth; inner.classList.add('spin');
+    res.textContent = '…';
+    const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    setTimeout(() => {
+      inner.classList.remove('spin'); inner.style.transform = `rotateY(${r ? 180 : 0}deg)`; angle = r ? 180 : 0;
+      r ? tails++ : heads++; streak = r === last ? streak + 1 : 1; last = r;
+      hist.unshift(r ? 'T' : 'H'); hist.length = Math.min(hist.length, 40);
+      res.textContent = r ? 'Tails' : 'Heads';
+      q('[data-k=h]').textContent = fmt(heads); q('[data-k=t]').textContent = fmt(tails); q('[data-k=s]').textContent = `${streak} ${r ? 'T' : 'H'}`;
+      q('[data-hist]').textContent = hist.join(' ');
+      busy = false;
+    }, reduce ? 50 : 1000);
+  }
+  q('[data-flip]').addEventListener('click', flip); q('[data-coin]').addEventListener('click', flip);
+  document.addEventListener('keydown', (e) => { if ((e.key === ' ' || e.key === 'Enter') && !(e.target as HTMLElement).matches('input, button, select, textarea, a')) { e.preventDefault(); flip(); } });
+  q('[data-clear]').addEventListener('click', () => { heads = tails = streak = 0; last = -1; hist.length = 0; ['h', 't'].forEach((k) => (q(`[data-k=${k}]`).textContent = '0')); q('[data-k=s]').textContent = '0'; q('[data-hist]').textContent = ''; res.textContent = 'Tap to flip'; });
+  q('[data-many]').addEventListener('click', () => {
+    const el = q<HTMLInputElement>('#cf-n'), n = Number(el.value), err = q('[data-err]');
+    const ok = Number.isInteger(n) && n >= 1 && n <= 10000; err.hidden = ok; err.textContent = ok ? '' : 'Choose a whole number from 1 to 10,000.'; el.setAttribute('aria-invalid', String(!ok));
+    if (!ok) return;
+    let h = 0; const seq: string[] = []; for (let i = 0; i < n; i++) { const r = randInt(2); if (!r) h++; if (i < 100) seq.push(r ? 'T' : 'H'); }
+    const pct = (x: number) => fmt((x / n) * 100, 1);
+    q('[data-manyout]').innerHTML = `<div class="flex h-3 overflow-hidden rounded-full bg-surface-2"><div style="width:${(h / n) * 100}%;background:#f59e0b"></div><div class="flex-1" style="background:#9ca3af"></div></div>
+      <p class="mt-2 font-semibold tabular">Heads ${fmt(h)} (${pct(h)}%) · Tails ${fmt(n - h)} (${pct(n - h)}%)</p>${n <= 100 ? `<p class="mt-1 break-all font-mono text-sm tracking-wider text-muted">${seq.join(' ')}</p>` : ''}`;
+  });
+</script>

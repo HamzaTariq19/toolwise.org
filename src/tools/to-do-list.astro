@@ -1,0 +1,121 @@
+---
+import Icon from '../components/Icon.astro';
+import LocalNote from '../components/LocalNote.astro';
+---
+<div id="td" class="space-y-4">
+  <div class="flex flex-wrap items-end gap-2">
+    <div class="min-w-0 basis-full sm:basis-auto sm:flex-1"><label for="td-list" class="label">List</label><select id="td-list" class="select"></select></div>
+    <button type="button" class="btn btn-secondary flex-1 sm:flex-none" data-newlist><Icon name="Plus" size={18} />New list</button>
+    <button type="button" class="btn btn-ghost" data-rename aria-label="Rename this list"><Icon name="Pencil" size={18} /></button>
+    <button type="button" class="btn btn-ghost text-danger" data-dellist aria-label="Delete this list"><Icon name="Trash2" size={18} /></button>
+  </div>
+  <form class="flex gap-2" novalidate data-form>
+    <label for="td-in" class="sr-only">New task</label>
+    <input id="td-in" class="input !min-h-[52px] flex-1 text-[1.0625rem]" placeholder="Add a task and press Enter" maxlength="300" autocomplete="off" enterkeyhint="done" />
+    <button type="submit" class="btn btn-primary btn-lg !px-4 sm:!px-6" aria-label="Add task"><Icon name="Plus" size={20} /><span class="hidden sm:inline">Add</span></button>
+  </form>
+  <p class="text-sm text-danger" data-err hidden role="alert"></p>
+  <div class="flex flex-wrap items-center justify-between gap-2">
+    <div class="segmented" role="radiogroup" aria-label="Show"><label><input type="radio" name="td-f" value="all" checked /><span>All</span></label><label><input type="radio" name="td-f" value="active" /><span>To do</span></label><label><input type="radio" name="td-f" value="done" /><span>Done</span></label></div>
+    <p class="text-sm text-muted" data-count aria-live="polite"></p>
+  </div>
+  <ul class="card divide-y divide-[var(--border)] overflow-hidden" data-items></ul>
+  <div class="flex flex-wrap gap-2">
+    <button type="button" class="btn btn-ghost btn-sm" data-cleardone><Icon name="ListX" size={16} />Remove completed</button>
+    <button type="button" class="btn btn-ghost btn-sm" data-copy><Icon name="Copy" size={16} /><span data-label>Copy as text</span></button>
+    <button type="button" class="btn btn-ghost btn-sm" data-print><Icon name="Printer" size={16} />Print</button>
+  </div>
+  <LocalNote what="Your lists are" />
+</div>
+<style is:global>
+  #td [data-item].dragging { background: var(--surface-2); box-shadow: 0 6px 20px -6px rgb(0 0 0 / .3); position: relative; z-index: 2; }
+  #td [data-handle] { touch-action: none; cursor: grab; }
+</style>
+<script>
+  import { store, esc, copyText, printElement } from '../lib/ui';
+  type Task = { id: string; text: string; done: boolean };
+  type List = { id: string; name: string; tasks: Task[] };
+  const KEY = 'tw-todo', root = document.getElementById('td')!, q = <T extends HTMLElement = HTMLElement>(s: string) => root.querySelector(s) as T;
+  const uid = () => Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
+  let state = store.get<{ lists: List[]; cur: string }>(KEY, { lists: [], cur: '' });
+  if (!state.lists?.length) { const l = { id: uid(), name: 'My tasks', tasks: [] }; state = { lists: [l], cur: l.id }; }
+  const list = () => state.lists.find((l) => l.id === state.cur) ?? state.lists[0];
+  const save = () => store.set(KEY, state);
+  const filter = () => (q<HTMLInputElement>('input[name=td-f]:checked')).value;
+  let editing: string | null = null;
+
+  function render() {
+    const sel = q<HTMLSelectElement>('#td-list');
+    sel.innerHTML = state.lists.map((l) => `<option value="${l.id}">${esc(l.name)} (${l.tasks.filter((t) => !t.done).length})</option>`).join(''); sel.value = list().id;
+    const f = filter(), shown = list().tasks.filter((t) => f === 'all' || (f === 'done') === t.done);
+    const ul = q('[data-items]');
+    ul.innerHTML = shown.length ? shown.map((t) => `<li class="flex items-center gap-2 bg-surface py-1 pl-1 pr-2" data-item="${t.id}">
+      <button type="button" class="flex h-11 w-7 flex-none items-center justify-center text-subtle" data-handle aria-label="Drag to reorder “${esc(t.text)}”. Use arrow keys up and down to move." ${f !== 'all' ? 'hidden' : ''}><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="9" cy="6" r="1.6"/><circle cx="15" cy="6" r="1.6"/><circle cx="9" cy="12" r="1.6"/><circle cx="15" cy="12" r="1.6"/><circle cx="9" cy="18" r="1.6"/><circle cx="15" cy="18" r="1.6"/></svg></button>
+      <input type="checkbox" class="h-5 w-5 flex-none accent-[var(--success)] ${f !== 'all' ? 'ml-3' : ''}" data-done ${t.done ? 'checked' : ''} aria-label="Done: ${esc(t.text)}" />
+      ${editing === t.id ? `<input class="input !min-h-10 flex-1 py-1.5" value="${esc(t.text)}" maxlength="300" data-edit aria-label="Edit task" />`
+        : `<span class="min-w-0 flex-1 cursor-text py-2.5 ${t.done ? 'text-subtle line-through' : ''}" data-text>${esc(t.text)}</span>`}
+      <button type="button" class="btn btn-ghost btn-sm !px-2 text-danger" data-del aria-label="Delete “${esc(t.text)}”">✕</button></li>`).join('')
+      : `<li class="px-5 py-8 text-center text-muted">${list().tasks.length ? (f === 'done' ? 'Nothing completed yet.' : 'All done! 🎉') : 'No tasks yet. Add your first one above.'}</li>`;
+    const left = list().tasks.filter((t) => !t.done).length, done = list().tasks.length - left;
+    q('[data-count]').textContent = list().tasks.length ? `${left} to do · ${done} done` : '';
+    q<HTMLButtonElement>('[data-cleardone]').disabled = !done;
+    const ed = q<HTMLInputElement>('[data-edit]'); if (ed) { ed.focus(); ed.setSelectionRange(ed.value.length, ed.value.length); }
+  }
+  q('[data-form]').addEventListener('submit', (e) => {
+    e.preventDefault();
+    const inp = q<HTMLInputElement>('#td-in'), text = inp.value.trim(), err = q('[data-err]');
+    const msg = !text ? 'Type a task first.' : list().tasks.length >= 500 ? 'This list is full (500 tasks). Remove completed tasks or start a new list.' : '';
+    err.hidden = !msg; err.textContent = msg; if (msg) return;
+    list().tasks.push({ id: uid(), text, done: false }); inp.value = ''; save();
+    if (filter() === 'done') (q<HTMLInputElement>('input[name=td-f][value=all]')).checked = true;
+    render(); inp.focus();
+  });
+  const finishEdit = (keep: boolean) => { const ed = q<HTMLInputElement>('[data-edit]'); if (!ed || !editing) return; const t = list().tasks.find((x) => x.id === editing); const v = ed.value.trim(); if (keep && t && v) t.text = v; editing = null; save(); render(); };
+  q('[data-items]').addEventListener('click', (e) => {
+    const el = e.target as HTMLElement, id = el.closest<HTMLElement>('[data-item]')?.dataset.item, t = list().tasks.find((x) => x.id === id); if (!t) return;
+    if (el.matches('[data-done]')) { t.done = (el as HTMLInputElement).checked; save(); render(); }
+    else if (el.closest('[data-del]')) { list().tasks = list().tasks.filter((x) => x !== t); save(); render(); }
+    else if (el.matches('[data-text]')) { finishEdit(true); editing = t.id; render(); }
+  });
+  q('[data-items]').addEventListener('keydown', (e) => {
+    const el = e.target as HTMLElement;
+    if (el.matches('[data-edit]')) { if (e.key === 'Enter') finishEdit(true); if (e.key === 'Escape') finishEdit(false); return; }
+    if (el.matches('[data-handle]') && (e.key === 'ArrowUp' || e.key === 'ArrowDown')) {
+      e.preventDefault(); const ts = list().tasks, i = ts.findIndex((x) => x.id === el.closest<HTMLElement>('[data-item]')!.dataset.item), j = i + (e.key === 'ArrowUp' ? -1 : 1);
+      if (j < 0 || j >= ts.length) return; [ts[i], ts[j]] = [ts[j], ts[i]]; save(); render(); q<HTMLElement>(`[data-item="${ts[j].id}"] [data-handle]`).focus();
+    }
+  });
+  q('[data-items]').addEventListener('focusout', (e) => { if ((e.target as HTMLElement).matches('[data-edit]')) setTimeout(() => finishEdit(true)); });
+  // Pointer drag to reorder (mouse and touch)
+  let drag: { id: string; el: HTMLElement; startY: number } | null = null;
+  q('[data-items]').addEventListener('pointerdown', (e) => {
+    const h = (e.target as HTMLElement).closest<HTMLElement>('[data-handle]'); if (!h) return;
+    const el = h.closest<HTMLElement>('[data-item]')!; drag = { id: el.dataset.item!, el, startY: e.clientY }; el.classList.add('dragging'); h.setPointerCapture(e.pointerId);
+  });
+  q('[data-items]').addEventListener('pointermove', (e) => {
+    if (!drag) return; drag.el.style.transform = `translateY(${e.clientY - drag.startY}px)`;
+    const over = [...root.querySelectorAll<HTMLElement>('[data-item]')].find((li) => li !== drag!.el && (() => { const r = li.getBoundingClientRect(); return e.clientY > r.top && e.clientY < r.bottom; })());
+    if (!over) return;
+    const ts = list().tasks, from = ts.findIndex((x) => x.id === drag!.id), to = ts.findIndex((x) => x.id === over.dataset.item);
+    const [m] = ts.splice(from, 1); ts.splice(to, 0, m);
+    const before = drag.el.getBoundingClientRect().top; (to > from ? over.after(drag.el) : over.before(drag.el));
+    drag.startY += drag.el.getBoundingClientRect().top - before; drag.el.style.transform = `translateY(${e.clientY - drag.startY}px)`;
+  });
+  const endDrag = () => { if (!drag) return; drag.el.classList.remove('dragging'); drag.el.style.transform = ''; drag = null; save(); render(); };
+  q('[data-items]').addEventListener('pointerup', endDrag); q('[data-items]').addEventListener('pointercancel', endDrag);
+
+  q('#td-list').addEventListener('change', (e) => { state.cur = (e.target as HTMLSelectElement).value; editing = null; save(); render(); });
+  root.querySelectorAll('input[name=td-f]').forEach((r) => r.addEventListener('change', render));
+  q('[data-newlist]').addEventListener('click', () => { const name = prompt('Name for the new list', `List ${state.lists.length + 1}`)?.trim(); if (!name) return; const l = { id: uid(), name: name.slice(0, 50), tasks: [] }; state.lists.push(l); state.cur = l.id; save(); render(); q('#td-in').focus(); });
+  q('[data-rename]').addEventListener('click', () => { const name = prompt('Rename this list', list().name)?.trim(); if (!name) return; list().name = name.slice(0, 50); save(); render(); });
+  q('[data-dellist]').addEventListener('click', () => {
+    if (!confirm(`Delete the list “${list().name}” and its ${list().tasks.length} tasks? This cannot be undone.`)) return;
+    state.lists = state.lists.filter((l) => l !== list()); if (!state.lists.length) state.lists = [{ id: uid(), name: 'My tasks', tasks: [] }];
+    state.cur = state.lists[0].id; save(); render();
+  });
+  q('[data-cleardone]').addEventListener('click', () => { list().tasks = list().tasks.filter((t) => !t.done); save(); render(); });
+  const asText = () => `${list().name}\n` + list().tasks.map((t) => `${t.done ? '☑' : '☐'} ${t.text}`).join('\n');
+  q('[data-copy]').addEventListener('click', (e) => copyText(asText(), e.currentTarget as HTMLElement));
+  q('[data-print]').addEventListener('click', () => { const d = document.createElement('div'); d.innerHTML = `<h2 style="font-size:16pt;font-weight:700;margin-bottom:10pt">${esc(list().name)}</h2><ul style="font-size:12pt;line-height:2">${list().tasks.map((t) => `<li>${t.done ? '☑' : '☐'} ${esc(t.text)}</li>`).join('')}</ul>`; printElement(d); });
+  render();
+</script>

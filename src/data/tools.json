@@ -2398,7 +2398,7 @@
       "timer with alarm",
       "minute timer"
     ],
-    "status": "planned"
+    "status": "built"
   },
   {
     "id": 151,
@@ -2413,7 +2413,7 @@
       "wake up alarm",
       "alarm sound"
     ],
-    "status": "planned"
+    "status": "built"
   },
   {
     "id": 152,
@@ -2462,7 +2462,7 @@
       "coin toss",
       "flip a coin"
     ],
-    "status": "planned"
+    "status": "built"
   },
   {
     "id": 155,
@@ -2478,7 +2478,7 @@
       "virtual dice",
       "random dice"
     ],
-    "status": "planned"
+    "status": "built"
   },
   {
     "id": 156,
@@ -2493,7 +2493,7 @@
       "checklist",
       "todo app"
     ],
-    "status": "planned"
+    "status": "built"
   },
   {
     "id": 157,
@@ -2509,7 +2509,7 @@
       "scratch pad",
       "online notes"
     ],
-    "status": "planned"
+    "status": "built"
   },
   {
     "id": 158,
@@ -2524,7 +2524,7 @@
       "monthly calendar",
       "yearly calendar"
     ],
-    "status": "planned"
+    "status": "built"
   },
   {
     "id": 159,
@@ -2539,7 +2539,7 @@
       "time in cities",
       "world time"
     ],
-    "status": "planned"
+    "status": "built"
   },
   {
     "id": 160,
@@ -2554,7 +2554,7 @@
       "password test",
       "how secure is my password"
     ],
-    "status": "planned"
+    "status": "built"
   },
   {
     "id": 161,
@@ -2570,7 +2570,7 @@
       "screen test",
       "backlight bleed"
     ],
-    "status": "planned"
+    "status": "built"
   },
   {
     "id": 162,

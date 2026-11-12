@@ -18,6 +18,8 @@ const category = categoryBySlug[tool.category];
 const live = isLive(tool);
 
 const impls = import.meta.glob<{ default: any }>('../tools/*.astro', { eager: true });
+// No third-party ad scripts where people type or generate passwords
+const noAds = ['password-strength-checker', 'password-generator'].includes(tool.slug);
 const ToolUI = live ? impls[`../tools/${tool.slug}.astro`].default : null;
 
 const entry = live ? await getEntry('tools', tool.slug) : undefined;
@@ -65,7 +67,7 @@ if (live) {
     });
 }
 ---
-<Base title={title} description={description} noindex={!live} jsonLd={jsonLd}>
+<Base title={title} description={description} noindex={!live} jsonLd={jsonLd} noAds={noAds}>
   <div class={`container-page cat-${tool.category} pt-5`}>
     <Breadcrumb items={[{ name: 'Home', href: '/' }, { name: category.short, href: `/category/${category.slug}` }, { name: tool.name }]} />
 
@@ -96,17 +98,17 @@ if (live) {
         </section>
 
         <div class="hidden [grid-area:ad1] lg:block">
-          <div class="sticky top-24"><AdSlot id="tool-rail" mobile={600} desktop={600} /></div>
+          <div class="sticky top-24">{!noAds && <AdSlot id="tool-rail" mobile={600} desktop={600} />}</div>
         </div>
 
         <div class="min-w-0 [grid-area:rest]">
-          <AdSlot id="tool-below" mobile={280} desktop={100} class="mt-8" />
+          {!noAds && <AdSlot id="tool-below" mobile={280} desktop={100} class="mt-8" />}
 
           <article class="prose-tw mt-10">
             {rendered && <rendered.Content />}
           </article>
 
-          <AdSlot id="tool-mid" mobile={280} class="mt-8 lg:!hidden" />
+          {!noAds && <AdSlot id="tool-mid" mobile={280} class="mt-8 lg:!hidden" />}
 
           {faqs.length > 0 && (
             <section class="mt-10 max-w-[72ch]" aria-labelledby="faq-heading">
@@ -125,7 +127,7 @@ if (live) {
             </section>
           )}
 
-          <AdSlot id="tool-end" mobile={280} desktop={250} class="mt-10" />
+          {!noAds && <AdSlot id="tool-end" mobile={280} desktop={250} class="mt-10" />}
         </div>
       </div>
     ) : (

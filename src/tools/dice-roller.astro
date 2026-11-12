@@ -1,0 +1,90 @@
+---
+import Icon from '../components/Icon.astro';
+const quick = [4, 6, 8, 10, 12, 20, 100];
+---
+<div id="dr" class="space-y-4">
+  <form class="card space-y-4 p-4 sm:p-5" novalidate data-form>
+    <div><p class="label">Dice type</p><div class="flex flex-wrap gap-1.5" data-types>{quick.map((d) => <button type="button" class="chip !min-h-10 min-w-12 justify-center font-semibold" data-d={d} aria-pressed={d === 6 ? 'true' : 'false'}>d{d}</button>)}</div></div>
+    <div class="grid grid-cols-[auto_1fr] items-end gap-3">
+      <div><label for="dr-n" class="label">How many</label>
+        <div class="flex"><button type="button" class="btn btn-secondary !rounded-r-none !px-3" data-step="-1" aria-label="One fewer die">−</button><input id="dr-n" class="input w-16 !rounded-none border-x-0 text-center font-semibold tabular" type="number" inputmode="numeric" min="1" max="100" value="2" /><button type="button" class="btn btn-secondary !rounded-l-none !px-3" data-step="1" aria-label="One more die">+</button></div></div>
+      <div><label for="dr-f" class="label">Or type dice notation</label><input id="dr-f" class="input mono" value="2d6" autocomplete="off" autocapitalize="off" spellcheck="false" aria-describedby="dr-hint" /></div>
+    </div>
+    <p id="dr-hint" class="hint -mt-2">Examples: 3d6, d20+5, 2d8+1d4−1. Up to 100 dice with 2 to 1,000 sides.</p>
+    <p class="text-sm text-danger" data-err hidden role="alert"></p>
+    <button type="submit" class="btn btn-primary btn-lg w-full sm:w-auto"><Icon name="Dices" size={18} />Roll dice</button>
+  </form>
+  <section class="card p-5 text-center sm:p-6" aria-live="polite">
+    <div class="flex min-h-[4.5rem] flex-wrap items-center justify-center gap-2.5" data-dice></div>
+    <p class="mt-4 text-sm font-semibold uppercase tracking-wide text-subtle">Total</p>
+    <p class="text-6xl font-extrabold tracking-tight tabular" data-total>–</p>
+    <p class="mt-1 text-sm text-muted tabular" data-detail></p>
+  </section>
+  <section class="card p-4 sm:p-5" data-histbox hidden>
+    <div class="flex items-center justify-between"><h2 class="text-base font-semibold">Recent rolls</h2><button type="button" class="btn btn-ghost btn-sm" data-clear>Clear</button></div>
+    <ol class="mt-2 divide-y divide-[var(--border)] text-sm tabular" data-hist></ol>
+  </section>
+</div>
+<style is:global>
+  #dr .die { display: inline-flex; align-items: center; justify-content: center; width: 3.5rem; height: 3.5rem; border-radius: 12px; background: var(--surface); border: 2px solid var(--border-strong); font-weight: 800; font-size: 1.25rem; box-shadow: 0 2px 0 var(--border-strong); }
+  #dr .die.max { border-color: var(--success); color: var(--success); } #dr .die.min { border-color: var(--danger); color: var(--danger); }
+  #dr .die svg { width: 70%; height: 70%; }
+  #dr .roll .die { animation: dr-roll .5s cubic-bezier(.3,.7,.4,1); }
+  @keyframes dr-roll { 0% { transform: rotate(-200deg) scale(.4); opacity: 0; } 100% { transform: none; opacity: 1; } }
+  @media (prefers-reduced-motion: reduce) { #dr .roll .die { animation: none; } }
+</style>
+<script>
+  import { randInt } from '../lib/random';
+  import { esc } from '../lib/ui';
+  const root = document.getElementById('dr')!, q = <T extends HTMLElement = HTMLElement>(s: string) => root.querySelector(s) as T;
+  const n = q<HTMLInputElement>('#dr-n'), f = q<HTMLInputElement>('#dr-f'), err = q('[data-err]');
+  type Term = { sign: 1 | -1; count: number; sides: number } | { sign: 1 | -1; value: number };
+  function parse(src: string): Term[] {
+    const s = src.toLowerCase().replace(/[−–]/g, '-').replace(/\s+/g, '');
+    if (!s) throw new Error('Type dice to roll, like 2d6.');
+    if (!/^[+-]?(\d*d\d+|\d+)([+-](\d*d\d+|\d+))*$/.test(s)) throw new Error('That notation isn’t recognised. Use the form 2d6, d20+3 or 2d8+1d4.');
+    const terms: Term[] = []; let dice = 0;
+    for (const m of s.matchAll(/([+-]?)(\d*)d(\d+)|([+-]?)(\d+)/g)) {
+      if (m[3] !== undefined) {
+        const count = m[2] ? +m[2] : 1, sides = +m[3];
+        if (count < 1) throw new Error('Roll at least one die.');
+        if (sides < 2 || sides > 1000) throw new Error('Dice can have 2 to 1,000 sides.');
+        dice += count; terms.push({ sign: m[1] === '-' ? -1 : 1, count, sides });
+      } else { const v = +m[5]; if (v > 1_000_000) throw new Error('That modifier is too large.'); terms.push({ sign: m[4] === '-' ? -1 : 1, value: v }); }
+    }
+    if (!dice) throw new Error('Include at least one die, like d6.');
+    if (dice > 100) throw new Error('You can roll up to 100 dice at once.');
+    return terms;
+  }
+  const PIPS: Record<number, [number, number][]> = { 1: [[50, 50]], 2: [[28, 28], [72, 72]], 3: [[25, 25], [50, 50], [75, 75]], 4: [[28, 28], [72, 28], [28, 72], [72, 72]], 5: [[27, 27], [73, 27], [50, 50], [27, 73], [73, 73]], 6: [[28, 24], [72, 24], [28, 50], [72, 50], [28, 76], [72, 76]] };
+  const face = (v: number, sides: number, cls: string) => sides === 6
+    ? `<span class="die ${cls}" role="img" aria-label="${v}"><svg viewBox="0 0 100 100" aria-hidden="true">${PIPS[v].map(([x, y]) => `<circle cx="${x}" cy="${y}" r="10" fill="currentColor"/>`).join('')}</svg></span>`
+    : `<span class="die ${cls}" title="d${sides}">${v}</span>`;
+  const hist: string[] = [];
+  function roll() {
+    let terms: Term[];
+    try { terms = parse(f.value); } catch (e) { err.hidden = false; err.textContent = (e as Error).message; f.setAttribute('aria-invalid', 'true'); return; }
+    err.hidden = true; f.removeAttribute('aria-invalid');
+    let total = 0; const html: string[] = [], parts: string[] = [];
+    for (const t of terms) {
+      if ('value' in t) { total += t.sign * t.value; parts.push(`${t.sign < 0 ? '− ' : '+ '}${t.value}`); continue; }
+      const vals = Array.from({ length: t.count }, () => randInt(t.sides) + 1);
+      vals.forEach((v) => html.push(face(v, t.sides, terms.length > 1 || t.count > 1 ? (v === t.sides ? 'max' : v === 1 ? 'min' : '') : '')));
+      const sum = vals.reduce((a, b) => a + b, 0); total += t.sign * sum;
+      parts.push(`${parts.length ? (t.sign < 0 ? '− ' : '+ ') : t.sign < 0 ? '−' : ''}${t.count}d${t.sides} (${vals.join(', ')})`);
+    }
+    const box = q('[data-dice]'); box.classList.remove('roll'); box.innerHTML = html.join(''); void box.offsetWidth; box.classList.add('roll');
+    q('[data-total]').textContent = String(total);
+    q('[data-detail]').textContent = html.length > 1 || terms.length > 1 ? parts.join(' ') : '';
+    hist.unshift(`<li class="flex justify-between gap-3 py-1.5"><span class="mono text-muted">${esc(f.value.replace(/\s+/g, ''))}</span><span class="font-bold">${total}</span></li>`); hist.length = Math.min(hist.length, 10);
+    q('[data-hist]').innerHTML = hist.join(''); q('[data-histbox]').hidden = false;
+  }
+  const sides = () => +(root.querySelector<HTMLElement>('[data-d][aria-pressed=true]')?.dataset.d ?? 6);
+  const sync = () => { const c = Math.max(1, Math.min(100, Math.round(+n.value) || 1)); f.value = `${c}d${sides()}`; err.hidden = true; };
+  root.querySelectorAll<HTMLButtonElement>('[data-d]').forEach((b) => b.addEventListener('click', () => { root.querySelectorAll('[data-d]').forEach((x) => x.setAttribute('aria-pressed', String(x === b))); sync(); roll(); }));
+  root.querySelectorAll<HTMLButtonElement>('[data-step]').forEach((b) => b.addEventListener('click', () => { n.value = String(Math.max(1, Math.min(100, (Math.round(+n.value) || 1) + +b.dataset.step!))); sync(); }));
+  n.addEventListener('input', () => { if (n.value !== '') sync(); });
+  f.addEventListener('input', () => { const m = f.value.trim().match(/^(\d*)d(\d+)$/i); if (m) { n.value = m[1] || '1'; root.querySelectorAll<HTMLElement>('[data-d]').forEach((x) => x.setAttribute('aria-pressed', String(x.dataset.d === m[2]))); } });
+  q('[data-form]').addEventListener('submit', (e) => { e.preventDefault(); roll(); });
+  q('[data-clear]').addEventListener('click', () => { hist.length = 0; q('[data-histbox]').hidden = true; });
+</script>

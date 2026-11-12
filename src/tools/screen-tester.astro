@@ -1,0 +1,119 @@
+---
+import Icon from '../components/Icon.astro';
+const tests: [string, string, string, string][] = [
+  ['colors', 'Dead and stuck pixels', 'Solid colors fill the screen. Look for dots that stay black, white or one color.', 'Grid3x3'],
+  ['gradient', 'Color banding', 'Smooth gradients. Visible stripes or steps mean limited color depth.', 'Blend'],
+  ['uniform', 'Backlight and uniformity', 'Dark and mid-gray screens show bleed, clouding and uneven brightness.', 'SunDim'],
+  ['sharp', 'Sharpness and scaling', 'Fine 1-pixel patterns. Blur or moiré means the display or scaling is not pixel-perfect.', 'ScanLine'],
+];
+---
+<div id="st" class="space-y-4">
+  <div class="grid gap-3 sm:grid-cols-2">
+    {tests.map(([id, t, d, ic], i) => (
+      <button type="button" class:list={['card flex items-start gap-3 p-4 text-left transition hover:border-line-strong', i === 0 && 'sm:col-span-2']} data-test={id}>
+        <span class="icon-tile h-11 w-11"><Icon name={ic} size={22} /></span>
+        <span><span class="block font-semibold">{t}</span><span class="mt-0.5 block text-sm text-muted">{d}</span></span>
+        {i === 0 && <span class="btn btn-primary ml-auto hidden self-center sm:inline-flex">Start test</span>}
+      </button>
+    ))}
+  </div>
+  <p class="text-sm text-muted">Tap or press → to go to the next screen, ← to go back, and Esc to exit.</p>
+  <section class="card p-4 sm:p-5">
+    <h2 class="text-base font-semibold">Your display</h2>
+    <dl class="mt-3 grid grid-cols-2 gap-2 sm:grid-cols-3" data-info></dl>
+    <p class="mt-2 text-xs text-subtle">Browsers report screen size in CSS pixels. The physical resolution is estimated from the pixel ratio and can differ when display scaling is used.</p>
+  </section>
+  <details class="card p-4 sm:p-5" data-fixbox>
+    <summary class="flex min-h-11 cursor-pointer items-center gap-2 font-semibold"><Icon name="Zap" size={18} />Stuck pixel exerciser</summary>
+    <p class="mt-2 text-sm text-muted">A small square flashes colors very quickly. Drag it over a stuck pixel and leave it for 10 to 20 minutes. It sometimes revives a stuck (colored) pixel. It can't fix a dead (always black) pixel.</p>
+    <div class="alert alert-error mt-3"><Icon name="TriangleAlert" size={18} class="mt-0.5 flex-none" /><span><b>Flashing light warning.</b> Do not use this if you or anyone nearby has photosensitive epilepsy or is sensitive to flashing lights. Look away while it runs.</span></div>
+    <label class="mt-3 flex min-h-11 items-center gap-2.5 text-[0.9375rem]"><input type="checkbox" id="st-ok" class="h-5 w-5 accent-[var(--brand)]" />I understand the warning</label>
+    <button type="button" class="btn btn-secondary mt-2" data-fix disabled><Icon name="Zap" size={18} />Start the exerciser</button>
+  </details>
+  <div class="fixed inset-0 z-[100] cursor-none select-none" data-stage hidden tabindex="-1" role="dialog" aria-label="Screen test. Tap for next screen, Escape to exit.">
+    <div class="absolute inset-0" data-paint></div>
+    <canvas class="absolute inset-0 h-full w-full" data-canvas hidden></canvas>
+    <div class="absolute left-0 top-0 h-24 w-24 cursor-move" data-fixer hidden></div>
+    <div class="pointer-events-none absolute inset-x-0 bottom-6 flex justify-center transition-opacity duration-700" data-hint>
+      <p class="rounded-full bg-black/70 px-4 py-2 text-sm text-white"><span data-hinttext></span> · Tap for next</p>
+    </div>
+    <button type="button" class="absolute right-3 top-3 min-h-11 cursor-pointer rounded-full bg-black/70 px-4 text-sm font-semibold text-white transition-opacity duration-700 focus:!opacity-100" data-exit>✕ Exit</button>
+  </div>
+</div>
+<script>
+  const root = document.getElementById('st')!, q = <T extends HTMLElement = HTMLElement>(s: string) => root.querySelector(s) as T;
+  const stage = q('[data-stage]'), paint = q('[data-paint]'), canvas = q<HTMLCanvasElement>('[data-canvas]'), hint = q('[data-hint]');
+  type Screen = { name: string; bg?: string; draw?: (c: CanvasRenderingContext2D, w: number, h: number) => void };
+  const grad = (dir: string, ...stops: string[]) => `linear-gradient(${dir}, ${stops.join(', ')})`;
+  const SETS: Record<string, Screen[]> = {
+    colors: [['Black', '#000'], ['White', '#fff'], ['Red', '#f00'], ['Green', '#0f0'], ['Blue', '#00f'], ['Cyan', '#0ff'], ['Magenta', '#f0f'], ['Yellow', '#ff0'], ['Gray', '#808080']].map(([name, bg]) => ({ name, bg })),
+    gradient: [
+      { name: 'Black to white', bg: grad('to right', '#000', '#fff') },
+      { name: 'Red, green and blue', bg: `${grad('to right', '#000', '#f00')} top/100% 33.4% no-repeat, ${grad('to right', '#000', '#0f0')} center/100% 33.4% no-repeat, ${grad('to right', '#000', '#00f')} bottom/100% 33.4% no-repeat` },
+      { name: 'Full color spectrum', bg: grad('to right', '#f00', '#ff0', '#0f0', '#0ff', '#00f', '#f0f', '#f00') },
+      { name: 'Dark shades (near black)', bg: grad('to right', '#000', '#333') },
+    ],
+    uniform: [{ name: 'Very dark gray (backlight bleed)', bg: '#0d0d0d' }, { name: 'Dark gray', bg: '#262626' }, { name: 'Mid gray (clouding)', bg: '#808080' }, { name: 'Light gray', bg: '#d9d9d9' }],
+    sharp: [
+      { name: '1-pixel checkerboard', draw: (c, w, h) => { const d = c.createImageData(w, h); for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) { const v = (x + y) % 2 ? 255 : 0, i = (y * w + x) * 4; d.data[i] = d.data[i + 1] = d.data[i + 2] = v; d.data[i + 3] = 255; } c.putImageData(d, 0, 0); } },
+      { name: '1-pixel lines', draw: (c, w, h) => { c.fillStyle = '#fff'; c.fillRect(0, 0, w, h); c.fillStyle = '#000'; for (let x = 0; x < w / 2; x += 2) c.fillRect(x, 0, 1, h); for (let y = 0; y < h; y += 2) c.fillRect(w / 2, y, w / 2, 1); } },
+      { name: 'Grid', draw: (c, w, h) => { c.fillStyle = '#000'; c.fillRect(0, 0, w, h); c.fillStyle = '#fff'; const s = Math.round(32 * devicePixelRatio); for (let x = 0; x < w; x += s) c.fillRect(x, 0, 1, h); for (let y = 0; y < h; y += s) c.fillRect(0, y, w, 1); c.font = `${Math.round(14 * devicePixelRatio)}px sans-serif`; c.fillText(`${w} × ${h} device pixels`, s + 6, s + 20 * devicePixelRatio); } },
+    ],
+  };
+  let set: Screen[] = [], k = 0, hideT = 0, fixer = 0;
+  function show() {
+    const s = set[k]; q('[data-hinttext]').textContent = `${s.name} (${k + 1} of ${set.length})`;
+    if (s.draw) {
+      paint.style.background = '#000'; canvas.hidden = false;
+      const w = Math.round(innerWidth * devicePixelRatio), h = Math.round(innerHeight * devicePixelRatio);
+      canvas.width = w; canvas.height = h; s.draw(canvas.getContext('2d')!, w, h);
+    } else { canvas.hidden = true; paint.style.background = s.bg!; }
+    flashHint();
+  }
+  const exitBtn = q('[data-exit]');
+  function flashHint() { hint.style.opacity = exitBtn.style.opacity = '1'; clearTimeout(hideT); hideT = window.setTimeout(() => (hint.style.opacity = exitBtn.style.opacity = '0'), 2500); }
+  async function open(id: string) {
+    set = SETS[id] ?? []; k = 0; stage.hidden = false; q('[data-fixer]').hidden = true;
+    try { if (stage.requestFullscreen) await stage.requestFullscreen({ navigationUI: 'hide' }); } catch {}
+    show(); stage.focus();
+  }
+  function close() { stage.hidden = true; clearInterval(fixer); fixer = 0; if (document.fullscreenElement) document.exitFullscreen().catch(() => {}); }
+  const step = (d: number) => { if (fixer) return; k = (k + d + set.length) % set.length; show(); };
+  root.querySelectorAll<HTMLElement>('[data-test]').forEach((b) => b.addEventListener('click', () => open(b.dataset.test!)));
+  stage.addEventListener('click', (e) => { if ((e.target as HTMLElement).closest('[data-exit]')) return close(); if (!fixer) step(1); else flashHint(); });
+  stage.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') close(); else if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'Enter') { e.preventDefault(); step(1); } else if (e.key === 'ArrowLeft') step(-1);
+  });
+  stage.addEventListener('pointermove', flashHint);
+  document.addEventListener('fullscreenchange', () => { if (!document.fullscreenElement && !stage.hidden) close(); });
+  window.addEventListener('resize', () => { if (!stage.hidden && set[k]?.draw) show(); });
+  // Stuck pixel exerciser (opt-in)
+  q<HTMLInputElement>('#st-ok').addEventListener('change', (e) => (q<HTMLButtonElement>('[data-fix]').disabled = !(e.target as HTMLInputElement).checked));
+  q('[data-fix]').addEventListener('click', async () => {
+    set = [{ name: 'Drag the flashing square over the stuck pixel', bg: '#000' }]; k = 0; stage.hidden = false;
+    try { await stage.requestFullscreen?.(); } catch {}
+    show(); stage.focus();
+    const f = q('[data-fixer]'); f.hidden = false; f.style.transform = `translate(${innerWidth / 2 - 48}px, ${innerHeight / 2 - 48}px)`;
+    const cols = ['#f00', '#0f0', '#00f', '#fff', '#000']; let i = 0;
+    fixer = window.setInterval(() => { f.style.background = cols[i++ % cols.length]; }, 60);
+  });
+  const fx = q('[data-fixer]'); let drag = false;
+  fx.addEventListener('pointerdown', (e) => { drag = true; fx.setPointerCapture(e.pointerId); e.stopPropagation(); });
+  fx.addEventListener('pointermove', (e) => { if (drag) fx.style.transform = `translate(${e.clientX - 48}px, ${e.clientY - 48}px)`; });
+  fx.addEventListener('pointerup', () => (drag = false)); fx.addEventListener('click', (e) => e.stopPropagation());
+  // Display information
+  function info() {
+    const dpr = devicePixelRatio || 1, mm = (qy: string) => matchMedia(qy).matches;
+    const rows: [string, string][] = [
+      ['Screen size', `${screen.width} × ${screen.height}`], ['Estimated resolution', `${Math.round(screen.width * dpr)} × ${Math.round(screen.height * dpr)}`],
+      ['Browser window', `${innerWidth} × ${innerHeight}`], ['Pixel ratio', `${+dpr.toFixed(2)}×`], ['Color depth', `${screen.colorDepth}-bit`],
+      ['Color range', mm('(color-gamut: rec2020)') ? 'Rec. 2020' : mm('(color-gamut: p3)') ? 'Wide (Display P3)' : 'Standard (sRGB)'], ['HDR', mm('(dynamic-range: high)') ? 'Supported' : 'Not detected'],
+      ['Touch screen', navigator.maxTouchPoints > 0 ? `Yes (${navigator.maxTouchPoints} points)` : 'No'], ['Refresh rate', 'Measuring…'],
+    ];
+    q('[data-info]').innerHTML = rows.map(([k, v]) => `<div class="stat"><dt class="stat-label">${k}</dt><dd class="font-semibold tabular" ${k === 'Refresh rate' ? 'data-hz' : ''}>${v}</dd></div>`).join('');
+    let n = 0, t0 = 0; const frames: number[] = [];
+    const loop = (t: number) => { if (!t0) t0 = t; else frames.push(t); if (++n < 90) requestAnimationFrame(loop); else { const d = frames.slice(1).map((x, i) => x - frames[i]).sort((a, b) => a - b), med = d[Math.floor(d.length / 2)]; const hz = Math.round(1000 / med); const el = q('[data-hz]'); if (el) el.textContent = hz > 0 && hz < 1000 ? `about ${[50, 60, 75, 90, 100, 120, 144, 165, 240].reduce((a, b) => (Math.abs(b - hz) < Math.abs(a - hz) ? b : a))} Hz` : 'Unknown'; } };
+    requestAnimationFrame(loop);
+  }
+  info();
+</script>

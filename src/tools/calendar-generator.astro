@@ -1,0 +1,126 @@
+---
+import Icon from '../components/Icon.astro';
+const langs: [string, string][] = [['', 'Browser language'], ['en-GB', 'English (UK)'], ['en-US', 'English (US)'], ['es', 'Español'], ['fr', 'Français'], ['de', 'Deutsch'], ['it', 'Italiano'], ['pt', 'Português'], ['nl', 'Nederlands'], ['pl', 'Polski'], ['tr', 'Türkçe'], ['sv', 'Svenska']];
+---
+<div id="cg2" class="space-y-4">
+  <form class="card space-y-4 p-4 sm:p-5" novalidate data-form onsubmit="return false">
+    <div class="segmented" role="radiogroup" aria-label="Calendar type"><label><input type="radio" name="cg-type" value="month" checked /><span>Monthly</span></label><label><input type="radio" name="cg-type" value="year" /><span>Yearly</span></label></div>
+    <div class="grid grid-cols-2 gap-3 sm:grid-cols-4">
+      <div><label for="cg-year" class="label">Year</label><input id="cg-year" class="input tabular" type="number" inputmode="numeric" min="1600" max="2999" /></div>
+      <div data-monthbox><label for="cg-month" class="label">Month</label><select id="cg-month" class="select"></select></div>
+      <div><label for="cg-start" class="label">Week starts</label><select id="cg-start" class="select"><option value="1">Monday</option><option value="0">Sunday</option><option value="6">Saturday</option></select></div>
+      <div><label for="cg-lang" class="label">Language</label><select id="cg-lang" class="select">{langs.map(([v, l]) => <option value={v}>{l}</option>)}</select></div>
+      <div><label for="cg-paper" class="label">Paper</label><select id="cg-paper" class="select"><option value="A4">A4</option><option value="letter">US Letter</option></select></div>
+      <div><label for="cg-orient" class="label">Orientation</label><select id="cg-orient" class="select"><option value="landscape">Landscape</option><option value="portrait">Portrait</option></select></div>
+      <div><label for="cg-color" class="label">Accent color</label><input id="cg-color" type="color" value="#1d4ed8" class="h-[46px] w-full cursor-pointer rounded-[10px] border border-line-strong bg-surface p-1" /></div>
+    </div>
+    <div class="flex flex-wrap gap-x-6 gap-y-1">
+      <label class="flex min-h-11 items-center gap-2.5 text-[0.9375rem]"><input type="checkbox" id="cg-wk" class="h-5 w-5 accent-[var(--brand)]" />Week numbers</label>
+      <label class="flex min-h-11 items-center gap-2.5 text-[0.9375rem]"><input type="checkbox" id="cg-we" class="h-5 w-5 accent-[var(--brand)]" checked />Shade weekends</label>
+      <label class="flex min-h-11 items-center gap-2.5 text-[0.9375rem]" data-allbox><input type="checkbox" id="cg-all" class="h-5 w-5 accent-[var(--brand)]" />All 12 months (one per page)</label>
+    </div>
+    <details>
+      <summary class="flex min-h-11 cursor-pointer items-center gap-2 font-semibold"><Icon name="CalendarPlus" size={18} />Add birthdays, holidays or events</summary>
+      <label for="cg-ev" class="label mt-2">One per line, as <b>YYYY-MM-DD text</b> (that date only) or <b>MM-DD text</b> (every year)</label>
+      <textarea id="cg-ev" class="textarea mono !min-h-[110px] text-sm" placeholder={'12-25 Christmas Day\n2026-03-14 Sam\'s party'} spellcheck="false"></textarea>
+      <p class="hint" data-evmsg></p>
+    </details>
+    <p class="text-sm text-danger" data-err hidden role="alert"></p>
+    <div class="flex flex-col gap-3 sm:flex-row sm:items-center">
+      <button type="button" class="btn btn-primary btn-lg" data-print><Icon name="Printer" size={18} />Print or save as PDF</button>
+      <p class="text-sm text-subtle">In the print window, choose “Save as PDF” to download it.</p>
+    </div>
+  </form>
+  <div class="overflow-x-auto"><div class="cg-preview card p-3 sm:p-5" data-out></div></div>
+</div>
+<style is:global>
+  .cg-cal { --ac: #1d4ed8; color: #111827; font-family: inherit; }
+  .cg-preview .cg-cal { color: var(--text); }
+  .cg-cal .cg-title { font-weight: 800; letter-spacing: -.01em; color: var(--ac); }
+  .cg-cal table { width: 100%; border-collapse: collapse; table-layout: fixed; }
+  .cg-month th { font-size: .75rem; font-weight: 700; text-transform: uppercase; letter-spacing: .04em; padding: .35rem .25rem; color: var(--ac); text-align: left; }
+  .cg-month td { border: 1px solid color-mix(in srgb, currentColor 22%, transparent); vertical-align: top; padding: .3rem .35rem; height: 4.75rem; }
+  .cg-month td .n { font-weight: 700; font-size: .95rem; }
+  .cg-month td.out .n { opacity: .3; }
+  .cg-month td.we { background: color-mix(in srgb, var(--ac) 7%, transparent); }
+  .cg-month td.today .n { color: #fff; background: var(--ac); border-radius: 999px; padding: 0 .4rem; }
+  .cg-month .ev { display: block; margin-top: .15rem; font-size: .68rem; line-height: 1.2; color: var(--ac); font-weight: 600; overflow-wrap: anywhere; }
+  .cg-month th.wk, .cg-month td.wk { width: 2rem; text-align: center; font-size: .65rem; opacity: .6; border: 0; vertical-align: middle; }
+  .cg-year { display: grid; gap: 1rem 1.5rem; grid-template-columns: repeat(var(--cols, 4), minmax(0, 1fr)); }
+  .cg-mini caption { text-align: left; font-weight: 800; color: var(--ac); padding-bottom: .25rem; font-size: .95rem; }
+  .cg-mini th { font-size: .6rem; font-weight: 700; opacity: .7; padding: .1rem 0; }
+  .cg-mini td { text-align: center; font-size: .72rem; padding: .12rem 0; }
+  .cg-mini td.we { color: var(--ac); font-weight: 600; } .cg-mini td.ev { text-decoration: underline; text-decoration-color: var(--ac); text-underline-offset: 2px; font-weight: 700; }
+  .cg-mini td.wk, .cg-mini th.wk { opacity: .45; font-size: .55rem; }
+  .cg-list { margin-top: .75rem; font-size: .75rem; columns: 2; }
+  @media (max-width: 639px) { .cg-preview .cg-year { --cols: 2 !important; } .cg-preview .cg-month td { height: 3.5rem; padding: .2rem; } .cg-preview .cg-month .ev { font-size: .6rem; } }
+  @media print { .cg-page { break-after: page; display: flex; flex-direction: column; } .cg-page:last-child { break-after: auto; } .cg-page table.cg-month { flex: 1; } .cg-cal { color: #111827; } }
+</style>
+<script>
+  import { printElement, esc, store } from '../lib/ui';
+  const root = document.getElementById('cg2')!, q = <T extends HTMLElement = HTMLElement>(s: string) => root.querySelector(s) as T;
+  const KEY = 'tw-calendar', now = new Date();
+  const S = store.get(KEY, { start: '', lang: '', paper: '', ev: '' });
+  const yearIn = q<HTMLInputElement>('#cg-year'), monthSel = q<HTMLSelectElement>('#cg-month');
+  yearIn.value = String(now.getFullYear());
+  const usLike = /^en-US|^en-CA|^es-MX|^pt-BR/.test(navigator.language);
+  q<HTMLSelectElement>('#cg-start').value = S.start || (usLike ? '0' : '1');
+  q<HTMLSelectElement>('#cg-paper').value = S.paper || (/^en-US|^en-CA|^es-MX/.test(navigator.language) ? 'letter' : 'A4');
+  q<HTMLSelectElement>('#cg-lang').value = S.lang; q<HTMLTextAreaElement>('#cg-ev').value = S.ev;
+  const loc = () => q<HTMLSelectElement>('#cg-lang').value || undefined;
+  function fillMonths() { const cur = monthSel.value || String(now.getMonth()); monthSel.innerHTML = Array.from({ length: 12 }, (_, i) => `<option value="${i}">${esc(new Date(2000, i, 1).toLocaleDateString(loc(), { month: 'long' }))}</option>`).join(''); monthSel.value = cur; }
+  const isoWeek = (d: Date) => { const t = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate())); const day = t.getUTCDay() || 7; t.setUTCDate(t.getUTCDate() + 4 - day); const y0 = new Date(Date.UTC(t.getUTCFullYear(), 0, 1)); return Math.ceil(((t.getTime() - y0.getTime()) / 86400000 + 1) / 7); };
+  const key = (d: Date) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+  function events() {
+    const map = new Map<string, string[]>(), bad: number[] = [];
+    q<HTMLTextAreaElement>('#cg-ev').value.split(/\r?\n/).forEach((line, i) => {
+      if (!line.trim()) return;
+      const m = line.trim().match(/^(?:(\d{4})-)?(\d{1,2})-(\d{1,2})\s+(.+)$/);
+      if (!m || +m[2] < 1 || +m[2] > 12 || +m[3] < 1 || +m[3] > 31) return bad.push(i + 1);
+      const k = `${m[1] ?? '*'}-${m[2].padStart(2, '0')}-${m[3].padStart(2, '0')}`; map.set(k, [...(map.get(k) ?? []), m[4].slice(0, 60)]);
+    });
+    q('[data-evmsg]').textContent = bad.length ? `Line${bad.length > 1 ? 's' : ''} ${bad.join(', ')} ${bad.length > 1 ? 'were' : 'was'} skipped. Use 2026-12-25 Text or 12-25 Text.` : map.size ? `${map.size} date${map.size > 1 ? 's' : ''} added.` : '';
+    return (d: Date) => [...(map.get(key(d)) ?? []), ...(map.get(`*-${key(d).slice(5)}`) ?? [])];
+  }
+  function dayNames(start: number, style: 'short' | 'narrow') { return Array.from({ length: 7 }, (_, i) => new Date(2023, 0, 1 + ((start + i) % 7)).toLocaleDateString(loc(), { weekday: style })); }
+  function weeks(y: number, m: number, start: number) {
+    const first = new Date(y, m, 1), off = (first.getDay() - start + 7) % 7, days = new Date(y, m + 1, 0).getDate(), rows = Math.ceil((off + days) / 7);
+    return Array.from({ length: rows }, (_, r) => Array.from({ length: 7 }, (_, c) => new Date(y, m, 1 - off + r * 7 + c)));
+  }
+  const weekend = (d: Date) => d.getDay() === 0 || d.getDay() === 6;
+  function monthHtml(y: number, m: number, o: Opts) {
+    const title = new Date(y, m, 1).toLocaleDateString(loc(), { month: 'long', year: 'numeric' });
+    const ws = weeks(y, m, o.start), ev = o.ev, tk = key(now);
+    return `<section class="cg-page"><h2 class="cg-title" style="font-size:1.9rem;margin-bottom:.5rem;text-transform:capitalize">${esc(title)}</h2><table class="cg-month"><thead><tr>${o.wk ? '<th class="wk"></th>' : ''}${dayNames(o.start, 'short').map((d) => `<th>${esc(d)}</th>`).join('')}</tr></thead><tbody>${ws.map((row) => `<tr>${o.wk ? `<td class="wk">${isoWeek(row.find((d) => d.getDay() === 4) ?? row[0])}</td>` : ''}${row.map((d) => { const out = d.getMonth() !== m, e = out ? [] : ev(d); return `<td class="${out ? 'out' : ''} ${o.we && weekend(d) ? 'we' : ''} ${!out && key(d) === tk ? 'today' : ''}"><span class="n">${d.getDate()}</span>${e.map((t) => `<span class="ev">${esc(t)}</span>`).join('')}</td>`; }).join('')}</tr>`).join('')}</tbody></table></section>`;
+  }
+  function miniHtml(y: number, m: number, o: Opts) {
+    const ws = weeks(y, m, o.start), name = new Date(y, m, 1).toLocaleDateString(loc(), { month: 'long' });
+    return `<table class="cg-mini"><caption style="text-transform:capitalize">${esc(name)}</caption><thead><tr>${o.wk ? '<th class="wk"></th>' : ''}${dayNames(o.start, 'narrow').map((d) => `<th>${esc(d)}</th>`).join('')}</tr></thead><tbody>${ws.map((row) => `<tr>${o.wk ? `<td class="wk">${isoWeek(row.find((d) => d.getDay() === 4) ?? row[0])}</td>` : ''}${row.map((d) => d.getMonth() !== m ? '<td></td>' : `<td class="${o.we && weekend(d) ? 'we' : ''} ${o.ev(d).length ? 'ev' : ''}" ${o.ev(d).length ? `title="${esc(o.ev(d).join(', '))}"` : ''}>${d.getDate()}</td>`).join('')}</tr>`).join('')}${ws.length < 6 ? '<tr><td>&nbsp;</td></tr>' : ''}</tbody></table>`;
+  }
+  type Opts = { start: number; wk: boolean; we: boolean; ev: (d: Date) => string[] };
+  function render() {
+    const type = (q<HTMLInputElement>('input[name=cg-type]:checked')).value, y = Number(yearIn.value), err = q('[data-err]');
+    q('[data-monthbox]').hidden = type === 'year'; q('[data-allbox]').hidden = type === 'year';
+    const ok = Number.isInteger(y) && y >= 1600 && y <= 2999; err.hidden = ok; err.textContent = ok ? '' : 'Enter a year between 1600 and 2999.'; yearIn.setAttribute('aria-invalid', String(!ok));
+    if (!ok) return;
+    const o: Opts = { start: +q<HTMLSelectElement>('#cg-start').value, wk: q<HTMLInputElement>('#cg-wk').checked, we: q<HTMLInputElement>('#cg-we').checked, ev: events() };
+    store.set(KEY, { start: q<HTMLSelectElement>('#cg-start').value, lang: q<HTMLSelectElement>('#cg-lang').value, paper: q<HTMLSelectElement>('#cg-paper').value, ev: q<HTMLTextAreaElement>('#cg-ev').value });
+    const portrait = q<HTMLSelectElement>('#cg-orient').value === 'portrait', ac = q<HTMLInputElement>('#cg-color').value;
+    let html: string;
+    if (type === 'year') {
+      const list: string[] = []; for (let m = 0; m < 12; m++) { const days = new Date(y, m + 1, 0).getDate(); for (let d = 1; d <= days; d++) { const dt = new Date(y, m, d); o.ev(dt).forEach((t) => list.push(`<div><b>${esc(dt.toLocaleDateString(loc(), { day: 'numeric', month: 'short' }))}</b> ${esc(t)}</div>`)); } }
+      html = `<section class="cg-page"><h2 class="cg-title" style="font-size:2.4rem;margin-bottom:.75rem">${y}</h2><div class="cg-year" style="--cols:${portrait ? 3 : 4}">${Array.from({ length: 12 }, (_, m) => miniHtml(y, m, o)).join('')}</div>${list.length ? `<div class="cg-list">${list.join('')}</div>` : ''}</section>`;
+    } else if (q<HTMLInputElement>('#cg-all').checked) html = Array.from({ length: 12 }, (_, m) => monthHtml(y, m, o)).join('');
+    else html = monthHtml(y, +monthSel.value, o);
+    const out = q('[data-out]'); out.innerHTML = `<div class="cg-cal" style="--ac:${ac}">${html}</div>`;
+  }
+  q('[data-form]').addEventListener('input', (e) => { if ((e.target as HTMLElement).id === 'cg-lang') fillMonths(); render(); });
+  q('[data-form]').addEventListener('change', render);
+  q('[data-print]').addEventListener('click', () => {
+    render(); if (!q('[data-err]').hidden) return;
+    const paper = q<HTMLSelectElement>('#cg-paper').value, land = q<HTMLSelectElement>('#cg-orient').value === 'landscape';
+    const [w, h] = paper === 'A4' ? [210, 297] : [215.9, 279.4], ph = (land ? w : h) - 20; // printable height with 10 mm margins
+    printElement(q('[data-out]').firstElementChild as HTMLElement, `@page { size: ${paper} ${land ? 'landscape' : 'portrait'}; margin: 10mm; } @media print { .print-host .cg-page { height: ${ph - 2}mm; } .print-host .cg-month td { height: auto; } }`);
+  });
+  monthSel.value = String(now.getMonth()); fillMonths(); render();
+</script>

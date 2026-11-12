@@ -12,8 +12,10 @@ interface Props {
   noindex?: boolean;
   ogType?: string;
   jsonLd?: object[];
+  /** Pages where people type secrets load no third-party ad script */
+  noAds?: boolean;
 }
-const { title, description, path = Astro.url.pathname, noindex = false, ogType = 'website', jsonLd = [] } = Astro.props;
+const { title, description, path = Astro.url.pathname, noindex = false, ogType = 'website', jsonLd = [], noAds = false } = Astro.props;
 const cleanPath = path === '/' ? '/' : path.replace(/\/$/, '').replace(/\.html$/, '');
 const canonical = new URL(cleanPath, site.url).href.replace(/\/$/, cleanPath === '/' ? '/' : '');
 const ogImage = new URL('/og-image.png', site.url).href;
@@ -52,7 +54,7 @@ const ogImage = new URL('/og-image.png', site.url).href;
         if (t === 'dark' || (!t && window.matchMedia('(prefers-color-scheme: dark)').matches)) document.documentElement.classList.add('dark');
       })();
     </script>
-    {site.ads.client && (
+    {site.ads.client && !noAds && (
       <script async src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${site.ads.client}`} crossorigin="anonymous"></script>
     )}
     {jsonLd.map((d) => <script type="application/ld+json" set:html={JSON.stringify(d)} />)}

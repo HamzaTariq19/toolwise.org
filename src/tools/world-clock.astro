@@ -1,0 +1,91 @@
+---
+import Icon from '../components/Icon.astro';
+import LocalNote from '../components/LocalNote.astro';
+---
+<div id="wc" class="space-y-4">
+  <section class="card p-5 text-center sm:p-6">
+    <p class="text-sm font-semibold uppercase tracking-wide text-subtle">Your time</p>
+    <p class="mt-1 text-[clamp(2.75rem,13vw,4.75rem)] font-bold leading-none tracking-tight tabular" data-local>--:--</p>
+    <p class="mt-2 text-muted" data-localinfo></p>
+  </section>
+  <div class="flex flex-wrap items-center justify-between gap-3">
+    <div class="segmented" role="radiogroup" aria-label="Clock format"><label><input type="radio" name="wc-h" value="12" /><span>12-hour</span></label><label><input type="radio" name="wc-h" value="24" /><span>24-hour</span></label></div>
+    <div class="flex items-center gap-2"><label for="wc-at" class="text-sm text-muted">Compare at</label><input id="wc-at" type="time" class="input !min-h-10 w-auto py-1.5" /><button type="button" class="btn btn-ghost btn-sm" data-nowbtn hidden>Back to now</button></div>
+  </div>
+  <p class="text-sm font-medium text-[var(--cat)]" data-atnote hidden></p>
+  <ul class="grid gap-3 sm:grid-cols-2" data-list aria-live="off"></ul>
+  <form class="card flex flex-col gap-3 p-4 sm:flex-row sm:items-end" novalidate data-add>
+    <div class="flex-1"><label for="wc-city" class="label">Add a city or time zone</label><input id="wc-city" class="input" list="wc-opts" placeholder="e.g. Tokyo, Lagos, Chicago" autocomplete="off" spellcheck="false" /></div>
+    <button type="submit" class="btn btn-primary"><Icon name="Plus" size={18} />Add city</button>
+  </form>
+  <p class="text-sm text-danger" data-err hidden role="alert"></p>
+  <datalist id="wc-opts"></datalist>
+  <LocalNote what="Your city list is" />
+</div>
+<script>
+  import { CITIES } from '../lib/cities';
+  import { store, esc } from '../lib/ui';
+  type C = { name: string; tz: string };
+  const root = document.getElementById('wc')!, q = <T extends HTMLElement = HTMLElement>(s: string) => root.querySelector(s) as T;
+  const KEY = 'tw-worldclock', localTz = Intl.DateTimeFormat().resolvedOptions().timeZone || 'UTC';
+  const ALIAS: Record<string, string> = { 'Europe/Kyiv': 'Europe/Kiev', 'Asia/Yangon': 'Asia/Rangoon', 'Asia/Kolkata': 'Asia/Calcutta', 'Asia/Kathmandu': 'Asia/Katmandu', 'Asia/Ho_Chi_Minh': 'Asia/Saigon' };
+  const valid = (tz: string): string | null => { try { new Intl.DateTimeFormat('en', { timeZone: tz }); return tz; } catch { return ALIAS[tz] && valid(ALIAS[tz]) ? ALIAS[tz] : null; } };
+  const zones: string[] = (Intl as any).supportedValuesOf ? (Intl as any).supportedValuesOf('timeZone') : [];
+  q('#wc-opts').innerHTML = CITIES.map(([c, n]) => `<option value="${esc(c)}">${esc(n)}</option>`).join('') + zones.map((z) => `<option value="${esc(z)}"></option>`).join('');
+  const def: C[] = [['London', 'Europe/London'], ['New York', 'America/New_York'], ['Dubai', 'Asia/Dubai'], ['Tokyo', 'Asia/Tokyo']].map(([name, tz]) => ({ name, tz }));
+  const saved = store.get<{ list: C[]; h: string }>(KEY, { list: def, h: '' });
+  let list = (Array.isArray(saved.list) ? saved.list : def).filter((c) => valid(c.tz)).map((c) => ({ ...c, tz: valid(c.tz)! }));
+  const h12default = new Intl.DateTimeFormat([], { hour: 'numeric' }).resolvedOptions().hourCycle?.startsWith('h1') ?? false;
+  (q<HTMLInputElement>(`input[name=wc-h][value="${saved.h || (h12default ? '12' : '24')}"]`)).checked = true;
+  const save = () => store.set(KEY, { list, h: (q<HTMLInputElement>('input[name=wc-h]:checked')).value });
+  const h12 = () => (q<HTMLInputElement>('input[name=wc-h]:checked')).value === '12';
+  /** Minutes east of UTC for a zone at a moment */
+  function offset(tz: string, d: Date) {
+    const p = new Intl.DateTimeFormat('en-US', { timeZone: tz, hourCycle: 'h23', year: 'numeric', month: 'numeric', day: 'numeric', hour: 'numeric', minute: 'numeric' }).formatToParts(d);
+    const g = (t: string) => +(p.find((x) => x.type === t)?.value ?? 0);
+    return Math.round((Date.UTC(g('year'), g('month') - 1, g('day'), g('hour'), g('minute')) - Math.floor(d.getTime() / 60000) * 60000) / 60000);
+  }
+  const offTxt = (m: number) => `UTC${m < 0 ? '−' : '+'}${Math.floor(Math.abs(m) / 60)}${Math.abs(m) % 60 ? ':' + String(Math.abs(m) % 60).padStart(2, '0') : ''}`;
+  const diffTxt = (m: number) => { if (!m) return 'Same time as you'; const a = Math.abs(m), h = Math.floor(a / 60), mm = a % 60; return `${h ? h + ' h' : ''}${h && mm ? ' ' : ''}${mm ? mm + ' min' : ''} ${m > 0 ? 'ahead' : 'behind'}`; };
+  const dayKey = (tz: string, d: Date) => new Intl.DateTimeFormat('en-CA', { timeZone: tz, year: 'numeric', month: '2-digit', day: '2-digit' }).format(d);
+  let at: Date | null = null;
+  function render() {
+    const d = at ?? new Date(), opt: Intl.DateTimeFormatOptions = { hour: 'numeric', minute: '2-digit', hour12: h12() };
+    q('[data-local]').textContent = d.toLocaleTimeString([], { ...opt, second: at ? undefined : '2-digit' });
+    const lo = offset(localTz, d);
+    q('[data-localinfo]').textContent = `${d.toLocaleDateString([], { weekday: 'long', day: 'numeric', month: 'long' })} · ${localTz.replace(/_/g, ' ')} (${offTxt(lo)})`;
+    const today = dayKey(localTz, d);
+    q('[data-list]').innerHTML = list.map((c, i) => {
+      const o = offset(c.tz, d), hr = +new Intl.DateTimeFormat('en-US', { timeZone: c.tz, hour: 'numeric', hourCycle: 'h23' }).format(d), k = dayKey(c.tz, d);
+      const rel = k === today ? 'Today' : k > today ? 'Tomorrow' : 'Yesterday', night = hr < 6 || hr >= 20, work = hr >= 9 && hr < 17;
+      return `<li class="card flex items-center gap-3 p-4">
+        <span class="flex h-10 w-10 flex-none items-center justify-center rounded-full text-lg ${night ? 'bg-[#1e293b] text-[#fde68a]' : 'bg-[#fef3c7] text-[#b45309]'}" aria-hidden="true">${night ? '☾' : '☀'}</span>
+        <div class="min-w-0 flex-1"><p class="truncate font-semibold">${esc(c.name)}</p><p class="text-sm text-subtle">${rel} · ${offTxt(o)}<br class="sm:hidden" /><span class="hidden sm:inline"> · </span>${diffTxt(o - lo)}</p>${work ? '<p class="text-xs font-medium text-success">Working hours</p>' : ''}</div>
+        <p class="text-2xl font-bold tabular">${d.toLocaleTimeString([], { ...opt, timeZone: c.tz })}</p>
+        <button type="button" class="btn btn-ghost btn-sm !px-2 text-subtle" data-rm="${i}" aria-label="Remove ${esc(c.name)}">✕</button></li>`;
+    }).join('') || '<li class="card px-5 py-6 text-center text-muted sm:col-span-2">Add a city below to see its time.</li>';
+  }
+  q('[data-add]').addEventListener('submit', (e) => {
+    e.preventDefault();
+    const raw = q<HTMLInputElement>('#wc-city').value.trim(), s = raw.toLowerCase(), err = q('[data-err]');
+    const city = CITIES.find(([c]) => c.toLowerCase() === s) ?? CITIES.find(([c, n]) => c.toLowerCase().startsWith(s) || n.toLowerCase() === s);
+    const zone = !city ? zones.find((z) => z.toLowerCase() === s) ?? zones.find((z) => z.toLowerCase().split('/').pop()!.replace(/_/g, ' ') === s) : undefined;
+    const tz = city ? valid(city[2]) : zone ? valid(zone) : null;
+    let msg = !raw ? 'Type a city, such as Paris or Sydney.' : !tz ? `“${raw}” isn't in the list. Try a nearby major city or a time zone name like Europe/Paris.` : '';
+    const name = city ? city[0] : zone ? zone.split('/').pop()!.replace(/_/g, ' ') : '';
+    if (!msg && list.some((c) => c.name === name)) msg = `${name} is already on your list.`;
+    if (!msg && list.length >= 24) msg = 'You can show up to 24 cities. Remove one first.';
+    err.hidden = !msg; err.textContent = msg; if (msg) return;
+    list.push({ name, tz: tz! }); save(); render(); q<HTMLInputElement>('#wc-city').value = '';
+  });
+  q('[data-list]').addEventListener('click', (e) => { const b = (e.target as HTMLElement).closest<HTMLElement>('[data-rm]'); if (b) { list.splice(+b.dataset.rm!, 1); save(); render(); } });
+  root.querySelectorAll('input[name=wc-h]').forEach((r) => r.addEventListener('change', () => { save(); render(); }));
+  q('#wc-at').addEventListener('input', (e) => {
+    const v = (e.target as HTMLInputElement).value;
+    if (!v) { at = null; } else { const [hh, mm] = v.split(':').map(Number); at = new Date(); at.setHours(hh, mm, 0, 0); }
+    q('[data-nowbtn]').hidden = !at; const n = q('[data-atnote]'); n.hidden = !at; n.textContent = at ? `Showing every city when it's ${at.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit', hour12: h12() })} for you today.` : '';
+    render();
+  });
+  q('[data-nowbtn]').addEventListener('click', () => { q<HTMLInputElement>('#wc-at').value = ''; q('#wc-at').dispatchEvent(new Event('input')); });
+  render(); setInterval(() => { if (!at) render(); }, 1000);
+</script>

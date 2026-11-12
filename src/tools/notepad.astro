@@ -1,0 +1,81 @@
+---
+import Icon from '../components/Icon.astro';
+import LocalNote from '../components/LocalNote.astro';
+---
+<div id="np" class="grid grid-cols-1 gap-4 md:grid-cols-[14rem_1fr]">
+  <aside class="space-y-2" aria-label="Notes">
+    <button type="button" class="btn btn-secondary w-full" data-new><Icon name="Plus" size={18} />New note</button>
+    <div class="md:hidden"><label for="np-sel" class="sr-only">Choose a note</label><select id="np-sel" class="select"></select></div>
+    <ul class="hidden max-h-[28rem] space-y-1 overflow-y-auto md:block" data-list></ul>
+  </aside>
+  <div class="min-w-0 space-y-2" data-editor>
+    <div class="flex flex-wrap items-center gap-1.5" data-tools>
+      <button type="button" class="btn btn-ghost btn-sm" data-dl><Icon name="Download" size={16} />Save .txt</button>
+      <label class="btn btn-ghost btn-sm relative cursor-pointer"><Icon name="FolderOpen" size={16} />Open file<input type="file" accept=".txt,.md,.csv,.json,.log,text/*" class="absolute inset-0 cursor-pointer opacity-0" data-open /></label>
+      <button type="button" class="btn btn-ghost btn-sm" data-copy><Icon name="Copy" size={16} /><span data-label>Copy</span></button>
+      <button type="button" class="btn btn-ghost btn-sm" data-mono aria-pressed="false"><Icon name="Code" size={16} />Monospace</button>
+      <button type="button" class="btn btn-ghost btn-sm" data-size aria-label="Change text size"><Icon name="AArrowUp" size={16} /><span data-sizelbl>Text size</span></button>
+      <button type="button" class="btn btn-ghost btn-sm" data-fs><Icon name="Maximize" size={16} />Focus</button>
+      <button type="button" class="btn btn-ghost btn-sm ml-auto text-danger" data-del><Icon name="Trash2" size={16} />Delete</button>
+    </div>
+    <label for="np-text" class="sr-only">Note</label>
+    <textarea id="np-text" class="textarea !min-h-[min(60vh,32rem)] !leading-relaxed" placeholder="Start typing. Your note saves automatically." spellcheck="true"></textarea>
+    <div class="flex flex-wrap justify-between gap-2 text-sm text-subtle"><span data-stats></span><span data-saved aria-live="polite"></span></div>
+    <p class="text-sm text-danger" data-err hidden role="alert"></p>
+    <LocalNote what="Your notes are" />
+  </div>
+</div>
+<script>
+  import { store, esc, copyText, downloadBlob, fmt } from '../lib/ui';
+  import { words } from '../lib/text-stats';
+  type Note = { id: string; text: string; at: number };
+  const KEY = 'tw-notes', root = document.getElementById('np')!, q = <T extends HTMLElement = HTMLElement>(s: string) => root.querySelector(s) as T;
+  const ta = q<HTMLTextAreaElement>('#np-text'), uid = () => Date.now().toString(36) + Math.random().toString(36).slice(2, 5);
+  let state = store.get<{ notes: Note[]; cur: string; mono: boolean; size: number }>(KEY, { notes: [], cur: '', mono: false, size: 1 });
+  if (!state.notes?.length) { const n = { id: uid(), text: '', at: Date.now() }; state = { ...state, notes: [n], cur: n.id }; }
+  const note = () => state.notes.find((n) => n.id === state.cur) ?? state.notes[0];
+  const title = (n: Note) => n.text.trim().split('\n')[0].slice(0, 40) || 'Untitled note';
+  const SIZES = ['0.9375rem', '1.0625rem', '1.25rem', '1.5rem'];
+  let saveT = 0;
+  function persist() {
+    try { localStorage.setItem(KEY, JSON.stringify(state)); q('[data-saved]').textContent = '✓ Saved on this device'; q('[data-err]').hidden = true; }
+    catch { const e = q('[data-err]'); e.hidden = false; e.textContent = 'Your browser storage is full, so this change could not be saved. Download the note as a .txt file to keep it.'; q('[data-saved]').textContent = ''; }
+  }
+  function listUi() {
+    const sorted = [...state.notes].sort((a, b) => b.at - a.at);
+    q('[data-list]').innerHTML = sorted.map((n) => `<li><button type="button" class="w-full rounded-lg px-3 py-2 text-left text-sm ${n.id === note().id ? 'bg-[var(--cat-soft)] font-semibold' : 'hover:bg-surface-2'}" data-pick="${n.id}" ${n.id === note().id ? 'aria-current="true"' : ''}><span class="block truncate">${esc(title(n))}</span><span class="block text-xs font-normal text-subtle">${new Date(n.at).toLocaleString([], { dateStyle: 'medium', timeStyle: 'short' })}</span></button></li>`).join('');
+    const sel = q<HTMLSelectElement>('#np-sel'); sel.innerHTML = sorted.map((n) => `<option value="${n.id}">${esc(title(n))}</option>`).join(''); sel.value = note().id;
+  }
+  function stats() { const t = ta.value; q('[data-stats]').textContent = `${fmt(words(t).length)} words · ${fmt([...t].length)} characters · ${fmt(t ? t.split('\n').length : 0)} lines`; }
+  function look() { ta.classList.toggle('mono', state.mono); q('[data-mono]').setAttribute('aria-pressed', String(state.mono)); ta.style.fontSize = SIZES[state.size] ?? SIZES[1]; q('[data-sizelbl]').textContent = ['Small', 'Medium', 'Large', 'Extra large'][state.size] ?? 'Medium'; }
+  function open(id: string) { state.cur = id; ta.value = note().text; persist(); listUi(); stats(); q('[data-saved]').textContent = ''; }
+  ta.addEventListener('input', () => {
+    note().text = ta.value; note().at = Date.now(); stats(); q('[data-saved]').textContent = 'Saving…';
+    clearTimeout(saveT); saveT = window.setTimeout(() => { persist(); listUi(); }, 400);
+  });
+  window.addEventListener('pagehide', () => { if (saveT) persist(); });
+  q('[data-new]').addEventListener('click', () => { const n = { id: uid(), text: '', at: Date.now() }; state.notes.push(n); open(n.id); ta.focus(); });
+  q('[data-list]').addEventListener('click', (e) => { const b = (e.target as HTMLElement).closest<HTMLElement>('[data-pick]'); if (b) open(b.dataset.pick!); });
+  q('#np-sel').addEventListener('change', (e) => open((e.target as HTMLSelectElement).value));
+  q('[data-del]').addEventListener('click', () => {
+    if (note().text.trim() && !confirm(`Delete “${title(note())}”? This cannot be undone.`)) return;
+    state.notes = state.notes.filter((n) => n !== note()); if (!state.notes.length) state.notes = [{ id: uid(), text: '', at: Date.now() }];
+    open([...state.notes].sort((a, b) => b.at - a.at)[0].id);
+  });
+  q('[data-dl]').addEventListener('click', () => downloadBlob(new Blob([ta.value], { type: 'text/plain;charset=utf-8' }), `${title(note()).replace(/[^\p{L}\p{N} _-]+/gu, '').trim().replace(/\s+/g, '-').toLowerCase() || 'note'}.txt`));
+  q<HTMLInputElement>('[data-open]').addEventListener('change', async (e) => {
+    const inp = e.target as HTMLInputElement, f = inp.files?.[0]; inp.value = ''; if (!f) return; const err = q('[data-err]');
+    if (f.size > 2_000_000) { err.hidden = false; err.textContent = 'That file is larger than 2 MB. The notepad is for notes; open large files in a text editor.'; return; }
+    const text = await f.text();
+    if (/\u0000/.test(text.slice(0, 2000))) { err.hidden = false; err.textContent = `“${f.name}” doesn't look like a text file. Choose a .txt or similar plain text file.`; return; }
+    err.hidden = true; const n = { id: uid(), text, at: Date.now() }; state.notes.push(n); ta.value = text; open(n.id);
+  });
+  q('[data-copy]').addEventListener('click', (e) => copyText(ta.value, e.currentTarget as HTMLElement));
+  q('[data-mono]').addEventListener('click', () => { state.mono = !state.mono; look(); persist(); });
+  q('[data-size]').addEventListener('click', () => { state.size = ((state.size ?? 1) + 1) % SIZES.length; look(); persist(); });
+  const fs = q<HTMLButtonElement>('[data-fs]'), ed = q('[data-editor]');
+  if (!document.fullscreenEnabled) fs.hidden = true;
+  fs.addEventListener('click', () => (document.fullscreenElement ? document.exitFullscreen() : ed.requestFullscreen()).catch(() => {}));
+  document.addEventListener('fullscreenchange', () => { const on = document.fullscreenElement === ed; ed.classList.toggle('bg-[var(--bg)]', on); ed.classList.toggle('p-6', on); ed.classList.toggle('overflow-auto', on); ta.style.minHeight = on ? '80vh' : ''; ta.focus(); });
+  ta.value = note().text; look(); listUi(); stats();
+</script>

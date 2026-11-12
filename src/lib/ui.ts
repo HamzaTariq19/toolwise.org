@@ -105,14 +105,15 @@ export function setBusy(button: HTMLButtonElement, busy: boolean, busyLabel?: st
 }
 
 /** Print only a copy of one element (the rest of the page is hidden while printing) */
-export function printElement(el: HTMLElement) {
-  document.querySelectorAll('.print-host').forEach((h) => h.remove());
+export function printElement(el: HTMLElement, pageCss?: string) {
+  document.querySelectorAll('.print-host, #print-page-css').forEach((h) => h.remove());
+  if (pageCss) { const st = document.createElement('style'); st.id = 'print-page-css'; st.textContent = pageCss; document.head.appendChild(st); }
   const host = document.createElement('div');
   host.className = 'print-host';
   host.appendChild(el.cloneNode(true));
   document.body.appendChild(host);
   document.body.classList.add('print-area');
-  const done = () => { host.remove(); document.body.classList.remove('print-area'); window.removeEventListener('afterprint', done); };
+  const done = () => { host.remove(); document.getElementById('print-page-css')?.remove(); document.body.classList.remove('print-area'); window.removeEventListener('afterprint', done); };
   window.addEventListener('afterprint', done);
   window.print();
 }

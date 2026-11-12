@@ -12,9 +12,10 @@ Status of each tool lives in `src/data/tools.json` (`"status": "built"` = live, 
 - Batch 6, Developer (15): JSON→CSV, CSV→JSON, Base64, URL encode, barcode, color picker, CSS gradient, HTML/CSS/JS minifiers, regex tester, UUID, hash (MD5/SHA), timestamp, Markdown→HTML (sanitized)
 - Batch 7, SEO & Social (12): meta tags, keyword density, robots.txt, sitemap, Open Graph preview, YouTube title + thumbnail checkers, X character counter + thread splitter, Instagram caption formatter, hashtag generator, UTM builder, email signature. New shared `CodeOutput.astro`.
 - Batch 8, Student (10): flashcards, Pomodoro, essay word counter, equation solver (lib/equation.ts, exact fractions + steps), periodic table (src/data/elements.ts), unit circle, multiplication table (print + practice), spelling practice, quiz maker, homework planner. New shared `LocalNote.astro` (device-only storage note), `printElement()` + `esc()` in lib/ui.ts, `shuffle()` in lib/random.ts.
+- Batch 9, Everyday (10): countdown timer, alarm clock, coin flip, dice roller, to-do list, notepad, calendar generator (print with @page size), world clock (lib/cities.ts), password strength checker (lib/password-strength.ts, offline estimator), screen tester. New lib/sound.ts (Web Audio alarm tones, wake lock). `printElement(el, pageCss)` now takes optional @page CSS. Password checker + generator pages render no ad slots and no ad script (`noAds` in [slug].astro / Base.astro).
 
 ## Next
-- Batch 9 Everyday (10) → Batch 10 Heavy (8; ask before building the link shortener)
+- Batch 10 Heavy (8; ask before building the link shortener)
 
 ## How each tool is built (keep it consistent)
 1. `src/tools/<slug>.astro`: UI + `<script>`. Reuse components:
