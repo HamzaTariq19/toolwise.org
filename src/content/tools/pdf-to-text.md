@@ -2,48 +2,59 @@
 seoTitle: "PDF to Text: Extract and Copy Text from a PDF Free | toolwise"
 metaDescription: "Pull all the text out of a PDF to copy, edit or save as a .txt file. Shows word count and page breaks. Free, private, works on any device."
 faqs:
-  - q: Why does it say no text was found?
-    a: The PDF is most likely a scan or a photo of a document. In that case the words are part of an image, not real text, so there is nothing to extract. Reading text from images requires OCR (optical character recognition), which this tool does not do yet.
-  - q: Will the formatting be kept?
-    a: Plain text has no fonts, columns or tables, so only the words and line breaks are kept. Text in multi-column layouts and tables may come out in a slightly different order than it looks on the page.
-  - q: Can I edit the text before saving?
-    a: Yes. The text box is editable, so you can tidy it up, then press Copy text or Download .txt.
-  - q: Does it work with password-protected PDFs?
-    a: Remove the password first with Unlock PDF, using a password you know, then extract the text.
+  - q: "Why does it say no text was found?"
+    a: "The PDF is probably a scan or made of images, so the words are pictures rather than text. Reading text from images needs OCR (optical character recognition), which this tool doesn't do yet."
+  - q: "Will the formatting be kept?"
+    a: "No. You get plain text, which is ideal for copying into other documents, search tools and AI assistants. Bold, fonts, colours, images and exact table layouts are left out."
+  - q: "Why are some words joined or lines broken oddly?"
+    a: "PDFs store text as positioned pieces, not paragraphs. Columns, tables and hyphenated words can come out in an unexpected order. A quick tidy-up in a text editor usually fixes it."
+  - q: "What does \"Show page breaks\" do?"
+    a: "It adds a line like \"--- Page 3 ---\" before each page's text, so you can tell where each page starts. Turn it off for one continuous block of text."
+  - q: "Is the PDF uploaded?"
+    a: "No. The text is read in your browser, so confidential documents stay on your device."
 ---
 
-## What this tool does
+## When to use it
 
-PDF to Text extracts the words from a PDF so you can copy them into an email, a document, a note-taking app or a translation tool. It reads every page, keeps the line breaks, shows how many words were found, and lets you download the result as a plain `.txt` file that opens anywhere.
+PDF to Text pulls the words out of a PDF so you can copy, search, edit or reuse them. Use it to quote a passage from a report, paste a document into an email or chat, translate a document, feed text into another tool or AI assistant, count the words in a PDF, or recover the text of a file you no longer have in Word.
 
 ## How to extract text from a PDF
 
-1. Tap **Choose PDF file** and select your PDF.
-2. toolwise reads each page; a progress bar shows how far it has got.
-3. The text appears in an editable box, with page numbers marked if **Show page breaks** is ticked.
-4. Press **Copy text** to paste it elsewhere, or **Download .txt** to save it.
+1. Tap **Choose PDF file**, or drag a PDF onto the box.
+2. Wait while each page is read. A summary shows how many pages and words were found.
+3. Tick or untick **Show page breaks** to mark where each page starts.
+4. Read or edit the result under **Extracted text**.
+5. Press **Copy text**, or **Download .txt** to save it as a text file.
+6. Press **Start over** for another PDF.
 
-## Good uses for PDF to Text
+## A worked example
 
-- **Quoting** a passage from a report or article without retyping it.
-- **Translating** a document by pasting the text into a translation service.
-- **Searching** long documents or feeding text into other tools, such as our [Word Counter](/word-counter) or [Keyword Density Checker](/keyword-density-checker).
-- **Accessibility:** plain text works well with screen readers and text-to-speech tools like our [Text to Speech](/text-to-speech).
+You have a 14-page PDF research report and want to quote two paragraphs from page 6 in your essay. Open it here with **Show page breaks** on. Scroll to "--- Page 6 ---", select the paragraphs, and copy them. Because it's plain text, the quote pastes cleanly into your document in your own font, ready to cite with the Citation Generator.
 
-## Text PDFs versus scanned PDFs
+## What works well, and what doesn't
 
-A PDF exported from Word, Google Docs or a website contains real text characters, and they can be extracted perfectly. A PDF made by scanning paper or by saving photos contains pictures of text. You can usually tell the difference by trying to select a word in a PDF reader: if you can't highlight it, it is an image. For those files, this tool shows a clear message instead of an empty result.
+- **Works well:** documents created from Word, Google Docs, web pages, e-books and most reports, invoices and forms.
+- **Partly works:** multi-column layouts and tables, where text may come out in a different order.
+- **Doesn't work:** scanned paper documents and photos of pages, which contain pictures of text rather than text.
 
 ## Tips
 
-- Turn off **Show page breaks** when you want one continuous block of text.
-- If the PDF uses columns, check the order of paragraphs after extracting.
-- To convert pages into pictures instead, use [PDF to Image](/pdf-to-image).
+- **Turn page breaks on** for long documents, so you can find your place.
+- **Download the .txt** for very long documents; it's easier to search in a text editor.
+- **Clean up line breaks** with find-and-replace in a text editor (or the Find and Replace tool) if paragraphs are split into short lines.
+- **Check numbers and symbols** in tables before reusing them.
 
-## Cleaning up extracted text
+## Common mistakes
 
-Text from PDFs sometimes contains line breaks in the middle of sentences, because each printed line ends with a break. To turn it into flowing paragraphs, paste it into our Remove Extra Spaces tool or a word processor's find and replace. Hyphenated words split across lines may also need a quick check before you reuse the text.
+- **Expecting a scanned PDF to work.** If the tool finds no text, it's a scan.
+- **Copying text you don't have the right to reuse.** Quote and cite properly.
+- **Losing the layout you needed.** If you need tables and formatting, use the original source file instead.
+- **Trying to read a locked PDF.** Unlock it with its password first.
 
-## Private
+## Private by design
 
-Text is extracted locally in your browser. Your PDF is never uploaded, and the text is not stored once you leave the page.
+The PDF is read in your browser and never uploaded.
+
+## Related tools
+
+Count the words with the [Word Counter](/word-counter), tidy the text with [Remove Duplicate Lines](/remove-duplicate-lines), or turn pages into pictures with [PDF to Image](/pdf-to-image).

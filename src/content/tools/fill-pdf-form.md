@@ -2,44 +2,61 @@
 seoTitle: "Fill PDF Form Online: Type Into Fillable PDFs Free | toolwise"
 metaDescription: "Fill in fillable PDF forms in your browser: text boxes, checkboxes, dropdowns and options. Save and optionally lock your answers. Private and free."
 faqs:
-  - q: Which PDF forms can I fill in?
-    a: Any PDF with interactive form fields, often called a fillable or AcroForm PDF. Most government, tax, bank and HR forms are built this way. If no fields are found, the PDF is a flat document and you would need to print it or add a signature instead.
-  - q: What does "lock the answers" do?
-    a: It flattens the form, so your answers become a permanent part of the page and the fields are removed, so nobody can change them by accident. Leave it unticked if you or someone else may need to edit the form later.
-  - q: Why are some fields not shown or not editable?
-    a: Read-only fields set by the form's creator cannot be changed, and button or digital-signature fields are not text you can type into. Use our Sign PDF tool to add a visible signature.
-  - q: Are my answers sent anywhere?
-    a: No. The form is filled and saved in your browser. Nothing you type is uploaded, which matters for forms containing personal and financial details.
+  - q: "How do I know if my PDF can be filled in?"
+    a: "Open it here. If it has fillable fields, they appear as boxes, checkboxes and menus you can complete. If the tool says there are no fillable fields, the form is a flat scan or image; you can sign it with Sign PDF or print it."
+  - q: "What does \"flatten\" mean?"
+    a: "Flattening turns your answers into regular page content, so they can't be edited and look the same in every PDF reader. Choose it for the final copy you send; leave it off if you or someone else still needs to change answers."
+  - q: "Why do some characters not work?"
+    a: "Each form uses a font chosen by its creator, and some fonts lack emoji or non-Latin letters. If that happens, you'll see a message; remove those characters and save again."
+  - q: "Can I sign the form too?"
+    a: "Yes. Save the filled PDF, then open it in Sign PDF to add your signature."
+  - q: "Are my answers stored?"
+    a: "No. The form is filled in your browser and never uploaded, which matters for tax, medical and immigration forms."
 ---
 
-## What this tool does
+## When to use it
 
-Fill PDF Form lets you complete fillable PDF forms without installing a PDF reader. It finds every field in the form, including text boxes, checkboxes, dropdown lists and multiple-choice options, and shows them as a simple list you can fill in on any phone or computer. When you are done, it saves a new PDF with your answers in place.
+Fill PDF Form lets you type answers into a PDF that has fillable fields, then save a completed copy. Use it for government forms, job and rental applications, school permission forms, insurance claims and tax documents that arrive as PDFs. Typed answers are neater than handwriting, and you can send the completed form without printing or scanning anything.
 
 ## How to fill in a PDF form
 
-1. Tap **Choose PDF file** and select the form.
-2. toolwise lists every field it finds, using the field names from the form.
-3. Type your answers, tick checkboxes and choose options. Fields you leave empty stay empty.
-4. Tick **Lock the answers** if the form is final and should not be edited.
-5. Press **Save filled PDF** and download it.
+1. Tap **Choose PDF file**, or drag the form onto the box.
+2. The form's fields appear in the order the form defines them: text boxes, checkboxes, radio buttons and drop-down menus.
+3. Fill in each field. Required fields and their labels come from the form itself.
+4. Tick **Lock the answers so they can't be changed (flatten)** for a final copy.
+5. Press **Save filled PDF**, then **Download**. The file ends in "-filled.pdf".
 
-## Tips for filling forms
+## A worked example
 
-- **Field names come from the form's creator.** Most are clear, like "First name" or "Date of birth". If a name is cryptic, open the original PDF alongside to see where the field sits on the page.
-- **Dates and numbers:** type them in the format the form asks for, for example DD/MM/YYYY.
-- **Long answers:** multi-line text boxes accept several lines, but the space on the printed page is limited. Keep answers concise so they fit.
-- **Special characters:** many forms use simple fonts that cannot display emoji or some alphabets. If saving fails, toolwise tells you, so you can adjust the text.
-- **Signature needed?** Fill the form first, then add your signature with [Sign PDF](/sign-pdf).
+A school sends a 2-page trip consent form with fields for the child's name, class, emergency contact, two "Yes / No" medical questions and a date. Open it, type the details, choose the answers from the radio buttons, and enter the date. Tick **flatten** so nothing can change, press **Save filled PDF** and download it. Then open the result in Sign PDF to add your signature before emailing it back.
 
-## When to lock the answers
+## What can be filled in
 
-Lock (flatten) a form when you are sending it as a final document, for example to a landlord, employer or government office. This prevents accidental changes and makes the form look the same in every PDF viewer. Keep an unlocked copy if you might need to correct something later. You can also flatten any finished form separately with [Flatten PDF](/flatten-pdf).
+- **Text boxes**, including multi-line boxes for addresses and comments.
+- **Checkboxes** for yes/no and "I agree" questions.
+- **Radio buttons**, where you choose one option from a group.
+- **Drop-down menus and lists**, such as country or title.
 
-## If the form has no fields
+Signature fields aren't filled here; add your signature afterwards with Sign PDF.
 
-Some forms look fillable but are really just a scanned or flat page. In that case toolwise tells you no fields were found. Your options are to ask the organization for a fillable version, to print the form and fill it in by hand, or to add your signature and any short notes using Sign PDF, which lets you place text-like signatures anywhere on the page.
+## Tips
 
-## Your data stays private
+- **Check the date format** the form asks for, such as DD/MM/YYYY or MM/DD/YYYY.
+- **Keep answers short** in small boxes; long text may be shrunk or cut off by the form's design.
+- **Save an unflattened copy too** if you might need to correct something later.
+- **Open the result** in your normal PDF reader to check every answer before sending.
 
-Forms often ask for addresses, ID numbers and bank details. toolwise never uploads your PDF or your answers: everything is done in your browser, and nothing is stored after you leave the page.
+## Common mistakes
+
+- **Uploading a scanned form.** Scans have no fields; use Sign PDF to place your signature, or print it.
+- **Flattening too early,** then finding a mistake. Keep the unflattened version until you're sure.
+- **Using emoji or symbols** the form's font can't show.
+- **Forgetting to sign,** when the form needs a signature; filling fields doesn't add one.
+
+## Private by design
+
+Personal details stay on your device. The form is filled and saved in your browser and never uploaded.
+
+## Related tools
+
+Add a signature with [Sign PDF](/sign-pdf), lock interactive elements with [Flatten PDF](/flatten-pdf), or add a password with [Protect PDF](/protect-pdf).

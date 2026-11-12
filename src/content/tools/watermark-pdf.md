@@ -2,53 +2,60 @@
 seoTitle: "Add Watermark to PDF: Confidential, Draft or Custom Text | toolwise"
 metaDescription: "Stamp a text watermark like CONFIDENTIAL, DRAFT or your name across every PDF page. Choose layout, color and transparency. Free, no upload."
 faqs:
-  - q: Can a watermark be removed?
-    a: A text watermark is added to the page content, so it cannot simply be switched off. A determined person with editing software could still remove or cover it, so a watermark discourages copying rather than preventing it completely.
-  - q: Will the text underneath still be readable?
-    a: Yes, if you keep the transparency low. The default of 25% makes the watermark clearly visible while the document stays easy to read. Increase it for a bolder mark.
-  - q: Can I use letters like é, ü or Chinese characters?
-    a: The watermark uses a standard PDF font that supports basic Latin letters, numbers and punctuation. Accented letters and other alphabets are removed if they cannot be displayed, and the result tells you when that happens.
-  - q: Can I add an image or logo as a watermark?
-    a: This tool adds text watermarks. To protect photos with a logo, use our Add Watermark to Image tool.
+  - q: "Can a watermark be removed?"
+    a: "A text watermark discourages casual copying and makes the document's status clear, but someone with PDF editing software and enough effort can sometimes remove it. For strong protection, combine it with Protect PDF and share only with people you trust."
+  - q: "Which transparency should I choose?"
+    a: "20 to 30% keeps the watermark visible without making the text underneath hard to read. Go higher for drafts that must not be mistaken for final versions."
+  - q: "Does the watermark go on every page?"
+    a: "Yes, it's added to every page in the same style and position."
+  - q: "Can I use accented letters or other alphabets?"
+    a: "Accented Latin letters work. Characters the built-in font can't show, such as emoji, are left out, and the tool tells you if anything couldn't be added."
+  - q: "Is my document uploaded?"
+    a: "No. The watermark is added in your browser."
 ---
 
-## What this tool does
+## When to use it
 
-Add Watermark to PDF places a semi-transparent text stamp on every page of your document. Use it to mark a file as **CONFIDENTIAL**, **DRAFT**, **SAMPLE** or **COPY**, or to add your name or company so a document can be traced back to you if it is shared further.
+Watermark PDF stamps text such as CONFIDENTIAL, DRAFT, COPY or SAMPLE across every page of a PDF. Use it to show that a document is a draft and not yet approved, to mark sensitive files before sharing them, to label a copy sent to a particular person, or to discourage reuse of a portfolio, price list or proposal.
 
-## How to watermark a PDF
+## How to add a watermark
 
-1. Tap **Choose PDF file** and select your PDF.
-2. Type your **watermark text**.
-3. Choose a **layout**: diagonal across the center, horizontal across the center, or repeated across the whole page.
-4. Pick a **color**, **transparency** and **text size**. The small preview shows roughly how it will look.
-5. Press **Add watermark** and download the result.
+1. Tap **Choose PDF file**, or drag a PDF onto the box.
+2. Type the **Watermark text**, for example `DRAFT` or `Copy for J. Smith`.
+3. Choose the **Layout**: **Diagonal, center**, **Horizontal, center**, or **Repeated across page**.
+4. Pick a **Color** (**Gray**, **Red**, **Blue** or **Black**), the **Transparency** and the **Text size**.
+5. Check the preview of the first page.
+6. Press **Add watermark**, then **Download**. The file ends in "-watermarked.pdf".
 
-## Which layout should I use?
+## A worked example
 
-- **Diagonal, center** is the classic look for drafts and confidential papers. It is hard to crop out without damaging the content.
-- **Horizontal, center** reads more easily and suits labels like SAMPLE on brochures.
-- **Repeated across page** covers the whole page with a pattern, which is the strongest protection against screenshots and cropping. Keep the transparency low so the document stays readable.
+You're sending a 20-page business proposal to three potential clients before it's signed. Add the text `CONFIDENTIAL – Prepared for Northwind Ltd`, choose **Diagonal, center**, **Gray**, 25% transparency and **Medium** size. Every page shows a light diagonal label that doesn't hide the content but makes clear who the copy was for. Repeat with each client's name so each copy is traceable.
 
-## Tips for effective watermarks
+## Choosing a style
 
-- **Be specific.** "Copy for J. Smith, 12 May" deters sharing more than a generic word, because it identifies who received it.
-- **Watermark before signing** if a document will be signed, so signatures are not partly covered.
-- **Keep an unmarked original** for your own records.
-- **Gray** is the most neutral color; **red** draws attention and works well for DRAFT.
+- **Diagonal, center:** the classic look for CONFIDENTIAL or DRAFT; hard to crop out.
+- **Horizontal, center:** calmer, better for "SAMPLE" on catalogues and handouts.
+- **Repeated across page:** covers the whole page, ideal for images and portfolios you don't want reused.
+- **Red** signals urgency or drafts; **gray** is the most readable over text.
 
-## How it works
+## Tips
 
-The text is drawn on top of each page in the standard Helvetica Bold font, with the transparency you chose. toolwise takes the page's visible orientation into account, so the watermark looks the same on portrait, landscape and rotated pages. Nothing else on the page is changed or re-compressed.
+- **Keep it short.** One to four words read best; long text gets small.
+- **Personalise copies** with the recipient's name to discourage forwarding.
+- **Watermark the final version,** after merging and reordering pages.
+- **Keep an unwatermarked original** for your own records.
+
+## Common mistakes
+
+- **Too dark or too large,** making the document hard to read. Start at 25% transparency.
+- **Watermarking a scanned signature page** you'll need to submit officially; some offices reject marked documents.
+- **Assuming it's a security feature.** For access control, use a password with Protect PDF.
+- **Using emoji,** which the PDF font can't display.
+
+## Private by design
+
+Your document is watermarked in your browser and is never uploaded.
 
 ## Related tools
 
-Need a password instead of a watermark? Use [Protect PDF](/protect-pdf). To mark images rather than PDFs, use [Add Watermark to Image](/watermark-image).
-
-## Watermarks and printing
-
-Light watermarks can almost disappear on some printers, especially in gray. If the document will mainly be printed, raise the transparency slider to around 35 to 40% and print a test page first. For documents that will mostly be read on screen, 20 to 25% is usually enough to be noticed without getting in the way of reading.
-
-## Private
-
-The watermark is applied in your browser and your document is never uploaded.
+Lock the file with a password using [Protect PDF](/protect-pdf), add page numbers with [Add Page Numbers](/add-page-numbers-pdf), or watermark photos with [Watermark Image](/watermark-image).

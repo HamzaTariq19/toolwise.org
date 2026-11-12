@@ -2,46 +2,58 @@
 seoTitle: "Unlock PDF: Remove a Password You Know | toolwise"
 metaDescription: "Remove the open password from a PDF when you know the password, and save an unlocked copy. Works in your browser, nothing is uploaded."
 faqs:
-  - q: Can toolwise unlock a PDF if I don't know the password?
-    a: No. toolwise only removes protection when you enter the correct password. It does not guess, crack or bypass passwords. If you have forgotten the password, ask the person or organization that sent the document for a new copy.
-  - q: Why would I remove a password I already know?
-    a: Typing the password every time you open a file gets tedious, some apps and printers cannot handle protected PDFs, and you may need to merge, compress or edit the document with other tools.
-  - q: My PDF opens without a password but I can't print or copy. Can this tool help?
-    a: Those are restrictions set by the document's owner. toolwise does not remove owner restrictions without the owner's password. Ask the sender for an unrestricted version.
-  - q: Is my password sent anywhere?
-    a: No. The password is used only inside your browser to decrypt the file. It is never uploaded or stored.
+  - q: "Can toolwise unlock a PDF if I've forgotten the password?"
+    a: "No. You must enter the correct password. toolwise never guesses or cracks passwords, and the protection is designed so that the file can't be opened without it. Ask the sender or check where you saved the password."
+  - q: "Why does it say my PDF already opens without a password?"
+    a: "Some PDFs open freely but have restrictions on printing or copying set by their owner. Those restrictions can only be changed by the owner, so toolwise doesn't remove them."
+  - q: "What does unlocking actually do?"
+    a: "It saves a copy without encryption, so it opens without asking for a password. That makes it easier to merge, compress, sign or print the file. The original stays protected."
+  - q: "Why is my correct password rejected?"
+    a: "Passwords are case-sensitive, so check capital letters and Caps Lock. Watch for spaces copied by accident, and for look-alike characters like 0 and O."
+  - q: "Is my password sent anywhere?"
+    a: "No. The password and PDF stay in your browser, and this page loads no advertising scripts."
 ---
 
-## What this tool does
+## When to use it
 
-Unlock PDF removes the open password from a PDF you are allowed to access. You enter the password once, and toolwise saves a copy of the document that opens without asking for it. This makes the file easier to use with other tools, apps and printers, and saves you from typing the password every time.
+Unlock PDF removes the open password from a PDF you're allowed to open, so you don't have to type it every time. Banks, utilities and payroll systems often send password-protected statements and payslips. Unlocking a copy makes it easy to store in your own records, merge with other documents, compress, print or share with someone who needs it, such as an accountant or mortgage adviser.
 
 ## How to unlock a PDF
 
-1. Tap **Choose PDF file** and select the password-protected PDF.
-2. Type the **password** you normally use to open it.
+1. Tap **Choose PDF file**, or drag the protected PDF onto the box.
+2. Type the **PDF password**, the same one you use to open the file.
 3. Press **Unlock PDF**.
-4. If the password is correct, download your unlocked copy. If not, toolwise tells you, and you can try again.
+4. Press **Download**. The new copy ends in "-unlocked.pdf" and opens without a password.
 
-## Common reasons to unlock a PDF
+toolwise cannot unlock a PDF without the correct password.
 
-- **Bank and utility statements** often arrive protected with your date of birth or account number. Unlocking them makes them easier to file and search.
-- **Payslips and tax documents** may need to be merged into one file for a loan or visa application, using [Merge PDF](/merge-pdf).
-- **Printing problems:** some printers and print shops cannot process encrypted PDFs.
-- **Further editing:** tools like [Compress PDF](/compress-pdf) and [Add Page Numbers](/add-page-numbers-pdf) need an unlocked file.
+## A worked example
 
-## Using this tool responsibly
+Your bank emails monthly statements as PDFs protected with your date of birth. You need to send six of them to a mortgage broker as one file. Unlock each statement with its password, then merge the six unlocked copies with Merge PDF. If the broker asks for protection, add your own password to the merged file with Protect PDF and share it separately.
 
-Only remove passwords from documents that belong to you or that you have permission to change. toolwise requires the correct password every time and has no way to recover, guess or crack an unknown one. Restrictions placed on a PDF by its owner, such as blocking printing on a file that opens freely, are left in place.
+## When unlocking isn't possible
 
-## Keeping unlocked files safe
+- **You don't know the password.** Only the sender or the file's owner can help; there's no legitimate way around it.
+- **The PDF only has owner restrictions** (no password to open it). toolwise leaves those in place.
+- **Unusual protection types,** such as certificate-based encryption or digital rights management, can't be removed in a browser.
 
-An unlocked PDF can be read by anyone who gets hold of it. Store it in a secure folder, and if you need to send it to someone again, consider protecting it with a new password using [Protect PDF](/protect-pdf).
+## Tips
 
-## If the password does not work
+- **Copy the password carefully** from the email or letter it came with; avoid trailing spaces.
+- **Keep unlocked copies somewhere safe,** like an encrypted drive, since anyone can open them.
+- **Add your own protection** with Protect PDF before emailing sensitive unlocked files.
+- **Rename files clearly,** such as "statement-2026-03.pdf", so you don't mix up locked and unlocked versions.
 
-Passwords are case-sensitive, so check whether Caps Lock is on and whether the password uses capital letters. Banks often use a pattern such as your date of birth in a specific format or part of your account number; the email or letter that came with the document usually explains it. Copying and pasting the password from that message avoids typing mistakes.
+## Common mistakes
+
+- **Typing the wrong case:** "Password1" and "password1" are different.
+- **Trying to unlock a file you're not entitled to open.** Only unlock documents that are yours or that you have permission to use.
+- **Sharing the unlocked copy widely** when it contains personal information.
 
 ## Private by design
 
-The decryption runs entirely in your browser. Your document and password never leave your device and are not stored after you close the page.
+Your file and password never leave your device, and this page loads no ad scripts.
+
+## Related tools
+
+Add a password with [Protect PDF](/protect-pdf), combine files with [Merge PDF](/merge-pdf), or make them smaller with [Compress PDF](/compress-pdf).

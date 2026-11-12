@@ -2,50 +2,59 @@
 seoTitle: "Add Page Numbers to PDF Online Free | toolwise"
 metaDescription: "Number the pages of a PDF in the corner or center, with formats like Page 1 of 10. Skip the cover page and choose the start number. Free, private."
 faqs:
-  - q: How do I leave the cover page without a number?
-    a: Set Skip first pages to 1. Numbering then starts on page 2. Set Start counting at to 1 if that page should show 1, or to 2 if it should show 2.
-  - q: Can I start numbering from a different number?
-    a: Yes. Change Start counting at. This is useful when the PDF is one part of a longer document, for example a chapter that begins on page 37.
-  - q: What does "Page 1 of 10" count as the total?
-    a: The total is the last page number shown, taking your start number and skipped pages into account, so the numbers always read correctly from first to last.
-  - q: Will numbers appear correctly on landscape or rotated pages?
-    a: Yes. toolwise places the number based on how the page looks when you view it, so a rotated landscape page gets its number at the bottom of the visible page, not along its side.
+  - q: "How do I leave the cover page without a number?"
+    a: "Set \"Skip first pages\" to 1. The cover gets no number and numbering starts on the second page with whatever \"Start counting at\" says, usually 1."
+  - q: "What does \"Page 1 of 10\" count?"
+    a: "The total counts only the pages that get a number. In an 11-page PDF with the cover skipped, the second page shows \"Page 1 of 10\" and the last shows \"Page 10 of 10\"."
+  - q: "Can I start at a number other than 1?"
+    a: "Yes. Change \"Start counting at\", for example to 25 if this document continues from another with 24 pages."
+  - q: "Will the numbers cover up my content?"
+    a: "They're placed in the page margin at the position you choose, in a small, neutral style. If your pages have content right to the edge, choose the top or bottom position with the most empty space."
+  - q: "Can I remove the numbers later?"
+    a: "Not with this tool, because they become part of the pages. Keep the original PDF in case you need a version without numbers."
 ---
 
-## What this tool does
+## When to use it
 
-Add Page Numbers stamps a page number on every page of your PDF. Numbered pages make long documents easy to navigate, discuss and print, and many schools, courts, publishers and businesses require them. You choose where the number goes, how it looks and which page it starts on.
+Add Page Numbers stamps numbers onto the pages of a PDF. Use it for reports, theses, manuals, legal bundles and printed handouts, especially when you've merged several documents and the pages no longer run in sequence. Page numbers let readers refer to "page 12" in a meeting, follow a table of contents, and put printed pages back in order if they get dropped.
 
-## How to add page numbers
+## How to add page numbers to a PDF
 
-1. Tap **Choose PDF file** and select your document.
-2. Choose a **position**: one of the top or bottom corners, or the center.
-3. Pick a **format**, such as `1`, `Page 1` or `Page 1 of 10`.
-4. Set **Start counting at** and **Skip first pages** if needed.
-5. Choose a **text size**, press **Add page numbers**, and download the numbered PDF.
+1. Tap **Choose PDF file**, or drag a PDF onto the box.
+2. Choose the **Position**: **Top left**, **Top center**, **Top right**, **Bottom left**, **Bottom center** or **Bottom right**.
+3. Pick a **Format**: **1, 2, 3**, **Page 1**, **Page 1 of 10**, **1 / 10** or **- 1 -**.
+4. Set **Start counting at** (usually 1) and the **Text size** (**Small**, **Medium** or **Large**).
+5. Set **Skip first pages**, for example 1 to leave a cover page without a number.
+6. Press **Add page numbers**, then **Download**. The new file ends in "-numbered.pdf".
+
+## A worked example
+
+You've merged a title page with a 10-page report into an 11-page PDF for your manager. You want "Page 1 of 10" at the bottom center of the report pages, but nothing on the title page. Choose **Bottom center**, the **Page 1 of 10** format, start at 1, and set **Skip first pages** to 1. The title page stays clean, the first report page shows "Page 1 of 10", and the last shows "Page 10 of 10".
 
 ## Choosing a style
 
-- **Bottom center** is the most common choice for reports, essays and books.
-- **Bottom right** suits business documents and makes numbers easy to find when flipping through printed pages.
-- **Page 1 of 10** is helpful for contracts and forms, because it shows the reader whether any pages are missing.
-- **Small** text is discreet; **Large** is easier to read on printed slides.
+- **Bottom center** is the classic choice for reports and books.
+- **Bottom right** or **top right** works well for documents printed single-sided and stapled at the top left.
+- **"Page 1 of 10"** helps readers see if anything is missing, which is useful for contracts and exam papers.
+- **Small** text suits most documents; use **Medium** or **Large** for slides and handouts read at a distance.
 
-## Common situations
+## Tips
 
-- **Reports with a title page:** skip 1 page so the cover stays clean.
-- **Documents with a cover and table of contents:** skip 2 or 3 pages and start counting at 1 where the main text begins.
-- **Legal bundles and exhibits:** use the Page 1 of N format so every page can be referenced precisely.
-- **Combined documents:** merge your files first with [Merge PDF](/merge-pdf), then number the whole bundle in one go.
+- **Number the final version.** Add numbers after merging, deleting and reordering pages, not before.
+- **Continue numbering across volumes** with "Start counting at".
+- **Check one page at 100% zoom** to make sure the number doesn't touch footers or logos.
 
-## Good to know
+## Common mistakes
 
-The numbers are added as real text in a standard font, so they print crisply at any size. They are placed with a comfortable margin from the edge of the page. If a page already has a number in the same spot, the two will overlap, so choose a different position in that case.
+- **Numbering before reordering,** which leaves numbers out of sequence.
+- **Forgetting to skip the cover,** so the first content page shows as "2".
+- **Using a position already used by a footer,** which makes text overlap.
+- **Numbering a locked PDF.** Unlock it first.
 
-## Numbering a document made of several parts
+## Private by design
 
-If your document is assembled from several files, such as a cover letter, a CV and certificates, number it after combining them so the sequence runs continuously. If each part needs its own numbering, number each file separately with the right start number before merging. Check the first and last pages of the result to make sure the total in Page X of Y is what you expect.
+Numbers are added in your browser, so your documents never leave your device.
 
-## Private and free
+## Related tools
 
-Numbering is done in your browser. Your PDF is never uploaded, and there are no limits on the number of pages or files.
+Combine files first with [Merge PDF](/merge-pdf), put pages in order with [Reorder PDF Pages](/reorder-pdf-pages), or stamp a label across pages with [Watermark PDF](/watermark-pdf).

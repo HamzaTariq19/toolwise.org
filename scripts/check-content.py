@@ -1,9 +1,10 @@
+import re
 # Validates tool content frontmatter (YAML) and reports guide length. Usage: python3 scripts/check-content.py [slugs...]
 import yaml, glob, re, sys, os
 files = [f'src/content/tools/{s}.md' for s in sys.argv[1:]] or sorted(glob.glob('src/content/tools/*.md'))
 bad = 0
 for f in files:
-    _, fm, body = open(f).read().split('---', 2)
+    _, fm, body = re.split(r'^---\s*$', open(f).read(), maxsplit=2, flags=re.M)
     try:
         d = yaml.safe_load(fm); assert 3 <= len(d['faqs']) <= 6, 'need 3-6 faqs'
     except Exception as e:
