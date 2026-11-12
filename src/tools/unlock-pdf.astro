@@ -1,0 +1,50 @@
+---
+import PdfOptionsTool from '../components/PdfOptionsTool.astro';
+import Icon from '../components/Icon.astro';
+---
+<PdfOptionsTool id="ul" icon="LockOpen" action="Unlock PDF">
+  <div data-needs-pw>
+    <label for="ul-pw" class="label">PDF password</label>
+    <div class="relative"><input id="ul-pw" type="password" class="input pr-12" autocomplete="current-password" /><button type="button" class="btn btn-ghost absolute right-0.5 top-0.5 h-10 w-10 !p-0" data-show aria-label="Show password"><Icon name="Eye" size={18} /></button></div>
+    <p class="hint">Enter the password you use to open this PDF. toolwise cannot unlock a PDF without the correct password.</p>
+  </div>
+
+</PdfOptionsTool>
+<script>
+  import { initOptionsTool } from '../lib/pdf-options-tool';
+  const pw = document.getElementById('ul-pw') as HTMLInputElement;
+  document.querySelector('#ul [data-show]')!.addEventListener('click', (e) => { const s = pw.type === 'password'; pw.type = s ? 'text' : 'password'; (e.currentTarget as HTMLElement).setAttribute('aria-label', s ? 'Hide password' : 'Show password'); });
+  initOptionsTool('ul', {
+    outSuffix: 'unlocked',
+    load: async (bytes) => {
+      const { PDFDocument } = await import('pdf-lib');
+      let doc;
+      try { doc = await PDFDocument.load(bytes, { ignoreEncryption: true, updateMetadata: false }); }
+      catch { throw new Error('This file could not be read as a PDF. It may be damaged or not a real PDF file.'); }
+      if (!doc.isEncrypted) throw new Error('This PDF is not password protected, so there is nothing to unlock.');
+      // Does it open without a password (owner restrictions only)?
+      const { getPdfjs } = await import('../lib/pdf');
+      const pdfjs = await getPdfjs();
+      let opens = false;
+      try { const d = await pdfjs.getDocument({ data: new Uint8Array(bytes.slice(0)) }).promise; opens = true; d.loadingTask.destroy(); } catch { /* needs a password */ }
+      // Restrictions set by the document owner are not removed without the owner's password
+      if (opens) throw new Error('This PDF already opens without a password. Any printing or copying restrictions in it can only be changed by its owner, so toolwise does not remove them.');
+      return 0;
+    },
+    onLoaded: () => {
+      pw.value = '';
+      setTimeout(() => pw.focus(), 50);
+    },
+    process: async ({ bytes }) => {
+      if (!pw.value) throw new Error('Enter the password for this PDF.');
+      const { PDFDocument } = await import('@cantoo/pdf-lib');
+      let doc;
+      try { doc = await PDFDocument.load(bytes, { password: pw.value, updateMetadata: false }); }
+      catch (e) {
+        if (/password/i.test((e as Error).message)) { pw.select(); throw new Error('That password is not correct. Check for capital letters and try again.'); }
+        throw new Error('This PDF uses a kind of protection that cannot be removed in the browser.');
+      }
+      return { bytes: await doc.save(), note: `${doc.getPageCount()} pages, no password needed` };
+    },
+  });
+</script>

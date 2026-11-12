@@ -1,0 +1,19 @@
+---
+import PdfPagesTool from '../components/PdfPagesTool.astro';
+---
+<PdfPagesTool id="dp" icon="FileMinus2" action="Delete pages" hint="Tap the pages you want to remove. They are marked with a red cross." rangeLabel="Or type the pages to delete">
+  <Fragment slot="toolbar"><button type="button" class="btn btn-ghost btn-sm" data-clear>Clear selection</button></Fragment>
+</PdfPagesTool>
+<script>
+  import { initPagesTool } from '../lib/pdf-pages-tool';
+  const tool = initPagesTool('dp', {
+    mode: 'select', selectStyle: 'remove', outSuffix: 'edited',
+    validate: (pages) => { const n = pages.filter((p) => p.selected).length; return !n ? 'Choose at least one page to delete.' : n === pages.length ? 'You cannot delete every page. Keep at least one.' : null; },
+    label: (pages) => { const n = pages.filter((p) => p.selected).length; return n === pages.length ? 'Keep at least one page' : n ? `Delete ${n} page${n === 1 ? '' : 's'}` : 'Delete pages'; },
+    process: async (doc, pages) => {
+      [...pages].filter((p) => p.selected).map((p) => p.index).sort((a, b) => b - a).forEach((i) => doc.removePage(i));
+      return doc;
+    },
+  });
+  document.querySelector('#dp [data-clear]')!.addEventListener('click', () => tool.grid?.setAll((p) => (p.selected = false)));
+</script>

@@ -1,0 +1,64 @@
+---
+import Dropzone from '../components/Dropzone.astro';
+import Icon from '../components/Icon.astro';
+---
+<div id="pt" class="space-y-5">
+  <div data-step="pick"><Dropzone id="pt-drop" accept="application/pdf,.pdf" formats="PDF file" maxLabel="200 MB" label="Choose PDF file" icon="FileText" /></div>
+  <div class="alert alert-error" data-error hidden role="alert"><span data-msg></span></div>
+  <div class="card p-6" data-progress hidden aria-live="polite"><p class="font-semibold" data-plabel>Reading text…</p><div class="mt-3 h-2.5 overflow-hidden rounded-full bg-surface-2"><div class="h-full w-0 rounded-full bg-brand transition-[width]" data-pfill></div></div></div>
+  <div data-step="done" class="card p-5 sm:p-6" hidden>
+    <div class="flex flex-wrap items-center justify-between gap-2"><p class="font-semibold" data-summary></p><label class="flex min-h-11 items-center gap-2 text-[0.9375rem]"><input type="checkbox" id="pt-breaks" class="h-5 w-5 accent-[var(--brand)]" checked />Show page breaks</label></div>
+    <p class="alert alert-info mt-3" data-empty hidden>No text was found. This PDF is probably a scan or made of images, so the words are pictures rather than text. Reading text from images (OCR) is not supported yet.</p>
+    <label for="pt-out" class="sr-only">Extracted text</label>
+    <textarea id="pt-out" class="textarea mt-3 !min-h-[360px] text-[0.9375rem]" spellcheck="false"></textarea>
+    <div class="mt-4 flex flex-col gap-3 sm:flex-row">
+      <button type="button" class="btn btn-primary btn-lg" data-copy><Icon name="Copy" size={18} /><span data-label>Copy text</span></button>
+      <button type="button" class="btn btn-secondary btn-lg" data-dl><Icon name="Download" size={18} />Download .txt</button>
+      <button type="button" class="btn btn-ghost btn-lg" data-reset><Icon name="RotateCcw" size={18} />Start over</button>
+    </div>
+  </div>
+</div>
+<script>
+  import { initDropzone } from '../lib/dropzone';
+  import { openPdf } from '../lib/pdf';
+  import { copyText, downloadBlob, baseName, showError, fmt } from '../lib/ui';
+  const root = document.getElementById('pt')!;
+  const q = <T extends HTMLElement = HTMLElement>(s: string) => root.querySelector<T>(s)!;
+  const out = q<HTMLTextAreaElement>('#pt-out'), breaks = q<HTMLInputElement>('#pt-breaks');
+  let pages: string[] = [], name = 'document';
+  const join = () => (breaks.checked ? pages.map((p, i) => `--- Page ${i + 1} ---\n${p}`).join('\n\n') : pages.join('\n\n')).trim();
+  breaks.addEventListener('change', () => (out.value = join()));
+  q('[data-copy]').addEventListener('click', (e) => copyText(out.value, e.currentTarget as HTMLElement));
+  q('[data-dl]').addEventListener('click', () => downloadBlob(new Blob([out.value], { type: 'text/plain;charset=utf-8' }), `${name}.txt`));
+  q('[data-reset]').addEventListener('click', () => { q('[data-step=done]').hidden = true; q('[data-step=pick]').hidden = false; out.value = ''; });
+  initDropzone(document.getElementById('pt-drop')!, {
+    accept: ['application/pdf', '.pdf'], maxBytes: 200 * 1024 * 1024,
+    onFiles: async ([f]) => {
+      showError(q('[data-error]'), null);
+      try {
+        const doc = await openPdf(await f.arrayBuffer());
+        q('[data-step=pick]').hidden = true; q('[data-progress]').hidden = false;
+        pages = [];
+        for (let i = 1; i <= doc.numPages; i++) {
+          q('[data-plabel]').textContent = `Reading page ${i} of ${doc.numPages}…`;
+          q('[data-pfill]').style.width = `${(i / doc.numPages) * 100}%`;
+          const page = await doc.getPage(i);
+          const tc = await page.getTextContent();
+          let s = '';
+          for (const it of tc.items as { str?: string; hasEOL?: boolean }[]) if ('str' in it) s += it.str + (it.hasEOL ? '\n' : '');
+          pages.push(s.replace(/[ \t]+\n/g, '\n').replace(/\n{3,}/g, '\n\n').trim());
+          page.cleanup();
+        }
+        name = baseName(f.name);
+        out.value = join();
+        const words = (out.value.match(/\S+/g) ?? []).length;
+        const empty = !pages.join('').trim();
+        q('[data-empty]').hidden = !empty;
+        q('[data-summary]').textContent = `${doc.numPages} page${doc.numPages === 1 ? '' : 's'} · ${fmt(empty ? 0 : words)} words`;
+        q('[data-progress]').hidden = true; q('[data-step=done]').hidden = false;
+        doc.loadingTask.destroy();
+      } catch (e) { q('[data-progress]').hidden = true; q('[data-step=pick]').hidden = false; showError(q('[data-error]'), (e as Error).message); }
+    },
+    onError: (m) => showError(q('[data-error]'), m || null),
+  });
+</script>

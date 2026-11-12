@@ -1,0 +1,26 @@
+---
+// Shared layout for PDF tools that take one PDF plus a few settings.
+import Dropzone from './Dropzone.astro';
+import FileResults from './FileResults.astro';
+import PdfPicked from './PdfPicked.astro';
+import Icon from './Icon.astro';
+interface Props { id: string; icon: string; action: string; secondary?: string }
+const { id, icon, action, secondary = 'Choose another file' } = Astro.props;
+---
+<div id={id} class="space-y-5">
+  <div data-step="pick">
+    <Dropzone id={`${id}-drop`} accept="application/pdf,.pdf" formats="PDF file" maxLabel="200 MB" label="Choose PDF file" icon={icon} />
+  </div>
+  <div class="alert alert-error" data-error hidden role="alert"><span data-msg></span></div>
+  <form data-step="options" class="card p-5 sm:p-6" hidden novalidate>
+    <PdfPicked />
+    <div class="mt-5 space-y-5"><slot /></div>
+    <p class="alert alert-error mt-5" data-opt-error hidden role="alert"><span data-msg></span></p>
+    <div class="mt-6 flex flex-col gap-3 sm:flex-row">
+      <button type="submit" class="btn btn-primary btn-lg"><Icon name={icon} size={18} /><span data-label>{action}</span></button>
+      <button type="button" class="btn btn-secondary btn-lg" data-cancel>{secondary}</button>
+    </div>
+  </form>
+  <FileResults id={`${id}-results`} />
+  <slot name="after" />
+</div>

@@ -1,0 +1,30 @@
+---
+import PdfPagesTool from '../components/PdfPagesTool.astro';
+import Icon from '../components/Icon.astro';
+---
+<PdfPagesTool id="rp" icon="RotateCw" action="Rotate PDF" hint="Rotate single pages with the arrows under each page, or turn every page at once.">
+  <Fragment slot="toolbar">
+    <button type="button" class="btn btn-secondary btn-sm" data-all="270"><Icon name="RotateCcw" size={16} />Rotate all left</button>
+    <button type="button" class="btn btn-secondary btn-sm" data-all="90"><Icon name="RotateCw" size={16} />Rotate all right</button>
+    <button type="button" class="btn btn-ghost btn-sm" data-all="reset">Reset</button>
+  </Fragment>
+</PdfPagesTool>
+<script>
+  import { initPagesTool } from '../lib/pdf-pages-tool';
+  import { getPdfLib } from '../lib/pdf';
+  const tool = initPagesTool('rp', {
+    mode: 'rotate', outSuffix: 'rotated',
+    validate: (pages) => (pages.some((p) => p.rotation) ? null : 'Rotate at least one page first.'),
+    label: (pages) => { const n = pages.filter((p) => p.rotation).length; return n ? `Rotate ${n} page${n === 1 ? '' : 's'}` : 'Rotate PDF'; },
+    process: async (doc, pages) => {
+      const { degrees } = await getPdfLib();
+      for (const p of pages) if (p.rotation) { const pg = doc.getPage(p.index); pg.setRotation(degrees((pg.getRotation().angle + p.rotation) % 360)); }
+      return doc;
+    },
+    note: (d) => `${d.getPageCount()} pages`,
+  });
+  document.querySelectorAll<HTMLButtonElement>('#rp [data-all]').forEach((b) => b.addEventListener('click', () => {
+    const v = b.dataset.all!;
+    tool.grid?.setAll((p) => (p.rotation = v === 'reset' ? 0 : (p.rotation + Number(v)) % 360));
+  }));
+</script>

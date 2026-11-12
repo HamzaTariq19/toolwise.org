@@ -1,0 +1,70 @@
+---
+import PdfOptionsTool from '../components/PdfOptionsTool.astro';
+---
+<PdfOptionsTool id="wm" icon="Stamp" action="Add watermark">
+  <div><label for="wm-text" class="label">Watermark text</label><input id="wm-text" class="input" value="CONFIDENTIAL" maxlength="60" /></div>
+  <div class="grid gap-4 sm:grid-cols-2">
+    <div><label for="wm-layout" class="label">Layout</label><select id="wm-layout" class="select"><option value="diag" selected>Diagonal, center</option><option value="center">Horizontal, center</option><option value="tile">Repeated across page</option></select></div>
+    <div><label for="wm-color" class="label">Color</label><select id="wm-color" class="select"><option value="0.55,0.55,0.55">Gray</option><option value="0.8,0.1,0.1">Red</option><option value="0.1,0.25,0.75">Blue</option><option value="0,0,0">Black</option></select></div>
+    <div><div class="flex justify-between"><label for="wm-op" class="label">Transparency</label><output class="text-sm font-semibold" data-op>25%</output></div><input id="wm-op" type="range" min="5" max="80" value="25" class="h-11 w-full accent-[var(--brand)]" /></div>
+    <div><label for="wm-size" class="label">Text size</label><select id="wm-size" class="select"><option value="0.08">Small</option><option value="0.13" selected>Medium</option><option value="0.18">Large</option></select></div>
+  </div>
+  <canvas data-preview class="mx-auto block w-40 rounded border border-line bg-white" aria-hidden="true"></canvas>
+</PdfOptionsTool>
+<script>
+  import { initOptionsTool } from '../lib/pdf-options-tool';
+  import { getPdfLib, loadPdfLibDoc, visualBox } from '../lib/pdf';
+  const v = (id: string) => (document.getElementById(id) as HTMLInputElement).value;
+  const op = document.getElementById('wm-op') as HTMLInputElement;
+  const canvas = document.querySelector<HTMLCanvasElement>('#wm [data-preview]')!;
+  function preview() {
+    document.querySelector('#wm [data-op]')!.textContent = `${op.value}%`;
+    const W = 320, H = 452; canvas.width = W; canvas.height = H;
+    const g = canvas.getContext('2d')!; g.fillStyle = '#fff'; g.fillRect(0, 0, W, H);
+    g.fillStyle = '#d9dde3'; for (let y = 40; y < H - 40; y += 18) g.fillRect(30, y, W - 60 - (y % 54 ? 0 : 60), 6);
+    const [r, gg, b] = v('wm-color').split(',').map(Number);
+    g.fillStyle = `rgba(${r * 255},${gg * 255},${b * 255},${Number(op.value) / 100})`;
+    const size = Math.min(W, H) * Number(v('wm-size')) * 1.35 * (v('wm-layout') === 'tile' ? 0.45 : 1), text = v('wm-text') || ' ';
+    g.font = `bold ${size}px Helvetica, Arial, sans-serif`; g.textAlign = 'center'; g.textBaseline = 'middle';
+    const layout = v('wm-layout');
+    const draw = (x: number, y: number, a: number) => { g.save(); g.translate(x, y); g.rotate(-a); g.fillText(text, 0, 0); g.restore(); };
+    if (layout === 'tile') for (let y = 60; y < H; y += size * 3.2) for (let x = 40; x < W + 80; x += g.measureText(text).width + size * 2) draw(x, y, Math.PI / 4);
+    else draw(W / 2, H / 2, layout === 'diag' ? Math.atan(H / W) : 0);
+  }
+  document.getElementById('wm')!.addEventListener('input', preview);
+  document.getElementById('wm')!.addEventListener('change', preview);
+  preview();
+  initOptionsTool('wm', {
+    outSuffix: 'watermarked',
+    process: async ({ bytes }) => {
+      const text = v('wm-text').trim();
+      if (!text) throw new Error('Type the watermark text, for example CONFIDENTIAL or DRAFT.');
+      const { StandardFonts, rgb, degrees } = await getPdfLib();
+      const doc = await loadPdfLibDoc(bytes);
+      const font = await doc.embedFont(StandardFonts.HelveticaBold);
+      // Keep every character the standard font can draw (including accents like é and ü); drop the rest
+      const safe = Array.from(text).filter((ch) => { try { font.encodeText(ch); return true; } catch { return false; } }).join('').replace(/\s+/g, ' ').trim();
+      if (!safe) throw new Error('The watermark can use Latin letters, numbers and punctuation only.');
+      const [r, g, b] = v('wm-color').split(',').map(Number), opacity = Number(op.value) / 100, layout = v('wm-layout');
+      for (const page of doc.getPages()) {
+        const { vw, vh, rotation, toPdf } = visualBox(page);
+        let size = Math.min(vw, vh) * Number(v('wm-size')) * (layout === 'tile' ? 0.45 : 1);
+        const angle = layout === 'center' ? 0 : layout === 'diag' ? (Math.atan(vh / vw) * 180) / Math.PI : 45;
+        const width = font.widthOfTextAtSize(safe, size);
+        if (layout !== 'tile') { const maxW = (layout === 'diag' ? Math.hypot(vw, vh) : vw) * 0.85; if (width > maxW) size *= maxW / width; }
+        const w = font.widthOfTextAtSize(safe, size), h = font.heightAtSize(size) * 0.7;
+        const put = (cx: number, cy: number) => {
+          // Start point so the text's center lands on (cx, cy) in visual space, rotated by angle
+          const a = (angle * Math.PI) / 180;
+          const vx = cx - (Math.cos(a) * w) / 2 + (Math.sin(a) * h) / 2;
+          const vy = cy + (Math.sin(a) * w) / 2 + (Math.cos(a) * h) / 2;
+          const [x, y] = toPdf(vx, vy);
+          page.drawText(safe, { x, y, size, font, color: rgb(r, g, b), opacity, rotate: degrees(angle + rotation) });
+        };
+        if (layout === 'tile') { const stepX = w * 0.9 + size * 2, stepY = size * 4.5; for (let cy = stepY / 2; cy < vh + stepY; cy += stepY) for (let cx = (Math.round(cy / stepY) % 2) * stepX / 2; cx < vw + stepX; cx += stepX) put(cx, cy); }
+        else put(vw / 2, vh / 2);
+      }
+      return { bytes: await doc.save({ useObjectStreams: true }), note: `${doc.getPageCount()} pages watermarked${safe !== text ? ' (special characters removed)' : ''}` };
+    },
+  });
+</script>

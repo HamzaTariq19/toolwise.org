@@ -10,21 +10,22 @@ export interface Tool {
   icon: string;
   priority: number;
   keywords: string[];
-  /** "planned" or "later" in the data file; "live" is derived from src/tools/<slug>.astro existing */
-  status: 'planned' | 'later' | 'live';
+  /** "built" when the tool is finished (needs src/tools/<slug>.astro + src/content/tools/<slug>.md) */
+  status: 'planned' | 'later' | 'built';
 }
 
 const implementations = import.meta.glob('../tools/*.astro');
 const builtSlugs = new Set(Object.keys(implementations).map((p) => p.split('/').pop()!.replace('.astro', '')));
 
-export const tools: Tool[] = (toolsData as Tool[]).map((t) => ({
-  ...t,
-  status: builtSlugs.has(t.slug) ? 'live' : t.status,
-}));
+export const tools: Tool[] = toolsData as Tool[];
+
+for (const t of tools) {
+  if (t.status === 'built' && !builtSlugs.has(t.slug)) throw new Error(`${t.slug} is marked "built" but src/tools/${t.slug}.astro is missing`);
+}
 
 export const toolBySlug = Object.fromEntries(tools.map((t) => [t.slug, t])) as Record<string, Tool>;
 
-export const isLive = (t: Tool) => t.status === 'live';
+export const isLive = (t: Tool) => t.status === 'built';
 
 export function toolsInCategory(slug: string): Tool[] {
   // Live tools first, then by priority, so the useful ones are always at the top.

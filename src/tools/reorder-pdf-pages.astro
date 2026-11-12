@@ -1,0 +1,29 @@
+---
+import PdfPagesTool from '../components/PdfPagesTool.astro';
+---
+<PdfPagesTool id="ro" icon="ArrowUpDown" action="Save new order" hint="Drag a page by its dotted handle, or use the arrows, to put the pages in the order you want.">
+  <Fragment slot="toolbar">
+    <button type="button" class="btn btn-secondary btn-sm" data-o="reverse">Reverse order</button>
+    <button type="button" class="btn btn-ghost btn-sm" data-o="reset">Reset</button>
+  </Fragment>
+</PdfPagesTool>
+<script>
+  import { initPagesTool } from '../lib/pdf-pages-tool';
+  import { getPdfLib } from '../lib/pdf';
+  const tool = initPagesTool('ro', {
+    mode: 'reorder', outSuffix: 'reordered',
+    validate: (pages) => (pages.length < 2 ? 'This PDF has only one page, so there is nothing to reorder.' : pages.every((p, i) => p.index === i) ? 'Move at least one page first.' : null),
+    process: async (doc, pages) => {
+      const { PDFDocument } = await getPdfLib();
+      const out = await PDFDocument.create();
+      (await out.copyPages(doc, pages.map((p) => p.index))).forEach((p) => out.addPage(p));
+      return out;
+    },
+  });
+  document.querySelectorAll<HTMLButtonElement>('#ro [data-o]').forEach((b) => b.addEventListener('click', () => {
+    const g = tool.grid; if (!g) return;
+    const pages = g.pages;
+    if (b.dataset.o === 'reverse') pages.reverse(); else pages.sort((a, c) => a.index - c.index);
+    g.setAll(() => {});
+  }));
+</script>

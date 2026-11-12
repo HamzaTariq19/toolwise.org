@@ -1,0 +1,70 @@
+---
+import PdfOptionsTool from '../components/PdfOptionsTool.astro';
+---
+<PdfOptionsTool id="ff" icon="FormInput" action="Save filled PDF">
+  <div class="space-y-4" data-fields></div>
+  <label class="flex min-h-11 items-center gap-3 text-[0.9375rem]"><input type="checkbox" id="ff-flat" class="h-5 w-5 accent-[var(--brand)]" />Lock the answers so they can't be changed (flatten)</label>
+</PdfOptionsTool>
+<script>
+  import { initOptionsTool } from '../lib/pdf-options-tool';
+  import { loadPdfLibDoc, getPdfLib, flattenForm } from '../lib/pdf';
+  import type { PDFField } from 'pdf-lib';
+  const box = document.querySelector<HTMLElement>('#ff [data-fields]')!;
+  const esc = (s: string) => s.replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]!);
+  const nice = (n: string) => (n.split('.').pop() || n).replace(/[_]+/g, ' ').replace(/([a-z])([A-Z])/g, '$1 $2').replace(/\[\d+\]$/, '').trim() || n;
+  let kinds: { name: string; kind: string }[] = [];
+  initOptionsTool('ff', {
+    outSuffix: 'filled',
+    onLoaded: async ({ bytes }) => {
+      const doc = await loadPdfLibDoc(bytes);
+      const fields = doc.getForm().getFields();
+      const L = await getPdfLib();
+      // instanceof, not constructor names: class names are minified in production
+      const kindOf = (f: PDFField) => f instanceof L.PDFTextField ? 'TextField' : f instanceof L.PDFCheckBox ? 'CheckBox' : f instanceof L.PDFDropdown ? 'Dropdown' : f instanceof L.PDFOptionList ? 'OptionList' : f instanceof L.PDFRadioGroup ? 'RadioGroup' : 'Other';
+      kinds = [];
+      const html = fields.map((f: PDFField, i: number) => {
+        const kind = kindOf(f);
+        const name = f.getName(), label = esc(nice(name)), id = `ff-${i}`;
+        const ro = f.isReadOnly();
+        kinds.push({ name, kind });
+        const anyF = f as any;
+        if (kind === 'TextField') {
+          const val = esc(anyF.getText() ?? ''), max = anyF.getMaxLength?.();
+          return anyF.isMultiline() ? `<div><label class="label" for="${id}">${label}</label><textarea id="${id}" class="textarea !min-h-24" data-i="${i}" ${max ? `maxlength="${max}"` : ''} ${ro ? 'readonly' : ''}>${val}</textarea></div>`
+            : `<div><label class="label" for="${id}">${label}</label><input id="${id}" class="input" data-i="${i}" value="${val}" ${max ? `maxlength="${max}"` : ''} ${ro ? 'readonly' : ''} /></div>`;
+        }
+        if (kind === 'CheckBox') return `<label class="flex min-h-11 items-center gap-3"><input type="checkbox" class="h-5 w-5 accent-[var(--brand)]" data-i="${i}" ${anyF.isChecked() ? 'checked' : ''} ${ro ? 'disabled' : ''} />${label}</label>`;
+        if (kind === 'Dropdown' || kind === 'OptionList') {
+          const sel: string[] = anyF.getSelected();
+          return `<div><label class="label" for="${id}">${label}</label><select id="${id}" class="select" data-i="${i}" ${ro ? 'disabled' : ''}><option value="">Choose…</option>${anyF.getOptions().map((o: string) => `<option ${sel.includes(o) ? 'selected' : ''}>${esc(o)}</option>`).join('')}</select></div>`;
+        }
+        if (kind === 'RadioGroup') {
+          const cur = anyF.getSelected();
+          return `<fieldset><legend class="label">${label}</legend><div class="flex flex-wrap gap-x-5">${anyF.getOptions().map((o: string) => `<label class="flex min-h-11 items-center gap-2"><input type="radio" name="${id}" value="${esc(o)}" data-i="${i}" class="h-5 w-5 accent-[var(--brand)]" ${o === cur ? 'checked' : ''} ${ro ? 'disabled' : ''} />${esc(o)}</label>`).join('')}</div></fieldset>`;
+        }
+        return '';
+      }).filter(Boolean);
+      if (!html.length) throw new Error('This PDF has no fillable form fields. To write on a regular PDF, sign it with our Sign PDF tool, or print it and fill it in by hand.');
+      box.innerHTML = `<p class="text-[0.9375rem] text-muted">${html.length} field${html.length === 1 ? '' : 's'} found. Fill in what you need; empty fields stay empty.</p>` + html.join('');
+    },
+    process: async ({ bytes }) => {
+      const doc = await loadPdfLibDoc(bytes);
+      const form = doc.getForm(), fields = form.getFields();
+      box.querySelectorAll<HTMLInputElement>('[data-i]').forEach((el) => {
+        const f = fields[Number(el.dataset.i)] as any, kind = kinds[Number(el.dataset.i)].kind;
+        if (f.isReadOnly()) return;
+        try {
+          if (kind === 'TextField') f.setText(el.value || undefined);
+          else if (kind === 'CheckBox') (el.checked ? f.check() : f.uncheck());
+          else if (kind === 'Dropdown' || kind === 'OptionList') { if (el.value) f.select(el.value); else f.clear(); }
+          else if (kind === 'RadioGroup' && el.checked) f.select(el.value);
+        } catch { /* skip fields the PDF does not allow to change */ }
+      });
+      try { form.updateFieldAppearances(); }
+      catch { throw new Error('Some answers use characters this form\'s font cannot show (for example emoji or non-Latin letters). Remove them and try again.'); }
+      const flat = (document.getElementById('ff-flat') as HTMLInputElement).checked;
+      if (flat) await flattenForm(doc);
+      return { bytes: await doc.save({ useObjectStreams: true }), note: flat ? 'Form filled and locked' : 'Form filled, still editable' };
+    },
+  });
+</script>

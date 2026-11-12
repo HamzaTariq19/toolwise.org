@@ -1,0 +1,31 @@
+---
+import PdfPagesTool from '../components/PdfPagesTool.astro';
+---
+<PdfPagesTool id="ep" icon="FileOutput" action="Extract pages" hint="Tap the pages you want to keep. They are copied into a new PDF in their original order." rangeLabel="Or type the pages to extract">
+  <Fragment slot="toolbar">
+    <button type="button" class="btn btn-secondary btn-sm" data-sel="all">Select all</button>
+    <button type="button" class="btn btn-secondary btn-sm" data-sel="odd">Odd pages</button>
+    <button type="button" class="btn btn-secondary btn-sm" data-sel="even">Even pages</button>
+    <button type="button" class="btn btn-ghost btn-sm" data-sel="none">Clear</button>
+  </Fragment>
+</PdfPagesTool>
+<script>
+  import { initPagesTool } from '../lib/pdf-pages-tool';
+  import { getPdfLib } from '../lib/pdf';
+  const tool = initPagesTool('ep', {
+    mode: 'select', selectStyle: 'keep', outSuffix: 'extracted',
+    validate: (pages) => (pages.some((p) => p.selected) ? null : 'Choose at least one page to extract.'),
+    label: (pages) => { const n = pages.filter((p) => p.selected).length; return n ? `Extract ${n} page${n === 1 ? '' : 's'}` : 'Extract pages'; },
+    process: async (doc, pages) => {
+      const { PDFDocument } = await getPdfLib();
+      const out = await PDFDocument.create();
+      const idx = pages.filter((p) => p.selected).map((p) => p.index).sort((a, b) => a - b);
+      (await out.copyPages(doc, idx)).forEach((p) => out.addPage(p));
+      return out;
+    },
+  });
+  document.querySelectorAll<HTMLButtonElement>('#ep [data-sel]').forEach((b) => b.addEventListener('click', () => {
+    const m = b.dataset.sel;
+    tool.grid?.setAll((p) => (p.selected = m === 'all' || (m === 'odd' && p.index % 2 === 0) || (m === 'even' && p.index % 2 === 1)));
+  }));
+</script>

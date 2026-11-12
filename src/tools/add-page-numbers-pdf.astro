@@ -1,0 +1,54 @@
+---
+import PdfOptionsTool from '../components/PdfOptionsTool.astro';
+const pos = [['tl', 'Top left'], ['tc', 'Top center'], ['tr', 'Top right'], ['bl', 'Bottom left'], ['bc', 'Bottom center'], ['br', 'Bottom right']];
+---
+<PdfOptionsTool id="pn" icon="ListOrdered" action="Add page numbers">
+  <fieldset>
+    <legend class="label">Position</legend>
+    <div class="grid max-w-sm grid-cols-3 gap-2">
+      {pos.map(([v, l]) => (
+        <label class="flex min-h-11 cursor-pointer items-center justify-center rounded-[10px] border border-line-strong px-2 text-center text-sm font-medium has-[:checked]:border-[var(--ring)] has-[:checked]:bg-brand-soft has-[:focus-visible]:outline has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-[var(--ring)]">
+          <input type="radio" name="pn-pos" value={v} checked={v === 'bc'} class="sr-only" />{l}
+        </label>
+      ))}
+    </div>
+  </fieldset>
+  <div class="grid gap-4 sm:grid-cols-2">
+    <div><label for="pn-fmt" class="label">Format</label>
+      <select id="pn-fmt" class="select"><option value="{n}">1, 2, 3</option><option value="Page {n}">Page 1</option><option value="Page {n} of {t}" selected>Page 1 of 10</option><option value="{n} / {t}">1 / 10</option><option value="- {n} -">- 1 -</option></select></div>
+    <div><label for="pn-start" class="label">Start counting at</label><input id="pn-start" class="input tabular" inputmode="numeric" value="1" /></div>
+    <div><label for="pn-size" class="label">Text size</label><select id="pn-size" class="select"><option value="9">Small</option><option value="11" selected>Medium</option><option value="14">Large</option></select></div>
+    <div><label for="pn-skip" class="label">Skip first pages</label><input id="pn-skip" class="input tabular" inputmode="numeric" value="0" /><p class="hint">For example 1 to leave a cover page without a number.</p></div>
+  </div>
+</PdfOptionsTool>
+<script>
+  import { initOptionsTool } from '../lib/pdf-options-tool';
+  import { getPdfLib, loadPdfLibDoc, visualBox } from '../lib/pdf';
+  import { num } from '../lib/ui';
+  const v = (id: string) => (document.getElementById(id) as HTMLInputElement).value;
+  initOptionsTool('pn', {
+    outSuffix: 'numbered',
+    process: async ({ bytes }) => {
+      const start = num(v('pn-start')), skip = num(v('pn-skip')) || 0;
+      if (!Number.isInteger(start) || start < 0) throw new Error('Enter a whole number to start counting from, for example 1.');
+      if (!Number.isInteger(skip) || skip < 0) throw new Error('Enter how many pages to skip as a whole number, for example 0.');
+      const { StandardFonts, rgb, degrees } = await getPdfLib();
+      const doc = await loadPdfLibDoc(bytes);
+      if (skip >= doc.getPageCount()) throw new Error(`This PDF has ${doc.getPageCount()} pages, so skipping ${skip} leaves nothing to number.`);
+      const font = await doc.embedFont(StandardFonts.Helvetica);
+      const size = Number(v('pn-size')), pos = (document.querySelector('input[name=pn-pos]:checked') as HTMLInputElement).value;
+      const total = doc.getPageCount() - skip + start - 1;
+      doc.getPages().forEach((page, i) => {
+        if (i < skip) return;
+        const text = v('pn-fmt').replace('{n}', String(i - skip + start)).replace('{t}', String(total));
+        const { vw, vh, rotation, toPdf } = visualBox(page);
+        const w = font.widthOfTextAtSize(text, size), margin = Math.max(24, Math.min(vw, vh) * 0.05);
+        const vx = pos[1] === 'l' ? margin : pos[1] === 'r' ? vw - margin - w : (vw - w) / 2;
+        const vy = pos[0] === 't' ? margin + size : vh - margin; // baseline
+        const [x, y] = toPdf(vx, vy);
+        page.drawText(text, { x, y, size, font, color: rgb(0.2, 0.2, 0.2), rotate: degrees(rotation) });
+      });
+      return { bytes: await doc.save({ useObjectStreams: true }), note: `${doc.getPageCount() - skip} pages numbered` };
+    },
+  });
+</script>

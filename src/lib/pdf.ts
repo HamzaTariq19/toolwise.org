@@ -78,3 +78,40 @@ export function parseRanges(input: string, pageCount: number): { groups: number[
   }
   return { groups };
 }
+
+/**
+ * Pages can carry a /Rotate value. These helpers let tools place things using what the reader SEES:
+ * visual coordinates from the top-left of the page as displayed.
+ */
+export function visualBox(page: import('pdf-lib').PDFPage) {
+  const { x, y, width, height } = page.getCropBox();
+  const r = ((page.getRotation().angle % 360) + 360) % 360;
+  const vw = r === 90 || r === 270 ? height : width;
+  const vh = r === 90 || r === 270 ? width : height;
+  /** Visual point (from top-left, in points) to PDF user space */
+  const toPdf = (vx: number, vy: number): [number, number] => {
+    switch (r) {
+      case 90: return [x + vy, y + vx];
+      case 180: return [x + width - vx, y + vy];
+      case 270: return [x + width - vy, y + height - vx];
+      default: return [x + vx, y + height - vy];
+    }
+  };
+  return { vw, vh, rotation: r, toPdf };
+}
+
+/**
+ * Flatten form fields, then drop page annotation references pdf-lib leaves pointing at deleted
+ * widgets (otherwise strict readers report "invalid xref entry").
+ */
+export async function flattenForm(doc: import('pdf-lib').PDFDocument) {
+  const { PDFName, PDFArray, PDFRef } = await getPdfLib();
+  doc.getForm().flatten();
+  for (const page of doc.getPages()) {
+    const annots = page.node.lookup(PDFName.of('Annots'));
+    if (!(annots instanceof PDFArray)) continue;
+    const keep = annots.asArray().filter((r) => !(r instanceof PDFRef) || doc.context.lookup(r) !== undefined);
+    if (keep.length) page.node.set(PDFName.of('Annots'), doc.context.obj(keep));
+    else page.node.delete(PDFName.of('Annots'));
+  }
+}

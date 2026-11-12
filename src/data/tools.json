@@ -14,7 +14,7 @@
       "put pdfs together",
       "append pdf"
     ],
-    "status": "planned"
+    "status": "built"
   },
   {
     "id": 2,
@@ -31,7 +31,7 @@
       "cut pdf",
       "split pages"
     ],
-    "status": "planned"
+    "status": "built"
   },
   {
     "id": 3,
@@ -48,7 +48,7 @@
       "pdf compressor",
       "optimize pdf"
     ],
-    "status": "planned"
+    "status": "built"
   },
   {
     "id": 4,
@@ -66,7 +66,7 @@
       "convert image to pdf",
       "scan to pdf"
     ],
-    "status": "planned"
+    "status": "built"
   },
   {
     "id": 5,
@@ -82,7 +82,7 @@
       "convert pdf to picture",
       "pdf pages to images"
     ],
-    "status": "planned"
+    "status": "built"
   },
   {
     "id": 6,
@@ -98,7 +98,7 @@
       "flip pdf orientation",
       "sideways pdf"
     ],
-    "status": "planned"
+    "status": "built"
   },
   {
     "id": 7,
@@ -113,7 +113,7 @@
       "delete page pdf",
       "drop pdf pages"
     ],
-    "status": "planned"
+    "status": "built"
   },
   {
     "id": 8,
@@ -129,7 +129,7 @@
       "move pdf pages",
       "organize pdf"
     ],
-    "status": "planned"
+    "status": "built"
   },
   {
     "id": 9,
@@ -145,7 +145,7 @@
       "copy pdf pages",
       "pick pages"
     ],
-    "status": "planned"
+    "status": "built"
   },
   {
     "id": 10,
@@ -161,7 +161,7 @@
       "number pdf pages",
       "bates"
     ],
-    "status": "planned"
+    "status": "built"
   },
   {
     "id": 11,
@@ -177,7 +177,7 @@
       "confidential pdf",
       "draft watermark"
     ],
-    "status": "planned"
+    "status": "built"
   },
   {
     "id": 12,
@@ -194,7 +194,7 @@
       "electronic signature",
       "sign contract"
     ],
-    "status": "planned"
+    "status": "built"
   },
   {
     "id": 13,
@@ -210,7 +210,7 @@
       "fillable pdf",
       "type on pdf"
     ],
-    "status": "planned"
+    "status": "built"
   },
   {
     "id": 14,
@@ -226,7 +226,7 @@
       "lock pdf",
       "secure pdf"
     ],
-    "status": "planned"
+    "status": "built"
   },
   {
     "id": 15,
@@ -242,7 +242,7 @@
       "unlock pdf file",
       "unprotect pdf"
     ],
-    "status": "planned"
+    "status": "built"
   },
   {
     "id": 16,
@@ -258,7 +258,7 @@
       "pdf to txt",
       "read pdf text"
     ],
-    "status": "planned"
+    "status": "built"
   },
   {
     "id": 17,
@@ -274,7 +274,7 @@
       "cut pdf edges",
       "resize pdf page"
     ],
-    "status": "planned"
+    "status": "built"
   },
   {
     "id": 18,
@@ -289,7 +289,7 @@
       "lock pdf fields",
       "make pdf uneditable"
     ],
-    "status": "planned"
+    "status": "built"
   },
   {
     "id": 19,
@@ -309,7 +309,7 @@
       "optimize image",
       "make photo smaller"
     ],
-    "status": "planned"
+    "status": "built"
   },
   {
     "id": 20,
@@ -327,7 +327,7 @@
       "shrink picture",
       "resize photo"
     ],
-    "status": "planned"
+    "status": "built"
   },
   {
     "id": 21,
@@ -390,7 +390,7 @@
       "open webp file",
       "webp converter"
     ],
-    "status": "planned"
+    "status": "built"
   },
   {
     "id": 25,
@@ -407,7 +407,7 @@
       "apple photo format",
       "open heic"
     ],
-    "status": "planned"
+    "status": "built"
   },
   {
     "id": 26,
@@ -425,7 +425,7 @@
       "2x2 photo",
       "35x45"
     ],
-    "status": "planned"
+    "status": "built"
   },
   {
     "id": 27,
@@ -444,7 +444,7 @@
       "form upload photo size",
       "shrink photo"
     ],
-    "status": "planned"
+    "status": "built"
   },
   {
     "id": 28,
@@ -671,7 +671,7 @@
       "character count",
       "essay length"
     ],
-    "status": "planned"
+    "status": "built"
   },
   {
     "id": 42,
@@ -900,7 +900,7 @@
       "cursive text",
       "font changer"
     ],
-    "status": "planned"
+    "status": "built"
   },
   {
     "id": 56,
@@ -964,7 +964,7 @@
       "amortization",
       "monthly payment"
     ],
-    "status": "planned"
+    "status": "built"
   },
   {
     "id": 60,
@@ -1012,7 +1012,7 @@
       "savings growth",
       "compounding"
     ],
-    "status": "planned"
+    "status": "built"
   },
   {
     "id": 63,
@@ -1204,7 +1204,7 @@
       "bmi chart",
       "weight check"
     ],
-    "status": "planned"
+    "status": "built"
   },
   {
     "id": 75,
@@ -1252,7 +1252,7 @@
       "conception",
       "how many weeks pregnant"
     ],
-    "status": "planned"
+    "status": "built"
   },
   {
     "id": 78,
@@ -1316,7 +1316,7 @@
       "age from date of birth",
       "date of birth"
     ],
-    "status": "planned"
+    "status": "built"
   },
   {
     "id": 82,
@@ -1333,7 +1333,7 @@
       "percent increase",
       "percent off"
     ],
-    "status": "planned"
+    "status": "built"
   },
   {
     "id": 83,
@@ -1349,7 +1349,7 @@
       "cumulative gpa",
       "semester gpa"
     ],
-    "status": "planned"
+    "status": "built"
   },
   {
     "id": 84,
@@ -1572,7 +1572,7 @@
       "baking conversion",
       "ml to cups"
     ],
-    "status": "planned"
+    "status": "built"
   },
   {
     "id": 98,
@@ -1619,7 +1619,7 @@
       "utc converter",
       "world time"
     ],
-    "status": "planned"
+    "status": "built"
   },
   {
     "id": 101,
@@ -1698,7 +1698,7 @@
       "json viewer",
       "json lint"
     ],
-    "status": "planned"
+    "status": "built"
   },
   {
     "id": 106,
@@ -1776,7 +1776,7 @@
       "wifi qr",
       "url to qr"
     ],
-    "status": "planned"
+    "status": "built"
   },
   {
     "id": 111,
@@ -1946,7 +1946,7 @@
       "secure password",
       "password maker"
     ],
-    "status": "planned"
+    "status": "built"
   },
   {
     "id": 122,
@@ -2161,7 +2161,7 @@
       "ico generator",
       "apple touch icon"
     ],
-    "status": "planned"
+    "status": "built"
   },
   {
     "id": 136,
@@ -2194,7 +2194,7 @@
       "reference generator",
       "cite website"
     ],
-    "status": "planned"
+    "status": "built"
   },
   {
     "id": 138,
@@ -2321,7 +2321,7 @@
       "keyboard speed",
       "typing practice"
     ],
-    "status": "planned"
+    "status": "built"
   },
   {
     "id": 146,
@@ -2382,7 +2382,7 @@
       "chronometer",
       "time tracker"
     ],
-    "status": "planned"
+    "status": "built"
   },
   {
     "id": 150,
@@ -2430,7 +2430,7 @@
       "giveaway winner",
       "random selector"
     ],
-    "status": "planned"
+    "status": "built"
   },
   {
     "id": 153,
@@ -2447,7 +2447,7 @@
       "random wheel",
       "wheel of names"
     ],
-    "status": "planned"
+    "status": "built"
   },
   {
     "id": 154,
@@ -2586,7 +2586,7 @@
       "camera check",
       "mic check"
     ],
-    "status": "planned"
+    "status": "built"
   },
   {
     "id": 163,
@@ -2602,7 +2602,7 @@
       "online recorder",
       "sound recorder"
     ],
-    "status": "planned"
+    "status": "built"
   },
   {
     "id": 164,
@@ -2618,7 +2618,7 @@
       "screencast",
       "record display"
     ],
-    "status": "planned"
+    "status": "built"
   },
   {
     "id": 165,

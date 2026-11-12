@@ -1,0 +1,52 @@
+---
+import PdfOptionsTool from '../components/PdfOptionsTool.astro';
+---
+<PdfOptionsTool id="fl" icon="Layers" action="Flatten PDF">
+  <fieldset>
+    <legend class="label">What should be flattened?</legend>
+    <div class="grid gap-2 sm:grid-cols-2">
+      <label class="flex cursor-pointer flex-col rounded-[10px] border border-line-strong p-3.5 has-[:checked]:border-[var(--ring)] has-[:checked]:bg-brand-soft has-[:focus-visible]:outline has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-[var(--ring)]">
+        <input type="radio" name="fl-mode" value="forms" checked class="sr-only" /><span class="font-semibold">Form fields</span><span class="text-sm text-muted">Filled-in fields become normal page content. Text stays sharp and searchable.</span>
+      </label>
+      <label class="flex cursor-pointer flex-col rounded-[10px] border border-line-strong p-3.5 has-[:checked]:border-[var(--ring)] has-[:checked]:bg-brand-soft has-[:focus-visible]:outline has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-[var(--ring)]">
+        <input type="radio" name="fl-mode" value="all" class="sr-only" /><span class="font-semibold">Everything</span><span class="text-sm text-muted">Fields, comments, stamps and signatures are merged into page images. Text can no longer be selected.</span>
+      </label>
+    </div>
+  </fieldset>
+  <p class="text-[0.9375rem] text-muted" data-info></p>
+</PdfOptionsTool>
+<script>
+  import { initOptionsTool } from '../lib/pdf-options-tool';
+  import { loadPdfLibDoc, getPdfLib, openPdf, renderPage, flattenForm } from '../lib/pdf';
+  import { toBlob } from '../lib/image';
+  const mode = () => (document.querySelector('input[name=fl-mode]:checked') as HTMLInputElement).value;
+  let fieldCount = 0;
+  initOptionsTool('fl', {
+    outSuffix: 'flattened',
+    onLoaded: async ({ bytes }) => {
+      const doc = await loadPdfLibDoc(bytes);
+      fieldCount = doc.getForm().getFields().length;
+      document.querySelector('#fl [data-info]')!.textContent = fieldCount ? `This PDF has ${fieldCount} form field${fieldCount === 1 ? '' : 's'}.` : 'This PDF has no form fields. Choose Everything to flatten comments, stamps and other annotations.';
+      if (!fieldCount) (document.querySelector('input[name=fl-mode][value=all]') as HTMLInputElement).checked = true;
+    },
+    process: async ({ bytes }) => {
+      if (mode() === 'forms') {
+        if (!fieldCount) throw new Error('This PDF has no form fields to flatten. Choose Everything instead.');
+        const doc = await loadPdfLibDoc(bytes);
+        await flattenForm(doc);
+        return { bytes: await doc.save({ useObjectStreams: true }), note: `${fieldCount} fields flattened` };
+      }
+      const { PDFDocument } = await getPdfLib();
+      const view = await openPdf(bytes), out = await PDFDocument.create();
+      for (let i = 1; i <= view.numPages; i++) {
+        const page = await view.getPage(i), vp = page.getViewport({ scale: 1 });
+        const canvas = await renderPage(page, Math.min(200 / 72, Math.sqrt(16e6 / (vp.width * vp.height)))); // 200 DPI, capped for phones
+        const jpg = await out.embedJpg(new Uint8Array(await (await toBlob(canvas, 'image/jpeg', 0.88)).arrayBuffer()));
+        out.addPage([vp.width, vp.height]).drawImage(jpg, { x: 0, y: 0, width: vp.width, height: vp.height });
+        canvas.width = canvas.height = 0; page.cleanup();
+      }
+      view.loadingTask.destroy();
+      return { bytes: await out.save(), note: `${out.getPageCount()} pages flattened to images` };
+    },
+  });
+</script>
