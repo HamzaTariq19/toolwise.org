@@ -18,8 +18,8 @@ const category = categoryBySlug[tool.category];
 const live = isLive(tool);
 
 const impls = import.meta.glob<{ default: any }>('../tools/*.astro', { eager: true });
-// No third-party ad scripts where people type or generate passwords
-const noAds = ['password-strength-checker', 'password-generator'].includes(tool.slug);
+// No third-party ad scripts on pages where people type or generate passwords
+const noAds = ['password-strength-checker', 'password-generator', 'protect-pdf', 'unlock-pdf'].includes(tool.slug);
 const ToolUI = live ? impls[`../tools/${tool.slug}.astro`].default : null;
 
 const entry = live ? await getEntry('tools', tool.slug) : undefined;

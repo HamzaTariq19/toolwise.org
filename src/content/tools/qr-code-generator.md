@@ -3,49 +3,58 @@ seoTitle: "QR Code Generator: Free, No Signup, No Expiry | toolwise"
 metaDescription: "Create QR codes for links, text, Wi-Fi, email and phone numbers. Custom colors, PNG and SVG download. Free forever, codes never expire."
 faqs:
   - q: Do these QR codes expire?
-    a: No. The information is stored directly inside the QR code itself, not on a server, so it works forever. Some other generators create "dynamic" codes that redirect through their website and stop working if you stop paying. These are static codes that never do that.
-  - q: Can I use the QR codes commercially?
-    a: Yes. The codes you create are yours to use on menus, flyers, business cards, packaging and anywhere else, free of charge and without attribution.
-  - q: Should I download PNG or SVG?
-    a: PNG works everywhere and is fine for screens and most printing. SVG is a vector format that stays perfectly sharp at any size, so it is best for professional printing, large posters and signage.
-  - q: Why will my QR code not scan?
-    a: Most problems come from low contrast (light code on a light background), a code printed too small, or too much text packed into one code. Keep the code dark on a light background, print it at least 2 × 2 cm, and shorten long links.
-  - q: Does the Wi-Fi QR code share my password?
-    a: Anyone who scans the code can join your network, which is the point. The password is not visible as text, but it is stored in the code, so only display it where you are happy for people to connect.
+    a: No. The link or details are stored directly in the pattern, not on a server, so the code works for as long as the link itself works. There are no scan limits and no account.
+  - q: Can I change the link after printing the code?
+    a: No, because the link is part of the pattern. If you might need to change it, point the code at a page you control and update that page instead.
+  - q: How does the Wi-Fi QR code work?
+    a: Phone cameras on iPhone and Android recognize the Wi-Fi format and offer to join the network, so guests don't have to type the password. The password is stored in the code itself, so only show it to people you'd give the password to.
+  - q: PNG or SVG?
+    a: PNG (1024 × 1024 pixels) works everywhere, from documents to social posts. SVG is a vector file that stays perfectly sharp at any size, which is best for print, signs and packaging.
+  - q: Why won't my colored QR code scan?
+    a: Scanners need strong contrast between the pattern and the background. Use a dark code color on a light background, never the other way round, and avoid pale colors like yellow or light gray for the pattern.
 ---
 
-## What this tool does
+## When to use it
 
-The QR code generator turns a link, text, Wi-Fi details, email address or phone number into a QR code that anyone can scan with their phone camera. You can change the colors, choose how much damage the code can survive, and download it as a PNG image or a sharp SVG for printing.
+A QR code lets people open a link or share details by pointing their phone camera at it, with nothing to type. Use one on posters, flyers, restaurant tables, business cards, product packaging, event tickets, presentations and shop windows. The Wi-Fi option is especially handy for homes, cafés and offices: guests scan once and are connected.
 
 ## How to make a QR code
 
-1. Choose what the code should do: **Link or text**, **Wi-Fi**, **Email** or **Phone**.
-2. Fill in the details. The preview updates as you type.
-3. Optionally open **Colors and quality** to change the colors or error correction.
-4. Scan the preview with your phone to test it.
-5. Press **Download PNG**, or **Download SVG** for print.
+1. Under **What should the QR code open?**, choose a type:
+   - **Link or text**: a web address or any short message.
+   - **Wi-Fi**: enter the **Network name**, **Password** and **Security** type; tick **Hidden network** if it doesn't broadcast its name.
+   - **Email**: an **Email address** and optional **Subject**.
+   - **Phone**: a **Phone number** to call.
+2. The QR code updates as you type. Scan it with your phone to check it works.
+3. Optionally open **Colors and quality** to change the **Code color**, **Background** and **Error correction**.
+4. Press **Download PNG** for everyday use or **Download SVG** for print.
 
-## Ideas for using QR codes
+## A worked example
 
-- **Restaurants and cafés:** link to your menu or ordering page.
-- **Guest Wi-Fi:** let visitors connect without typing a long password.
-- **Business cards and flyers:** link to your website, portfolio or booking page.
-- **Events:** link to tickets, maps or a schedule.
-- **Product packaging:** link to instructions, videos or reviews.
+A café wants guests to join its Wi-Fi without asking staff. Choose **Wi-Fi**, type the network name "CornerCafe-Guest", the password, and leave security on WPA/WPA2/WPA3. Scan the preview with a phone: it offers to join the network. Download the SVG, add it to a small table sign with the words "Scan to join our Wi-Fi", and print it at least 3 cm wide.
 
-## Tips for reliable scanning
+## Choosing error correction
 
-- **Contrast matters.** Use a dark code on a light background. Inverted codes (light on dark) fail on many phones.
-- **Size matters.** Print the code at least 2 × 2 cm (about 1 inch) for close scanning, and larger for posters seen from a distance. A rough rule: the scanning distance is about ten times the code's width.
-- **Keep links short.** Shorter content gives a simpler code that scans faster. Remove tracking parameters you do not need, or build clean links with the [UTM Builder](/utm-builder).
-- **Leave a margin.** Keep a blank border around the code; it helps cameras find it.
-- **Always test** the final printed version before printing hundreds of copies.
+Higher error correction lets a code scan even when part of it is dirty, scratched or covered, but it makes the pattern denser. **Medium (recommended)** suits most uses. Choose **High** or **Highest** for codes on stickers, outdoor signs or packaging that may get damaged.
 
-## About error correction
+## Tips
 
-QR codes contain backup data so they can still be read if part of the code is dirty, damaged or covered. Higher error correction makes the code denser. Medium suits most uses; choose Highest if the code will be outdoors or partly covered by a logo.
+- **Print it big enough.** A good rule is at least 2 cm wide for every 20 cm of scanning distance; 3 cm minimum for tables and business cards.
+- **Keep the quiet zone.** Leave the white border around the code clear of text and graphics.
+- **Shorten long links** with fewer tracking parameters; shorter links make simpler, easier-to-scan codes.
+- **Tell people what they'll get:** "Scan to see the menu" works better than a code on its own.
 
-## Private
+## Common mistakes
 
-Your QR codes are created in your browser. The content is never sent to us, and there is no tracking redirect inside the code. For barcodes used on products, try our [Barcode Generator](/barcode-generator).
+- **Not testing before printing.** Always scan the final file with two different phones.
+- **Low contrast or inverted colors.** Light codes on dark backgrounds fail on many phones.
+- **Typos in links.** The code faithfully encodes whatever you typed, mistakes included.
+- **Using a screenshot instead of the download,** which can be blurry when printed.
+
+## Private by design
+
+The QR code is created in your browser. Your links and Wi-Fi passwords are never sent anywhere.
+
+## Related tools
+
+Add campaign tracking to your link first with the [UTM Builder](/utm-builder), or create product barcodes with the [Barcode Generator](/barcode-generator).

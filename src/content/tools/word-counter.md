@@ -2,49 +2,59 @@
 seoTitle: "Word Counter: Count Words and Characters Online | toolwise"
 metaDescription: "Count words, characters, sentences and paragraphs as you type, with reading and speaking time. Free, private word counter that works offline."
 faqs:
-  - q: How does the word counter count words?
-    a: A word is any group of letters or numbers separated by spaces or punctuation. Hyphenated words like "well-known" and contractions like "don't" count as one word, which matches how Microsoft Word and Google Docs count.
-  - q: How is reading time calculated?
-    a: Reading time assumes an average adult silent reading speed of about 238 words per minute. Speaking time assumes about 140 words per minute, a comfortable pace for presentations and speeches.
+  - q: How does the counter decide what a word is?
+    a: Any run of letters or numbers counts as one word, including words with apostrophes or hyphens such as "don't" and "well-known". Punctuation and emoji on their own are not counted as words.
+  - q: Does it count words the same way as Microsoft Word or Google Docs?
+    a: Usually within one or two words. Small differences come from things like dashes between words, URLs and numbers with decimal points, which each program treats slightly differently.
   - q: Is my text saved or uploaded?
-    a: Your text is never uploaded. It is saved only in your own browser so it is still there if you accidentally close the tab. Press Clear to remove it.
-  - q: Does it work with other languages?
-    a: Yes. The counter supports accented letters and most alphabets. For languages written without spaces, such as Chinese and Japanese, your browser's built-in word segmentation is used where available.
-  - q: Do characters include spaces?
-    a: Both counts are shown. "Characters" includes spaces and line breaks; "Without spaces" leaves them out. Check which one your assignment or platform uses.
+    a: It's kept only in this browser on your device, so it's still there if you close the tab by accident. It's never uploaded. Press Clear to remove it.
+  - q: How are reading and speaking times worked out?
+    a: Reading time uses an average adult silent reading speed of 238 words per minute. Speaking time uses 140 words per minute, a comfortable pace for presentations and speeches.
+  - q: Why aren't words like "the" in the most used list?
+    a: Very common short words are left out so the list shows the words that carry meaning. They still count toward the total.
 ---
 
-## What this tool does
+## When to use it
 
-The word counter counts the words in your text as you type or paste it. It also shows characters (with and without spaces), sentences, paragraphs, estimated reading time and speaking time, plus the words you use most often. It is ideal for essays, cover letters, articles, social media posts and speeches where length matters.
+The word counter is for any writing with a length limit or target: school essays and assignments, job application answers, social media bios, product descriptions, press releases and speeches. It is also a quick way to see how long a text will take to read or say out loud, and whether you're overusing a particular word.
 
-## How to use it
+## How to count words
 
-1. Type in the box, or paste text from Word, Google Docs, an email or a web page.
-2. Watch the counts update instantly on the right (below the text on phones).
-3. Use **Copy text** to copy your edited text back, or **Clear** to start again.
+1. Type or paste your text into the **Your text** box. Counts update as you type.
+2. Read the figures under the box:
+   - **Words**, **Characters** and **Without spaces**.
+   - **Sentences** and **Paragraphs**.
+   - **Reading time** and **Speaking time**.
+3. Check **Most used words** to spot repetition (it appears once a word is used more than once).
+4. Use **Copy text** to copy everything back out, or **Clear** to start again.
 
-There is no button to press and no limit on length.
+Your text is remembered in this browser, so you can close the tab and come back to it later.
 
-## Typical length limits
+## A worked example
 
-- **College application essays:** often 250 to 650 words.
-- **Cover letters:** usually 250 to 400 words, or about one page.
-- **Meta descriptions:** around 150 to 160 characters.
-- **Posts on X:** 280 characters.
-- **A five-minute speech:** roughly 650 to 750 words.
+A scholarship form asks for "no more than 250 words" about your goals. You paste your draft and see 312 words, 2 minutes reading time, and "really" listed six times under Most used words. Deleting the extra "really"s and one repeated example brings it to 268. Cutting a long opening sentence gets you to 243 words, safely under the limit with a little room to spare.
 
-## Tips for hitting your word count
+## Characters or words?
 
-- **Too long?** Look at the "Most used words" list. Repeated words often point to sentences that can be merged or cut. Remove filler words like "really", "very" and "in order to".
-- **Too short?** Add a concrete example, a statistic or a short explanation of why your point matters, rather than padding.
-- **Check the requirement.** Some teachers count the title and references; others do not.
-- **Aim for clarity.** Our [Readability Checker](/readability-checker) shows how easy your writing is to follow.
+Some limits are in characters rather than words. X (Twitter) posts, text messages, meta descriptions and many online forms count characters. The **Characters** figure includes spaces and punctuation, which is what most of these limits use. **Without spaces** is useful for the few systems, such as some translation price quotes, that ignore spaces.
 
-## How counting works
+## Tips for hitting a word limit
 
-Words are detected using Unicode-aware rules, so accented letters and many alphabets are handled correctly. Sentences are counted by their ending punctuation (. ! ? …). Paragraphs are blocks of text separated by an empty line.
+- **Cut filler first:** "in order to" becomes "to", and "due to the fact that" becomes "because".
+- **Remove repeated points.** If two sentences say the same thing, keep the stronger one.
+- **Watch the Most used words list.** Repeating a word often makes writing feel flat; swap in alternatives.
+- **For speeches,** aim for about 140 words per minute of speaking time.
+
+## Common mistakes
+
+- **Counting the title and references** when the rules say not to. For essays with a reference list, the Essay Word Counter can leave those out.
+- **Pasting from a PDF** can split words at line ends, which changes the count. Check for broken words like "infor- mation".
+- **Assuming every site counts characters the same way.** Some count emoji as two characters; X counts links as 23.
 
 ## Private by design
 
-Your text never leaves your device. It is kept in your browser's local storage so you will not lose your work if you close the tab, and you can delete it at any time with Clear. For essays with a target length, try the [Essay Word Counter](/essay-word-counter).
+The text never leaves your device, so it's safe for unpublished work, confidential documents and personal writing.
+
+## Related tools
+
+Track an essay against its limit with the [Essay Word Counter](/essay-word-counter), count only characters with the [Character Counter](/character-counter), or check how easy your writing is to read with the [Readability Checker](/readability-checker).

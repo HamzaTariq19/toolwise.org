@@ -3,54 +3,55 @@ seoTitle: "BMI Calculator: Check Your Body Mass Index (kg or lb) | toolwise"
 metaDescription: "Calculate your BMI in metric or US units and see your weight category and healthy weight range. Free, instant and private."
 faqs:
   - q: What is a healthy BMI?
-    a: For most adults, a BMI between 18.5 and 24.9 is considered a healthy weight. Below 18.5 is underweight, 25 to 29.9 is overweight, and 30 or above is in the obesity range.
-  - q: Is BMI accurate?
-    a: BMI is a quick screening tool, not a diagnosis. It does not distinguish between muscle and fat, so very muscular people can have a high BMI while being healthy. It also does not show where fat is stored. Waist size, body fat percentage and a doctor's assessment give a fuller picture.
-  - q: Can children use this BMI calculator?
-    a: No. For children and teens under 20, BMI is interpreted using growth charts that take age and sex into account. Ask a pediatrician or use a dedicated child BMI percentile calculator.
-  - q: Is BMI different for men and women?
-    a: The adult BMI formula and categories are the same for men and women. However, women naturally tend to have a higher body fat percentage than men at the same BMI.
-  - q: Do you store my height and weight?
-    a: No. The calculation happens in your browser and nothing you enter is sent or saved.
+    a: For most adults, a BMI from 18.5 to 24.9 is considered healthy. Below 18.5 is underweight, 25 to 29.9 is overweight, and 30 or more is in the obesity range. These are the World Health Organization's adult categories.
+  - q: Is BMI accurate for athletes and older people?
+    a: Not always. BMI can't tell muscle from fat, so muscular people may show as overweight while being very fit. Older adults may have a "healthy" BMI but little muscle. Waist size or a body fat estimate gives extra context.
+  - q: Can children use this calculator?
+    a: No. For people under 20, doctors compare BMI with growth charts for the same age and sex. The adult categories here don't apply to children and teenagers.
+  - q: Do the categories differ for different ethnic groups?
+    a: Some health bodies use lower thresholds for people of South Asian, Chinese and some other backgrounds, because health risks start at a lower BMI. Ask your doctor which applies to you.
+  - q: Is my information saved?
+    a: No. Your height and weight are used only in your browser to calculate the result.
 ---
 
-## What this calculator does
+## When to use it
 
-The BMI calculator works out your body mass index from your height and weight and tells you which weight category it falls into. It also shows the healthy weight range for your height, so you can see how far you are from it. It works with metric units (centimeters and kilograms) and US units (feet, inches and pounds).
+Body Mass Index (BMI) is a quick screening number that compares your weight to your height. Doctors, insurers and fitness programs use it as a first check of whether weight may be affecting health. Use this calculator to see your BMI, which category it falls in, and the healthy weight range for your height. It's a starting point for a conversation with a health professional, not a diagnosis.
 
-## How to use it
+## How to calculate your BMI
 
-1. Choose **Metric** or **US** units.
-2. Enter your **height** and **weight**.
-3. Your BMI, category and healthy weight range appear instantly on the right. The marker on the colored scale shows where you are.
+1. Choose **Units**: **Metric (cm, kg)** or **US (ft, lb)**.
+2. Enter your **Height** (in cm, or feet and inches).
+3. Enter your **Weight** (in kg or pounds).
+4. Your BMI appears instantly under **Your BMI**, with a colored scale from 15 to 40 and your category.
+5. Check **Healthy weight for your height** to see the weight range that gives a BMI of 18.5 to 24.9.
 
-## How BMI is calculated
+BMI is designed for adults aged 20 and over.
 
-BMI is your weight in kilograms divided by the square of your height in meters:
+## A worked example
 
-**BMI = weight (kg) ÷ height (m)²**
+Alex is 170 cm tall and weighs 65 kg. BMI is weight divided by height in meters squared: 65 ÷ (1.70 × 1.70) = 65 ÷ 2.89 = **22.5**, which is in the healthy range. The healthy weight range for 170 cm is about **53.5 to 72 kg**. In US units, someone 5 ft 7 in tall weighing 150 lb has a BMI of about **23.5**.
 
-For example, someone who is 1.70 m tall and weighs 65 kg has a BMI of 65 ÷ (1.70 × 1.70) = 22.5. In US units, the formula is weight (lb) × 703 ÷ height (in)², which gives the same result.
+## What the categories mean
 
-## BMI categories for adults
+- **Under 18.5 (underweight):** may point to undernutrition or another health issue.
+- **18.5 to 24.9 (healthy weight):** the range linked with the lowest risk for most adults.
+- **25 to 29.9 (overweight):** a higher risk of conditions like type 2 diabetes and high blood pressure.
+- **30 and above (obesity):** the risk rises further as BMI goes up.
 
-- **Below 18.5:** underweight
-- **18.5 to 24.9:** healthy weight
-- **25 to 29.9:** overweight
-- **30 and above:** obesity
+## Limits of BMI
 
-Some health organizations use lower thresholds for people of South Asian, Chinese and other Asian backgrounds, for example treating 23 and above as overweight, because health risks rise at a lower BMI.
+- It **doesn't measure body fat** directly, so very muscular people can score high.
+- It **ignores where fat is stored.** Fat around the waist carries more health risk; a waist over about half your height is a useful warning sign.
+- It's **less reliable during pregnancy,** for older adults and for some ethnic groups.
 
-## The limits of BMI
+## Tips and common mistakes
 
-BMI is popular because it is simple, but it has blind spots:
+- **Measure height without shoes** and weigh yourself at the same time of day, ideally in the morning.
+- **Don't mix units:** choose US units for feet and pounds rather than converting by hand.
+- **Track the trend, not one reading.** Weight changes by a kilo or two during the day.
+- **Don't use adult categories for children.**
 
-- **Muscle:** athletes and people who do strength training may be classed as overweight even with low body fat.
-- **Age:** older adults often have less muscle, so a "normal" BMI may hide extra fat.
-- **Fat distribution:** fat around the waist carries more health risk than fat elsewhere. A waist measurement adds useful information.
+## Related tools
 
-For a different perspective, try our [Body Fat Calculator](/body-fat-calculator), or estimate your daily energy needs with the [Calorie Calculator](/calorie-calculator).
-
-## Important note
-
-This calculator provides general information only and is not medical advice. If you are concerned about your weight or health, speak to a doctor or another qualified health professional.
+Estimate body fat with the [Body Fat Calculator](/body-fat-calculator), find your daily energy needs with the [Calorie Calculator](/calorie-calculator), or check how much to drink with the [Water Intake Calculator](/water-intake-calculator).

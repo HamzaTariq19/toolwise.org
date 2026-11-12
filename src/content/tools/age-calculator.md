@@ -2,48 +2,57 @@
 seoTitle: "Age Calculator: How Old Am I in Years, Months and Days? | toolwise"
 metaDescription: "Calculate exact age from a date of birth in years, months and days, plus total weeks, days and hours and the countdown to the next birthday."
 faqs:
-  - q: How is exact age calculated?
-    a: The calculator counts complete years first, then complete months, then the remaining days, following the calendar. That is the same way age is counted on official documents, so leap years and months of different lengths are handled correctly.
-  - q: Can I calculate age on a past or future date?
-    a: Yes. Change the "Age on this date" field to any date. This is useful for checking eligibility on a specific deadline, such as an exam, sports competition or school admission cut-off date.
-  - q: What if I was born on February 29?
-    a: In years that are not leap years, the calculator shows your next birthday on February 28. Some countries legally treat March 1 as the birthday in those years instead.
-  - q: Why do total weeks and days not match years exactly?
-    a: Years and months have different numbers of days, so the totals are counted from the actual calendar days between the two dates rather than multiplying years by 365.
+  - q: How is age calculated exactly?
+    a: Full years are counted first, then full months, then the remaining days. That's the way people normally state age, and how most forms and official documents expect it.
+  - q: What if I was born on 29 February?
+    a: In years without a 29 February, the calculator treats 28 February as your birthday. Some countries legally use 1 March instead, so check local rules for official purposes.
+  - q: Can I find someone's age on a past or future date?
+    a: Yes. Change "Age on this date" to any date, for example the date of an event, an application deadline or the start of a school year.
+  - q: Does it count leap years?
+    a: Yes. Totals in days, weeks and hours use the real calendar, including every 29 February in between.
   - q: Is my date of birth stored?
-    a: No. Everything is calculated in your browser and nothing is saved or sent.
+    a: No. The calculation happens in your browser and nothing is sent or saved.
 ---
 
-## What this calculator does
+## When to use it
 
-The age calculator tells you exactly how old someone is, in years, months and days, from their date of birth. It also shows the total number of months, weeks, days and hours they have been alive, the day of the week they were born on, and how many days are left until their next birthday.
+The age calculator gives an exact age in years, months and days, plus totals in months, weeks, days and hours. It's useful for forms that ask for age on a specific date (school admissions, sports leagues, insurance, visas), for checking eligibility cut-offs, for planning milestone birthdays, or just for fun facts like how many days you've been alive.
 
-## How to use it
+## How to calculate an age
 
-1. Enter the **date of birth**.
-2. Today's date is already filled in as **Age on this date**. Change it if you want to know an age on a different day.
-3. The results appear instantly.
+1. Enter the **Date of birth**.
+2. **Age on this date** is filled in with today's date. Change it to find an age on any other day.
+3. Read the result under **Age**, shown in years, months and days.
+4. Below it you'll see **Total months**, **Total weeks**, **Total days** and **Total hours**, plus how long it is until the next birthday.
 
-On phones, tapping the date field opens your device's date picker. On a computer you can type the date directly.
+The results update as soon as both dates are filled in.
 
-## Common uses
+## A worked example
 
-- **Forms and applications:** many forms ask for age on a specific date, for example "age as of 1 January". Enter that date in the second field.
-- **School admission:** check whether a child meets an age cut-off for a school year.
-- **Sports and competitions:** age groups are often based on age on a particular day.
-- **Retirement and benefits:** see exactly when you reach a key age.
-- **Fun facts:** find out when you turn 10,000 days old, or what day of the week you were born.
+A youth football league says players must be under 37 on 1 September 2026. You were born on 14 March 1990. Enter that date of birth, and set **Age on this date** to 1 September 2026. The result is **36 years, 5 months and 18 days**, so you're eligible. The totals show 437 months, 1,902 weeks and 13,320 days.
 
-## How age is counted
+## How the counting works
 
-Age is counted in completed units. Someone born on 15 March 2000 is 25 years old from 15 March 2025 until the day before their 26th birthday. If today is 10 June 2025, they are 25 years, 2 months and 26 days old: two full months have passed since 15 March (to 15 May), plus 26 days from 15 May to 10 June.
+Counting age isn't as simple as dividing days by 365, because months have different lengths and leap years add an extra day. The calculator counts whole years from your birthday, then whole months, then the days left over. For example, from 31 January to 28 February is 28 days, not one month, because 31 February doesn't exist.
 
-Because months have 28 to 31 days, the "days" part is always counted using the actual length of the previous month. This is why simple tricks like dividing total days by 365 can give slightly different answers.
+## Where exact age matters
+
+- **School entry:** many schools use an age on a fixed date, such as 1 September or 31 December.
+- **Sports and competitions:** age groups are often set by age on a cut-off date.
+- **Travel and visas:** child fares and passport rules depend on age on the travel date.
+- **Retirement and benefits:** eligibility often starts on an exact birthday.
+
+## Tips and common mistakes
+
+- **Use the cut-off date, not today,** when a form asks for your age "on" a particular date.
+- **Check the date format** in your browser's date picker. Mixing up day and month (03/04 versus 04/03) gives a very different result.
+- **Remember the time zone** for births near midnight; the calculator uses calendar dates only.
+- **Leap-day birthdays** are shown on 28 February in other years; some laws use 1 March.
+
+## Private by design
+
+Dates are calculated in your browser and are never sent or saved, so it's safe to check ages for family members.
 
 ## Related tools
 
-To count days between any two dates, such as a project deadline or anniversary, use the [Date Difference Calculator](/date-difference-calculator). For a pregnancy timeline, try the [Pregnancy Due Date Calculator](/pregnancy-due-date-calculator).
-
-## Private
-
-Your dates are processed in your browser only. Nothing is stored or shared.
+Count the time between any two dates with the [Date Difference Calculator](/date-difference-calculator), count down to a big day with the [Countdown Timer](/countdown-timer), or estimate a due date with the [Pregnancy Due Date Calculator](/pregnancy-due-date-calculator).

@@ -2,47 +2,61 @@
 seoTitle: "Resize Image Online: Change Photo Size in Pixels | toolwise"
 metaDescription: "Resize JPG, PNG and WebP images to exact pixel dimensions or by percentage. Keeps the aspect ratio, works in bulk. Free, private, no upload."
 faqs:
-  - q: How do I resize an image without stretching it?
-    a: Keep the link button between Width and Height switched on (it is on by default). When you type a new width, the height updates automatically so the picture keeps its original proportions.
+  - q: Will resizing stretch or squash my photo?
+    a: Not while the link button between Width and Height is on (it is by default). Then changing one side adjusts the other automatically. Turn it off only if you really need an exact width and height, for example 1200 × 1200 for a square slot.
   - q: Can I make an image bigger?
-    a: Yes. Enter a larger width or choose a percentage above 100%. Keep in mind that enlarging cannot add detail that was not in the original, so very large increases will look soft.
-  - q: What size should I use for websites and social media?
-    a: For a full-width website image, 1920 pixels wide is plenty. For blog images 1200 to 1280 pixels works well. Instagram posts look best at 1080 pixels wide, and email attachments are fine at 1280 pixels or less.
-  - q: Can I resize several images at once?
-    a: Yes. Choose multiple images and they are all resized to the same width, each keeping its own proportions. You can then download them together as a ZIP file.
-  - q: Does resizing reduce the file size?
-    a: Making an image smaller in pixels almost always makes the file smaller too, often dramatically. If you only need a smaller file and not new dimensions, try our Compress Image tool.
+    a: Yes, up to 200% in Percentage mode or by typing larger pixel sizes. The browser smooths the enlarged image, but it can't invent new detail, so big enlargements look soft.
+  - q: Can I resize several images to the same width?
+    a: Yes. Choose all the images at once and set the width. Each keeps its own proportions, so portrait and landscape photos both come out the right shape.
+  - q: Is there a maximum size?
+    a: The result can be up to 16 megapixels (for example 4000 × 4000). Larger sizes are too much for many phones and browsers to handle reliably.
+  - q: What's the difference between resizing and compressing?
+    a: Resizing changes the number of pixels, which also makes the file smaller. Compressing keeps the pixels but saves them more efficiently. For the smallest files, do both, or use Compress Image with a maximum size.
 ---
 
-## What this tool does
+## When to use it
 
-The image resizer changes the width and height of your pictures in pixels. Use it to make a large phone photo small enough to email, to meet the exact dimensions a website or form asks for, or to prepare images for social media, a blog or a presentation. It works with JPG, PNG and WebP files and can resize many images in one go.
+Resize Image changes the width and height of pictures in pixels. Use it when a website, marketplace or form asks for a specific size (for example "at least 1080 px wide" or "1200 × 628"), when photos are too large to email, or when you want a set of product photos or blog images to match. Making an image smaller in pixels also makes the file much smaller.
 
-## How to resize an image
+## How to resize images
 
-1. Tap **Choose images** or drop your pictures onto the box.
-2. Choose **Pixels** to type an exact width or height, or **Percentage** to scale the image up or down.
-3. Optionally pick a different format under **Save as**.
-4. Press **Resize image**, then **Download** your new file.
+1. Tap **Choose images**, or drag JPG, PNG or WebP files onto the box. You can resize several at once.
+2. Choose **Resize by**:
+   - **Pixels**: type a **Width** or **Height**, or tap a common width such as 1920 px or 1080 px.
+   - **Percentage**: drag the **Scale** slider (5 to 200%). The new size is shown under it.
+3. Leave the link button on to keep the aspect ratio, so the picture isn't stretched.
+4. Pick a format under **Save as**, or keep **Same as original**.
+5. Press **Resize image**, then **Download**. Several images come as one ZIP file.
 
-The original size is shown at the top, so you always know where you are starting from. The quick buttons such as 1920 px and 1080 px fill in common widths with one tap.
+## A worked example
 
-## Pixels or percentage?
+An online shop needs product photos 1080 px wide. Your three photos are 4032 × 3024 (landscape), 3024 × 4032 (portrait) and 4000 × 4000 (square). Choose all three, tap the **1080 px** chip and press **Resize image**. You get 1080 × 810, 1080 × 1440 and 1080 × 1080, each in its original proportions and typically 150 to 300 KB instead of 3 to 6 MB.
 
-- **Pixels** are best when something asks for a specific size, for example "at least 600 × 600 pixels" for a profile picture, or "no wider than 1200 pixels" for a website.
-- **Percentage** is handy when you simply want the image smaller, such as half the size (50%) for sharing in a chat.
+## Common sizes
 
-## Keeping the right shape
+- **Full HD screens and slideshows:** 1920 px wide.
+- **Website content images:** 1200 to 1600 px wide.
+- **Instagram posts:** 1080 px wide.
+- **Email attachments:** 1280 px is plenty to view on any screen.
+- **Thumbnails and avatars:** 300 to 500 px.
 
-Every image has an aspect ratio, the relationship between its width and height. A typical phone photo is 4:3, a widescreen image is 16:9 and a square is 1:1. With the lock switched on, toolwise keeps that ratio so people and objects never look squashed. Switch the lock off only if you really need an exact width and height, such as 600 × 600, and do not mind stretching. To get an exact size without stretching, crop the image to the right shape first using [Crop Image](/crop-image).
+## Tips
 
-## Tips for sharp results
+- **Resize by width for web pages,** since layouts are usually limited by width.
+- **Use Percentage** to shrink a batch of different-sized images by the same amount.
+- **Keep PNG for logos and screenshots,** and JPG or WebP for photos.
+- **Crop first if you need an exact shape,** then resize. That avoids stretching.
 
-- Resize from the original, full-size photo whenever possible rather than from a copy that was already shrunk.
-- toolwise uses high-quality, step-by-step downscaling, which keeps fine detail like text and hair sharper than a single large jump.
-- For screenshots or graphics with text, save as PNG to keep edges crisp. For photos, JPG or WebP give smaller files.
-- If the result still needs to be smaller in kilobytes, follow up with [Compress Image](/compress-image).
+## Common mistakes
 
-## Private and unlimited
+- **Turning off the aspect ratio lock by accident,** which leaves faces and products looking stretched. If the hint under the fields says the ratio is free, turn the link back on.
+- **Enlarging small images for print.** A 600 px image blown up to 3000 px will look blurry; find a larger original instead.
+- **Saving resized photos as PNG,** which can make them bigger than before.
 
-Your images are resized on your own device, inside your browser. They are never uploaded, so the tool is fast, works on any connection, and keeps personal photos private.
+## Private by design
+
+Images are resized in your browser and never uploaded.
+
+## Related tools
+
+Need an exact shape? Use [Crop Image](/crop-image) first. To shrink file size further, try [Compress Image](/compress-image), or hit a target like 100 KB with [Compress Image to KB](/compress-image-to-kb).

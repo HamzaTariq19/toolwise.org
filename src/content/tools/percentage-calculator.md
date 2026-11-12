@@ -2,52 +2,55 @@
 seoTitle: "Percentage Calculator: Percent of, Change and Increase | toolwise"
 metaDescription: "Work out percentages fast: X% of a number, what percent one number is of another, percentage increase or decrease, and adding or removing a percentage."
 faqs:
-  - q: How do I calculate a percentage of a number?
-    a: Multiply the number by the percentage and divide by 100. For example, 20% of 150 is 150 × 20 ÷ 100 = 30. Type the numbers in the first calculator to get the answer instantly.
-  - q: How do I work out percentage increase?
-    a: Subtract the old value from the new value, divide by the old value and multiply by 100. Going from 80 to 100 is (100 − 80) ÷ 80 × 100 = 25% increase. A negative result means a decrease.
-  - q: Why isn't a 10% increase followed by a 10% decrease back to the start?
-    a: Because the second percentage is taken from a different number. 100 plus 10% is 110, but 110 minus 10% is 99. The decrease is 10% of 110, which is 11, not 10.
-  - q: How do I remove a percentage, like taking VAT off a price?
-    a: To find the price before a percentage was added, divide by 1 plus the percentage as a decimal. For example, 120 including 20% tax is 120 ÷ 1.2 = 100 before tax. Our VAT and Sales Tax Calculator does this for you.
+  - q: How do I work out a percentage of a number by hand?
+    a: Divide the percentage by 100 and multiply by the number. For 20% of 150, that's 0.2 × 150 = 30.
+  - q: Why isn't a 50% rise followed by a 50% fall back to the start?
+    a: Because the second percentage is taken from a different, bigger number. 100 plus 50% is 150, and 150 minus 50% is 75. To undo a 50% rise you need a fall of about 33.3%.
+  - q: What's the difference between percent and percentage points?
+    a: If an interest rate goes from 4% to 5%, it has risen by 1 percentage point but by 25 percent (because 1 is a quarter of 4). News reports often mix these up.
   - q: Can I use decimals and negative numbers?
-    a: Yes. You can type decimals like 12.5 and negative numbers like −40. Commas in large numbers such as 1,250 are understood too.
+    a: Yes. Type decimals with a point, such as 12.5. Negative numbers work for changes, for example a profit going from -200 to 300.
+  - q: How do I add VAT or sales tax?
+    a: Use "Add or subtract a percentage" with plus and your tax rate. For full tax breakdowns, including taking tax out of a price, use the VAT and Sales Tax Calculator.
 ---
 
-## What this calculator does
+## When to use it
 
-The percentage calculator answers the four percentage questions people ask most often, all on one page:
-
-1. **What is X% of Y?** For example, how much is a 15% tip on a bill.
-2. **X is what percent of Y?** For example, what percentage of questions you got right on a test.
-3. **Percentage increase or decrease** between two values, such as a price change or salary rise.
-4. **Add or subtract a percentage** from a number, such as adding 20% tax or taking 30% off.
-
-Each calculator updates as you type, so you can try different numbers instantly.
+The percentage calculator answers the four everyday percentage questions without formulas: working out a discount or a tip, checking a pay rise, comparing prices, marking a test, splitting a bill, or understanding statistics in the news. Each question has its own row, and the answer updates as you type.
 
 ## How to use it
 
-Find the question that matches yours and type your numbers into the boxes. The answer appears underneath straight away. There is nothing to press.
+The page has four calculators. Type in any row; you don't need to press a button.
 
-## Worked examples
+1. **Percent of a number**: "What is **20** % of **150**?" Use it for discounts, tips, commission and tax amounts.
+2. **What percent one number is of another**: "**30** is what % of **120**?" Use it for test scores, survey results and progress toward a goal.
+3. **Percentage increase or decrease**: "From **80** to **100**". Use it for price changes, salary rises, growth and losses.
+4. **Add or subtract a percentage**: "**250** plus or minus **15** %". Use it for prices with tax, discounted prices, and markups.
 
-- **Discount:** a jacket costs 80 and is 25% off. Use "Add or subtract a percentage": 80 minus 25% = 60.
-- **Test score:** you got 42 out of 50 questions right. Use "What percent": 42 is 84% of 50.
-- **Price rise:** rent went from 1,200 to 1,290. Use "Percentage increase": an increase of 7.5%.
-- **Commission:** you earn 3% on a 12,000 sale. Use "Percent of a number": 3% of 12,000 = 360.
+Choose **plus** or **minus** in the fourth row. Results show up to six decimal places, so round them as you need.
 
-## Percentage formulas
+## A worked example
 
-- Percent of a number: **result = number × percent ÷ 100**
-- What percent: **percent = part ÷ whole × 100**
-- Percentage change: **change = (new − old) ÷ old × 100**
-- Add a percentage: **result = number × (1 + percent ÷ 100)**
-- Subtract a percentage: **result = number × (1 − percent ÷ 100)**
+A jacket was $80 and is now $100. What happened, and what will it cost on sale?
 
-## Percentage points vs percent
+- In **Percentage increase or decrease**, enter from 80 to 100: an **increase of 25% (+20)**.
+- The shop then offers 15% off. In **Add or subtract a percentage**, enter 100, choose **minus**, and enter 15: **= 85**.
+- Did you score well on a 120-question test with 96 right? In row two, 96 is what % of 120: **80%**.
 
-If an interest rate goes from 4% to 5%, it has risen by **1 percentage point**, but by **25 percent** (because 1 is 25% of 4). News reports sometimes mix these up, so it is worth knowing the difference.
+## Handy shortcuts
 
-## Related calculators
+- **10%** of any number: move the decimal point one place left (10% of 64 = 6.4).
+- **5%** is half of 10%; **20%** is double 10%.
+- **Reverse a percentage:** if a price after a 20% discount is $64, the original was 64 ÷ 0.8 = $80.
+- **Percentages swap:** 8% of 50 equals 50% of 8. Pick whichever is easier.
 
-For shopping, the [Discount Calculator](/discount-calculator) shows the sale price and savings. For restaurants, use the [Tip Calculator](/tip-calculator), and for prices with tax, the [VAT and Sales Tax Calculator](/sales-tax-calculator).
+## Common mistakes
+
+- **Using the wrong starting value for a change.** A change from 80 to 100 is +25%, but from 100 to 80 is −20%. Always divide by the starting value.
+- **Adding percentages in a row.** Two 10% rises are 21% in total, not 20%, because the second applies to the higher amount.
+- **Confusing "of" and "off".** 15% of 100 is 15; 15% off 100 is 85.
+- **Starting from zero.** A percentage change from 0 can't be calculated; the tool tells you so.
+
+## Related tools
+
+Work out shop savings with the [Discount Calculator](/discount-calculator), add tax with the [VAT and Sales Tax Calculator](/sales-tax-calculator), or split a restaurant bill with the [Tip Calculator](/tip-calculator).

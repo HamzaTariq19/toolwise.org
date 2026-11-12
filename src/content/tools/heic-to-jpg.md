@@ -3,43 +3,59 @@ seoTitle: "HEIC to JPG Converter: Convert iPhone Photos Free | toolwise"
 metaDescription: "Convert iPhone HEIC photos to JPG in your browser. Batch convert, no upload, no signup. Works on Windows, Android, Mac and iPhone."
 faqs:
   - q: What is a HEIC file?
-    a: HEIC (High Efficiency Image Container) is the photo format iPhones and iPads use by default. It stores photos at about half the size of JPG, but many Windows PCs, Android phones, websites and forms cannot open it.
-  - q: Do my photos get uploaded?
-    a: No. The conversion runs entirely in your web browser on your own device. Your photos are never sent to a server, which matters for personal pictures.
-  - q: Will I lose quality?
-    a: At the default quality of 90% the JPG looks the same as the HEIC original. The JPG file will be larger, because JPG compresses less efficiently than HEIC.
-  - q: Can I stop my iPhone from taking HEIC photos?
-    a: Yes. On your iPhone, open Settings, then Camera, then Formats, and choose Most Compatible. New photos will be saved as JPG. Photos you already took stay in HEIC, which is where this converter helps.
-  - q: Is the location and camera data kept?
-    a: No. The converted JPG does not include the original EXIF data such as GPS location, which makes it safer to share. If you need to check what a photo contains, use our Image Metadata Viewer.
+    a: HEIC (also called HEIF) is the photo format iPhones and iPads use by default since iOS 11. It stores photos at about half the size of JPG, but many websites, Windows programs and older devices can't open it.
+  - q: Will the JPG look worse than the original?
+    a: At the default 90% quality the difference isn't visible. The JPG file will be larger than the HEIC, because JPG is a less efficient format, not because anything was added.
+  - q: Does converting keep the photo's location and date?
+    a: No. The converted JPG doesn't carry over the hidden details stored in the HEIC, such as GPS location and camera settings. That's often a plus when you share photos publicly.
+  - q: What about Live Photos?
+    a: A Live Photo's still image converts normally. The short video part is a separate file and isn't included in the JPG.
+  - q: How do I stop my iPhone making HEIC photos?
+    a: Go to Settings, Camera, Formats and choose Most Compatible. New photos will then be saved as JPG, though they'll take up more space.
 ---
 
-## What this tool does
+## When to use it
 
-This tool converts HEIC and HEIF photos, the default format on iPhone and iPad, into regular JPG images that open everywhere. If you have ever emailed a photo from your iPhone and the person on the other end could not open it, or a website refused your upload, a HEIC file was probably the reason.
+Use HEIC to JPG when a photo from an iPhone or iPad won't open or upload somewhere else. Common examples are job and visa application sites, online shops, older versions of Windows, printing services, and photo editors that only accept JPG. JPG works on virtually every device and website, so converting solves the problem in one step.
 
 ## How to convert HEIC to JPG
 
-1. Tap **Choose images** and pick your HEIC photos, or drag them onto the box on a computer.
-2. Wait while the photos are converted. Large photos can take a few seconds each.
-3. Review the converted files and their dimensions.
-4. Press **Download**. If you converted more than one photo, they come together in a ZIP file.
+1. Tap **Choose images**, or drag your HEIC or HEIF photos onto the box. You can convert many at once.
+2. Wait while the photos are converted. Each one takes a second or two, a little longer on older phones.
+3. Check the list of converted photos, with the size of each.
+4. Change **Image quality** if you want smaller files. Changes apply instantly.
+5. Press **Download**. Several photos come together in one ZIP file named heic-to-jpg.zip.
 
-## Converting on an iPhone
+On an iPhone, choosing photos from the Photos app may already give the site a JPG. Converting is needed when you have actual .heic files, for example ones copied to a computer or downloaded from iCloud.
 
-On an iPhone, the Photos app sometimes converts HEIC to JPG automatically when you share a picture. To be sure you get a JPG, choose your photos from the **Files** app, or tap **Choose images**, select **Photo Library**, and pick the photos you need. If your iPhone already hands over a JPG, the tool simply passes it through.
+## A worked example
 
-## Tips for the best result
+You copied 25 holiday photos from your iPhone to a Windows laptop, and the online print shop rejects them. Drag all 25 .heic files onto the box. After about a minute you have 25 JPGs at 90% quality, typically 2 to 4 MB each. Download the ZIP, unzip it, and upload the JPGs to the print shop.
 
-- Keep the quality at 85 to 90% for photos you want to print or edit.
-- If the JPG files are too big for an upload form, lower the slider to 75%, or run the result through [Compress Image](/compress-image) or [Compress Image to KB](/compress-image-to-kb).
-- Live Photos are converted as a still image.
-- Converting dozens of photos at once works, but on older phones it is quicker to do them in batches of ten to twenty.
+## Choosing the quality
 
-## Why HEIC is not supported everywhere
+- **90% (default):** looks identical to the original. Best for printing and keeping.
+- **75 to 80%:** about half the file size; ideal for email and web uploads.
+- **60%:** small files for quick sharing, with slight softness on close inspection.
 
-HEIC uses newer compression technology that requires a licence, so many programs and websites have not adopted it. JPG has been the universal photo format for decades, which is why converting is the most reliable way to share iPhone photos with anyone, on any device.
+If you need files under a strict limit, convert first and then use Compress Image to KB.
 
-## Private and free
+## Tips
 
-Because every photo is converted on your own device, nothing is uploaded and nothing is kept. There is no account to create, no watermark and no limit on how many photos you can convert.
+- **Convert in batches** of 20 to 50 photos on phones to keep things quick.
+- **Keep your HEIC originals.** They're smaller and contain extra information like depth data.
+- **Rename the ZIP** after downloading if you convert several batches, so they don't overwrite each other.
+
+## Common mistakes
+
+- **Renaming .heic to .jpg.** Changing the file name doesn't change the format inside; the file still won't open. Always convert it.
+- **Lowering quality to 30 or 40%** to save space. Faces and skies become blotchy. Resize the photo instead.
+- **Expecting the location data to be kept.** If you need it for a photo library, keep the original HEIC files.
+
+## Private by design
+
+Your photos are converted on your own device. Nothing is uploaded, so personal pictures stay private.
+
+## Related tools
+
+Make the JPGs smaller with [Compress Image](/compress-image), change their size with [Resize Image](/resize-image), or put them into a document with [Image to PDF](/image-to-pdf).

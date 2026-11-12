@@ -2,47 +2,58 @@
 seoTitle: "Compress PDF Online Free: Reduce PDF File Size | toolwise"
 metaDescription: "Make PDF files smaller for email and uploads. Text stays sharp and searchable while images are optimized. Free, private, no upload."
 faqs:
-  - q: How much smaller will my PDF get?
-    a: It depends on what is inside. PDFs made from scans or containing photos often shrink by 50 to 90%. PDFs that are mostly text are usually small already, so the savings are modest, and toolwise keeps your original if it cannot make it smaller.
-  - q: Will the text become blurry?
-    a: No. toolwise only re-compresses the pictures inside the PDF. Text, fonts, lines and vector graphics are not changed, so the text stays sharp and you can still select and search it.
-  - q: Which compression level should I choose?
-    a: Recommended suits most documents and keeps photos looking good on screen. Choose Light for documents you will print, and Strong when you must get under a tight upload limit and image quality matters less.
+  - q: Why didn't my PDF get smaller?
+    a: Compression works by shrinking the pictures inside a PDF. Documents that are mostly text, like a typed letter or an exported spreadsheet, are already small, so there is little to remove. toolwise keeps the original when it can't make the file smaller.
+  - q: Will my text become blurry?
+    a: No. Text, fonts and vector drawings are left exactly as they are. Only photos and scanned page images are resized and re-saved, so typed text stays sharp at every level.
+  - q: Which level should I choose for email?
+    a: Recommended suits most email and upload limits. If the file is still too large, try Strong. Keep Light for documents with photos that will be printed or zoomed into.
   - q: Can I compress a password-protected PDF?
-    a: Remove the password first with our Unlock PDF tool, using a password you are allowed to use, then compress the unlocked file.
-  - q: Are my PDFs uploaded to a server?
-    a: No. Compression runs entirely in your browser. Your documents never leave your device.
+    a: Not while it's locked. Open it with Unlock PDF using its password, compress it, and add protection again with Protect PDF if needed.
+  - q: Is there a size limit?
+    a: Each file can be up to 200 MB. Very large scanned documents may take a minute or two, especially on phones.
 ---
 
-## What this tool does
+## When to use it
 
-Compress PDF makes PDF files smaller so they fit within email attachment limits, upload faster to job portals, school systems and government websites, and use less storage. It focuses on what usually makes PDFs large: the photos and scanned pages inside them. Each image is resized to a sensible resolution and re-saved efficiently, while text and vector graphics are left exactly as they are.
+Compress PDF makes PDF files smaller so they fit under email attachment limits, pass the upload limit on application and government portals, and download faster. It helps most with scanned documents and PDFs full of photos, such as brochures, reports exported from slide software, or a stack of phone-scanned pages. These are often 10 to 50 MB when a 1 to 3 MB file would look just the same on screen.
 
 ## How to compress a PDF
 
-1. Choose a compression level. **Recommended** is the best starting point.
-2. Tap **Choose PDF files** or drag one or more PDFs onto the box.
-3. Wait while each image in the document is optimized. A progress bar shows the progress.
-4. Compare the original and new sizes, then press **Download**.
+1. Choose a **Compression level**:
+   - **Light**: best quality, smaller savings.
+   - **Recommended**: good quality, good savings.
+   - **Strong**: smallest file, lower image quality.
+2. Tap **Choose PDF files**, or drag PDFs onto the box. You can compress several at once.
+3. Wait while each file is processed. The progress shows which image is being optimized.
+4. Check the results: each file lists its old and new size and how many images were optimized.
+5. Press **Download** (a ZIP file if you compressed more than one), or change the level to try again.
 
-Not happy with the result? Pick a different level and your files are compressed again automatically.
+## A worked example
 
-## How the levels compare
+A university portal limits uploads to 5 MB, but your scanned transcript is a 14-page, 18 MB PDF. With **Recommended**, each scanned page image is reduced to at most 1800 pixels and re-saved, and the file usually ends up between 2 and 4 MB. The text is still easy to read on screen and on paper. If it's still too big, switch to **Strong**, which typically halves it again.
 
-- **Light** keeps images up to about 2,400 pixels wide at high quality. Ideal for documents you plan to print.
-- **Recommended** keeps images up to about 1,800 pixels at good quality. Photos and scans still look sharp on any screen.
-- **Strong** reduces images to about 1,100 pixels with stronger compression. Best when you must squeeze under a strict size limit.
+## How it works
 
-## Why some PDFs barely shrink
+Inside a PDF, each scanned page or photo is stored as an image, often at far higher resolution than needed. toolwise finds those images, scales down any that are larger than the chosen level allows, and saves them again as efficient JPEGs. Text, fonts and vector graphics are not touched. If the result isn't smaller than the original, you get the original back.
 
-A PDF that contains mostly text, created directly from a word processor, is already very efficient. In that case toolwise tells you the file is already well optimized and gives you back the original, so you never end up with a larger file. Embedded fonts can also take space; these are kept so your document looks the same on every device.
+## Tips
 
-## Tips for smaller PDFs
+- **Start with Recommended,** and only step up to Strong if you must.
+- **Compress before merging large scans,** so you can check each part.
+- **Check fine print after Strong compression,** such as small footnotes in scans, at 100% zoom.
+- **Keep the original** for printing and archiving; send the compressed copy.
 
-- **Scanning?** Scan at 150 to 200 DPI in grayscale for text documents. Higher settings create huge files with no visible benefit.
-- **Only need part of the document?** Remove unnecessary pages first with [Delete PDF Pages](/delete-pdf-pages) or [Split PDF](/split-pdf).
-- **Combining files?** Compress after using [Merge PDF](/merge-pdf), so you only do it once.
+## Common mistakes
+
+- **Compressing again and again.** Each pass lowers image quality further for little gain. Go back to the original and choose a stronger level instead.
+- **Expecting big savings on text-only files.** A 300 KB typed document is already compact.
+- **Using Strong for photos meant for print.** Printed images may look soft; Light is the better choice.
 
 ## Private by design
 
-Most PDF compressors upload your file to a server. toolwise compresses it inside your browser, so contracts, payslips and medical documents never leave your device.
+Compression runs in your browser, so contracts, bank statements and medical records never leave your device.
+
+## Related tools
+
+Join files with [Merge PDF](/merge-pdf), remove unneeded pages with [Delete PDF Pages](/delete-pdf-pages), or compress photos before making a PDF with [Compress Image](/compress-image).
