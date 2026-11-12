@@ -1,0 +1,67 @@
+---
+import ImageEditor from '../components/ImageEditor.astro';
+import Icon from '../components/Icon.astro';
+---
+<ImageEditor id="rf" icon="FlipHorizontal2">
+  <div>
+    <p class="label">Rotate</p>
+    <div class="grid grid-cols-2 gap-2">
+      <button type="button" class="btn btn-secondary" data-rot="-90"><Icon name="RotateCcw" size={18} />Left</button>
+      <button type="button" class="btn btn-secondary" data-rot="90"><Icon name="RotateCw" size={18} />Right</button>
+    </div>
+  </div>
+  <div>
+    <p class="label">Flip</p>
+    <div class="grid grid-cols-2 gap-2">
+      <button type="button" class="btn btn-secondary" data-flip="h" aria-pressed="false"><Icon name="FlipHorizontal2" size={18} />Mirror</button>
+      <button type="button" class="btn btn-secondary" data-flip="v" aria-pressed="false"><Icon name="FlipVertical2" size={18} />Upside down</button>
+    </div>
+  </div>
+  <div>
+    <div class="flex justify-between"><label for="rf-angle" class="label">Straighten</label><output class="text-sm font-semibold tabular" data-angle>0°</output></div>
+    <input id="rf-angle" type="range" min="-45" max="45" step="0.5" value="0" class="h-11 w-full accent-[var(--brand)]" />
+    <p class="hint">Fix a slightly tilted photo. The edges are trimmed so no empty corners show.</p>
+  </div>
+  <button type="button" class="btn btn-ghost btn-sm" data-reset-all>Reset</button>
+</ImageEditor>
+<script>
+  import { initImageEditor, makeCanvas } from '../lib/image-editor';
+  let rot = 0, fh = false, fv = false;
+  const angle = document.getElementById('rf-angle') as HTMLInputElement;
+  const ed = initImageEditor('rf', {
+    suffix: 'rotated',
+    onLoad: () => { rot = 0; fh = fv = false; angle.value = '0'; sync(); },
+    render: (img, scale) => {
+      const fine = (Number(angle.value) * Math.PI) / 180;
+      const w = img.width * scale, h = img.height * scale, quarter = rot % 180 !== 0;
+      let W = quarter ? h : w, H = quarter ? w : h;
+      // Largest axis-aligned rectangle inside the rotated image (so no blank corners)
+      let cw = W, ch = H;
+      if (fine) {
+        const s = Math.abs(Math.sin(fine)), co = Math.abs(Math.cos(fine));
+        const long = Math.max(W, H), short = Math.min(W, H);
+        if (short <= 2 * s * co * long || Math.abs(s - co) < 1e-10) { const x = 0.5 * short; [cw, ch] = W >= H ? [x / s, x / co] : [x / co, x / s]; }
+        else { const cos2 = co * co - s * s; cw = (W * co - H * s) / cos2; ch = (H * co - W * s) / cos2; }
+      }
+      const { c, g } = makeCanvas(cw, ch);
+      g.translate(c.width / 2, c.height / 2);
+      g.rotate((rot * Math.PI) / 180 + fine);
+      g.scale(fh ? -1 : 1, fv ? -1 : 1);
+      g.drawImage(img.source, -w / 2, -h / 2, w, h);
+      return c;
+    },
+  });
+  function sync() {
+    document.querySelector('#rf [data-angle]')!.textContent = `${angle.value}°`;
+    document.querySelector('#rf [data-flip=h]')!.setAttribute('aria-pressed', String(fh));
+    document.querySelector('#rf [data-flip=v]')!.setAttribute('aria-pressed', String(fv));
+    ed.redraw();
+  }
+  document.querySelectorAll<HTMLElement>('#rf [data-rot]').forEach((b) => b.addEventListener('click', () => { rot = (rot + Number(b.dataset.rot) + 360) % 360; sync(); }));
+  document.querySelectorAll<HTMLElement>('#rf [data-flip]').forEach((b) => b.addEventListener('click', () => { if (b.dataset.flip === 'h') fh = !fh; else fv = !fv; sync(); }));
+  angle.addEventListener('input', sync);
+  document.querySelector('#rf [data-reset-all]')!.addEventListener('click', () => { rot = 0; fh = fv = false; angle.value = '0'; sync(); });
+</script>
+<style>
+  :global(#rf [aria-pressed='true']) { border-color: var(--ring); background: var(--brand-soft); }
+</style>

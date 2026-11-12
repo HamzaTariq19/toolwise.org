@@ -1,0 +1,40 @@
+---
+import ImageEditor from '../components/ImageEditor.astro';
+import '@fontsource/anton/latin-400.css';
+---
+<ImageEditor id="mm" icon="Laugh" defaultFormat="image/jpeg" downloadLabel="Download meme" formats="Your own photo or picture (JPG, PNG, WebP)">
+  <div><label for="mm-top" class="label">Top text</label><input id="mm-top" class="input" maxlength="120" value="When the tool works" /></div>
+  <div><label for="mm-bottom" class="label">Bottom text</label><input id="mm-bottom" class="input" maxlength="120" value="on the first try" /></div>
+  <div><div class="flex justify-between"><label for="mm-size" class="label">Text size</label><output class="text-sm font-semibold tabular" data-out>10%</output></div><input id="mm-size" type="range" min="5" max="18" step="0.5" value="10" class="h-11 w-full accent-[var(--brand)]" /></div>
+  <label class="flex min-h-11 items-center gap-3 text-[0.9375rem]"><input type="checkbox" id="mm-caps" class="h-5 w-5 accent-[var(--brand)]" checked />ALL CAPS</label>
+  <fieldset><legend class="label">Text color</legend><div class="segmented"><label><input type="radio" name="mm-c" value="white" checked /><span>White</span></label><label><input type="radio" name="mm-c" value="black" /><span>Black</span></label></div></fieldset>
+  <p class="hint">Use your own photos, or pictures you have permission to use.</p>
+</ImageEditor>
+<script>
+  import { initImageEditor, makeCanvas } from '../lib/image-editor';
+  import { drawTextBlock, wrap } from '../lib/text-draw';
+  const $ = (id: string) => document.getElementById(id) as HTMLInputElement;
+  const ed = initImageEditor('mm', {
+    suffix: 'meme',
+    validate: () => ($('mm-top').value.trim() || $('mm-bottom').value.trim() ? null : 'Type some top or bottom text.'),
+    render: (img, scale) => {
+      const w = img.width * scale, h = img.height * scale, { c, g } = makeCanvas(w, h);
+      g.drawImage(img.source, 0, 0, w, h);
+      const white = (document.querySelector('input[name=mm-c]:checked') as HTMLInputElement).value === 'white';
+      const caps = $('mm-caps').checked, max = w * 0.94;
+      for (const [id, top] of [['mm-top', true], ['mm-bottom', false]] as const) {
+        let text = $(id).value.trim(); if (!text) continue;
+        if (caps) text = text.toUpperCase();
+        let size = (Math.min(w, h * 1.2) * Number($('mm-size').value)) / 100;
+        // Shrink long captions so they never cover more than about a third of the picture
+        g.font = `400 ${size}px Anton, Impact, sans-serif`;
+        while (wrap(g, text, max).length * size * 1.1 > h * 0.32 && size > 8) { size *= 0.92; g.font = `400 ${size}px Anton, Impact, sans-serif`; }
+        const lines = wrap(g, text, max).length, block = lines * size * 1.1, margin = h * 0.025;
+        drawTextBlock(g, text, w / 2, top ? margin + block / 2 : h - margin - block / 2, { font: 'Anton, Impact, sans-serif', size, color: white ? '#fff' : '#000', outline: white ? '#000' : '#fff', outlineWidth: size * 0.16, align: 'center', lineHeight: 1.1 }, max);
+      }
+      return c;
+    },
+  });
+  document.getElementById('mm')!.addEventListener('input', () => (document.querySelector('#mm [data-out]')!.textContent = `${$('mm-size').value}%`));
+  document.fonts?.load('400 40px Anton').then(() => ed.redraw());
+</script>

@@ -1,0 +1,78 @@
+---
+import ImageEditor from '../components/ImageEditor.astro';
+import Icon from '../components/Icon.astro';
+const spots = ['tl', 'tc', 'tr', 'ml', 'mc', 'mr', 'bl', 'bc', 'br'];
+---
+<ImageEditor id="wi" icon="Stamp" downloadLabel="Download image">
+  <fieldset><legend class="label">Watermark type</legend>
+    <div class="segmented"><label><input type="radio" name="wi-type" value="text" checked /><span>Text</span></label><label><input type="radio" name="wi-type" value="logo" /><span>Logo image</span></label></div>
+  </fieldset>
+  <div data-for="text"><label for="wi-text" class="label">Text</label><input id="wi-text" class="input" value="© Your Name" maxlength="80" /></div>
+  <div data-for="logo" hidden>
+    <label class="btn btn-secondary relative w-full cursor-pointer"><Icon name="Upload" size={18} /><span data-logo-name>Choose logo (PNG works best)</span><input type="file" accept="image/png,image/jpeg,image/webp,image/svg+xml" class="absolute inset-0 cursor-pointer opacity-0" data-logo /></label>
+  </div>
+  <fieldset><legend class="label">Position</legend>
+    <div class="grid w-36 grid-cols-3 gap-1.5">
+      {spots.map((s) => <label class="flex h-10 cursor-pointer items-center justify-center rounded-md border border-line-strong has-[:checked]:border-[var(--ring)] has-[:checked]:bg-brand has-[:focus-visible]:outline has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-[var(--ring)]"><input type="radio" name="wi-pos" value={s} checked={s === 'br'} class="sr-only" /><span class="sr-only">{s}</span><span class="h-1.5 w-1.5 rounded-full bg-[var(--subtle)]"></span></label>)}
+    </div>
+    <label class="mt-2 flex min-h-11 items-center gap-3 text-[0.9375rem]"><input type="checkbox" id="wi-tile" class="h-5 w-5 accent-[var(--brand)]" />Repeat across the whole image</label>
+  </fieldset>
+  <div class="grid grid-cols-2 gap-3">
+    <div><div class="flex justify-between"><label for="wi-size" class="label">Size</label></div><input id="wi-size" type="range" min="3" max="40" value="14" class="h-11 w-full accent-[var(--brand)]" /></div>
+    <div><div class="flex justify-between"><label for="wi-op" class="label">Opacity</label></div><input id="wi-op" type="range" min="10" max="100" value="60" class="h-11 w-full accent-[var(--brand)]" /></div>
+  </div>
+  <div data-for="text"><label for="wi-color" class="label">Text color</label><input id="wi-color" type="color" value="#ffffff" class="h-11 w-full cursor-pointer rounded-[10px] border border-line-strong bg-surface p-1" /></div>
+</ImageEditor>
+<script>
+  import { initImageEditor, makeCanvas } from '../lib/image-editor';
+  const $ = (id: string) => document.getElementById(id) as HTMLInputElement;
+  const val = (n: string) => (document.querySelector(`input[name=${n}]:checked`) as HTMLInputElement).value;
+  let logo: ImageBitmap | HTMLImageElement | null = null;
+  const ed = initImageEditor('wi', {
+    suffix: 'watermarked',
+    validate: () => (val('wi-type') === 'logo' && !logo ? 'Choose a logo image first.' : val('wi-type') === 'text' && !$('wi-text').value.trim() ? 'Type the watermark text.' : null),
+    render: (img, scale) => {
+      const w = img.width * scale, h = img.height * scale, { c, g } = makeCanvas(w, h);
+      g.drawImage(img.source, 0, 0, w, h);
+      const isText = val('wi-type') === 'text', k = Number($('wi-size').value) / 100;
+      // Build the watermark stamp once
+      let stamp: HTMLCanvasElement | null = null;
+      if (isText && $('wi-text').value.trim()) {
+        const size = Math.max(8, Math.min(w, h) * k * 0.45), m = makeCanvas(1, 1);
+        m.g.font = `700 ${size}px 'Inter Variable', sans-serif`;
+        const tw = m.g.measureText($('wi-text').value).width;
+        const s2 = makeCanvas(tw + size * 0.6, size * 1.6);
+        s2.g.font = m.g.font; s2.g.textBaseline = 'middle'; s2.g.fillStyle = $('wi-color').value;
+        s2.g.shadowColor = 'rgba(0,0,0,.45)'; s2.g.shadowBlur = size * 0.15;
+        s2.g.fillText($('wi-text').value, size * 0.3, s2.c.height / 2);
+        stamp = s2.c;
+      } else if (!isText && logo) {
+        const lw = 'naturalWidth' in logo ? logo.naturalWidth || 300 : logo.width, lh = 'naturalHeight' in logo ? logo.naturalHeight || 150 : logo.height;
+        const tw = w * k * 1.4, s2 = makeCanvas(tw, (tw * lh) / lw); s2.g.drawImage(logo, 0, 0, s2.c.width, s2.c.height); stamp = s2.c;
+      }
+      if (!stamp) return c;
+      g.globalAlpha = Number($('wi-op').value) / 100;
+      if ($('wi-tile').checked) {
+        g.save(); g.translate(w / 2, h / 2); g.rotate(-Math.PI / 6);
+        const sx = stamp.width * 1.6, sy = stamp.height * 3, R = Math.hypot(w, h);
+        for (let y = -R; y < R; y += sy) for (let x = -R + ((y / sy) % 2 ? sx / 2 : 0); x < R; x += sx) g.drawImage(stamp, x, y);
+        g.restore();
+      } else {
+        const p = val('wi-pos'), m = Math.min(w, h) * 0.03;
+        const x = p[1] === 'l' ? m : p[1] === 'r' ? w - stamp.width - m : (w - stamp.width) / 2;
+        const y = p[0] === 't' ? m : p[0] === 'b' ? h - stamp.height - m : (h - stamp.height) / 2;
+        g.drawImage(stamp, x, y);
+      }
+      return c;
+    },
+  });
+  document.getElementById('wi')!.addEventListener('input', () => document.querySelectorAll<HTMLElement>('#wi [data-for]').forEach((el) => (el.hidden = el.dataset.for !== val('wi-type'))));
+  const lf = document.querySelector<HTMLInputElement>('#wi [data-logo]')!;
+  lf.addEventListener('change', async () => {
+    const f = lf.files?.[0]; if (!f) return;
+    try {
+      if (f.type === 'image/svg+xml') { const i = new Image(); i.src = URL.createObjectURL(f); await i.decode(); logo = i; } else logo = await createImageBitmap(f);
+      document.querySelector('#wi [data-logo-name]')!.textContent = f.name; ed.redraw();
+    } catch { document.querySelector('#wi [data-logo-name]')!.textContent = 'That image could not be opened. Try a PNG.'; }
+  });
+</script>

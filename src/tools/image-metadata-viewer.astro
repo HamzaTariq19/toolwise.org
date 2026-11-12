@@ -1,0 +1,70 @@
+---
+import Dropzone from '../components/Dropzone.astro';
+import Icon from '../components/Icon.astro';
+---
+<div id="mv" class="space-y-5">
+  <div data-step="pick"><Dropzone id="mv-drop" accept="image/jpeg,image/png,image/webp,image/tiff,.jpg,.jpeg,.png,.webp,.tif,.tiff,.heic,.heif" formats="JPG, PNG, WebP, TIFF or HEIC" maxLabel="100 MB" label="Choose photo" icon="Info" /></div>
+  <div class="alert alert-error" data-error hidden role="alert"><span data-msg></span></div>
+  <div data-step="done" class="space-y-5" hidden>
+    <div class="card flex items-center gap-4 p-5">
+      <img data-thumb alt="" class="h-20 w-20 flex-none rounded-lg border border-line bg-surface-2 object-cover" />
+      <div class="min-w-0 flex-1"><p class="truncate font-semibold" data-name></p><p class="text-sm text-muted" data-meta></p></div>
+      <button type="button" class="btn btn-secondary" data-reset><Icon name="RotateCcw" size={18} /><span class="hidden sm:inline">Another photo</span></button>
+    </div>
+    <div class="alert alert-error" data-gps hidden><Icon name="MapPin" size={18} class="mt-0.5 flex-none" /><span data-gps-text></span></div>
+    <div class="alert alert-success" data-nogps hidden><Icon name="ShieldCheck" size={18} class="mt-0.5 flex-none" /><span>No GPS location found in this photo.</span></div>
+    <dl class="grid grid-cols-2 gap-3 sm:grid-cols-3" data-summary></dl>
+    <details class="card group">
+      <summary class="flex min-h-14 cursor-pointer list-none items-center justify-between px-5 font-semibold [&::-webkit-details-marker]:hidden">All metadata <span class="text-sm font-normal text-subtle" data-count></span></summary>
+      <div class="overflow-x-auto border-t border-line"><table class="w-full text-left text-sm"><tbody class="divide-y divide-[var(--border)]" data-table></tbody></table></div>
+    </details>
+  </div>
+</div>
+<script>
+  import { initDropzone } from '../lib/dropzone';
+  import { readMetadata } from '../lib/metadata';
+  import { formatBytes, showError } from '../lib/ui';
+  const root = document.getElementById('mv')!;
+  const q = <T extends HTMLElement = HTMLElement>(s: string) => root.querySelector<T>(s)!;
+  const esc = (s: string) => s.replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]!);
+  const fmtVal = (v: unknown): string => {
+    if (v instanceof Date) return v.toLocaleString();
+    if (v instanceof Uint8Array || ArrayBuffer.isView(v)) return `(${(v as Uint8Array).length} bytes of data)`;
+    if (Array.isArray(v)) return v.map(fmtVal).join(', ');
+    if (v && typeof v === 'object') return JSON.stringify(v);
+    if (typeof v === 'number') return String(Math.round(v * 10000) / 10000);
+    return String(v);
+  };
+  let url = '';
+  q('[data-reset]').addEventListener('click', () => { q('[data-step=done]').hidden = true; q('[data-step=pick]').hidden = false; });
+  initDropzone(document.getElementById('mv-drop')!, {
+    accept: ['image/jpeg', 'image/png', 'image/webp', 'image/tiff', '.jpg', '.jpeg', '.png', '.webp', '.tif', '.tiff', '.heic', '.heif'], maxBytes: 100 * 1024 * 1024,
+    onFiles: async ([f]) => {
+      showError(q('[data-error]'), null);
+      const m = await readMetadata(f);
+      URL.revokeObjectURL(url); url = URL.createObjectURL(f);
+      q<HTMLImageElement>('[data-thumb]').src = url;
+      q('[data-name]').textContent = f.name;
+      q('[data-meta]').textContent = `${formatBytes(f.size)} · ${f.type || 'image'} · modified ${new Date(f.lastModified).toLocaleDateString()}`;
+      const entries = Object.entries(m ?? {}).filter(([, v]) => v !== undefined && v !== null && v !== '');
+      const get = (...k: string[]) => { for (const key of k) if (m?.[key] != null) return m[key]; return undefined; };
+      const lat = get('latitude'), lon = get('longitude');
+      const hasGps = typeof lat === 'number' && typeof lon === 'number';
+      q('[data-gps]').hidden = !hasGps; q('[data-nogps]').hidden = hasGps;
+      if (hasGps) q('[data-gps-text]').innerHTML = `This photo contains its GPS location: <strong>${(lat as number).toFixed(5)}, ${(lon as number).toFixed(5)}</strong> (<a href="https://www.openstreetmap.org/?mlat=${lat}&mlon=${lon}#map=16/${lat}/${lon}" target="_blank" rel="noopener noreferrer">view on map</a>). Anyone you share it with can see where it was taken. <a href="/remove-exif-data">Remove it here</a>.`;
+      const camera = [get('Make'), get('Model')].filter(Boolean).join(' ');
+      const exposure = get('ExposureTime') as number | undefined;
+      const sum: [string, unknown][] = [
+        ['Camera', camera], ['Lens', get('LensModel', 'Lens')], ['Taken', get('DateTimeOriginal', 'CreateDate', 'ModifyDate')],
+        ['Dimensions', get('ExifImageWidth', 'ImageWidth') ? `${get('ExifImageWidth', 'ImageWidth')} × ${get('ExifImageHeight', 'ImageHeight')} px` : undefined],
+        ['Exposure', exposure ? (exposure < 1 ? `1/${Math.round(1 / exposure)} s` : `${exposure} s`) : undefined], ['Aperture', get('FNumber') ? `f/${get('FNumber')}` : undefined],
+        ['ISO', get('ISO')], ['Focal length', get('FocalLength') ? `${get('FocalLength')} mm` : undefined], ['Software', get('Software')], ['Author', get('Artist', 'creator', 'Copyright')],
+      ];
+      q('[data-summary]').innerHTML = sum.filter(([, v]) => v).map(([k, v]) => `<div class="stat"><dt class="stat-label">${k}</dt><dd class="mt-0.5 break-words font-semibold">${esc(fmtVal(v))}</dd></div>`).join('') || '<p class="col-span-full text-muted">No camera details found. Many apps and websites remove metadata automatically, and screenshots usually have none.</p>';
+      q('[data-count]').textContent = `${entries.length} fields`;
+      q('[data-table]').innerHTML = entries.map(([k, v]) => `<tr><th class="w-2/5 px-5 py-2 font-medium text-muted">${esc(k)}</th><td class="break-all px-5 py-2">${esc(fmtVal(v))}</td></tr>`).join('') || '<tr><td class="px-5 py-3 text-muted">No metadata found.</td></tr>';
+      q('[data-step=pick]').hidden = true; q('[data-step=done]').hidden = false;
+    },
+    onError: (msg) => showError(q('[data-error]'), msg || null),
+  });
+</script>

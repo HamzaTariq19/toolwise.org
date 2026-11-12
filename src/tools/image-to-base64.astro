@@ -1,0 +1,67 @@
+---
+import Dropzone from '../components/Dropzone.astro';
+import Icon from '../components/Icon.astro';
+---
+<div id="b64" class="space-y-5">
+  <div data-step="pick"><Dropzone id="b64-drop" accept="image/*,.svg,.ico,.heic" formats="JPG, PNG, GIF, WebP, SVG or ICO" maxLabel="10 MB" label="Choose image" icon="Binary" /></div>
+  <div class="alert alert-error" data-error hidden role="alert"><span data-msg></span></div>
+  <div data-step="done" class="card p-5 sm:p-6" hidden>
+    <div class="flex items-center gap-3 border-b border-line pb-4">
+      <img data-thumb alt="" class="h-14 w-14 rounded-lg border border-line bg-surface-2 object-contain" />
+      <div class="min-w-0"><p class="truncate font-semibold" data-name></p><p class="text-sm text-muted" data-meta></p></div>
+    </div>
+    <fieldset class="mt-4"><legend class="label">Output</legend>
+      <div class="segmented">
+        <label><input type="radio" name="b64-fmt" value="uri" checked /><span>Data URL</span></label>
+        <label><input type="radio" name="b64-fmt" value="raw" /><span>Base64 only</span></label>
+        <label><input type="radio" name="b64-fmt" value="img" /><span>HTML &lt;img&gt;</span></label>
+        <label><input type="radio" name="b64-fmt" value="css" /><span>CSS</span></label>
+      </div>
+    </fieldset>
+    <p class="alert alert-info mt-4 text-sm" data-warn hidden></p>
+    <label for="b64-out" class="sr-only">Base64 output</label>
+    <textarea id="b64-out" class="textarea mono mt-4 !min-h-[220px] break-all text-xs" readonly spellcheck="false"></textarea>
+    <div class="mt-4 flex flex-col gap-3 sm:flex-row">
+      <button type="button" class="btn btn-primary btn-lg" data-copy><Icon name="Copy" size={18} /><span data-label>Copy</span></button>
+      <button type="button" class="btn btn-secondary btn-lg" data-dl><Icon name="Download" size={18} />Download .txt</button>
+      <button type="button" class="btn btn-ghost btn-lg" data-reset><Icon name="RotateCcw" size={18} />Start over</button>
+    </div>
+  </div>
+</div>
+<script>
+  import { initDropzone } from '../lib/dropzone';
+  import { copyText, downloadBlob, formatBytes, showError, baseName } from '../lib/ui';
+  const root = document.getElementById('b64')!;
+  const q = <T extends HTMLElement = HTMLElement>(s: string) => root.querySelector<T>(s)!;
+  const out = q<HTMLTextAreaElement>('#b64-out');
+  let uri = '', name = 'image';
+  function render() {
+    const f = (root.querySelector('input[name=b64-fmt]:checked') as HTMLInputElement).value, raw = uri.split(',')[1] ?? '';
+    out.value = f === 'raw' ? raw : f === 'img' ? `<img src="${uri}" alt="">` : f === 'css' ? `background-image: url("${uri}");` : uri;
+  }
+  root.addEventListener('change', render);
+  q('[data-copy]').addEventListener('click', (e) => copyText(out.value, e.currentTarget as HTMLElement));
+  q('[data-dl]').addEventListener('click', () => downloadBlob(new Blob([out.value], { type: 'text/plain' }), `${name}-base64.txt`));
+  q('[data-reset]').addEventListener('click', () => { q('[data-step=done]').hidden = true; q('[data-step=pick]').hidden = false; out.value = ''; });
+  initDropzone(document.getElementById('b64-drop')!, {
+    accept: ['image/', 'image/*', '.svg', '.ico', '.heic', '.png', '.jpg', '.jpeg', '.gif', '.webp', '.bmp', '.avif'], maxBytes: 10 * 1024 * 1024,
+    onFiles: async ([f]) => {
+      showError(q('[data-error]'), null);
+      // Make sure it really is an image before encoding it
+      const ok = await new Promise<boolean>((res) => { const u = URL.createObjectURL(f), i = new Image(); i.onload = () => { URL.revokeObjectURL(u); res(true); }; i.onerror = () => { URL.revokeObjectURL(u); res(/\.heic$/i.test(f.name)); }; i.src = u; });
+      if (!ok) return showError(q('[data-error]'), `“${f.name}” is not a valid image or is damaged.`);
+      uri = await new Promise<string>((res, rej) => { const r = new FileReader(); r.onload = () => res(r.result as string); r.onerror = rej; r.readAsDataURL(f); });
+      if (/^data:(application\/octet-stream)?;/.test(uri) || uri.startsWith('data:;')) uri = uri.replace(/^data:[^;]*;/, `data:${/\.svg$/i.test(f.name) ? 'image/svg+xml' : /\.ico$/i.test(f.name) ? 'image/x-icon' : 'image/png'};`);
+      name = baseName(f.name);
+      q<HTMLImageElement>('[data-thumb]').src = uri;
+      q('[data-name]').textContent = f.name;
+      q('[data-meta]').textContent = `${formatBytes(f.size)} file → ${formatBytes(uri.length)} of text (${Math.round((uri.length / f.size - 1) * 100)}% larger)`;
+      const warn = q('[data-warn]');
+      warn.hidden = f.size < 100 * 1024;
+      warn.textContent = 'Large images make your HTML or CSS heavy and slow to load. Base64 works best for small icons and images under about 10 KB.';
+      render();
+      q('[data-step=pick]').hidden = true; q('[data-step=done]').hidden = false;
+    },
+    onError: (m) => showError(q('[data-error]'), m || null),
+  });
+</script>

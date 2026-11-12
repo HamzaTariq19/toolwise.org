@@ -1,0 +1,35 @@
+---
+import ImageEditor from '../components/ImageEditor.astro';
+---
+<ImageEditor id="rc" icon="SquareRoundCorner" defaultFormat="image/png">
+  <fieldset><legend class="label">Shape</legend>
+    <div class="segmented">
+      <label><input type="radio" name="rc-shape" value="round" checked /><span>Rounded</span></label>
+      <label><input type="radio" name="rc-shape" value="circle" /><span>Circle</span></label>
+    </div>
+  </fieldset>
+  <div data-r><div class="flex justify-between"><label for="rc-r" class="label">Corner size</label><output class="text-sm font-semibold tabular" data-out>12%</output></div><input id="rc-r" type="range" min="1" max="50" value="12" class="h-11 w-full accent-[var(--brand)]" /></div>
+  <p class="hint">PNG keeps the corners transparent. JPG fills them with white.</p>
+</ImageEditor>
+<script>
+  import { initImageEditor, makeCanvas } from '../lib/image-editor';
+  const r = document.getElementById('rc-r') as HTMLInputElement;
+  const shape = () => (document.querySelector('input[name=rc-shape]:checked') as HTMLInputElement).value;
+  document.getElementById('rc')!.addEventListener('input', () => { document.querySelector('#rc [data-out]')!.textContent = `${r.value}%`; (document.querySelector('#rc [data-r]') as HTMLElement).hidden = shape() === 'circle'; });
+  initImageEditor('rc', {
+    suffix: 'rounded',
+    render: (img, scale) => {
+      const w = img.width * scale, h = img.height * scale;
+      if (shape() === 'circle') {
+        const s = Math.min(w, h), { c, g } = makeCanvas(s, s);
+        g.beginPath(); g.arc(s / 2, s / 2, s / 2, 0, Math.PI * 2); g.clip();
+        g.drawImage(img.source, (s - w) / 2, (s - h) / 2, w, h);
+        return c;
+      }
+      const { c, g } = makeCanvas(w, h), rad = (Math.min(w, h) * Number(r.value)) / 100;
+      g.beginPath(); g.moveTo(rad, 0); g.arcTo(w, 0, w, h, rad); g.arcTo(w, h, 0, h, rad); g.arcTo(0, h, 0, 0, rad); g.arcTo(0, 0, w, 0, rad); g.closePath(); g.clip();
+      g.drawImage(img.source, 0, 0, w, h);
+      return c;
+    },
+  });
+</script>

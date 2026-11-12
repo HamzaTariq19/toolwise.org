@@ -83,6 +83,16 @@ if (live) {
 
         <section class="[grid-area:tool]" aria-label={tool.name}>
           <ToolUI tool={tool} />
+          {(tool.category === 'finance' || tool.category === 'health') && (
+            <p class="mt-4 flex items-start gap-2 text-sm text-muted">
+              <Icon name="Info" size={16} class="mt-0.5 flex-none" />
+              <span>
+                Results are estimates for general information only and are not {tool.category === 'health' ? 'medical' : 'financial'} advice.
+                {tool.category === 'health' ? ' Talk to a doctor or other qualified health professional about your health.' : ' Check important figures with a qualified professional or your lender.'}{' '}
+                <a href="/disclaimer">Read our disclaimer</a>.
+              </span>
+            </p>
+          )}
         </section>
 
         <div class="hidden [grid-area:ad1] lg:block">

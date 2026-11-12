@@ -1,0 +1,63 @@
+---
+import Dropzone from '../components/Dropzone.astro';
+import FileResults from '../components/FileResults.astro';
+---
+<div id="rx" class="space-y-5">
+  <div data-step="pick"><Dropzone id="rx-drop" accept="image/jpeg,image/png,image/webp,.jpg,.jpeg,.png,.webp,.heic,.heif" formats="JPG, PNG, WebP or HEIC" maxLabel="50 MB each" multiple label="Choose photos" icon="ShieldOff" /></div>
+  <div class="alert alert-error" data-error hidden role="alert"><span data-msg></span></div>
+  <FileResults id="rx-results" downloadLabel="Download clean photo" />
+</div>
+<script>
+  import { initDropzone } from '../lib/dropzone';
+  import { createResults, type ResultItem } from '../lib/file-results';
+  import { readMetadata, stripJpeg, stripPng } from '../lib/metadata';
+  import { decodeAny, drawToCanvas, encode } from '../lib/image';
+  import { baseName, showError } from '../lib/ui';
+  const root = document.getElementById('rx')!;
+  const pick = root.querySelector<HTMLElement>('[data-step=pick]')!, err = root.querySelector<HTMLElement>('[data-error]')!;
+  const results = createResults(document.getElementById('rx-results')!, {
+    zipName: 'clean-photos.zip', showSavings: false,
+    summary: (items) => { const n = items.filter((i) => i.blob).length; return `${n} photo${n === 1 ? '' : 's'} cleaned · location and camera details removed`; },
+    onReset: () => { pick.hidden = false; showError(err, null); },
+  });
+  async function clean(f: File): Promise<ResultItem> {
+    const meta = await readMetadata(f);
+    const found: string[] = [];
+    if (meta?.latitude != null) found.push('GPS location');
+    if (meta?.Make || meta?.Model) found.push('camera');
+    if (meta?.DateTimeOriginal || meta?.CreateDate) found.push('date taken');
+    // Structural fields (size, bit depth…) are not personal; only count the rest
+    const TECH = /^(ImageWidth|ImageHeight|BitDepth|ColorType|Compression|Filter|Interlace|ExifImageWidth|ExifImageHeight|Orientation|ResolutionUnit|XResolution|YResolution|ColorSpace|YCbCrPositioning)$/;
+    const keys = meta ? Object.keys(meta).filter((k) => !TECH.test(k)).length : 0;
+    if (meta?.Software) found.push('software');
+    const bytes = new Uint8Array(await f.arrayBuffer());
+    let out: Uint8Array | null = null, type = f.type, how = 'lossless';
+    if (/jpe?g$/i.test(f.type) || /\.jpe?g$/i.test(f.name)) { const exifr = (await import('exifr')).default;
+      const orientation = (await exifr.orientation(f).catch(() => 1)) ?? 1;
+      out = stripJpeg(bytes, orientation); type = 'image/jpeg'; }
+    else if (f.type === 'image/png' || /\.png$/i.test(f.name)) { out = stripPng(bytes); type = 'image/png'; }
+    let blob: Blob;
+    if (out) blob = new Blob([out as BlobPart], { type });
+    else {
+      // Other formats (and damaged structure): redraw the pixels, which leaves all metadata behind
+      const img = await decodeAny(f), c = drawToCanvas(img, img.width, img.height); img.close?.();
+      type = f.type === 'image/webp' ? 'image/webp' : 'image/jpeg';
+      blob = await encode(c, type, 0.95); how = 're-saved';
+    }
+    const ext = type === 'image/png' ? 'png' : type === 'image/webp' ? 'webp' : 'jpg';
+    return { name: f.name, originalSize: f.size, blob, thumb: true, outName: `${baseName(f.name)}-clean.${ext}`, note: keys ? `Removed ${found.length ? found.join(', ') : 'hidden details'} (${keys} field${keys === 1 ? '' : 's'})${how === 're-saved' ? ', re-saved' : ''}` : 'No personal details found; clean copy made' };
+  }
+  initDropzone(document.getElementById('rx-drop')!, {
+    accept: ['image/jpeg', 'image/png', 'image/webp', '.jpg', '.jpeg', '.png', '.webp', '.heic', '.heif'], multiple: true, maxBytes: 50 * 1024 * 1024,
+    onFiles: async (files) => {
+      pick.hidden = true;
+      const out: ResultItem[] = [];
+      for (let i = 0; i < files.length; i++) {
+        results.setProgress(i, files.length, `Cleaning photo ${i + 1} of ${files.length}…`);
+        try { out.push(await clean(files[i])); } catch (e) { out.push({ name: files[i].name, originalSize: files[i].size, error: (e as Error).message }); }
+      }
+      results.render(out);
+    },
+    onError: (m) => showError(err, m || null),
+  });
+</script>

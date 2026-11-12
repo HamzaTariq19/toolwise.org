@@ -1,0 +1,93 @@
+---
+import ImageEditor from '../components/ImageEditor.astro';
+import Icon from '../components/Icon.astro';
+---
+<ImageEditor id="bl" icon="Droplets" hint="In “Selected areas” mode, drag on the picture to cover faces, number plates or private details.">
+  <fieldset><legend class="label">What to blur</legend>
+    <div class="segmented">
+      <label><input type="radio" name="bl-mode" value="areas" checked /><span>Selected areas</span></label>
+      <label><input type="radio" name="bl-mode" value="all" /><span>Whole image</span></label>
+    </div>
+  </fieldset>
+  <fieldset data-for="areas"><legend class="label">Effect</legend>
+    <div class="segmented">
+      <label><input type="radio" name="bl-fx" value="blur" checked /><span>Blur</span></label>
+      <label><input type="radio" name="bl-fx" value="pixel" /><span>Pixelate</span></label>
+      <label><input type="radio" name="bl-fx" value="black" /><span>Black box</span></label>
+    </div>
+  </fieldset>
+  <div><div class="flex justify-between"><label for="bl-s" class="label">Strength</label><output class="text-sm font-semibold tabular" data-out>60%</output></div><input id="bl-s" type="range" min="5" max="100" value="60" class="h-11 w-full accent-[var(--brand)]" /></div>
+  <div data-for="areas" class="flex items-center justify-between gap-2">
+    <span class="text-sm text-muted" data-count>No areas yet. Drag on the picture.</span>
+    <span class="flex gap-1"><button type="button" class="btn btn-ghost btn-sm" data-undo><Icon name="Undo2" size={16} />Undo</button><button type="button" class="btn btn-ghost btn-sm" data-clear>Clear</button></span>
+  </div>
+  <p class="alert alert-info text-sm" data-for="areas">For truly private information, Black box is the safest choice: blurred or pixelated text can sometimes be partly recovered.</p>
+</ImageEditor>
+<script>
+  import { initImageEditor, makeCanvas } from '../lib/image-editor';
+  import type { Decoded } from '../lib/image';
+  type R = { x: number; y: number; w: number; h: number };
+  let rects: R[] = [], drawing: R | null = null;
+  const s = document.getElementById('bl-s') as HTMLInputElement;
+  const val = (n: string) => (document.querySelector(`input[name=${n}]:checked`) as HTMLInputElement).value;
+
+  /** Blur by shrinking and enlarging in steps: smooth, fast and identical in every browser */
+  function blurred(src: CanvasImageSource, w: number, h: number, radius: number) {
+    let cur: HTMLCanvasElement = makeCanvas(w, h).c; cur.getContext('2d')!.drawImage(src, 0, 0, w, h);
+    const factor = Math.max(1, radius / 2);
+    const steps = Math.ceil(Math.log2(factor)) || 1;
+    let cw = w, ch = h;
+    for (let i = 0; i < steps; i++) { cw = Math.max(1, cw / 2); ch = Math.max(1, ch / 2); const n = makeCanvas(cw, ch); n.g.drawImage(cur, 0, 0, n.c.width, n.c.height); cur = n.c; }
+    for (let i = 0; i < steps; i++) { cw *= 2; ch *= 2; const n = makeCanvas(Math.min(w, cw), Math.min(h, ch)); n.g.drawImage(cur, 0, 0, n.c.width, n.c.height); cur = n.c; }
+    const out = makeCanvas(w, h); out.g.drawImage(cur, 0, 0, w, h); return out.c;
+  }
+  function pixelated(src: CanvasImageSource, w: number, h: number, block: number) {
+    const small = makeCanvas(w / block, h / block); small.g.drawImage(src, 0, 0, small.c.width, small.c.height);
+    const out = makeCanvas(w, h); out.g.imageSmoothingEnabled = false; out.g.drawImage(small.c, 0, 0, w, h); return out.c;
+  }
+
+  const ed = initImageEditor('bl', {
+    suffix: 'blurred',
+    onLoad: () => { rects = []; update(); },
+    validate: () => (val('bl-mode') === 'areas' && !rects.length ? 'Drag on the picture to choose an area to blur, or choose Whole image.' : null),
+    render: (img: Decoded, scale) => {
+      const w = img.width * scale, h = img.height * scale, { c, g } = makeCanvas(w, h);
+      g.drawImage(img.source, 0, 0, w, h);
+      const k = Number(s.value) / 100, base = Math.max(w, h);
+      if (val('bl-mode') === 'all') { g.drawImage(blurred(img.source, w, h, base * 0.03 * k * 2), 0, 0); return c; }
+      const fx = val('bl-fx');
+      const all = drawing ? [...rects, drawing] : rects;
+      if (!all.length) return c;
+      const layer = fx === 'pixel' ? pixelated(img.source, w, h, Math.max(4, base * 0.04 * k)) : fx === 'blur' ? blurred(img.source, w, h, base * 0.05 * k * 2) : null;
+      for (const r of all) {
+        const x = r.x * scale, y = r.y * scale, rw = r.w * scale, rh = r.h * scale;
+        if (!layer) { g.fillStyle = '#000'; g.fillRect(x, y, rw, rh); }
+        else g.drawImage(layer, x, y, rw, rh, x, y, rw, rh);
+      }
+      if (drawing) { g.strokeStyle = '#2563eb'; g.lineWidth = Math.max(2, base / 400); g.setLineDash([8, 6]); g.strokeRect(drawing.x * scale, drawing.y * scale, drawing.w * scale, drawing.h * scale); }
+      return c;
+    },
+  });
+  function update() {
+    document.querySelector('#bl [data-out]')!.textContent = `${s.value}%`;
+    document.querySelectorAll<HTMLElement>('#bl [data-for]').forEach((el) => (el.hidden = el.dataset.for !== val('bl-mode')));
+    document.querySelector('#bl [data-count]')!.textContent = rects.length ? `${rects.length} area${rects.length === 1 ? '' : 's'} hidden` : 'No areas yet. Drag on the picture.';
+  }
+  document.getElementById('bl')!.addEventListener('input', update);
+  const pv = ed.preview;
+  let start: { x: number; y: number } | null = null;
+  pv.addEventListener('pointerdown', (e) => { if (val('bl-mode') !== 'areas') return; e.preventDefault(); pv.setPointerCapture(e.pointerId); start = ed.toImage(e.clientX, e.clientY); });
+  pv.addEventListener('pointermove', (e) => {
+    if (!start) return;
+    const p = ed.toImage(e.clientX, e.clientY), img = ed.img!;
+    const cl = (v: number, m: number) => Math.min(Math.max(0, v), m);
+    const x2 = cl(p.x, img.width), y2 = cl(p.y, img.height);
+    drawing = { x: Math.min(start.x, x2), y: Math.min(start.y, y2), w: Math.abs(x2 - start.x), h: Math.abs(y2 - start.y) };
+    ed.redraw();
+  });
+  const end = () => { if (drawing && drawing.w > 4 && drawing.h > 4) rects.push(drawing); drawing = null; start = null; update(); ed.redraw(); };
+  pv.addEventListener('pointerup', end); pv.addEventListener('pointercancel', end);
+  document.querySelector('#bl [data-undo]')!.addEventListener('click', () => { rects.pop(); update(); ed.redraw(); });
+  document.querySelector('#bl [data-clear]')!.addEventListener('click', () => { rects = []; update(); ed.redraw(); });
+  update();
+</script>

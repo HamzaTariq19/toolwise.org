@@ -344,7 +344,7 @@
       "square crop",
       "aspect ratio"
     ],
-    "status": "planned"
+    "status": "built"
   },
   {
     "id": 22,
@@ -359,7 +359,7 @@
       "convert jpg",
       "change jpg to png"
     ],
-    "status": "planned"
+    "status": "built"
   },
   {
     "id": 23,
@@ -374,7 +374,7 @@
       "convert png",
       "change png to jpg"
     ],
-    "status": "planned"
+    "status": "built"
   },
   {
     "id": 24,
@@ -460,7 +460,7 @@
       "flip photo",
       "rotate photo"
     ],
-    "status": "planned"
+    "status": "built"
   },
   {
     "id": 29,
@@ -476,7 +476,7 @@
       "text on picture",
       "label photo"
     ],
-    "status": "planned"
+    "status": "built"
   },
   {
     "id": 30,
@@ -492,7 +492,7 @@
       "copyright photo",
       "logo on image"
     ],
-    "status": "planned"
+    "status": "built"
   },
   {
     "id": 31,
@@ -509,7 +509,7 @@
       "hide face",
       "blur background"
     ],
-    "status": "planned"
+    "status": "built"
   },
   {
     "id": 32,
@@ -525,7 +525,7 @@
       "image encoder",
       "embed image"
     ],
-    "status": "planned"
+    "status": "built"
   },
   {
     "id": 33,
@@ -541,7 +541,7 @@
       "funny caption",
       "meme creator"
     ],
-    "status": "planned"
+    "status": "built"
   },
   {
     "id": 34,
@@ -557,7 +557,7 @@
       "combine photos",
       "photo layout"
     ],
-    "status": "planned"
+    "status": "built"
   },
   {
     "id": 35,
@@ -573,7 +573,7 @@
       "hex from photo",
       "color code from picture"
     ],
-    "status": "planned"
+    "status": "built"
   },
   {
     "id": 36,
@@ -589,7 +589,7 @@
       "remove color",
       "b&w photo"
     ],
-    "status": "planned"
+    "status": "built"
   },
   {
     "id": 37,
@@ -605,7 +605,7 @@
       "round photo",
       "profile picture circle"
     ],
-    "status": "planned"
+    "status": "built"
   },
   {
     "id": 38,
@@ -622,7 +622,7 @@
       "camera data",
       "gps photo"
     ],
-    "status": "planned"
+    "status": "built"
   },
   {
     "id": 39,
@@ -638,7 +638,7 @@
       "remove gps from photo",
       "privacy photo"
     ],
-    "status": "planned"
+    "status": "built"
   },
   {
     "id": 40,

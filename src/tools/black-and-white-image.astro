@@ -1,0 +1,41 @@
+---
+import ImageEditor from '../components/ImageEditor.astro';
+---
+<ImageEditor id="bw" icon="Contrast">
+  <fieldset><legend class="label">Style</legend>
+    <div class="segmented">
+      <label><input type="radio" name="bw-mode" value="gray" checked /><span>Grayscale</span></label>
+      <label><input type="radio" name="bw-mode" value="bw" /><span>Black & white</span></label>
+      <label><input type="radio" name="bw-mode" value="sepia" /><span>Sepia</span></label>
+    </div>
+  </fieldset>
+  <div data-for="gray sepia"><div class="flex justify-between"><label for="bw-contrast" class="label">Contrast</label><output class="text-sm font-semibold tabular" data-out-c>0</output></div><input id="bw-contrast" type="range" min="-50" max="80" value="0" class="h-11 w-full accent-[var(--brand)]" /></div>
+  <div data-for="bw" hidden><div class="flex justify-between"><label for="bw-th" class="label">Threshold</label><output class="text-sm font-semibold tabular" data-out-t>128</output></div><input id="bw-th" type="range" min="20" max="235" value="128" class="h-11 w-full accent-[var(--brand)]" /><p class="hint">Lower makes more of the picture white, higher makes more of it black. Great for scanned documents and signatures.</p></div>
+</ImageEditor>
+<script>
+  import { initImageEditor, makeCanvas } from '../lib/image-editor';
+  const mode = () => (document.querySelector('input[name=bw-mode]:checked') as HTMLInputElement).value;
+  const c = document.getElementById('bw-contrast') as HTMLInputElement, th = document.getElementById('bw-th') as HTMLInputElement;
+  document.getElementById('bw')!.addEventListener('input', () => {
+    document.querySelectorAll<HTMLElement>('#bw [data-for]').forEach((el) => (el.hidden = !el.dataset.for!.split(' ').includes(mode())));
+    document.querySelector('#bw [data-out-c]')!.textContent = c.value; document.querySelector('#bw [data-out-t]')!.textContent = th.value;
+  });
+  initImageEditor('bw', {
+    suffix: 'black-and-white',
+    render: (img, scale) => {
+      const { c: cv, g } = makeCanvas(img.width * scale, img.height * scale);
+      g.drawImage(img.source, 0, 0, cv.width, cv.height);
+      const d = g.getImageData(0, 0, cv.width, cv.height), p = d.data, m = mode();
+      const k = Number(c.value) / 100, f = (1 + k) / (1 - Math.min(k, 0.95)), t = Number(th.value);
+      for (let i = 0; i < p.length; i += 4) {
+        let y = 0.2126 * p[i] + 0.7152 * p[i + 1] + 0.0722 * p[i + 2];
+        if (m === 'bw') { y = y >= t ? 255 : 0; p[i] = p[i + 1] = p[i + 2] = y; continue; }
+        y = Math.min(255, Math.max(0, f * (y - 128) + 128));
+        if (m === 'sepia') { p[i] = Math.min(255, y * 1.07 + 18); p[i + 1] = Math.min(255, y * 0.95 + 8); p[i + 2] = Math.max(0, y * 0.78 - 4); }
+        else p[i] = p[i + 1] = p[i + 2] = y;
+      }
+      g.putImageData(d, 0, 0);
+      return cv;
+    },
+  });
+</script>

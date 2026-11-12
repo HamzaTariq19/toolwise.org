@@ -1,0 +1,34 @@
+---
+// Shared layout for single-image editing tools: live preview on the left, settings and Download on the right.
+import Dropzone from './Dropzone.astro';
+import Icon from './Icon.astro';
+interface Props { id: string; icon: string; formats?: string; defaultFormat?: 'auto' | 'image/png' | 'image/jpeg'; downloadLabel?: string; hint?: string }
+const { id, icon, formats = 'JPG, PNG, WebP or HEIC', defaultFormat = 'auto', downloadLabel = 'Download image', hint } = Astro.props;
+---
+<div id={id} class="space-y-5" data-default-format={defaultFormat}>
+  <div data-step="pick"><Dropzone id={`${id}-drop`} accept="image/jpeg,image/png,image/webp,image/gif,image/bmp,.jpg,.jpeg,.png,.webp,.gif,.bmp,.heic,.heif" formats={formats} maxLabel="50 MB" label="Choose image" icon={icon} /></div>
+  <div class="alert alert-error" data-error hidden role="alert"><span data-msg></span></div>
+  <div data-step="edit" class="grid gap-5 md:grid-cols-[minmax(0,1fr)_300px] md:items-start" hidden>
+    <div class="card p-3 sm:p-4">
+      <div class="relative flex min-h-48 items-center justify-center overflow-hidden rounded-lg [background:repeating-conic-gradient(var(--surface-2)_0_25%,var(--surface)_0_50%)_50%/20px_20px]" data-stage>
+        <canvas data-preview class="block h-auto max-h-[70vh] max-w-full touch-none select-none" aria-label="Preview of your edited image" role="img"></canvas>
+        <slot name="overlay" />
+      </div>
+      {hint && <p class="mt-2 text-center text-sm text-subtle">{hint}</p>}
+      <p class="mt-2 text-center text-sm text-muted tabular" data-dims></p>
+    </div>
+    <div class="card space-y-5 p-5 md:sticky md:top-24">
+      <slot />
+      <div>
+        <label for={`${id}-fmt`} class="label">Save as</label>
+        <select id={`${id}-fmt`} class="select" data-format>
+          <option value="auto">Same as original</option><option value="image/jpeg">JPG</option><option value="image/png">PNG</option><option value="image/webp">WebP</option>
+        </select>
+      </div>
+      <p class="alert alert-error" data-opt-error hidden role="alert"><span data-msg></span></p>
+      <button type="button" class="btn btn-primary btn-lg w-full" data-download><Icon name="Download" size={20} /><span data-label>{downloadLabel}</span></button>
+      <button type="button" class="btn btn-secondary w-full" data-reset><Icon name="RotateCcw" size={18} />Start over</button>
+      <p class="flex items-center justify-center gap-1.5 text-sm text-muted"><Icon name="ShieldCheck" size={16} class="text-success" />Your files never leave your device.</p>
+    </div>
+  </div>
+</div>
