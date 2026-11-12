@@ -1,0 +1,41 @@
+---
+const CHARTS = {
+  dress: { title: "Women's dresses, tops and trousers", cols: ['Letter', 'US', 'UK', 'EU', 'Italy', 'Japan', 'Australia'], rows: [['XXS', '00', '4', '30', '36', '3', '4'], ['XS', '0–2', '6', '32', '38', '5', '6'], ['S', '4', '8', '34', '40', '7', '8'], ['S/M', '6', '10', '36', '42', '9', '10'], ['M', '8', '12', '38', '44', '11', '12'], ['M/L', '10', '14', '40', '46', '13', '14'], ['L', '12', '16', '42', '48', '15', '16'], ['XL', '14', '18', '44', '50', '17', '18'], ['XXL', '16', '20', '46', '52', '19', '20'], ['3XL', '18', '22', '48', '54', '21', '22']] },
+  suit: { title: "Men's suits and jackets (chest)", cols: ['Letter', 'US / UK', 'EU', 'Italy', 'Japan', 'Chest (cm)'], rows: [['XS', '34', '44', '44', 'S', '86–89'], ['S', '36', '46', '46', 'M', '91–94'], ['M', '38', '48', '48', 'L', '96–99'], ['M', '40', '50', '50', 'L', '101–104'], ['L', '42', '52', '52', 'LL', '106–109'], ['XL', '44', '54', '54', 'LL', '111–114'], ['XXL', '46', '56', '56', '3L', '116–119'], ['3XL', '48', '58', '58', '4L', '121–124']] },
+  shirt: { title: "Men's shirts (collar)", cols: ['Letter', 'US / UK (in)', 'EU (cm)', 'Neck (cm)'], rows: [['S', '14', '36', '35–36'], ['S', '14.5', '37', '37'], ['M', '15', '38', '38'], ['M', '15.5', '39', '39–40'], ['L', '16', '41', '41'], ['L', '16.5', '42', '42'], ['XL', '17', '43', '43–44'], ['XL', '17.5', '44', '45'], ['XXL', '18', '46', '46']] },
+  jeans: { title: "Men's trousers and jeans (waist)", cols: ['Letter', 'US / UK (waist in)', 'EU', 'Waist (cm)'], rows: [['XS', '28', '44', '71'], ['S', '29–30', '46', '74–76'], ['M', '31–32', '48', '79–81'], ['L', '33–34', '50', '84–86'], ['XL', '36', '52', '91'], ['XXL', '38', '54', '97'], ['3XL', '40', '56', '102']] },
+};
+---
+<div id="cs" class="space-y-5" data-charts={JSON.stringify(CHARTS)}>
+  <div class="card grid gap-4 p-5 sm:grid-cols-3 sm:p-6">
+    <div><label for="cs-type" class="label">Clothing</label><select id="cs-type" class="select"><option value="dress">Women's clothing</option><option value="suit">Men's suits and jackets</option><option value="shirt">Men's shirts</option><option value="jeans">Men's trousers and jeans</option></select></div>
+    <div><label for="cs-sys" class="label">I know my size in</label><select id="cs-sys" class="select"></select></div>
+    <div><label for="cs-size" class="label">Size</label><select id="cs-size" class="select"></select></div>
+  </div>
+  <section class="card p-5" aria-live="polite"><p class="text-sm font-medium text-muted">Equivalent sizes</p><dl class="mt-3 grid grid-cols-2 gap-3 sm:grid-cols-4" data-out></dl></section>
+  <section class="card overflow-hidden"><h2 class="border-b border-line px-5 py-3 text-base font-semibold" data-title></h2>
+    <div class="overflow-x-auto"><table class="w-full text-center text-[0.9375rem] tabular"><thead class="bg-surface-2 text-sm text-muted" data-head></thead><tbody class="divide-y divide-[var(--border)]" data-table></tbody></table></div></section>
+</div>
+<script>
+  const root = document.getElementById('cs')!, charts = JSON.parse(root.dataset.charts!) as Record<string, { title: string; cols: string[]; rows: string[][] }>;
+  const type = document.getElementById('cs-type') as HTMLSelectElement, sys = document.getElementById('cs-sys') as HTMLSelectElement, size = document.getElementById('cs-size') as HTMLSelectElement;
+  function setType() {
+    const c = charts[type.value];
+    sys.innerHTML = c.cols.map((col, i) => `<option value="${i}">${col}</option>`).join(''); sys.value = '1';
+    root.querySelector('[data-title]')!.textContent = c.title;
+    root.querySelector('[data-head]')!.innerHTML = `<tr>${c.cols.map((x) => `<th class="px-3 py-2 font-semibold">${x}</th>`).join('')}</tr>`;
+    setSys();
+  }
+  function setSys() {
+    const c = charts[type.value], s = Number(sys.value);
+    size.innerHTML = c.rows.map((r, i) => `<option value="${i}">${r[s]}</option>`).join('');
+    size.value = String(Math.floor(c.rows.length / 2)); show();
+  }
+  function show() {
+    const c = charts[type.value], i = Number(size.value), s = Number(sys.value);
+    root.querySelector('[data-out]')!.innerHTML = c.cols.map((col, k) => `<div class="stat ${k === s ? 'ring-2 ring-[var(--ring)]' : ''}"><dt class="stat-label">${col}</dt><dd class="text-xl font-bold tabular">${c.rows[i][k]}</dd></div>`).join('');
+    root.querySelector('[data-table]')!.innerHTML = c.rows.map((r, j) => `<tr class="${j === i ? 'bg-brand-soft font-semibold' : ''}">${r.map((x) => `<td class="px-3 py-2">${x}</td>`).join('')}</tr>`).join('');
+  }
+  type.addEventListener('change', setType); sys.addEventListener('change', setSys); size.addEventListener('change', show);
+  setType();
+</script>

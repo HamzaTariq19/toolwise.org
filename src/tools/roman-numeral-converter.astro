@@ -1,0 +1,50 @@
+---
+import Icon from '../components/Icon.astro';
+---
+<div id="rm" class="space-y-5">
+  <div class="card grid items-end gap-4 p-5 sm:grid-cols-[1fr_auto_1fr] sm:p-6">
+    <div><label for="rm-n" class="label">Number</label><input id="rm-n" class="input text-lg tabular" inputmode="numeric" value="2026" autocomplete="off" /></div>
+    <Icon name="ArrowLeftRight" size={20} class="mx-auto mb-3 text-subtle" />
+    <div><label for="rm-r" class="label">Roman numeral</label><input id="rm-r" class="input mono text-lg uppercase" autocomplete="off" spellcheck="false" /></div>
+  </div>
+  <p class="alert alert-error" data-err hidden role="alert"></p>
+  <section class="card p-5" aria-live="polite">
+    <p class="text-sm font-medium text-muted">How it's built</p>
+    <p class="mono mt-2 text-lg" data-steps></p>
+    <button type="button" class="btn btn-primary mt-4" data-copy><Icon name="Copy" size={18} /><span data-label>Copy Roman numeral</span></button>
+  </section>
+  <section class="card overflow-hidden"><h2 class="border-b border-line px-5 py-3 text-base font-semibold">Roman numeral symbols</h2>
+    <div class="grid grid-cols-4 gap-px bg-[var(--border)] text-center sm:grid-cols-7">{[['I', 1], ['V', 5], ['X', 10], ['L', 50], ['C', 100], ['D', 500], ['M', 1000]].map(([s, v]) => <div class="bg-surface p-3"><p class="mono text-2xl font-bold">{s}</p><p class="text-sm text-muted tabular">{v}</p></div>)}</div>
+  </section>
+</div>
+<script>
+  import { copyText } from '../lib/ui';
+  const MAP: [string, number][] = [['M', 1000], ['CM', 900], ['D', 500], ['CD', 400], ['C', 100], ['XC', 90], ['L', 50], ['XL', 40], ['X', 10], ['IX', 9], ['V', 5], ['IV', 4], ['I', 1]];
+  const root = document.getElementById('rm')!, n = document.getElementById('rm-n') as HTMLInputElement, r = document.getElementById('rm-r') as HTMLInputElement, err = root.querySelector<HTMLElement>('[data-err]')!;
+  const VALID = /^M{0,3}(CM|CD|D?C{0,3})(XC|XL|L?X{0,3})(IX|IV|V?I{0,3})$/;
+  function toRoman(v: number) { const parts: string[] = []; let s = ''; for (const [sym, val] of MAP) while (v >= val) { s += sym; v -= val; parts.push(`${sym} (${val})`); } return { s, parts }; }
+  function show(s: string, parts: string[]) { root.querySelector('[data-steps]')!.textContent = parts.join(' + '); r.dataset.v = s; }
+  function fromNumber() {
+    const v = Number(n.value.trim().replace(/,/g, ''));
+    err.hidden = true;
+    if (!n.value.trim()) { r.value = ''; show('', []); return; }
+    if (!Number.isInteger(v) || v < 1 || v > 3999) { err.hidden = false; err.textContent = 'Standard Roman numerals go from 1 to 3999. Enter a whole number in that range (there is no Roman numeral for zero).'; return; }
+    const { s, parts } = toRoman(v); r.value = s; show(s, parts);
+  }
+  function fromRoman() {
+    const s = r.value.trim().toUpperCase();
+    err.hidden = true;
+    if (!s) { n.value = ''; show('', []); return; }
+    if (/[^IVXLCDM]/.test(s)) { err.hidden = false; err.textContent = 'Roman numerals only use the letters I, V, X, L, C, D and M.'; return; }
+    if (!VALID.test(s)) {
+      let v = 0; for (let i = 0; i < s.length; i++) { const a = MAP.find(([x]) => x === s[i])![1], b = i + 1 < s.length ? MAP.find(([x]) => x === s[i + 1])![1] : 0; v += a < b ? -a : a; }
+      err.hidden = false; err.textContent = v > 0 && v < 4000 ? `“${s}” is not written in standard form. It may be meant as ${v}, which is correctly written ${toRoman(v).s}.` : `“${s}” is not a valid Roman numeral.`; return;
+    }
+    let v = 0, rest = s; const parts: string[] = [];
+    for (const [sym, val] of MAP) while (rest.startsWith(sym)) { v += val; rest = rest.slice(sym.length); parts.push(`${sym} (${val})`); }
+    n.value = String(v); show(s, parts);
+  }
+  n.addEventListener('input', fromNumber); r.addEventListener('input', fromRoman);
+  root.querySelector('[data-copy]')!.addEventListener('click', (e) => copyText(r.value.toUpperCase(), e.currentTarget as HTMLElement));
+  fromNumber();
+</script>

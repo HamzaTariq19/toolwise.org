@@ -1,0 +1,54 @@
+---
+import Icon from '../components/Icon.astro';
+---
+<div id="nw" class="space-y-5">
+  <div class="card grid gap-4 p-5 sm:grid-cols-2 sm:p-6">
+    <div class="sm:col-span-2"><label for="nw-in" class="label">Number</label><input id="nw-in" class="input text-lg tabular" inputmode="decimal" value="1,234.56" autocomplete="off" /></div>
+    <div><label for="nw-mode" class="label">Write as</label>
+      <select id="nw-mode" class="select"><option value="words">Words</option><option value="cheque">Check / cheque amount</option><option value="ordinal">Ordinal (first, second…)</option><option value="digits">Decimals read digit by digit</option></select></div>
+    <div><label for="nw-cur" class="label">Currency (for checks)</label><select id="nw-cur" class="select"><option value="dollars|cents">Dollars</option><option value="pounds|pence">Pounds</option><option value="euros|cents">Euros</option><option value="rupees|paise">Rupees</option><option value="|">No currency</option></select></div>
+    <div class="flex flex-wrap gap-x-6 sm:col-span-2">
+      <label class="flex min-h-11 items-center gap-3 text-[0.9375rem]"><input type="checkbox" id="nw-and" class="h-5 w-5 accent-[var(--brand)]" />Use “and” (British style: one hundred and five)</label>
+      <label class="flex min-h-11 items-center gap-3 text-[0.9375rem]"><input type="checkbox" id="nw-caps" class="h-5 w-5 accent-[var(--brand)]" />Capitalize</label>
+    </div>
+  </div>
+  <section class="card p-5" aria-live="polite">
+    <p class="text-sm font-medium text-muted">In words</p>
+    <p class="mt-2 break-words text-xl font-semibold leading-relaxed" data-out></p>
+    <p class="alert alert-error mt-3" data-err hidden></p>
+    <button type="button" class="btn btn-primary mt-4" data-copy><Icon name="Copy" size={18} /><span data-label>Copy</span></button>
+  </section>
+</div>
+<script>
+  import { intToWords, ordinal } from '../lib/num-words';
+  import { copyText } from '../lib/ui';
+  const $ = (id: string) => document.getElementById(id) as HTMLInputElement;
+  const root = document.getElementById('nw')!, out = root.querySelector<HTMLElement>('[data-out]')!, err = root.querySelector<HTMLElement>('[data-err]')!;
+  const DIG = ['zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine'];
+  const cap = (s: string, mode: string) => ($('nw-caps').checked ? (mode === 'cheque' ? s.replace(/\b\w/g, (c) => c.toUpperCase()) : s[0].toUpperCase() + s.slice(1)) : s);
+  function run() {
+    const raw = $('nw-in').value.trim().replace(/[,\s_]/g, ''), mode = $('nw-mode').value, and = $('nw-and').checked;
+    err.hidden = true;
+    const m = raw.match(/^(-)?(\d+)(?:\.(\d+))?$/);
+    if (!raw) { out.textContent = ''; return; }
+    if (!m) { err.hidden = false; err.textContent = 'Please enter a number using digits, for example 1250 or 99.95.'; out.textContent = ''; return; }
+    if (m[2].replace(/^0+/, '').length > 36) { err.hidden = false; err.textContent = 'That number is too large. The largest supported is just under one undecillion (36 digits).'; out.textContent = ''; return; }
+    const neg = !!m[1], int = BigInt(m[2]), frac = m[3] ?? '';
+    let s: string;
+    if (mode === 'cheque') {
+      const [maj, min] = $('nw-cur').value.split('|');
+      const cents = Math.round(Number(`0.${frac || '0'}`) * 100), whole = int + (cents === 100 ? 1n : 0n), c = cents % 100;
+      s = `${neg ? 'minus ' : ''}${intToWords(whole, and)}${maj ? ` ${whole === 1n ? maj.replace(/s$/, '') : maj}` : ''} and ${maj ? `${c ? intToWords(BigInt(c)) : 'zero'} ${c === 1 ? min.replace(/s$/, '').replace('pence', 'penny').replace('paise', 'paisa') : min}` : `${String(c).padStart(2, '0')}/100`}`;
+    } else if (mode === 'ordinal') {
+      if (frac || neg) { err.hidden = false; err.textContent = 'Ordinals only work for whole numbers of zero or more, like 21 (twenty-first).'; out.textContent = ''; return; }
+      s = ordinal(intToWords(int, and));
+    } else {
+      s = `${neg ? 'minus ' : ''}${intToWords(int, and)}`;
+      if (frac) s += mode === 'digits' || frac.length > 3 ? ` point ${[...frac].map((d) => DIG[Number(d)]).join(' ')}` : ` and ${intToWords(BigInt(frac))} ${['', 'tenth', 'hundredth', 'thousandth'][frac.length]}${BigInt(frac) === 1n ? '' : 's'}`;
+    }
+    out.textContent = cap(s, mode);
+  }
+  root.addEventListener('input', run); root.addEventListener('change', run);
+  root.querySelector('[data-copy]')!.addEventListener('click', (e) => copyText(out.textContent ?? '', e.currentTarget as HTMLElement));
+  run();
+</script>

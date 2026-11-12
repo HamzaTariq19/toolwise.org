@@ -8,9 +8,10 @@ Status of each tool lives in `src/data/tools.json` (`"status": "built"` = live, 
 - Batch 2, Image (15): crop, JPG↔PNG, rotate/flip, add text, watermark, blur, Base64, meme, collage, color picker, black & white, round corners, metadata viewer, remove EXIF
 - Batch 3, Text (16): character counter, case converter, remove duplicates, text compare, sort lines, extra spaces, find & replace, reverse, text to speech, speech to text, lorem ipsum, readability, word frequency, small text, line counter, slug
 - Batch 4, Calculators (23): loan, car loan, savings goal, retirement, credit card payoff, debt snowball, inflation (bundled BLS CPI data), ROI, salary to hourly, discount, tip, profit margin, VAT/sales tax, calorie, body fat, ovulation, water intake, sleep, grade, date difference, fraction, scientific, random number
+- Batch 5, Converters (14): length, weight, temperature, area, volume, speed, time, data size (decimal + binary), fuel economy, shoe size, clothing size, number to words, Roman numerals, number bases
 
 ## Next
-- Batch 5 Converters (14) → Batch 6 Developer (15) → Batch 7 SEO (12) → Batch 8 Student (10) → Batch 9 Everyday (10) → Batch 10 Heavy (8; ask before building the link shortener)
+- Batch 6 Developer (15) → Batch 7 SEO (12) → Batch 8 Student (10) → Batch 9 Everyday (10) → Batch 10 Heavy (8; ask before building the link shortener)
 
 ## How each tool is built (keep it consistent)
 1. `src/tools/<slug>.astro`: UI + `<script>`. Reuse components:
@@ -19,6 +20,7 @@ Status of each tool lives in `src/data/tools.json` (`"status": "built"` = live, 
    - Calculators: `CalcLayout`, `CurrencySelect`, `Field`, `ResultPanel`, `BodyInputs`, `lib/calc.ts` (`live`, `resultsUi`, `payment`, `amortizeYearly`, `body`), `lib/expr.ts` (safe math parser)
    - Image editing: `ImageEditor` + `lib/image-editor.ts` (live preview, `render(img, scale)`), `lib/text-draw.ts`, `lib/metadata.ts`
    - Text tools: `TextTransform` + `lib/text-transform.ts` (input → live output), `lib/text-stats.ts`
+   - Unit converters: `UnitConverter` + `lib/units.ts` (all factors in one table)
    - Helpers: `lib/ui.ts` (`num`, `fmt`, `money`, `copyText`, `downloadBlob`, `store`), `lib/image.ts`, `lib/random.ts`
    - Heavy libraries only via dynamic `import()` inside handlers.
 2. `src/content/tools/<slug>.md`: quoted `seoTitle`/`metaDescription`, 3–5 FAQs, ~400+ word original guide.

@@ -1,0 +1,73 @@
+---
+// Shared unit converter: one value, "from" and "to" units, plus every other unit listed live.
+import Icon from './Icon.astro';
+import { KINDS } from '../lib/units';
+interface Props { kind: string }
+const { kind } = Astro.props;
+const k = KINDS[kind];
+const groups = [...new Set(k.units.map((u) => u.group ?? ''))];
+const options = (sel: string) => groups.map((g) => {
+  const list = k.units.filter((u) => (u.group ?? '') === g).map((u) => `<option value="${u.k}"${u.k === sel ? ' selected' : ''}>${u.name} (${u.short})</option>`).join('');
+  return g ? `<optgroup label="${g}">${list}</optgroup>` : list;
+}).join('');
+---
+<div id="uc" class="space-y-5" data-kind={kind}>
+  <div class="card p-5 sm:p-6">
+    <div class="grid items-end gap-3 sm:grid-cols-[1fr_auto_1fr]">
+      <div class="space-y-2">
+        <label for="uc-val" class="label">Value</label>
+        <input id="uc-val" class="input text-lg tabular" inputmode="decimal" value={k.value} autocomplete="off" />
+        <label for="uc-from" class="sr-only">From unit</label>
+        <select id="uc-from" class="select"><Fragment set:html={options(k.from)} /></select>
+      </div>
+      <button type="button" class="btn btn-secondary mx-auto h-11 w-11 !p-0 sm:mb-0.5" data-swap aria-label="Swap units"><Icon name="ArrowLeftRight" size={18} /></button>
+      <div class="space-y-2">
+        <span class="label" id="uc-res-l">Result</span>
+        <output class="flex min-h-[46px] items-center rounded-[10px] border border-line bg-surface-2 px-3 text-lg font-bold tabular" aria-labelledby="uc-res-l" data-result>–</output>
+        <label for="uc-to" class="sr-only">To unit</label>
+        <select id="uc-to" class="select"><Fragment set:html={options(k.to)} /></select>
+      </div>
+    </div>
+    <p class="mt-4 text-[1.0625rem]" aria-live="polite" data-sentence></p>
+    <p class="alert alert-error mt-3" data-err hidden></p>
+    <button type="button" class="btn btn-primary mt-4" data-copy><Icon name="Copy" size={18} /><span data-label>Copy result</span></button>
+  </div>
+  <section class="card overflow-hidden" aria-labelledby="uc-all">
+    <h2 id="uc-all" class="border-b border-line px-5 py-3 text-base font-semibold">All conversions</h2>
+    <table class="w-full text-[0.9375rem]"><tbody class="divide-y divide-[var(--border)]" data-table></tbody></table>
+  </section>
+</div>
+<script>
+  import { KINDS, convert, nice } from '../lib/units';
+  import { copyText } from '../lib/ui';
+  const root = document.getElementById('uc')!, kind = KINDS[root.dataset.kind!];
+  const val = document.getElementById('uc-val') as HTMLInputElement, from = document.getElementById('uc-from') as HTMLSelectElement, to = document.getElementById('uc-to') as HTMLSelectElement;
+  const err = root.querySelector<HTMLElement>('[data-err]')!;
+  let result = '';
+  function run() {
+    const raw = val.value.trim().replace(/\s/g, '').replace(/,(?=\d{3}\b)/g, '').replace(',', '.');
+    const v = Number(raw);
+    const u = (k: string) => kind.units.find((x) => x.k === k)!;
+    const fail = (m: string | null) => { err.hidden = !m; err.textContent = m ?? ''; result = ''; root.querySelector('[data-result]')!.textContent = '–'; root.querySelector('[data-sentence]')!.textContent = ''; root.querySelector('[data-table]')!.innerHTML = ''; };
+    if (!raw || Number.isNaN(v)) return fail(raw ? 'Please enter a number, for example 12.5.' : null);
+    const kindName = root.dataset.kind;
+    if (kindName === 'temperature' && convert(kind, v, from.value, 'k') < -1e-9) return fail('That is below absolute zero (−273.15 °C), the lowest possible temperature.');
+    if (kindName === 'fuel' && v <= 0) return fail('Enter a fuel economy greater than zero.');
+    if (kindName !== 'temperature' && v < 0) return fail('Please enter a positive number.');
+    err.hidden = true;
+    const r = convert(kind, v, from.value, to.value);
+    result = nice(r);
+    root.querySelector('[data-result]')!.textContent = `${result} ${u(to.value).short}`;
+    root.querySelector('[data-sentence]')!.innerHTML = `<strong>${nice(v)} ${u(from.value).short}</strong> = <strong>${result} ${u(to.value).short}</strong>`;
+    let last = '';
+    root.querySelector('[data-table]')!.innerHTML = kind.units.map((x) => {
+      const head = x.group && x.group !== last ? `<tr><th colspan="2" class="bg-surface-2 px-5 py-1.5 text-left text-xs font-semibold uppercase tracking-wide text-subtle">${x.group}</th></tr>` : '';
+      last = x.group ?? '';
+      return `${head}<tr class="${x.k === from.value ? 'text-subtle' : ''}"><td class="px-5 py-2">${x.name}</td><td class="px-5 py-2 text-right font-semibold tabular">${nice(convert(kind, v, from.value, x.k))} ${x.short}</td></tr>`;
+    }).join('');
+  }
+  [val, from, to].forEach((e) => e.addEventListener('input', run));
+  root.querySelector('[data-swap]')!.addEventListener('click', () => { [from.value, to.value] = [to.value, from.value]; run(); });
+  root.querySelector('[data-copy]')!.addEventListener('click', (e) => copyText(result, e.currentTarget as HTMLElement));
+  run();
+</script>

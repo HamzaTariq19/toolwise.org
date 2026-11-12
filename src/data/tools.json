@@ -1445,7 +1445,7 @@
       "km to miles",
       "distance converter"
     ],
-    "status": "planned"
+    "status": "built"
   },
   {
     "id": 90,
@@ -1461,7 +1461,7 @@
       "mass converter",
       "grams to ounces"
     ],
-    "status": "planned"
+    "status": "built"
   },
   {
     "id": 91,
@@ -1476,7 +1476,7 @@
       "fahrenheit to celsius",
       "kelvin"
     ],
-    "status": "planned"
+    "status": "built"
   },
   {
     "id": 92,
@@ -1492,7 +1492,7 @@
       "hectares",
       "square meters"
     ],
-    "status": "planned"
+    "status": "built"
   },
   {
     "id": 93,
@@ -1507,7 +1507,7 @@
       "ml to oz",
       "cubic meters"
     ],
-    "status": "planned"
+    "status": "built"
   },
   {
     "id": 94,
@@ -1523,7 +1523,7 @@
       "knots",
       "velocity"
     ],
-    "status": "planned"
+    "status": "built"
   },
   {
     "id": 95,
@@ -1538,7 +1538,7 @@
       "hours to days",
       "time units"
     ],
-    "status": "planned"
+    "status": "built"
   },
   {
     "id": 96,
@@ -1554,7 +1554,7 @@
       "bytes",
       "storage converter"
     ],
-    "status": "planned"
+    "status": "built"
   },
   {
     "id": 97,
@@ -1587,7 +1587,7 @@
       "eu to us shoe size",
       "uk shoe size"
     ],
-    "status": "planned"
+    "status": "built"
   },
   {
     "id": 99,
@@ -1602,7 +1602,7 @@
       "clothing size chart",
       "international sizes"
     ],
-    "status": "planned"
+    "status": "built"
   },
   {
     "id": 100,
@@ -1635,7 +1635,7 @@
       "cheque writing",
       "amount in words"
     ],
-    "status": "planned"
+    "status": "built"
   },
   {
     "id": 102,
@@ -1650,7 +1650,7 @@
       "numbers to roman",
       "xiv"
     ],
-    "status": "planned"
+    "status": "built"
   },
   {
     "id": 103,
@@ -1666,7 +1666,7 @@
       "decimal to binary",
       "base converter"
     ],
-    "status": "planned"
+    "status": "built"
   },
   {
     "id": 104,
@@ -1681,7 +1681,7 @@
       "fuel consumption",
       "gas mileage"
     ],
-    "status": "planned"
+    "status": "built"
   },
   {
     "id": 105,

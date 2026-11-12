@@ -1,0 +1,54 @@
+---
+import Icon from '../components/Icon.astro';
+const bases = [[10, 'Decimal', '0–9'], [2, 'Binary', '0 and 1'], [16, 'Hexadecimal', '0–9 and A–F'], [8, 'Octal', '0–7']];
+---
+<div id="nb" class="space-y-5">
+  <div class="card space-y-4 p-5 sm:p-6">
+    <p class="text-[0.9375rem] text-muted">Type in any box. The others update instantly.</p>
+    {bases.map(([b, name, digits]) => (
+      <div>
+        <div class="flex items-center justify-between"><label for={`nb-${b}`} class="label">{name} <span class="font-normal text-subtle">(base {b}, digits {digits})</span></label><button type="button" class="btn btn-ghost btn-sm" data-copy={b}><Icon name="Copy" size={16} /><span data-label>Copy</span></button></div>
+        <input id={`nb-${b}`} data-base={b} class="input mono text-lg" autocomplete="off" spellcheck="false" />
+      </div>
+    ))}
+    <div class="grid grid-cols-[auto_1fr] items-end gap-3 border-t border-line pt-4">
+      <div><label for="nb-cb" class="label">Other base</label><input id="nb-cb" class="input w-20 tabular" inputmode="numeric" value="36" /></div>
+      <input id="nb-c" data-base="custom" class="input mono text-lg" autocomplete="off" spellcheck="false" aria-label="Number in the other base" />
+    </div>
+    <p class="alert alert-error" data-err hidden role="alert"></p>
+  </div>
+  <section class="card p-5"><p class="text-sm font-medium text-muted">Binary, grouped in bytes</p><p class="mono mt-2 break-all text-lg" data-bits>–</p><p class="mt-2 text-sm text-muted" data-info></p></section>
+</div>
+<script>
+  import { copyText } from '../lib/ui';
+  const root = document.getElementById('nb')!, err = root.querySelector<HTMLElement>('[data-err]')!;
+  const inputs = Array.from(root.querySelectorAll<HTMLInputElement>('input[data-base]'));
+  const cb = document.getElementById('nb-cb') as HTMLInputElement;
+  const DIGITS = '0123456789abcdefghijklmnopqrstuvwxyz';
+  const baseOf = (el: HTMLInputElement) => (el.dataset.base === 'custom' ? Number(cb.value) : Number(el.dataset.base));
+  function parse(s: string, base: number): bigint | null {
+    s = s.trim().toLowerCase().replace(/[\s_]/g, '').replace(/^(0x|0b|0o)/, '');
+    let neg = false; if (s.startsWith('-')) { neg = true; s = s.slice(1); }
+    if (!s) return null;
+    let v = 0n; const B = BigInt(base);
+    for (const ch of s) { const d = DIGITS.indexOf(ch); if (d < 0 || d >= base) throw new Error(`“${ch}” is not a valid digit in base ${base}.`); v = v * B + BigInt(d); }
+    return neg ? -v : v;
+  }
+  const fmtBase = (v: bigint, b: number) => (v < 0n ? '-' + (-v).toString(b) : v.toString(b)).toUpperCase();
+  function update(src: HTMLInputElement) {
+    err.hidden = true;
+    const b = Number(cb.value);
+    if (!Number.isInteger(b) || b < 2 || b > 36) { err.hidden = false; err.textContent = 'The other base must be a whole number from 2 to 36.'; return; }
+    let v: bigint | null;
+    try { v = parse(src.value, baseOf(src)); } catch (e) { err.hidden = false; err.textContent = (e as Error).message; src.setAttribute('aria-invalid', 'true'); return; }
+    src.removeAttribute('aria-invalid');
+    inputs.forEach((i) => { if (i !== src) i.value = v === null ? '' : fmtBase(v, baseOf(i)); });
+    const bin = v === null || v < 0n ? '' : v.toString(2);
+    root.querySelector('[data-bits]')!.textContent = bin ? bin.padStart(Math.ceil(bin.length / 8) * 8, '0').replace(/(.{8})(?=.)/g, '$1 ') : '–';
+    root.querySelector('[data-info]')!.textContent = bin ? `${bin.length} bit${bin.length === 1 ? '' : 's'} · fits in ${Math.ceil(bin.length / 8)} byte${Math.ceil(bin.length / 8) === 1 ? '' : 's'}` : '';
+  }
+  inputs.forEach((i) => i.addEventListener('input', () => update(i)));
+  cb.addEventListener('input', () => update(inputs[0]));
+  root.querySelectorAll<HTMLElement>('[data-copy]').forEach((btn) => btn.addEventListener('click', () => copyText((document.getElementById(`nb-${btn.dataset.copy}`) as HTMLInputElement).value, btn)));
+  inputs[0].value = '255'; update(inputs[0]);
+</script>
