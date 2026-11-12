@@ -2,49 +2,56 @@
 seoTitle: "Compress Image to 20KB, 50KB or 100KB Online Free | toolwise"
 metaDescription: "Reduce a photo to under 20KB, 50KB, 100KB or any size you need for online forms. Automatic best quality. Free, private, no upload."
 faqs:
-  - q: How do I compress a photo to under 100KB?
-    a: Choose 100 KB as the target size, then select your photo. toolwise automatically finds the highest quality that fits under 100 KB and gives you a JPG ready to upload. Most photos reach the target in a second or two.
-  - q: Why is my result a little smaller than the target?
-    a: Some websites count 1 KB as 1,000 bytes and others as 1,024 bytes. To be safe, toolwise always aims under the stricter limit, so your file is accepted either way. A 100 KB target therefore gives a file of about 97 KB as shown on most computers.
-  - q: Will my photo still be clear at 20KB?
-    a: At 20 KB the image has to become smaller in pixels, so it works best for passport photos, signatures and profile pictures where a small image is expected. Faces and text remain recognizable. For larger, detailed photos, use a bigger target if the form allows it.
-  - q: Why is the result always a JPG?
-    a: JPG gives the best quality for the smallest size and is accepted by almost every online form, including government, exam and job application portals. If you need PNG or WebP, use our regular Compress Image tool.
-  - q: Are my photos uploaded anywhere?
-    a: No. All processing happens inside your browser. Your photos, signatures and ID scans never leave your device.
+  - q: "Why is my image smaller in pixels after compressing?"
+    a: "When a target is very small, lowering quality alone would make the picture look bad. The tool first tries the highest quality that fits; if that isn't enough, it reduces the dimensions a little and tries again. The result shows the final size in pixels and the quality used."
+  - q: "Why is the result a JPG?"
+    a: "JPG gives the most control over file size and is accepted by almost every form. PNG files can't be reliably squeezed to an exact size because they don't have a quality setting."
+  - q: "Does the tool count 1 KB as 1,000 or 1,024 bytes?"
+    a: "Websites differ, so the tool plays safe: it treats 1 KB as 1,000 bytes. A file made for a 100 KB limit is therefore under 100,000 bytes, which passes whichever way the form counts."
+  - q: "Can it compress a document scan to 50 KB?"
+    a: "Usually yes. Scanned pages with text compress well. If small text becomes hard to read, crop away the margins first so the text stays larger."
+  - q: "Is my photo uploaded?"
+    a: "No. All compression happens in your browser, so ID photos and signatures stay on your device."
 ---
 
-## What this tool does
+## When to use it
 
-Many online forms set strict file-size limits: "photo must be under 50KB", "signature between 10KB and 20KB", "document image not more than 100KB". This tool takes your picture and produces a JPG that fits under the exact limit you need, at the best quality possible. You do not have to guess quality settings or try again and again.
+Compress Image to KB shrinks a photo to fit an exact size limit, such as "under 50 KB" or "maximum 200 KB". Government and exam portals, job sites, visa applications, university admissions and bank forms often set these strict limits for photos, signatures and scanned documents. Instead of guessing settings, choose the limit and the tool finds the best quality that fits.
 
-## How to compress an image to a specific size
+## How to compress an image to a size in KB
 
-1. Choose your target: **20 KB**, **50 KB**, **100 KB**, **200 KB**, **500 KB**, or **Custom** to type any size.
-2. Tap **Choose images** and select your photo. iPhone HEIC photos work too.
-3. toolwise tests different quality levels and, if necessary, gently reduces the dimensions until the file fits.
-4. Check the new size and press **Download**.
+1. Under **Target size**, tap **20 KB**, **50 KB**, **100 KB**, **200 KB** or **500 KB**, or choose **Custom** and type any size in **Custom size in KB**.
+2. Tap **Choose images**, or drag JPG, PNG, WebP or HEIC files onto the box. You can do several at once.
+3. Wait a moment. Each image is saved as a JPG just under the target, at the best quality that fits.
+4. Check the results: each shows the new file size, its dimensions in pixels and the quality used.
+5. Press **Download**. Several images come as one ZIP file.
 
-Changing the target size after you add a photo re-processes it instantly.
+## A worked example
+
+An exam registration site asks for a photo between 20 and 50 KB and a signature under 20 KB. Your phone photo is 3.1 MB and your signature scan is 900 KB. Choose **50 KB** and add the photo: you get a JPG of about 48 KB, around 600 × 800 pixels, that still looks clear. Then choose **20 KB** and add the signature: it comes out at about 18 KB. Both upload without errors.
 
 ## How it works
 
-The tool first tries to keep your image at full size and only lowers the JPG quality. It uses a fast search to find the highest quality that is still under your limit. If the quality would have to drop so low that the image looks blocky, it reduces the width and height a little instead and tries again. The result shown under each file tells you the final dimensions and quality, so you know exactly what you are uploading.
-
-## Common size limits
-
-- **Passport and visa photos:** often 20 KB to 100 KB. Make the photo first with our [Passport Photo Maker](/passport-photo-maker), then compress it here.
-- **Signatures for exam and job applications:** usually 10 KB to 30 KB.
-- **ID documents and certificates:** often 100 KB to 500 KB.
-- **Profile pictures:** usually 100 KB to 200 KB.
+The tool tries the highest JPG quality first and checks the size. If it's too big, it searches for the quality that lands just under your limit. If even acceptable quality is too large, it scales the picture down step by step until it fits. This keeps photos as sharp as possible for the size you're allowed.
 
 ## Tips
 
-- Crop away empty background first. Fewer pixels to store means better quality at the same file size.
-- If a form also requires exact dimensions, such as 200 × 230 pixels, resize the image with [Resize Image](/resize-image) before compressing.
-- Scanned documents with text stay readable at 100 KB or more. For very small limits, scan in grayscale.
-- If the form needs a minimum size too, for example "between 20 KB and 50 KB", choose the upper limit.
+- **Crop first.** Removing empty background around a face or signature leaves more of the size budget for the part that matters.
+- **Check the pixel size rules** too. Some forms want, say, 200 × 230 pixels as well as a KB limit; use Resize Image for that, then compress.
+- **Pick a target a little below the limit** if a form is fussy about rounding, for example 95 KB for a 100 KB limit.
+- **Use good lighting** for signature photos; clean contrast compresses better.
+
+## Common mistakes
+
+- **Setting the target far below what's needed.** A 10 KB passport photo will look blurry; use the largest size the form allows.
+- **Compressing an already-compressed image** repeatedly. Start from the original photo.
+- **Expecting a PNG back.** The output is always JPG, which most forms prefer.
+- **Ignoring minimum sizes.** Some portals reject files under, say, 10 KB as well.
 
 ## Private by design
 
-Your images are processed on your device and never uploaded. That matters when you are handling personal documents like ID photos and signatures.
+Images are compressed in your browser and never uploaded.
+
+## Related tools
+
+Make a correctly framed photo with the [Passport Photo Maker](/passport-photo-maker), set exact dimensions with [Resize Image](/resize-image), or compress without a size target using [Compress Image](/compress-image).

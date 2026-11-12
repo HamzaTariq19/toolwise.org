@@ -2,45 +2,58 @@
 seoTitle: "WebP to JPG Converter: Free, Private, No Upload | toolwise"
 metaDescription: "Convert WebP images to JPG in seconds. Batch convert several files at once, right in your browser. Free, no signup, files never leave your device."
 faqs:
-  - q: Why can't I open WebP files?
-    a: WebP is a modern image format created by Google. Web browsers support it, but some older photo viewers, editing programs, printing services and upload forms do not. Converting to JPG makes the image work almost everywhere.
-  - q: Will the JPG look the same as the WebP?
-    a: Yes. At the default quality of 90% the converted JPG looks identical to the original. The JPG file may be somewhat larger than the WebP, because WebP compresses more efficiently.
+  - q: Why do websites use WebP?
+    a: WebP files are usually 25 to 35% smaller than JPG at the same quality, so pages load faster. Browsers show them perfectly, but some apps, older editors and upload forms still don't accept them.
   - q: What happens to transparent areas?
-    a: JPG does not support transparency, so transparent parts of a WebP image are filled with white. If you need to keep transparency, convert to PNG instead.
-  - q: Can I convert many WebP files at once?
-    a: Yes. Select or drop as many files as you like. When there is more than one, the Download button gives you all the JPG files together in one ZIP file.
-  - q: Are animated WebP files supported?
-    a: An animated WebP is converted using its first frame, because the JPG format can only hold a single still image.
+    a: JPG can't store transparency, so transparent parts become white. If you need to keep the transparency, open the image in Compress Image and choose PNG under "Save as" instead.
+  - q: What about animated WebP images?
+    a: Only the first frame is converted, so you get a still JPG. Animated WebPs are less common than animated GIFs, but they do turn up on some sites and messaging apps.
+  - q: Will the JPG be bigger than the WebP?
+    a: Usually yes, often 30 to 50% bigger at 90% quality, because JPG is a less efficient format. Lower the quality to 75 to 80% if size matters.
+  - q: Can I convert images I saved from websites?
+    a: Technically yes, but images on websites are usually protected by copyright. Only convert and reuse images you own or have permission to use.
 ---
 
-## What this tool does
+## When to use it
 
-This converter turns WebP images into standard JPG (also called JPEG) files. WebP is common on websites because it is small and fast to load, so images you save from the web often end up as `.webp` files. The trouble starts when you try to open them in an older app, attach them to a form, or send them to a printing service that only accepts JPG. Converting takes a second and solves the problem.
+WebP to JPG converts WebP images into the JPG format that works everywhere. You'll need it when you save an image from a website and it arrives as a .webp file that won't open in an older photo editor, won't upload to a form or marketplace, or can't be inserted into a document or slideshow. Converting to JPG solves the problem without changing how the picture looks.
 
 ## How to convert WebP to JPG
 
-1. Tap **Choose images** or drag your WebP files onto the box.
-2. The conversion starts straight away and a progress bar shows how it is going.
-3. Check the list of converted files, including their dimensions.
-4. Press **Download** to save the JPG. With several files you get a single ZIP.
+1. Tap **Choose images**, or drag your WebP files onto the box. You can convert many at once.
+2. The images convert straight away. Each one is listed with its new size.
+3. Adjust **Image quality** if you want. 90% keeps photos looking identical; lower it for smaller files. Changes apply instantly.
+4. Press **Download**. Several images come together in one ZIP file.
+5. Press **Start over** to convert another set.
 
-## Picking the right quality
+## A worked example
 
-The quality slider controls how much detail the JPG keeps. The default of 90% is a good balance and looks the same as the original in normal viewing. If you are converting images to upload somewhere with a size limit, lower the quality to 75 or 80%. Changing the slider re-converts your files instantly, so you can compare sizes without starting again.
+You're listing an item on a marketplace that only accepts JPG and PNG. The product photos your supplier sent are five .webp files of about 150 KB each. Drop all five onto the box and keep 90% quality. You get five JPGs of roughly 220 KB each, the same size in pixels and visually identical. Upload them straight away.
 
-## WebP or JPG: which should you use?
+## Choosing the quality
 
-- **Use WebP** on your own website. It gives the smallest files and all modern browsers support it.
-- **Use JPG** when you need maximum compatibility: email attachments, government and job application forms, printing, older Windows and Mac software, and many social platforms that re-process uploads anyway.
-- **Use PNG** if the image has a transparent background or contains sharp text and lines, such as a logo or screenshot.
+- **90% (default):** no visible difference; best for photos you'll edit or print.
+- **80%:** close to the WebP's size and still excellent on screen.
+- **60 to 70%:** for quick sharing where small files matter more than detail.
 
 ## Tips
 
-- Your original files are not changed. The tool creates new copies, so you can always convert again with different settings.
-- If a file will not open, it may not really be a WebP image. Some websites serve images with the wrong file extension. Try opening it in your browser first.
-- To make the converted JPG even smaller afterwards, use our [Compress Image](/compress-image) tool.
+- **Keep the WebP originals** if you'll use the images on a website; WebP loads faster there.
+- **Use PNG instead of JPG for logos and icons** with transparent backgrounds, or for screenshots with sharp text.
+- **Resize large images** after converting with Resize Image if the upload has a size limit.
+- **Convert a whole folder at once**: select all the files together rather than one by one.
 
-## Your images stay private
+## Common mistakes
 
-The conversion happens entirely inside your web browser. Nothing is uploaded, so it works quickly even on a slow connection and your pictures are never stored on anyone else's server.
+- **Renaming .webp to .jpg.** The file name changes but the format inside doesn't, so many programs still refuse it. Convert it properly.
+- **Converting the same image back and forth** between formats; each JPG save loses a little detail.
+- **Expecting animation to survive.** JPG is a still format; convert animated images to GIF instead.
+- **Forgetting about transparency,** which becomes white in JPG.
+
+## Private by design
+
+Images are converted in your browser and never uploaded.
+
+## Related tools
+
+Keep transparency by saving as PNG in [Compress Image](/compress-image), shrink photos to an exact size with [Compress Image to KB](/compress-image-to-kb), or convert iPhone photos with [HEIC to JPG](/heic-to-jpg).

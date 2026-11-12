@@ -3,44 +3,53 @@ seoTitle: "Password Generator: Strong Random Passwords | toolwise"
 metaDescription: "Generate strong, random passwords with your choice of length, letters, numbers and symbols. Created securely in your browser and never sent anywhere."
 faqs:
   - q: Are the passwords really random?
-    a: Yes. They are created with the Web Crypto API built into your browser, the same cryptographically secure random source used for encryption. Simple functions like Math.random are not used.
-  - q: Do you see or store my passwords?
-    a: No. Passwords are generated on your own device and are never sent over the internet or saved. When you leave the page, they are gone.
+    a: Yes. They come from your browser's cryptographically secure random number generator, the same source used for encryption keys, and every character is chosen without bias.
+  - q: Is the password sent or saved anywhere?
+    a: No. It's created on your device and only exists on this page until you copy it. This page loads no ads or tracking scripts, and nothing is stored.
   - q: How long should my password be?
-    a: At least 12 characters for everyday accounts and 16 or more for important accounts like email, banking and your password manager. Length adds more security than complexity.
-  - q: What do the bits mean?
-    a: Bits of entropy measure how hard a password is to guess. Each extra bit doubles the number of guesses needed. Around 80 bits or more is considered very strong against modern attacks.
-  - q: How can I remember strong passwords?
-    a: Use a password manager. It remembers a unique strong password for every site, so you only need to remember one master password.
+    a: At least 12 characters for everyday accounts, and 16 or more for email, banking and your password manager. Each extra character multiplies the number of possible passwords by up to 87.
+  - q: What does "Avoid look-alikes" do?
+    a: It leaves out characters that are easy to confuse, such as 0 and O or 1, l and I. Use it when you might need to read or type the password by hand, for example a Wi-Fi password.
+  - q: What do the "bits" mean?
+    a: Bits measure how many guesses an attacker would need. Each extra bit doubles the work. 80 bits or more is very strong; the default 16-character password is around 100 bits.
 ---
 
-## What this tool does
+## When to use it
 
-The password generator creates strong, random passwords in an instant. You choose the length and which kinds of characters to include, and a new password appears immediately along with a strength rating. Copy it with one tap and paste it into the sign-up or password-change form.
+Use the password generator whenever you create a new account, change a password after a data breach, or set up a Wi-Fi network, router or shared login. People are bad at inventing random passwords: we reuse words, names and dates that attackers try first. A generated password has no pattern to guess. Combine it with a password manager so you never need to remember it.
 
-## How to use it
+## How to generate a password
 
-1. A strong 16-character password is generated as soon as the page loads.
-2. Drag the **Length** slider to make it longer or shorter.
-3. Choose which characters to include: uppercase letters, lowercase letters, numbers and symbols.
-4. Turn on **Avoid look-alikes** if you might need to read or type the password by hand.
-5. Press **Copy password**. Use the refresh button for a different one.
+1. A password is ready as soon as the page opens, shown at the top with its strength (for example "Very strong · 103 bits").
+2. Drag the **Length** slider (6 to 64 characters). A new password appears as you move it.
+3. Under **Include**, choose which characters to use: **Uppercase (A–Z)**, **Lowercase (a–z)**, **Numbers (0–9)** and **Symbols (!@#$…)**.
+4. Tick **Avoid look-alikes (0/O, 1/l/I)** if the password will be read or typed by hand.
+5. Press the refresh button for a new one, then **Copy password** and paste it where you need it.
 
-## What makes a password strong
+The generator always includes at least one character from every type you selected, which satisfies most sites' password rules.
 
-- **Length:** every extra character multiplies the number of possible passwords.
-- **Randomness:** passwords made from words, names, dates or keyboard patterns like "qwerty" are guessed quickly by attackers using lists of common passwords.
-- **Uniqueness:** never reuse a password. If one website is breached, attackers try the same email and password on other sites.
+## A worked example
 
-A random 16-character password using all four character types has over 100 bits of entropy, which would take longer than the age of the universe to guess by brute force with current technology.
+Your bank asks for a new password of 12 to 20 characters with upper and lower case, a number and a symbol. Set **Length** to 18 and keep all four boxes ticked. You get something like `p7#Vr!Kx2m@Qe9Lz;w`, rated very strong at about 116 bits. Copy it into your password manager first, then into the bank's form.
 
-## Good password habits
+## Tips for strong, usable passwords
 
-- Use a **password manager** to store your passwords securely.
-- Turn on **two-factor authentication** for email, banking and social media.
-- Change a password immediately if a service tells you it was involved in a data breach.
-- Some websites limit which symbols are allowed. If a password is rejected, untick Symbols or generate a new one.
+- **Use a password manager** to save each password. Then length costs you nothing.
+- **Never reuse a password.** When one site is breached, attackers try the same email and password everywhere else.
+- **Turn on two-step verification** for important accounts; it protects you even if a password leaks.
+- **Some sites limit symbols.** If one is rejected, untick **Symbols** and add 4 to the length to keep the strength.
 
-## Check an existing password
+## Common mistakes
 
-Want to know how strong a password you already use is? Our [Password Strength Checker](/password-strength-checker) analyzes it privately in your browser. Need random IDs instead? Try the [UUID Generator](/uuid-generator).
+- **Shortening the password to make it memorable.** Let the manager remember it instead.
+- **Saving it in a note or email** before it's in your manager; that's an easy place for it to leak.
+- **Changing a character "to make it yours".** Small edits don't help and may weaken the randomness.
+- **Sending passwords over chat.** If you must share one, use your manager's sharing feature.
+
+## Private by design
+
+The password is generated on your device and is never sent, logged or stored. This page also loads no advertising or tracking scripts.
+
+## Related tools
+
+Test how a password would hold up with the [Password Strength Checker](/password-strength-checker), or share a Wi-Fi password easily with a [QR Code Generator](/qr-code-generator) Wi-Fi code.

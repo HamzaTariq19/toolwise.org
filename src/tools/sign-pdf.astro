@@ -116,7 +116,8 @@ import '@fontsource/caveat/latin-600.css';
   let sigRatio = 3; // width / height
   let uploaded: HTMLCanvasElement | null = null;
   // placements in viewport-normalized coords (0..1, top-left origin)
-  type Placement = { page: number; x: number; y: number; w: number; el: HTMLElement };
+  // Each placement keeps its own image, so changing the signature (e.g. to initials) doesn't alter earlier ones
+  type Placement = { page: number; x: number; y: number; w: number; el: HTMLElement; url: string; ratio: number };
   let placements: Placement[] = [];
   const viewports: PageViewport[] = [];
 
@@ -249,8 +250,7 @@ import '@fontsource/caveat/latin-600.css';
     sigRatio = c.width / c.height;
     sigUrl = c.toDataURL('image/png');
     $<HTMLImageElement>('[data-sig-preview]').src = sigUrl;
-    placements.forEach((p) => (p.el.querySelector('img')!.src = sigUrl));
-    placements.forEach((p) => layoutBox(p));
+    // Signatures already placed keep their own image; the new one is used for the next taps (e.g. initials)
     show('place');
     if (!pagesEl.childElementCount) await renderPages();
   });
@@ -317,7 +317,7 @@ import '@fontsource/caveat/latin-600.css';
     el.tabIndex = 0;
     el.setAttribute('aria-label', 'Signature. Drag to move, use the corner handle to resize. Press Delete to remove.');
     el.innerHTML = `<img src="${sigUrl}" alt="" /><button type="button" data-del aria-label="Remove signature"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg></button><button type="button" data-resize aria-label="Resize signature"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg></button>`;
-    const p: Placement = { page, x, y, w, el };
+    const p: Placement = { page, x, y, w, el, url: sigUrl, ratio: sigRatio };
     placements.push(p);
     pagesEl.querySelector(`[data-page="${page}"]`)!.appendChild(el);
     layoutBox(p);
@@ -328,7 +328,7 @@ import '@fontsource/caveat/latin-600.css';
   function pageRect(p: Placement) { return (p.el.parentElement as HTMLElement).getBoundingClientRect(); }
   function clampP(p: Placement) {
     const r = pageRect(p);
-    const h = (p.w * r.width) / sigRatio / r.height;
+    const h = (p.w * r.width) / p.ratio / r.height;
     p.w = Math.min(Math.max(p.w, 0.05), 1);
     p.x = Math.min(Math.max(p.x, 0), 1 - p.w);
     p.y = Math.min(Math.max(p.y, 0), Math.max(0, 1 - h));
@@ -339,7 +339,7 @@ import '@fontsource/caveat/latin-600.css';
     p.el.style.left = `${p.x * 100}%`;
     p.el.style.top = `${p.y * 100}%`;
     p.el.style.width = `${p.w * 100}%`;
-    p.el.style.height = `${((p.w * r.width) / sigRatio / r.height) * 100}%`;
+    p.el.style.height = `${((p.w * r.width) / p.ratio / r.height) * 100}%`;
   }
   function wireBox(p: Placement) {
     let start: { x: number; y: number; px: number; py: number; w: number; resize: boolean } | null = null;
@@ -384,12 +384,14 @@ import '@fontsource/caveat/latin-600.css';
     try {
       const { PDFDocument, degrees } = await getPdfLib();
       const pdf = await PDFDocument.load(bytes, { updateMetadata: false });
-      const png = await pdf.embedPng(sigUrl);
+      const images = new Map<string, Awaited<ReturnType<typeof pdf.embedPng>>>();
       for (const p of placements) {
+        if (!images.has(p.url)) images.set(p.url, await pdf.embedPng(p.url));
+        const png = images.get(p.url)!;
         const vp = viewports[p.page];
         const page = pdf.getPage(p.page);
         const r = pageRect(p);
-        const hFrac = (p.w * r.width) / sigRatio / r.height;
+        const hFrac = (p.w * r.width) / p.ratio / r.height;
         // Convert the box's on-screen bottom-left corner to PDF coordinates (handles rotated pages)
         const [x, y] = vp.convertToPdfPoint(p.x * vp.width, (p.y + hFrac) * vp.height);
         const w = p.w * vp.width, h = hFrac * vp.height;

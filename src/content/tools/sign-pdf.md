@@ -2,42 +2,55 @@
 seoTitle: "Sign PDF Online Free: Draw or Type Your Signature | toolwise"
 metaDescription: "Sign PDF documents in your browser. Draw, type or upload your signature and place it anywhere. Free, no account, documents never uploaded."
 faqs:
-  - q: Is an electronic signature legally valid?
-    a: In many countries, including the United States (ESIGN Act) and the European Union (eIDAS), a simple electronic signature is legally valid for most everyday agreements. Some documents, such as certain government, property or court papers, require a specific type of signature. If in doubt, ask the person or organization requesting the signature.
-  - q: Can I sign on my phone?
-    a: Yes. Choose Draw and sign with your finger, then tap the page where the signature should go. You can drag it into place and resize it with the corner handle.
-  - q: Can I add my signature to more than one page?
-    a: Yes. Tap each page where you need to sign and a copy of your signature is placed there. Remove any extra one with the red button.
-  - q: Does this create a digital certificate signature?
-    a: No. This tool adds a visual signature to the page, which is what most forms, contracts and letters require. It does not add a cryptographic certificate-based signature.
-  - q: Is my document uploaded?
-    a: No. Your PDF and your signature stay on your device. Everything is done in your browser, so private contracts and forms are never sent to a server.
+  - q: Is a signature added this way legally valid?
+    a: In many countries, including the US, UK and EU, an electronic signature like this is accepted for most everyday agreements, such as leases, forms and consent letters. Some documents, like wills or certain property deeds, need a witnessed or certified digital signature. If in doubt, ask the person who sent the document.
+  - q: Can I sign on more than one page?
+    a: Yes. Tap each page where you need a signature or initials. Every placement can be moved, resized or removed before you download.
+  - q: Is my signature saved anywhere?
+    a: No. The signature and the PDF stay in your browser and are never uploaded. Close the page and they're gone.
+  - q: How do I make an upload of my paper signature look clean?
+    a: Sign with a dark pen on plain white paper, photograph it in good light from straight above, and crop close to the signature. The white background is removed automatically.
+  - q: Can I fill in form fields too?
+    a: This tool places signatures. To type into form fields first, use Fill PDF Form, then sign the result here.
 ---
 
-## What this tool does
+## When to use it
 
-Sign PDF lets you add your handwritten signature to any PDF document without printing, signing by hand and scanning it back in. You can draw your signature with a finger or mouse, type your name in a handwriting-style font, or upload a photo of your signature. Then place it exactly where it belongs and download the signed PDF.
+Sign PDF lets you add your signature to a PDF without printing, signing and scanning. Use it for rental agreements, job offers, permission slips, invoices, delivery notes and any form someone emailed you with "please sign and return". You can draw, type or upload your signature, place it exactly where it belongs, and download the signed copy in a minute.
 
 ## How to sign a PDF
 
-1. Tap **Choose PDF file** and select the document you need to sign.
-2. Create your signature: **Draw** it, **Type** your name and pick a style, or **Upload image** of your signature on paper.
+1. Tap **Choose PDF file**, or drag a PDF (up to 100 MB) onto the box.
+2. Under **Create your signature**, choose how:
+   - **Draw**: sign with your finger or mouse. Pick **Black** or **Blue** ink; **Clear** starts again.
+   - **Type**: enter **Your name** and tap one of three handwriting styles.
+   - **Upload image**: tap **Choose signature image** and pick a photo of your signature.
 3. Press **Use this signature**.
-4. Tap the page where you want to sign. Drag the signature to adjust its position and use the corner handle to make it bigger or smaller.
+4. **Tap the page where you want to sign.** Drag the signature to move it, use the corner handle to resize it, and the red button to remove it. Repeat on other pages if needed.
 5. Press **Download signed PDF**.
 
-## Tips for a natural-looking signature
+## A worked example
 
-- **Drawing on a phone:** turn your phone sideways for a wider signing area, and sign slowly. Using a stylus gives the most natural result.
-- **Typing:** use your full name as you normally sign it. Great Vibes looks the most like handwriting, while Caveat looks more casual.
-- **Uploading:** sign on plain white paper with a dark pen and take a well-lit photo from straight above. The white background is removed automatically so the signature looks like ink on the page.
-- **Size:** a signature usually looks right when it is about the width of the signature line, roughly a quarter to a third of the page width.
-- **Blue ink:** some people prefer blue so it is easy to tell the signed copy from a photocopy.
+Your landlord emails a 6-page lease to sign on page 5 and initial at the bottom of every page. Draw your full signature, press **Use this signature**, scroll to page 5 and tap the signature line, then shrink it to fit. Press **Change signature**, type your initials in the Caveat style, and tap the bottom corner of each page. Download the signed PDF and reply with it attached.
 
-## Before you send it
+## Tips for a neat signature
 
-Scroll through the whole document to check that every signature is in the right place. If you also need to fill in text fields, do that first with [Fill PDF Form](/fill-pdf-form), then sign. To keep the signed file small enough to email, use [Compress PDF](/compress-pdf). If the form asks for your signature as a separate image, the [Compress Image to KB](/compress-image-to-kb) tool can make it fit the size limit.
+- **Draw on a phone or tablet** if you can; a finger gives a more natural line than a mouse.
+- **Zoom in your browser** to place a signature precisely on small lines.
+- **Keep the size realistic.** About 4 to 6 cm wide looks right on most documents.
+- **Use blue ink** if the recipient wants to tell the signed copy from a photocopy.
 
-## Your documents stay private
+## Common mistakes
 
-Signing services often store copies of your documents on their servers. toolwise does not: the PDF is opened, signed and saved entirely in your browser. Nothing is uploaded, and your signature is never stored.
+- **Signing the wrong page.** Check the page numbers on the document before you download.
+- **Uploading a photo with shadows.** Shadows can leave grey patches; retake it in even light.
+- **Forgetting to fill in the date or name fields** next to the signature. Use Fill PDF Form or Add Text to PDF first.
+- **Sending the unsigned copy.** Attach the downloaded file, which ends in "-signed.pdf".
+
+## Private by design
+
+Your PDF and signature are processed only in your browser. Nothing is uploaded, stored or reused.
+
+## Related tools
+
+Complete form fields with [Fill PDF Form](/fill-pdf-form), add dates or notes with [Add Text to PDF](/add-text-to-pdf), or lock the signed copy with [Protect PDF](/protect-pdf).

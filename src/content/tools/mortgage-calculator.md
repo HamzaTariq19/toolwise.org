@@ -2,46 +2,56 @@
 seoTitle: "Mortgage Calculator: Monthly Payment and Amortization | toolwise"
 metaDescription: "Estimate your monthly mortgage payment with taxes, insurance and HOA. See total interest, payoff date and a yearly amortization schedule. Free and instant."
 faqs:
-  - q: How is the monthly mortgage payment calculated?
-    a: The principal and interest part uses the standard amortization formula, which spreads the loan into equal monthly payments over the term. Property tax and insurance are divided by 12 and added, along with any monthly HOA fees, to give the total monthly payment.
-  - q: How much should I put down?
-    a: A 20% down payment usually avoids private mortgage insurance (PMI) on conventional loans and lowers your monthly payment. Many buyers put down less, from 3% to 10%, but they typically pay PMI and more interest over the life of the loan.
-  - q: Is a 15-year or 30-year mortgage better?
-    a: A 15-year mortgage has higher monthly payments but a lower interest rate and far less total interest. A 30-year mortgage has lower monthly payments, which gives more flexibility. Compare both in the calculator to see the difference in total interest.
-  - q: Does this include PMI?
-    a: No. If your down payment is under 20%, lenders often charge PMI of roughly 0.3% to 1.5% of the loan per year. You can approximate it by adding it to the insurance field.
-  - q: Are these numbers exact?
-    a: They are estimates. Your actual payment depends on your lender, credit score, fees, local taxes and insurance quotes. Always confirm the figures with your lender.
+  - q: "What is included in the monthly payment?"
+    a: "Principal and interest on the loan, plus any property tax, home insurance, HOA fees and extra payment you enter under \"Taxes, insurance and fees\". Leave those at 0 to see the loan payment alone."
+  - q: "Does it include mortgage insurance (PMI)?"
+    a: "Not automatically. If your down payment is under 20%, lenders usually add mortgage insurance. Add its yearly cost to the Insurance field to include it."
+  - q: "How much do extra payments save?"
+    a: "On a $320,000, 30-year loan at 6.5%, paying $200 extra each month cuts total interest by about $105,000 and pays the loan off around six and a half years early. Check your loan allows overpayments without penalties."
+  - q: "Why is my lender's figure different?"
+    a: "Lenders may include fees, mortgage insurance, escrow cushions or a slightly different rate (APR). Use this calculator to compare options, and rely on your official Loan Estimate for exact figures."
+  - q: "Is this financial advice?"
+    a: "No. It's an estimate for planning. Speak to a lender or qualified adviser before committing to a mortgage."
 ---
 
-## What this calculator does
+## When to use it
 
-The mortgage calculator estimates how much you will pay each month for a home loan. Enter the home price, your down payment, the interest rate and the loan term, and it instantly shows your monthly payment, the total interest you will pay, the total cost of the loan and the month you will be mortgage-free. Add property tax, homeowners insurance and HOA fees to see your full housing cost, not just the loan payment.
+The mortgage calculator shows what a home loan will cost each month and over its whole life. Use it before house hunting to set a realistic budget, to compare a 15-year and a 30-year loan, to see how a bigger down payment or a lower rate changes things, or to check how much you could save by paying extra each month.
 
-## How to use it
+## How to calculate a mortgage payment
 
-1. Enter the **home price**.
-2. Enter your **down payment** either as an amount or a percentage. The other box updates automatically.
-3. Enter the **interest rate** you were quoted and choose the **loan term**.
-4. Optionally open **Taxes, insurance and fees** to add yearly property tax, yearly insurance, monthly HOA fees or an extra monthly payment.
-5. Read your results on the right. They update as you type.
+1. Choose your **Currency**.
+2. Enter the **Home price** and the **Down payment**, as an amount or as a percentage. The other updates automatically.
+3. Enter the **Interest rate** and choose the **Loan term** (10 to 30 years).
+4. Optionally open **Taxes, insurance and fees** to add **Property tax / year**, **Insurance / year**, **HOA / month** and an **Extra payment / month**.
+5. Read the **Estimated monthly payment**, plus the **Loan amount**, **Total interest**, **Total of payments** and the date the loan is **Paid off by**.
+6. Press **Show** under **Yearly amortization schedule** to see how much principal and interest you pay each year.
 
-Open the **yearly amortization schedule** to see how much of each year's payments goes to principal and interest, and how your balance falls over time.
+## A worked example
 
-## Understanding your results
+A $400,000 home with $80,000 (20%) down leaves a $320,000 loan. At 6.5% over 30 years, the monthly payment is **$2,022.62**, and you'd pay **$408,142** in interest, more than the loan itself. Add $4,800 a year property tax and $1,500 insurance, and the monthly total is **$2,547.62**. Now add an extra $200 a month: total interest drops to **$302,714**, and the loan is paid off about **six years and seven months** sooner.
 
-- **Principal** is the part of your payment that reduces the loan.
-- **Interest** is the cost of borrowing. In the early years most of your payment is interest; this gradually shifts toward principal.
-- **Total interest** is often surprisingly large. On a 30-year loan it can be close to the original loan amount.
-- **Paid off by** shows the month your loan ends, assuming you start this month.
+## What changes the cost most
 
-## Ways to lower your mortgage cost
+- **Interest rate:** each 1% higher on a $320,000 loan adds roughly $200 a month and over $70,000 in interest over 30 years.
+- **Loan term:** a 15-year loan has bigger payments but often less than half the total interest.
+- **Down payment:** borrowing less lowers every payment, and 20% down usually avoids mortgage insurance.
+- **Extra payments:** money paid early reduces the balance that interest is charged on.
 
-- **Make extra payments.** Even a small extra amount each month goes straight to principal. Use the extra payment field to see how much interest you save and how many years sooner you finish.
-- **Choose a shorter term** if you can afford the higher payment. You will pay much less interest.
-- **Shop for a better rate.** A difference of half a percentage point can change your total interest by tens of thousands.
-- **Increase your down payment** to borrow less and possibly avoid mortgage insurance.
+## Tips
 
-## Important note
+- **Use the full monthly cost,** including tax, insurance and HOA, when setting a budget.
+- **Keep total housing costs** to about 28 to 31% of gross monthly income, a common lender guideline.
+- **Compare loans on total interest,** not just the monthly payment.
+- **Look at the schedule:** early payments are mostly interest, which is why early overpayments help so much.
 
-This calculator gives estimates to help you plan and compare options. It is not financial advice and does not include closing costs, PMI or rate changes on adjustable-rate mortgages. Confirm details with your lender before making a decision. You can also compare general loans with our [Loan Calculator](/loan-calculator).
+## Common mistakes
+
+- **Forgetting property tax and insurance,** which can add hundreds a month.
+- **Confusing the interest rate with APR.** APR includes fees; use the rate here.
+- **Ignoring closing costs** (often 2 to 5% of the price), which you'll need in cash.
+- **Stretching to the maximum approved amount** without leaving room for repairs and savings.
+
+## Related tools
+
+Check other loans with the [Loan Calculator](/loan-calculator), see how savings grow with the [Compound Interest Calculator](/compound-interest-calculator), or plan a deposit with the [Savings Goal Calculator](/savings-goal-calculator).
