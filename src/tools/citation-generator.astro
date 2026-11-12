@@ -55,7 +55,7 @@ import Icon from '../components/Icon.astro';
   </section>
 </div>
 <script>
-  import { copyText, store } from '../lib/ui';
+  import { copyRich, store } from '../lib/ui';
   const root = document.getElementById('cg')!;
   const v = (id: string) => (document.getElementById(id) as HTMLInputElement).value.trim();
   const style = () => root.querySelector<HTMLInputElement>('input[name=cg-style]:checked')!.value;
@@ -152,9 +152,9 @@ import Icon from '../components/Icon.astro';
   root.querySelector('[data-authors]')!.addEventListener('click', (e) => { const b = (e.target as HTMLElement).closest<HTMLElement>('[data-rm]'); if (b) { authors.splice(Number(b.dataset.rm), 1); renderAuthors(); update(); } });
   root.querySelector('[data-add-author]')!.addEventListener('click', () => { authors.push({ first: '', last: '' }); renderAuthors(); root.querySelector<HTMLInputElement>('[data-authors] li:last-child input')!.focus(); });
   root.querySelector('form')!.addEventListener('input', update); root.querySelector('form')!.addEventListener('change', update);
-  root.querySelector('[data-copy]')!.addEventListener('click', (e) => copyText(build().text, e.currentTarget as HTMLElement));
+  root.querySelector('[data-copy]')!.addEventListener('click', (e) => { const c = build(); void copyRich(c.html, c.text, e.currentTarget as HTMLElement); });
   root.querySelector('[data-save]')!.addEventListener('click', () => { const c = build(); bib.push({ html: c.html, text: c.text }); bib.sort((a, b) => a.text.localeCompare(b.text)); renderBib(); });
-  root.querySelector('[data-copy-bib]')!.addEventListener('click', (e) => copyText(bib.map((b) => b.text).join('\n\n'), e.currentTarget as HTMLElement));
+  root.querySelector('[data-copy-bib]')!.addEventListener('click', (e) => void copyRich(bib.map((b) => `<p style="padding-left:0.5in;text-indent:-0.5in">${b.html}</p>`).join(''), bib.map((b) => b.text).join('\n\n'), e.currentTarget as HTMLElement));
   root.querySelector('[data-clear-bib]')!.addEventListener('click', () => { bib = []; renderBib(); });
   const today = new Date(); (document.getElementById('cg-acc') as HTMLInputElement).value = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
   renderAuthors(); renderBib(); update();

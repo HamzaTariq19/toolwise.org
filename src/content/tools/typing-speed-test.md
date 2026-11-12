@@ -2,49 +2,58 @@
 seoTitle: "Typing Speed Test: Check Your WPM and Accuracy Free | toolwise"
 metaDescription: "Take a free 30-second, 1-minute or 2-minute typing test. See your words per minute and accuracy live, with mistakes highlighted as you type."
 faqs:
-  - q: How is WPM calculated?
-    a: Words per minute uses the standard definition of a "word" as five characters, including spaces. Only correctly typed characters count, so mistakes lower your score. The number of correct characters is divided by five and then by the minutes elapsed.
-  - q: What is a good typing speed?
-    a: The average adult types around 40 words per minute. 60 WPM or more is considered fast and is plenty for most office jobs. Professional typists often reach 80 to 100 WPM, and competitive typists go well beyond that.
-  - q: Should I focus on speed or accuracy?
-    a: Accuracy first. Fixing mistakes slows you down far more than typing a little slower. Aim for at least 95% accuracy, and your speed will rise naturally as your fingers learn the keyboard.
-  - q: Can I take the test on a phone?
-    a: Yes. Tap the text to open your keyboard. Phone typing speeds are usually lower than on a physical keyboard, so compare results on the same device.
-  - q: Why can't I paste text?
-    a: Pasting is disabled so that the result reflects your real typing speed.
+  - q: "How is WPM calculated?"
+    a: "Typing tests count a \"word\" as 5 characters, including spaces, so long and short words are treated fairly. Your WPM is the number of correctly typed characters divided by 5, divided by the minutes taken. Mistakes don't count toward your speed."
+  - q: "What is a good typing speed?"
+    a: "Around 40 WPM is average for adults. 60 WPM or more is fast and comfortable for most office work, and 80+ WPM is professional level. Accuracy above 95% matters as much as speed."
+  - q: "Can I paste text to cheat?"
+    a: "Pasted text is ignored and you'll see a note asking you to type the passage yourself, so the score always reflects real typing."
+  - q: "Why is my speed lower than on other sites?"
+    a: "Sites count differently. Some count every typed character, including mistakes (\"gross WPM\"). toolwise counts only correct characters (\"net speed\"), which is a stricter, more honest measure."
+  - q: "Does it work on phones and tablets?"
+    a: "Yes, with the on-screen keyboard or a connected keyboard. Phone typing speeds are usually much lower than on a physical keyboard, so compare like with like."
 ---
 
-## What this tool does
+## When to use it
 
-The typing speed test measures how fast and how accurately you type. Choose a test length, start typing the passage, and watch your words per minute (WPM) and accuracy update live. Correct letters turn dark, mistakes are highlighted in red, and a cursor shows where you are. At the end you get your final score and an idea of how it compares.
+The typing speed test measures how fast and accurately you type, in words per minute (WPM). Use it to check your speed for a job application that lists a minimum, to track progress while learning to touch type, to compare a new keyboard, or simply to challenge friends. Short, regular tests are one of the best ways to see real improvement.
 
 ## How to take the test
 
-1. Choose **30 s**, **1 min** or **2 min**.
-2. Click or tap the text and start typing. The timer starts on your first key.
-3. Type the passage as accurately as you can. You can use backspace to fix mistakes.
-4. When the time runs out, your result appears. Press **Try again** for a new passage.
+1. Choose the test length: **30 s**, **1 min** or **2 min**.
+2. Click or tap the passage. **The timer starts with your first key.**
+3. Type the text shown. Correct letters turn dark, mistakes are highlighted in red, and a cursor shows where you are.
+4. Watch the live counters for **seconds**, **WPM** and **accuracy**.
+5. When time runs out (or you finish the passage), **Your result** appears with your speed, accuracy, number of mistakes and how your speed compares.
+6. Press **Try again** for a new passage.
 
-## Typing speed benchmarks
+## A worked example
 
-- **Under 25 WPM:** beginner. Learning touch typing will help a lot.
-- **25 to 40 WPM:** average for casual typists.
-- **40 to 60 WPM:** above average, comfortable for school and office work.
+You take the 1-minute test and type 230 characters, 220 of them correctly. Your speed is 220 ÷ 5 = **44 WPM**, and your accuracy is 220 ÷ 230 = **96%**, with 10 mistakes. That's above average. If you aim for 50 WPM, focus on accuracy first: cutting errors usually raises your score faster than trying to type faster.
+
+## How fast is fast?
+
+- **Under 25 WPM:** beginner; regular practice brings quick gains.
+- **25 to 40 WPM:** about average.
+- **40 to 60 WPM:** above average, good for most jobs.
 - **60 to 80 WPM:** fast.
-- **80+ WPM:** excellent, typical of professional typists and programmers.
+- **80+ WPM:** professional speed, typical of transcriptionists and programmers who type all day.
 
-## How to type faster
+## Tips to type faster
 
-- **Learn touch typing.** Rest your fingers on the home row (ASDF and JKL;) and use the correct finger for each key without looking down.
-- **Practice little and often.** Ten minutes a day beats an hour once a week.
-- **Prioritize accuracy.** Slow down until you make few mistakes, then gradually speed up.
-- **Sit well.** Keep your wrists straight, shoulders relaxed and the screen at eye level.
-- **Track your progress.** Take the test once a week and note your WPM.
+- **Learn touch typing:** rest your fingers on the home row (ASDF and JKL;) and use all ten fingers.
+- **Don't look at the keyboard.** It feels slower at first but pays off within weeks.
+- **Accuracy before speed.** Fixing mistakes costs more time than typing steadily.
+- **Practice little and often:** five minutes a day beats one long session a week.
+- **Sit comfortably,** with wrists relaxed and the screen at eye level.
 
-## About the passages
+## Common mistakes
 
-The passages are short, everyday paragraphs written for this test, with normal punctuation and capital letters. A new passage is chosen each time so you cannot simply memorize it.
+- **Taking only one test.** Your score varies; take three and use the average.
+- **Rushing the first seconds,** which leads to early errors.
+- **Comparing phone and computer scores;** they're very different skills.
+- **Ignoring accuracy.** Many employers require 95% or higher.
 
-## More for students
+## Related tools
 
-Plan study sessions with the [Pomodoro Timer](/pomodoro-timer) or check essay length with the [Essay Word Counter](/essay-word-counter).
+Count words in your own writing with the [Word Counter](/word-counter), practice spelling with [Spelling Practice](/spelling-practice), or time focused practice with the [Pomodoro Timer](/pomodoro-timer).

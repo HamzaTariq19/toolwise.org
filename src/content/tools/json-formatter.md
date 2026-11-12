@@ -2,50 +2,63 @@
 seoTitle: "JSON Formatter and Validator: Beautify JSON Online | toolwise"
 metaDescription: "Format, validate and minify JSON instantly with clear error messages that point to the exact line. Sort keys, choose indentation. Private, no upload."
 faqs:
-  - q: Is my JSON sent to a server?
-    a: No. Formatting and validation use your browser's built-in JSON parser. Your data, including API keys or personal information it may contain, never leaves your device.
-  - q: Why does it say my JSON is invalid?
-    a: The most common causes are single quotes instead of double quotes, keys without quotes, a trailing comma before } or ], and missing commas between items. The error message shows the line and column and suggests the likely cause.
-  - q: What is the difference between Format and Minify?
-    a: Format adds line breaks and indentation so people can read the structure. Minify removes all unnecessary whitespace to make the data as small as possible, which is useful for sending over a network or storing.
-  - q: Can I open a .json file?
-    a: Yes. Use Open file to load a JSON file from your device, up to 20 MB. The result can be copied or downloaded as a new .json file.
-  - q: Does sorting keys change my data?
-    a: Sorting only changes the order of keys inside objects, which has no meaning in JSON. Array order is never changed.
+  - q: "What's the difference between formatting and minifying?"
+    a: "Formatting adds line breaks and indentation so people can read the structure. Minifying removes all unnecessary spaces and line breaks to make the file as small as possible for machines. Both contain exactly the same data."
+  - q: "Why does it say there's a problem on a certain line?"
+    a: "The text isn't valid JSON at that point. The most common causes are a missing comma between items, a comma after the last item, single quotes instead of double quotes, or a missing closing bracket. The message suggests the likely fix."
+  - q: "Can it handle comments in JSON?"
+    a: "No. Standard JSON doesn't allow comments, so files with // or /* */ comments are reported as invalid. Remove the comments first."
+  - q: "Is my data sent to a server?"
+    a: "No. Your JSON is checked and formatted in your browser, which makes the tool safe for API responses, config files and data containing personal or secret information."
+  - q: "What does \"Sort keys A–Z\" do?"
+    a: "It puts the keys of every object in alphabetical order. That makes large objects easier to scan and makes two versions easier to compare."
 ---
-
-## What this tool does
-
-The JSON formatter takes JSON (JavaScript Object Notation) and makes it readable by adding consistent indentation and line breaks. At the same time it validates the JSON, so if something is wrong you see exactly where the problem is and what probably caused it. It can also minify JSON and sort object keys alphabetically.
-
-## How to use it
-
-1. Paste your JSON into the left box, open a `.json` file, or press **Example** to try it out.
-2. The formatted result appears on the right as you type, with a ✓ when the JSON is valid.
-3. Choose **Format** or **Minify**, the indentation you prefer, and whether to sort keys.
-4. Press **Copy result** or **Download .json**.
-
-## Fixing common JSON errors
-
-- **Single quotes:** `{'name': 'Ann'}` is invalid. JSON requires `{"name": "Ann"}`.
-- **Unquoted keys:** `{name: "Ann"}` works in JavaScript but not in JSON.
-- **Trailing commas:** `[1, 2, 3,]` is invalid because of the last comma.
-- **Comments:** JSON does not allow `//` or `/* */` comments.
-- **Special values:** `undefined`, `NaN` and functions are not valid JSON. Use `null` instead.
-
-The error message tells you the line and column of the first problem, so you can jump straight to it.
 
 ## When to use it
 
-- Reading API responses that arrive as one long line.
-- Checking configuration files such as `package.json` or `tsconfig.json` before committing them.
-- Comparing two JSON documents: format both with sorted keys, then use [Text Compare](/text-compare).
-- Shrinking JSON for storage or transfer with Minify.
+The JSON formatter turns hard-to-read JSON into neatly indented text, checks that it's valid, and points to the exact line and column of any error. Use it when an API returns one long unreadable line, when a configuration file won't load, when you need to inspect a webhook payload, or when you want the smallest possible version of a file for production.
 
-## Related developer tools
+## How to format JSON
 
-Convert data for spreadsheets with [JSON to CSV](/json-to-csv) and back with [CSV to JSON](/csv-to-json). Encode data with [Base64 Encoder and Decoder](/base64-encoder-decoder).
+1. Paste your JSON into **Your JSON**, press **Open file** to load a .json file, or press **Example** to try it out.
+2. Choose **Format** to make it readable or **Minify** to make it compact.
+3. For formatting, pick the **Indentation**: **2 spaces**, **4 spaces** or **Tabs**.
+4. Tick **Sort keys A–Z** to put object keys in alphabetical order.
+5. Read the **Result**, then press **Copy result** or **Download .json**.
 
-## Private and fast
+If the JSON isn't valid, you'll see where the problem is and a hint about what's wrong.
 
-All processing happens locally in your browser, so even large files format quickly and sensitive data stays on your machine.
+## A worked example
+
+An API sends back this single line:
+
+```
+{"user":{"name":"Ana","roles":["admin","editor"],"active":true}}
+```
+
+With **Format** and **2 spaces**, the result shows `user` on its own line with `name`, `roles` and `active` indented beneath it, and each role on a separate line, so the structure is clear at a glance. Now suppose you'd typed `"active":true,}` with a stray comma. The tool reports the line and column of the problem and suggests that there may be a trailing comma before a closing bracket.
+
+## Common JSON errors and fixes
+
+- **Trailing comma:** `[1, 2, 3,]` is invalid; remove the last comma.
+- **Single quotes:** `{'name': 'Ana'}` must be `{"name": "Ana"}`.
+- **Unquoted keys:** `{name: "Ana"}` needs quotes around `name`.
+- **Missing brackets:** every `{` needs a `}` and every `[` needs a `]`.
+- **Special values:** `undefined`, `NaN` and dates aren't JSON; use `null`, numbers or strings.
+
+## Tips
+
+- **Use 2 spaces** for most projects; it's the most common style.
+- **Minify only for machines.** Keep a formatted copy for editing.
+- **Sort keys before comparing** two versions of a config file.
+- **Very large files** (tens of megabytes) may be slow on phones; use a computer.
+
+## Common mistakes
+
+- **Pasting JavaScript objects** rather than JSON; JavaScript allows things JSON doesn't, like comments and single quotes.
+- **Copying from a web page or chat app,** which can turn straight quotes into curly “smart” quotes.
+- **Assuming valid JSON means correct data.** The formatter checks syntax, not whether the values make sense.
+
+## Related tools
+
+Convert JSON for spreadsheets with [JSON to CSV](/json-to-csv), go the other way with [CSV to JSON](/csv-to-json), or encode data for URLs with the [Base64 Encoder and Decoder](/base64-encoder-decoder).

@@ -2,45 +2,53 @@
 seoTitle: "Favicon Generator: Create favicon.ico from Image, Text or Emoji | toolwise"
 metaDescription: "Make a complete favicon pack: favicon.ico, PNG icons, Apple touch icon and web manifest from your logo, letters or an emoji. Free, no upload."
 faqs:
-  - q: What sizes does a favicon need?
-    a: Browsers use 16 × 16 and 32 × 32 pixels in tabs and bookmarks, iPhones and iPads use a 180 × 180 Apple touch icon, and Android and installed web apps use 192 × 192 and 512 × 512. The pack includes all of these plus a favicon.ico that holds 16, 32 and 48 pixel versions.
-  - q: Where do I put the favicon files?
-    a: Upload them to the root folder of your website, the same place as your homepage, so they are available at addresses like yoursite.com/favicon.ico. Then paste the HTML snippet into the head section of your pages. Most website builders also have a Site icon setting where you can upload the 512 pixel PNG.
-  - q: Why is my new favicon not showing?
-    a: Browsers cache favicons aggressively. Try a hard refresh, open the site in a private window, or wait a while. Make sure the files are in the root folder and the link tags are in the head.
-  - q: What makes a good favicon?
-    a: Simple, bold shapes and high contrast. At 16 pixels, detailed logos become a blur, so a single letter, symbol or simplified mark works best.
-  - q: Is my logo uploaded?
-    a: No. The icons are drawn in your browser and packed into a ZIP on your device.
+  - q: "What files are in the favicon pack?"
+    a: "favicon.ico (16, 32 and 48 px in one file), PNG icons from 16 to 512 px, apple-touch-icon.png (180 px) for iPhones and iPads, and a site.webmanifest for Android home screens. You also get the HTML lines to add to your page."
+  - q: "Where do I put the files?"
+    a: "Unzip them into the root folder of your website, the same folder as your home page, so favicon.ico opens at yourdomain.com/favicon.ico. Then paste the HTML into the head section of your pages."
+  - q: "Why doesn't my new favicon show up?"
+    a: "Browsers cache favicons for a long time. Open the icon's address directly, do a hard refresh, or test in a private window. It can take a day or two to appear in search results."
+  - q: "Can I use my logo?"
+    a: "Yes. Choose Image and upload a square PNG or SVG of at least 512 × 512 pixels. Simple logos work best, because detail disappears at 16 pixels."
+  - q: "Is my image uploaded?"
+    a: "No. The icons are drawn and packaged in your browser."
 ---
 
-## What this tool does
+## When to use it
 
-The favicon generator creates every icon your website needs from a single source: your logo image, one to three letters, or an emoji. It produces a ready-to-upload ZIP with `favicon.ico`, PNG icons in all common sizes, an Apple touch icon for iPhone home screens, a `site.webmanifest` for Android and installable web apps, and the HTML code to add to your site.
+A favicon is the small icon shown in browser tabs, bookmarks, history and search results, and on phone home screens when someone saves your site. Use the favicon generator when you launch a website, blog, portfolio or online shop, or when your site still shows a blank or default icon. It creates every size modern browsers and devices need from a letter, an emoji or your logo.
 
 ## How to make a favicon
 
-1. Choose to create it from **Text**, **Emoji** or **Image**.
-2. Type your letters or emoji, or choose your logo file.
-3. Pick a **background color**, a **text color** and a **shape**, or make the background transparent.
-4. Check the preview, including how it looks at real tab size.
-5. Press **Download favicon pack**, upload the files to your site, and paste the HTML snippet into your page's `<head>`.
+1. Under **Create from**, choose **Text**, **Emoji** or **Image**:
+   - **Text**: type 1 to 3 **Letters**, such as your initials.
+   - **Emoji**: type or paste one emoji.
+   - **Image**: press **Choose image** and pick a square logo.
+2. Pick a **Background** and **Text color**, or tick **Transparent background**.
+3. Choose a **Shape**: **Square**, **Rounded** or **Circle**.
+4. Check the **Preview**, which shows the icon in a browser tab next to "Your website".
+5. Press **Download favicon pack** to get a ZIP of all the files.
+6. Copy the code under **Add this to your website's &lt;head&gt;** and paste it into your pages.
 
-## What's in the pack
+## A worked example
 
-- **favicon.ico** with 16, 32 and 48 pixel images, for browser tabs and older software.
-- **favicon-16x16.png** and **favicon-32x32.png** for modern browsers.
-- **apple-touch-icon.png** (180 × 180) for when someone adds your site to an iPhone or iPad home screen.
-- **icon-192.png** and **icon-512.png** for Android and progressive web apps.
-- **site.webmanifest**, a small file that tells phones your app name, icons and theme color. Edit the name inside it to match your site.
+You run a bakery website called "Rosie's Kitchen". Choose **Text**, type `RK`, set a warm red background with white text and choose **Rounded**. The preview shows a crisp red tile in the tab. Download the pack, upload the files to your site's main folder, and paste the provided code above the closing `</head>` tag. On a website builder like WordPress or Squarespace, upload the 512 px PNG in the "Site icon" setting instead.
 
-## Design tips
+## Designing a favicon that works at 16 pixels
 
-- **Think tiny.** A favicon is often shown at 16 pixels. Check the smallest preview: if you cannot tell what it is, simplify.
-- **Use contrast.** Bright text on a dark background, or the reverse, stands out among many tabs.
-- **Match your brand.** Use your main brand color as the background.
-- **Transparent icons** look great in browser tabs, but the Apple touch icon will get a black background on some devices. A solid background is the safer choice.
+- **Keep it simple:** one or two letters or a bold symbol.
+- **Use strong contrast** between the icon and its background.
+- **Avoid fine details and thin lines,** which vanish at small sizes.
+- **Match your brand colors** so it's recognisable among many open tabs.
+- **Check dark mode:** a transparent icon with dark text can disappear on dark browser tabs; a colored background is safer.
+
+## Common mistakes
+
+- **Using a detailed photo or full logo** that becomes an unreadable smudge.
+- **Uploading only favicon.ico,** which leaves iPhones and Android without a proper home screen icon.
+- **Putting files in a subfolder** without updating the links in the HTML.
+- **Expecting instant updates,** when browsers may show the old icon for a while.
 
 ## Related tools
 
-Create social sharing tags with the [Meta Tag Generator](/meta-tag-generator), or preview how links to your site appear with [Open Graph Preview](/open-graph-preview).
+Prepare a logo with [Resize Image](/resize-image) or [Crop Image](/crop-image), round its corners with [Round Image Corners](/round-image-corners), or add page tags with the [Meta Tag Generator](/meta-tag-generator).

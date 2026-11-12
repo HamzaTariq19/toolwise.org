@@ -120,3 +120,16 @@ export function printElement(el: HTMLElement, pageCss?: string) {
 
 /** Escape text for innerHTML */
 export const esc = (s: unknown) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]!);
+
+/** Copy formatted text (keeps italics/bold when pasted into Word or Google Docs), falling back to plain text */
+export async function copyRich(html: string, text: string, button?: HTMLElement) {
+  try {
+    if (typeof ClipboardItem === 'undefined' || !navigator.clipboard?.write) throw new Error('no rich clipboard');
+    await navigator.clipboard.write([new ClipboardItem({ 'text/html': new Blob([html], { type: 'text/html' }), 'text/plain': new Blob([text], { type: 'text/plain' }) })]);
+    if (button) {
+      const label = button.querySelector('[data-label]') ?? button, prev = label.textContent;
+      label.textContent = 'Copied'; button.setAttribute('data-copied', '');
+      setTimeout(() => { label.textContent = prev; button.removeAttribute('data-copied'); }, 1400);
+    }
+  } catch { await copyText(text, button); }
+}

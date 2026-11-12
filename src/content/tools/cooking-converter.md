@@ -2,49 +2,57 @@
 seoTitle: "Cooking Converter: Cups to Grams, Tbsp, ml and Ounces | toolwise"
 metaDescription: "Convert recipe measurements between cups, tablespoons, teaspoons, grams, ml and ounces for flour, sugar, butter and 20 common ingredients."
 faqs:
-  - q: How many grams are in a cup of flour?
-    a: One US cup of all-purpose flour weighs about 125 grams when spooned into the cup and leveled. If you scoop the cup straight into the bag, it can weigh 140 grams or more, which is why weighing is more reliable for baking.
-  - q: Why does a cup of sugar weigh more than a cup of flour?
-    a: Cups measure volume, not weight. Sugar crystals pack together densely, so a cup of granulated sugar weighs about 200 grams, while light, airy flour weighs about 125 grams. That is why this converter asks which ingredient you are measuring.
-  - q: Are these US or UK cups?
-    a: The converter uses US customary cups of 236.6 ml. Australian and some other metric cups are 250 ml, and old UK recipes may use 284 ml cups. Tablespoons and teaspoons are also US sizes (14.8 ml and 4.9 ml).
-  - q: Can I type fractions?
-    a: Yes. Type amounts like 1/2, 3/4 or 1 1/3 exactly as they appear in your recipe. Decimals such as 0.75 work too.
-  - q: How accurate are the conversions?
-    a: Volume-to-volume and weight-to-weight conversions are exact. Conversions between volume and weight use typical ingredient densities, so they are close estimates. Brands, humidity and how you fill the cup can change the result slightly.
+  - q: "Why does a cup of flour weigh less than a cup of sugar?"
+    a: "Cups measure volume, not weight. Flour is light and airy (about 125 g per cup), while granulated sugar packs more tightly (about 200 g per cup). That's why the converter asks which ingredient you're measuring."
+  - q: "Which cup does the converter use?"
+    a: "US cups of 236.6 ml. A UK or Australian metric cup is 250 ml, about 6% bigger, which rarely matters in cooking but can in baking."
+  - q: "How should I measure flour for accurate results?"
+    a: "Spoon it into the cup and level it off with a knife, without packing it down. Scooping straight from the bag can add 20 to 30% more flour. Weighing with kitchen scales is the most accurate of all."
+  - q: "Can I type fractions?"
+    a: "Yes. Type amounts like 1/2, 3/4 or 1 1/3 and they're converted exactly."
+  - q: "How many grams is a stick of butter?"
+    a: "One US stick is half a cup, about 113 grams, or 8 tablespoons."
 ---
 
-## What this tool does
+## When to use it
 
-The cooking converter translates recipe measurements between cups, tablespoons, teaspoons, milliliters, liters and fluid ounces, and between those and weights in grams, kilograms, ounces and pounds. Because a cup of flour and a cup of honey weigh very different amounts, you choose the ingredient and the converter uses its typical density to give you an accurate weight.
+The cooking converter changes recipe amounts between cups, spoons, milliliters, grams, ounces and pounds, using the real weight of each ingredient. Use it when a recipe from another country uses units you don't have, when you want to weigh ingredients instead of using cups for more reliable baking, or when you're scaling a recipe and want neater measurements.
 
-## How to use it
+## How to convert cooking measurements
 
-1. Choose the **ingredient**.
-2. Type the **amount**. Fractions like `1 1/2` are fine.
-3. Choose the **unit** your recipe uses.
-4. The main conversion appears in large text, with every other unit listed underneath.
+1. Choose the **Ingredient**, such as **All-purpose flour**, **Granulated sugar**, **Butter**, **Milk** or **Honey**.
+2. Type the **Amount**. Fractions like `1/2` or `1 1/3` work.
+3. Choose the **Unit** you're converting from: cups, tablespoons, teaspoons, milliliters, liters, fluid ounces, grams, kilograms, ounces or pounds.
+4. Read the answer in every other unit at once, for example "1 cup of all-purpose flour is 125 g".
+
+Liquids convert by volume; dry ingredients use typical weights for spooned and leveled measuring.
+
+## A worked example
+
+A British recipe calls for 250 g plain flour, 200 g caster sugar and 113 g butter, but you only have US measuring cups. Choose **All-purpose flour**, enter 250 and pick **grams**: that's **2 cups**. Switch to **Granulated sugar** with 200 g: **1 cup**. For **Butter**, 113 g is **½ cup**, which is one US stick or 8 tablespoons.
 
 ## Handy kitchen equivalents
 
-- 1 cup = 16 tablespoons = 48 teaspoons
-- 1 tablespoon = 3 teaspoons
-- 1 cup ≈ 237 ml; 1 tablespoon ≈ 15 ml; 1 teaspoon ≈ 5 ml
-- 1 stick of butter = ½ cup = 113 g
-- 1 ounce ≈ 28 g; 1 pound ≈ 454 g
+- 1 cup = 16 tablespoons = 48 teaspoons ≈ 237 ml
+- 1 tablespoon = 3 teaspoons ≈ 15 ml
+- 1 cup all-purpose flour ≈ 125 g · bread flour ≈ 130 g
+- 1 cup granulated sugar ≈ 200 g · packed brown sugar ≈ 220 g
+- 1 cup butter ≈ 227 g · 1 cup honey ≈ 340 g
 
-## Why bakers weigh ingredients
+## Tips for better baking
 
-Measuring flour by volume can vary by 20% or more depending on whether you scoop, spoon or sift it. That difference can turn a soft cake into a dry one. A digital kitchen scale removes the guesswork, and recipes written in grams scale up and down easily. If your recipe uses cups, convert it once with this tool and note the grams for next time.
+- **Weigh dry ingredients** when you can; it removes the guesswork of how tightly a cup is packed.
+- **Measure sticky ingredients** like honey and syrup by weight, or oil the spoon first so they slide out.
+- **Pack brown sugar** firmly into the cup unless the recipe says otherwise.
+- **Check oven temperatures too.** Recipes from Europe often use Celsius; convert with the Temperature Converter.
 
-## Tips for converting recipes
+## Common mistakes
 
-- **Spoon and level:** when using cups for flour, spoon it into the cup and sweep off the top with a knife.
-- **Pack brown sugar:** recipes almost always mean firmly packed brown sugar.
-- **Liquids:** for water, milk and similar liquids, 1 ml weighs about 1 g, so ml and grams are nearly interchangeable.
-- **Sticky ingredients:** lightly oil the measuring cup before measuring honey or syrup so it all slides out.
-- **Oven temperatures:** convert between Celsius and Fahrenheit with the [Temperature Converter](/temperature-converter).
+- **Using the water conversion for everything.** 1 cup of water is about 237 g, but 1 cup of flour is only 125 g.
+- **Scooping flour,** which can add a fifth more than the recipe intends and make cakes dry.
+- **Mixing up tablespoons and teaspoons** (tbsp and tsp); a tablespoon is three times bigger.
+- **Assuming all "cups" are equal.** US, metric and old imperial cups differ slightly.
 
-## Related converters
+## Related tools
 
-For non-cooking conversions, try the [Volume Converter](/volume-converter) and the [Weight Converter](/weight-converter).
+Convert oven temperatures with the [Temperature Converter](/temperature-converter), weights with the [Weight Converter](/weight-converter), or liquids with the [Volume Converter](/volume-converter).
