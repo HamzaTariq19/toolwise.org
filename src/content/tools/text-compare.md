@@ -2,50 +2,58 @@
 seoTitle: "Text Compare: Find Differences Between Two Texts (Diff) | toolwise"
 metaDescription: "Compare two versions of a text and see added and removed words, characters or lines highlighted. Ignore case or spaces. Free and private."
 faqs:
-  - q: How are the differences shown?
-    a: Text that was removed from the original is shown in red with a line through it, and text that was added in the changed version is shown in green. Everything else is unchanged.
-  - q: Should I compare words, characters or lines?
-    a: Compare words for normal writing like contracts, essays and articles. Compare characters to spot tiny changes such as a single digit in a number or a typo. Compare lines for lists, code and configuration files.
-  - q: Why does it show changes I can't see?
-    a: Often the difference is invisible whitespace, such as a double space or a different kind of line break. Tick Ignore extra spaces to hide those differences.
-  - q: Is there a size limit?
-    a: You can compare long documents, but very large texts with many differences take longer to calculate. For best results, compare a few thousand lines at a time.
+  - q: "Should I compare words, characters or lines?"
+    a: "Words suits most writing, such as essays, contracts and articles. Characters catches tiny changes like a single digit or punctuation mark in codes and numbers. Lines suits lists, code and data where each line is one item."
+  - q: "Why do whole paragraphs show as changed when only one word differs?"
+    a: "You may be comparing by lines, where any change marks the whole line. Switch to Words or Characters to see exactly which part changed."
+  - q: "What do \"Ignore capital letters\" and \"Ignore extra spaces\" do?"
+    a: "They stop differences in capitalisation or spacing from being shown, so you only see real changes in wording. This is useful when one version was reformatted."
+  - q: "Is there a size limit?"
+    a: "Documents of several thousand words compare quickly. Very long texts, especially in Characters mode, can take a few seconds on phones."
+  - q: "Are my texts uploaded?"
+    a: "No. The comparison runs in your browser, which matters for contracts and private documents."
 ---
 
-## What this tool does
+## When to use it
 
-Text Compare, sometimes called a diff checker, shows exactly what changed between two versions of a text. Paste the original in one box and the changed version in the other, and every addition and deletion is highlighted. It is ideal for checking edits to contracts, proofreading changes, reviewing translations, comparing code snippets and spotting unexpected changes in data.
+Text Compare shows the differences between two versions of a text, with removed parts in red and added parts in green. Use it to see what changed between two drafts of an essay or contract, check whether an editor or colleague changed anything else, compare two versions of a list or configuration, spot a single changed number in a long reference, or check that a copied text is exactly the same as the original.
 
 ## How to compare two texts
 
-1. Paste the **Original text** in the first box.
-2. Paste the **Changed text** in the second box.
-3. Choose to compare **words**, **characters** or **lines**.
-4. Optionally tick **Ignore capital letters** or **Ignore extra spaces**.
-5. Read the highlighted differences and the summary of how many were added and removed.
+1. Paste the first version into **Original text** and the second into **Changed text**.
+2. Choose how to compare: **Words**, **Characters** or **Lines**.
+3. Tick **Ignore capital letters** or **Ignore extra spaces** if those differences don't matter.
+4. Read the **Differences**: removed text is marked "removed" in red and added text "added" in green. A summary shows how much changed.
+5. Press **Swap** to switch the two texts around.
 
-Use **Swap** to reverse the comparison.
+## A worked example
 
-## Reading the result
+Your landlord sends back a "small update" to a tenancy agreement. Paste your copy as the original and theirs as the changed text, and compare by **Words**. Most of the document shows no colour, but in clause 7, "one month's notice" appears in red and "two months' notice" in green, and a new sentence about pets appears in green. Now you know exactly what to ask about before signing.
 
-- **Green** text appears only in the changed version: it was **added**.
-- **Red, crossed-out** text appears only in the original: it was **removed**.
-- When a word is replaced, you see the old word in red followed by the new word in green.
-- If the texts are the same, a green tick confirms they are identical.
+## Good uses
 
-## Practical uses
-
-- **Contracts and agreements:** make sure the version you are asked to sign contains only the changes you agreed.
-- **Editing and proofreading:** see exactly what an editor or colleague changed in your work.
-- **Students:** compare drafts to track your revisions.
-- **Developers:** quickly diff two snippets of code or configuration without opening a repository.
-- **Data checks:** spot a changed value in two exports of the same list.
+- **Contracts and policies:** confirm the only changes are the ones you agreed.
+- **Homework and essays:** see what a teacher or tutor edited.
+- **Website copy:** check what changed between the live page and a new draft.
+- **Data exports:** spot rows that appeared or disappeared between two runs.
 
 ## Tips
 
-- Compare the same kind of text: a document copied from a PDF may have different line breaks from the Word original. Tick Ignore extra spaces or clean both with [Remove Extra Spaces](/remove-extra-spaces) first.
-- For lists where order doesn't matter, sort both with [Sort Lines](/sort-lines) before comparing.
+- **Paste plain text.** Copying from PDFs or web pages can add line breaks that look like changes; tick Ignore extra spaces.
+- **Use Characters for codes,** account numbers and short reference strings.
+- **Use Lines for lists,** spreadsheets and code.
+- **Compare the latest two versions,** not the first and the last, to understand a sequence of edits.
 
-## Private
+## Common mistakes
 
-Both texts stay in your browser. Nothing is uploaded, so confidential documents remain confidential.
+- **Putting texts in the wrong boxes,** which flips red and green. Use Swap.
+- **Comparing formatted documents** and expecting bold or font changes to show; only the text is compared.
+- **Missing moved paragraphs.** A paragraph moved elsewhere appears as removed in one place and added in another.
+
+## Private by design
+
+Both texts stay in your browser and are never uploaded.
+
+## Related tools
+
+Count words in each version with the [Word Counter](/word-counter), tidy spacing first with [Remove Extra Spaces](/remove-extra-spaces), or compare data with [Remove Duplicate Lines](/remove-duplicate-lines).

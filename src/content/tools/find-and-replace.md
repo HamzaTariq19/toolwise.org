@@ -2,52 +2,60 @@
 seoTitle: "Find and Replace Text Online: Replace All Words at Once | toolwise"
 metaDescription: "Find a word or phrase and replace every occurrence instantly. Match case, whole words only, or use regular expressions. Free and private."
 faqs:
-  - q: How do I delete a word everywhere?
-    a: Type the word in Find and leave Replace with empty. Every occurrence is removed. Tick Whole words only so that, for example, removing "cat" does not change "category".
-  - q: What does Whole words only mean?
-    a: It only matches the word on its own, not inside longer words. Replacing "art" with whole words on changes "art" but leaves "start" and "party" alone.
-  - q: What are regular expressions?
-    a: Regular expressions are patterns for finding text, such as \d+ for any number or ^ for the start of a line. They are powerful for advanced tasks. In the replacement you can use $1, $2 for captured groups and $& for the whole match.
-  - q: Can I undo a replacement?
-    a: Your original text stays untouched in the left box. Change or clear the Find field and the result updates, so nothing is lost.
+  - q: "How do I delete a word everywhere?"
+    a: "Type it in Find and leave \"Replace with\" empty. Every match is removed, and the note shows how many were deleted."
+  - q: "What does \"Whole words only\" do?"
+    a: "It matches complete words only, so replacing \"cat\" won't change \"category\" or \"concatenate\". Turn it off to replace text anywhere it appears."
+  - q: "What is a regular expression?"
+    a: "A pattern language for advanced searches, such as \\d+ for any number or ^ for the start of a line. Tick \"Use regular expression\" to use one; you can refer to captured groups with $1, $2 in the replacement."
+  - q: "Is the search case-sensitive?"
+    a: "Only if you tick \"Match capital letters\". By default, \"Order\", \"order\" and \"ORDER\" all match."
+  - q: "Is my text uploaded?"
+    a: "No. Everything happens in your browser."
 ---
 
-## What this tool does
+## When to use it
 
-Find and Replace searches your text for a word, phrase or pattern and replaces every match at once. It shows how many replacements were made, so you know exactly what changed. Use it to update a name throughout a document, fix a repeated typo, change a date format, or tidy data before importing it somewhere else.
+Find and Replace changes every occurrence of a word or phrase in a piece of text at once. Use it to update a product or company name throughout a document, fix a word you've misspelled many times, change date formats, remove unwanted words, swap British and American spellings, or clean up data before pasting it into a spreadsheet.
 
-## How to find and replace
+## How to find and replace text
 
-1. Paste your text into **Your text**.
-2. Type what to look for in **Find**.
-3. Type the new text in **Replace with**, or leave it empty to delete matches.
-4. Choose **Match capital letters**, **Whole words only** or **Use regular expression** if needed.
-5. Check the result and the replacement count, then copy or download it.
+1. Paste your text into **Your text**, or press **Example**.
+2. Type what to look for in **Find** (for example "order").
+3. Type the new text in **Replace with**, or leave it empty to delete the matches.
+4. Choose options: **Match capital letters**, **Whole words only** or **Use regular expression**.
+5. Read the **Result** and the note showing how many replacements were made.
+6. Press **Copy result** or **Download .txt**.
 
-## Examples
+## A worked example
 
-- **Rename a client** in a proposal template: find "Acme Ltd", replace with "Bright Co".
-- **Fix a consistent typo:** find "recieve", replace with "receive".
-- **Change spelling style:** find "colour", replace with "color".
-- **Remove a word** everywhere: find "basically" with Whole words only and leave the replacement empty.
-- **Swap separators** in data: find ";" and replace with ",".
+Your company changed its name from "Brightline" to "Northlight", and you have a 1,200-word "About us" text to update. Paste it in, find "Brightline", replace with "Northlight", and tick **Whole words only** so "Brightlines" in an old URL isn't half-changed by accident. The note says "14 replacements made". Skim the result, then copy it back into your website editor.
 
-## Using regular expressions
+## Regular expression examples
 
-Turn on **Use regular expression** for pattern matching:
+- **Remove all numbers:** find `\d+`, replace with nothing.
+- **Swap "Smith, Ana" to "Ana Smith":** find `(\w+), (\w+)`, replace with `$2 $1`.
+- **Remove spaces before commas:** find ` +,`, replace with `,`.
+- **Change dates from 2026-03-14 to 14/03/2026:** find `(\d{4})-(\d{2})-(\d{2})`, replace with `$3/$2/$1`.
 
-- `\s+` matches runs of spaces; replace with a single space to tidy text.
-- `\d{4}-\d{2}-\d{2}` matches dates like 2024-05-31.
-- `(\w+)@example\.com` with replacement `$1@newdomain.com` changes an email domain while keeping the name.
-
-If the pattern is not valid, a clear message explains the problem. Test patterns in detail with our [Regex Tester](/regex-tester).
+If a pattern is invalid, the tool explains the problem instead of guessing.
 
 ## Tips
 
-- **Start specific.** Replacing a short word like "in" can change far more than you expect; use Whole words only.
-- **Check the count** against what you expected before copying the result.
-- **Matching capital letters** keeps "May" (the month) separate from "may" (the verb).
+- **Check the count:** an unexpectedly high number means the search is too broad.
+- **Use Whole words only** for short words like "it", "in" or "on".
+- **Do one change at a time** and check the result before the next.
 
-## Private
+## Common mistakes
 
-Everything happens in your browser. Your text is never uploaded.
+- **Replacing a short word without Whole words only,** turning "cat" into "dog" inside "location" ("lodogion").
+- **Forgetting capital letters** when they matter, such as names at the start of sentences.
+- **Typing . or ? with "Use regular expression" ticked.** In patterns they mean "any character" and "optional"; leave the option off to search for them as plain text.
+
+## Private by design
+
+Your text never leaves your browser.
+
+## Related tools
+
+Compare before and after with [Text Compare](/text-compare), change capitalisation with the [Case Converter](/case-converter), or tidy spacing with [Remove Extra Spaces](/remove-extra-spaces).

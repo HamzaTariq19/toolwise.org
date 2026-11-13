@@ -2,50 +2,59 @@
 seoTitle: "Remove Extra Spaces: Clean Up Text Online Free | toolwise"
 metaDescription: "Remove double spaces, tabs, blank lines and spaces at line ends. Join broken lines from PDFs into paragraphs. Free text cleaner, private."
 faqs:
-  - q: What does "Join broken lines into paragraphs" do?
-    a: Text copied from PDFs and emails often has a line break at the end of every printed line. This option joins those lines back into flowing paragraphs while keeping real paragraph breaks (empty lines) in place. It also rejoins words that were split with a hyphen at the end of a line.
-  - q: Will it remove spaces between words?
-    a: No. Words keep a single space between them. Only extra spaces, tabs and invisible characters are cleaned up.
-  - q: What are invisible spaces?
-    a: Text from websites and documents can contain non-breaking spaces and other special space characters that look normal but cause problems in forms and code. toolwise converts them into ordinary spaces.
-  - q: Can I keep my paragraphs?
-    a: Yes. Leave Remove empty lines off and keep "at most one empty line between paragraphs" on. Your paragraphs stay separate, but large gaps shrink to a single blank line.
+  - q: "Why does text copied from a PDF have broken lines?"
+    a: "PDFs store each line of a page separately, so copying keeps a line break at the end of every line, even in the middle of sentences. \"Join broken lines into paragraphs\" puts those lines back together while keeping real paragraph breaks."
+  - q: "Will it remove the spaces between words?"
+    a: "No. It only turns runs of several spaces into one, trims spaces at the start and end of lines, and tidies empty lines, depending on the options you choose."
+  - q: "What's the difference between the two empty-line options?"
+    a: "\"Remove empty lines\" deletes every blank line, joining all paragraphs together. \"Keep at most one empty line between paragraphs\" keeps paragraphs separated by one blank line and removes the extras."
+  - q: "Can it convert tabs?"
+    a: "Yes. \"Turn tabs into spaces\" replaces each tab with a space, which helps when pasting from spreadsheets or code into a document."
+  - q: "Is my text uploaded?"
+    a: "No. Cleaning happens in your browser."
 ---
 
-## What this tool does
+## When to use it
 
-Remove Extra Spaces tidies messy text. It removes double spaces, spaces at the start and end of lines, tabs, invisible special spaces and unnecessary blank lines. It can also repair text copied from PDFs, where sentences are broken across lines, by joining the lines back into proper paragraphs.
+Remove Extra Spaces tidies messy text. Use it on text copied from PDFs that comes out with a line break after every line, emails and documents with double spaces after full stops, data pasted from spreadsheets with stray tabs, or anything with uneven gaps and too many blank lines. Clean text is easier to read, edit, count and paste into websites and forms.
 
 ## How to clean up text
 
-1. Paste your text into **Your text**, or press **Example** to see a messy sample.
-2. Tick the clean-ups you want.
-3. The cleaned text appears in **Clean text**, with the number of characters removed.
-4. Copy or download it.
+1. Paste your text into **Your text**, or press **Example**.
+2. Choose what to fix:
+   - **Turn double spaces into single spaces**
+   - **Remove spaces at the start and end of lines**
+   - **Turn tabs into spaces**
+   - **Remove empty lines**, or **Keep at most one empty line between paragraphs**
+   - **Join broken lines into paragraphs (for text copied from PDFs)**
+3. Read the **Clean text**, with a note of how many characters were removed.
+4. Press **Copy result** or **Download .txt**.
 
-## The options
+## A worked example
 
-- **Turn double spaces into single spaces:** fixes the classic two-spaces-after-a-full-stop habit and accidental double taps.
-- **Remove spaces at the start and end of lines:** removes indentation and trailing spaces.
-- **Turn tabs into spaces:** useful when pasting from spreadsheets or code.
-- **Remove empty lines:** puts every line directly under the previous one.
-- **Keep at most one empty line between paragraphs:** removes large gaps without merging paragraphs.
-- **Join broken lines into paragraphs:** repairs text copied from PDFs and narrow email columns.
-
-## Where messy text comes from
-
-- **PDFs** add a line break at the end of every printed line.
-- **Emails** that were forwarded several times often collect extra spaces and indentation.
-- **Websites** use non-breaking spaces that can break search, forms and spreadsheets.
-- **Spreadsheets** paste with tabs between columns.
-- **Speech-to-text and OCR** sometimes leave double spaces and odd line breaks.
+You copy two paragraphs from a PDF report into an email, and every line ends with a hard break, so it looks like a poem on a phone. Paste it here and tick **Join broken lines into paragraphs**; **Keep at most one empty line between paragraphs** is already on. The lines rejoin into two proper paragraphs separated by one blank line, and the note shows how many characters were removed. Paste the clean version into your email.
 
 ## Tips
 
-- After cleaning, run the text through [Case Converter](/case-converter) if it was typed in capitals.
-- For lists, follow up with [Remove Duplicate Lines](/remove-duplicate-lines) or [Sort Lines](/sort-lines).
-- To extract text from a PDF in the first place, use [PDF to Text](/pdf-to-text).
+- **Start with the defaults** (everything except "Remove empty lines" and "Join broken lines" is on), then change one option at a time and watch the result.
+- **Use Join broken lines only for PDF text;** on poems, addresses or lists it would join lines you want to keep separate.
+- **Remove spaces before counting words** or characters for strict limits.
+- **Check bullet lists** after joining lines, since they may need their line breaks.
 
-## Private
+## Common mistakes
 
-Cleaning happens in your browser. Your text is never uploaded.
+- **Removing all empty lines** from long documents, which merges paragraphs into a wall of text. Keep one empty line instead.
+- **Joining lines in code or data,** where line breaks matter.
+- **Expecting formatting to survive;** the result is plain text.
+
+## Why double spaces happen
+
+Many people learned to type two spaces after a full stop, and some apps add spaces when converting documents. Single spaces are the modern standard for web pages, emails and most published text.
+
+## Private by design
+
+Your text is cleaned in your browser and never uploaded.
+
+## Related tools
+
+Pull text from documents with [PDF to Text](/pdf-to-text), change words with [Find and Replace](/find-and-replace), or count the result with the [Word Counter](/word-counter).

@@ -2,51 +2,65 @@
 seoTitle: "Reverse Text Generator: Backwards Letters, Words or Lines | toolwise"
 metaDescription: "Write text backwards: reverse letters, word order, each word or line order. Emoji and accents stay intact. Free, instant and private."
 faqs:
-  - q: What is the difference between the reverse options?
-    a: Letters reverses every character in each line, so "hello world" becomes "dlrow olleh". Word order keeps words intact but reverses their order. Each word reverses the letters inside every word but keeps word order. Line order flips the order of lines.
-  - q: Do emoji and accented letters survive reversing?
-    a: Yes. toolwise reverses whole visible characters, so emoji, flags and accented letters are not broken into strange symbols.
-  - q: Is reversed text the same as mirror text?
-    a: Not exactly. Reversed text uses normal letters in reverse order. Mirror writing flips each letter shape, which needs special characters or an image editor.
-  - q: Can I check if a word is a palindrome?
-    a: Yes. Type the word or phrase and choose Letters. If the result reads the same as the original (ignoring spaces and capitals), it is a palindrome.
+  - q: "What are the four ways to reverse text?"
+    a: "Letters reverses the characters on each line (\"hello\" becomes \"olleh\"), keeping the lines in their order. Word order reverses the words in each line (\"one two three\" becomes \"three two one\"). Each word reverses the letters inside each word but keeps their order. Line order flips the list of lines upside down."
+  - q: "Does it work with emoji and accented letters?"
+    a: "Yes. Letters are reversed as whole characters, so emoji, flags and accented letters stay intact instead of breaking into strange symbols."
+  - q: "How do I check if a word is a palindrome?"
+    a: "Choose Letters and type the word. If the reversed text is the same, like \"level\" or \"racecar\", it's a palindrome. Ignore spaces and capitals for phrases such as \"Never odd or even\"."
+  - q: "Can I reverse a long list?"
+    a: "Yes. Line order flips lists of any length, which is handy for logs or lists sorted the wrong way round."
+  - q: "Is my text uploaded?"
+    a: "No. It's reversed in your browser."
 ---
 
-## What this tool does
+## When to use it
 
-Reverse Text turns your writing backwards. Reverse the letters of a sentence, the order of words, the letters inside each word, or the order of lines in a list. It is great for puzzles, games, secret messages, palindrome hunting, creative writing and quickly flipping the order of a list.
+Reverse Text flips text in four different ways: by letters, word order, each word, or line order. People use it for puzzles and word games, secret-message fun with kids, checking palindromes, creating mirror-style usernames or social posts, reversing a list or log that's in the wrong order, and testing how software handles unusual input.
 
 ## How to reverse text
 
-1. Type or paste your text into **Your text**.
-2. Choose what to **Reverse**: Letters, Word order, Each word or Line order.
-3. Copy the reversed text from **Reversed text**.
+1. Type or paste into **Your text**, or press **Example**.
+2. Choose how to **Reverse**:
+   - **Letters**: each line spelled backwards, lines kept in order.
+   - **Word order**: words in reverse order, line by line.
+   - **Each word**: each word spelled backwards, in the original order.
+   - **Line order**: the last line first.
+3. Read the **Reversed text**, then press **Copy result** or **Download .txt**.
+4. Press **Clear** to start again.
 
-## Examples
+## A worked example
 
-- **Letters:** "Stressed? Have some desserts." becomes ".stressed emos evaH ?dessertS".
-- **Word order:** "one two three" becomes "three two one".
-- **Each word:** "hello world" becomes "olleh dlrow".
-- **Line order:** a list of steps from first to last becomes last to first.
+You're making a treasure hunt for a child's party, with clues they have to decode. Type "Look under the blue cushion" and choose **Letters**: you get "noihsuc eulb eht rednu kooL". Print it, and the children read it backwards to find the next clue. For an easier version, choose **Each word**: "kooL rednu eht eulb noihsuc" keeps the words in order.
 
 ## Fun and practical uses
 
-- **Puzzles and escape rooms:** hide clues that players must read backwards.
-- **Palindromes:** test phrases like "Was it a car or a cat I saw" (ignore spaces and punctuation).
-- **Social media:** add a playful twist to captions and usernames.
-- **Teaching:** help children practice spelling and letter recognition.
-- **Lists:** reverse a chronological list so the newest item is first.
+- **Palindromes:** check words like "level", "radar" and "racecar".
+- **Puzzles and escape rooms:** hide clues in reversed text.
+- **Lists:** flip a newest-first list into oldest-first with Line order.
+- **Logs and timelines:** read events from the start.
+- **Language learning:** practise spelling by writing words backwards.
 
 ## Tips
 
-- Reversing letters keeps each line separate, so multi-line text stays readable line by line.
-- To flip text upside down rather than backwards, use the upside-down style in the [Fancy Text Generator](/fancy-text-generator).
-- To reverse the order of pages in a PDF instead, use [Reorder PDF Pages](/reorder-pdf-pages).
+- **Use Line order for data,** not Letters, so each line stays readable.
+- **Reverse twice** to get back to the original.
+- **Check emoji and symbols** in the result; they're kept as whole characters.
 
-## How it works
+## Combining modes
 
-toolwise splits text into the characters you see on screen, called grapheme clusters, before reversing. Simpler tools reverse hidden code units, which turns emoji and some accented letters into broken symbols. This approach keeps every character intact.
+To turn a whole multi-line text completely backwards, use **Letters** and then run the result through **Line order**. Each mode can be applied again to undo it.
 
-## Private
+## Common mistakes
+
+- **Expecting mirror writing.** This reverses the order of characters; it doesn't flip letter shapes. For upside-down letters, use the Fancy Text Generator's upside-down style.
+- **Using Letters on a list** when you meant Line order; Letters spells each item backwards instead of flipping the list.
+- **Sharing reversed text as a "code" for anything sensitive;** it's a puzzle, not encryption.
+
+## Private by design
 
 Your text is reversed in your browser and never uploaded.
+
+## Related tools
+
+Make upside-down and styled text with the [Fancy Text Generator](/fancy-text-generator), sort lists with [Sort Lines](/sort-lines), or change capitalisation with the [Case Converter](/case-converter).

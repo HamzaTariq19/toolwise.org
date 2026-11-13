@@ -41,7 +41,7 @@ You have a 14-page PDF research report and want to quote two paragraphs from pag
 
 - **Turn page breaks on** for long documents, so you can find your place.
 - **Download the .txt** for very long documents; it's easier to search in a text editor.
-- **Clean up line breaks** with find-and-replace in a text editor (or the Find and Replace tool) if paragraphs are split into short lines.
+- **Join broken lines** with Remove Extra Spaces ("Join broken lines into paragraphs") if paragraphs come out split into short lines.
 - **Check numbers and symbols** in tables before reusing them.
 
 ## Common mistakes

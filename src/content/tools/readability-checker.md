@@ -2,50 +2,63 @@
 seoTitle: "Readability Checker: Flesch Score and Grade Level | toolwise"
 metaDescription: "Check how easy your writing is to read with the Flesch Reading Ease score, grade level, Gunning Fog and SMOG. Find your longest sentences. Free."
 faqs:
-  - q: What is a good Flesch Reading Ease score?
-    a: 60 to 70 is plain English that most adults read comfortably, and a good target for websites, emails and general writing. Scores above 70 are easy, suitable for wide audiences. Scores below 50 suit specialist or academic readers.
-  - q: What does the grade level mean?
-    a: The Flesch-Kincaid grade level estimates the US school grade needed to understand the text. Grade 8 means a typical 13 to 14-year-old could follow it. Many guidelines recommend grade 8 or lower for public information.
-  - q: Do these scores work for languages other than English?
-    a: No. The formulas are designed for English, because they rely on English word and syllable patterns. Scores for other languages will be misleading.
-  - q: Why do different scores disagree slightly?
-    a: Each formula weighs things differently. Flesch looks at syllables, Coleman-Liau at letters, and Gunning Fog and SMOG at complex words of three or more syllables. Use them together as a guide rather than an exact measure.
+  - q: "What is a good Flesch Reading Ease score?"
+    a: "60 to 70 is plain English, a good target for websites, emails and most public information. Higher is easier. Scores below 50 are fairly difficult and suit specialist audiences."
+  - q: "What do the grade levels mean?"
+    a: "They estimate the US school grade needed to understand the text. Grade 8 means a typical 13 to 14-year-old could follow it. Most adults prefer to read around grade 7 to 9, even when they can manage more."
+  - q: "Why do different formulas give different numbers?"
+    a: "Each formula weighs things differently. Flesch and the US grade level use sentence length and syllables; Gunning Fog and SMOG count long words; Coleman-Liau counts letters. Look at the overall picture rather than one number."
+  - q: "Does it work in other languages?"
+    a: "The formulas are designed for English. Results for other languages are unreliable because word and syllable patterns differ."
+  - q: "Is my text uploaded?"
+    a: "No. It's analysed in your browser."
 ---
 
-## What this tool does
+## When to use it
 
-The readability checker measures how easy your English text is to read. It calculates the Flesch Reading Ease score, the Flesch-Kincaid grade level, the Gunning Fog index, the SMOG index and the Coleman-Liau index, and it lists your longest sentences so you know exactly where to simplify.
+The readability checker measures how easy your writing is to read, using standard formulas such as Flesch Reading Ease and US grade level. Use it on website pages, emails to customers, reports, school work, instructions and anything written for the public. Clear writing gets read, understood and acted on; dense writing gets skimmed or ignored.
 
 ## How to check readability
 
-1. Paste your text into the box. At least 100 words gives the most reliable results.
-2. Read the **Flesch Reading Ease** score and level on the right.
-3. Check the grade-level scores and the share of complex words.
-4. Look at **Longest sentences** below the text and consider splitting them.
+1. Paste English text into **Your text (English)**.
+2. Read your **Flesch Reading Ease** score out of 100, with a plain-language label such as "Plain English" or "Fairly difficult".
+3. Check the other measures: **US grade level**, **Gunning Fog**, **SMOG index**, **Coleman-Liau**, **Words per sentence**, **Complex words**, **Words** and **Reading time**.
+4. Look at **Longest sentences**. Splitting these is the quickest way to make your text easier to read.
 
-## Understanding the scores
+## A worked example
 
-- **Flesch Reading Ease (0 to 100):** higher is easier. 60+ is plain English.
-- **US grade level:** the school year needed to understand the text.
-- **Gunning Fog:** years of education needed; above 12 is hard for most people.
-- **SMOG:** often used for health information; aim for 8 or lower for patient leaflets.
-- **Coleman-Liau:** based on letters per word rather than syllables.
+A council's web page about bin collections scores 38 ("Difficult"), grade 14. The longest sentence is 52 words with three clauses about dates, exceptions and how to report a missed collection. Splitting it into four sentences and swapping "subsequently" for "then" and "utilise" for "use" lifts the score to 64 ("Plain English"), grade 8. Residents can now find what they need at a glance.
 
-## How to make writing easier to read
+## How to improve your score
 
-- **Shorten sentences.** Aim for an average of 15 to 20 words. Split long sentences at "and", "but" and "which".
-- **Choose shorter words.** "Use" instead of "utilize", "help" instead of "facilitate", "start" instead of "commence".
-- **Use active voice:** "We sent the invoice" instead of "The invoice was sent by us".
-- **One idea per sentence,** and one topic per paragraph.
-- **Add headings and lists** so readers can scan.
+- **Shorten sentences.** Aim for an average of 15 to 20 words.
+- **Use short, common words:** "use" not "utilise", "help" not "facilitate".
+- **One idea per sentence.**
+- **Use active voice:** "We'll send your refund" rather than "Your refund will be sent".
+- **Break up long paragraphs** and use headings and lists.
 
-## Who uses readability scores
+## Score guide
 
-- **Website and marketing writers** who want content anyone can skim.
-- **Teachers** choosing or writing material for a class level.
-- **Healthcare and government** teams writing public information.
-- **Students** checking that essays aren't needlessly complex.
+- **90–100:** very easy, like children's books.
+- **70–80:** fairly easy to easy, like popular magazines.
+- **60–70:** plain English, the target for most public writing.
+- **30–50:** difficult, like academic papers.
+- **Below 30:** very difficult, like legal and scientific texts.
 
-## Limits of readability formulas
+## Who should aim for what
 
-Formulas count words, sentences and syllables; they cannot judge meaning, logic or tone. A short, simple text can still be confusing, and some technical terms are unavoidable. Treat scores as a helpful signal, then read your text aloud, perhaps with our [Text to Speech](/text-to-speech) tool.
+Government and health information often targets grade 6 to 8. Marketing and news usually sit around grade 8 to 10. Academic and legal writing runs higher, but even expert readers appreciate shorter sentences.
+
+## Common mistakes
+
+- **Chasing a perfect score** at the expense of meaning; some topics need technical words.
+- **Testing very short text,** which gives unstable results. Use at least a few paragraphs.
+- **Ignoring layout:** headings, lists and white space matter as much as sentence length.
+
+## Private by design
+
+Your text is analysed in your browser and never uploaded.
+
+## Related tools
+
+Count words with the [Word Counter](/word-counter), check essays against a limit with the [Essay Word Counter](/essay-word-counter), or find overused words with the [Word Frequency Counter](/word-frequency-counter).
