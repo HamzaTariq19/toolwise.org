@@ -37,7 +37,7 @@ The calculator has two modes under **I want to**.
 
 ## Worked example
 
-A project runs from Monday 1 March 2027 to Tuesday 1 June 2027. The calculator shows 92 days, which is 3 months. Of those, 67 are working days, counting both the start and end dates.
+A project runs from Monday 1 March 2027 to Tuesday 1 June 2027. The calculator shows 92 days, which is 3 months. Of those, 66 are working days. Tick **Include the end date** and both totals go up by one: 93 days and 67 working days, because 1 June is a Tuesday.
 
 Next, you need to reply to a letter within 30 working days of 1 March 2027. Switch to **Add or subtract days**, enter 30 and choose **working days**. The deadline is Monday 12 April 2027. If you had chosen 30 plain days instead, it would be 31 March.
 

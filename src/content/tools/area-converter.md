@@ -2,47 +2,56 @@
 seoTitle: "Area Converter: Square Feet, Square Meters, Acres, Hectares | toolwise"
 metaDescription: "Convert area between square meters, square feet, acres, hectares, square kilometers, square miles and more. Free, exact and instant."
 faqs:
-  - q: How many square feet are in a square meter?
-    a: About 10.764 square feet. One square foot is exactly 0.09290304 square meters.
-  - q: How big is an acre?
-    a: One acre is 43,560 square feet, or about 4,047 square meters, roughly 40% of a hectare. An American football field without end zones is about 1.1 acres.
-  - q: What is a hectare?
-    a: A hectare is 10,000 square meters, the area of a 100 m × 100 m square. It equals about 2.471 acres.
-  - q: Why can't I convert area using length conversions?
-    a: Area is two-dimensional, so the conversion factor is squared. 1 meter is 3.281 feet, but 1 square meter is 3.281 × 3.281 = 10.764 square feet.
+  - q: "How many square feet are in a square meter?"
+    a: "About 10.764. A square meter is a square with sides of 1 meter, and since 1 meter is about 3.28 feet, the area is 3.28 × 3.28, roughly 10.76 square feet."
+  - q: "What is the difference between an acre and a hectare?"
+    a: "A hectare is 10,000 square meters, a square 100 meters on each side. An acre is about 4,047 square meters, so one hectare is about 2.47 acres."
+  - q: "Why can't I just multiply by 3.28 to turn square meters into square feet?"
+    a: "Because area has two dimensions. You need to convert both the length and the width, so the factor is squared. Multiplying by 3.28 alone gives an answer about three times too small."
+  - q: "How do I work out the area of a room?"
+    a: "Multiply the length by the width, using the same unit for both. A room 4 m by 3.5 m is 14 m². Then convert the result here if you need square feet."
+  - q: "Which unit do property listings use?"
+    a: "It depends on the country. The US and UK often use square feet, while most other countries use square meters. Land is usually in acres or hectares."
 ---
 
-## What this converter does
+## When to use it
 
-The area converter changes a measurement of surface area between metric and imperial units. Use it for floor space, land, gardens, paint and flooring estimates, property listings and school work.
+Use this converter to switch between metric and imperial areas. It helps when comparing apartment sizes listed in square meters and square feet, buying flooring, paint or turf, reading land sizes in acres or hectares, or doing geometry homework.
 
 ## How to use it
 
-1. Type the **area**.
-2. Choose the unit you have and the unit you want.
-3. Read the result and the table of all other units.
+1. Enter the area in **Value**.
+2. Choose the unit you have, such as **Square meters (m²)**.
+3. Choose the unit you want, such as **Square feet (ft²)**.
+4. Read the result, or use **Copy result**.
+5. Use the swap button to convert in the other direction.
 
-## Common area conversions
+The **All conversions** table shows your area in square millimeters, square centimeters, square meters, hectares, square kilometers, square inches, square feet, square yards, acres and square miles.
 
-- 1 m² ≈ 10.764 ft²
-- 1 ft² ≈ 0.0929 m²
-- 1 acre = 43,560 ft² ≈ 4,046.86 m²
-- 1 hectare = 10,000 m² ≈ 2.471 acres
-- 1 km² = 100 hectares ≈ 0.386 mi²
-- 1 mi² = 640 acres ≈ 2.59 km²
+## Worked example
 
-## Everyday uses
+You are comparing a 50 m² apartment with one advertised in square feet. Enter 50, choose square meters and square feet, and the result is 538.1955208 ft², about 538 square feet.
 
-- **Homes:** compare apartment and house sizes listed in square feet and square meters.
-- **Flooring and tiles:** calculate how much material to buy, adding about 10% for cutting and waste.
-- **Painting:** paint coverage is often given per square meter or square foot.
-- **Land and farming:** convert plot sizes between acres and hectares.
-- **Maps and geography:** compare the size of countries, parks and lakes.
+For flooring, a bedroom measures 12 ft by 15 ft, which is 180 ft². Convert that to square meters to buy metric packs of flooring: about 16.72 m². Add 10% for cutting and waste, so buy about 18.4 m².
 
-## Measuring a room
+For land, a 2,000 m² plot shows as 0.2 hectares or about 0.49 acres in the table.
 
-Multiply the length by the width in the same unit. A room 4.2 m by 3.5 m is 14.7 m², or about 158 ft². For L-shaped rooms, split the space into rectangles, work out each area and add them together.
+## Odd-shaped rooms
 
-## Related converters
+Split an L-shaped room into two rectangles, work out the area of each, and add them together. For a triangle, multiply the base by the height and halve it. Once you have the total in one unit, convert it here.
 
-Convert single dimensions with the [Length Converter](/length-converter), or capacity with the [Volume Converter](/volume-converter).
+## Paint coverage
+
+Paint tins often state coverage in square meters per liter, such as 12 m² per liter. If you measured your walls in square feet, convert the wall area to square meters first, then divide by the coverage to see how much paint you need.
+
+## Tips
+
+- **Measure in one unit first.** Work out length times width in a single unit, then convert the total area.
+- **Allow for waste.** Flooring, tiles and turf usually need 5 to 15% extra for cuts and mistakes.
+- **Check whether a listing includes walls or balconies.** Property sizes are measured differently in different countries.
+
+## Common mistakes
+
+- **Converting the sides and the area.** If you convert each side to feet first, do not convert the area again afterwards.
+- **Using the length factor for area.** One meter is 3.28 feet, but one square meter is 10.76 square feet.
+- **Mixing up acres and hectares.** A hectare is roughly two and a half acres, so the difference matters when buying land.

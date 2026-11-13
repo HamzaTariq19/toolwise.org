@@ -2,47 +2,64 @@
 seoTitle: "Volume Converter: Liters, Gallons, Cups, Milliliters | toolwise"
 metaDescription: "Convert volume between liters, milliliters, US and UK gallons, quarts, pints, cups, fluid ounces, cubic meters and cubic feet. Free."
 faqs:
-  - q: Why are US and UK gallons different?
-    a: They were defined differently in the past. A US gallon is 3.785 liters, while a UK (imperial) gallon is 4.546 liters, about 20% larger. Pints and fluid ounces differ too, so the converter lists them separately.
-  - q: How many milliliters are in a cup?
-    a: A US cup is about 236.6 ml. Some countries, such as Australia, use a metric cup of 250 ml. For recipes with ingredients like flour or sugar, use the Cooking Measurement Converter, which converts to grams.
-  - q: How many liters are in a cubic meter?
-    a: Exactly 1,000 liters. A liter is the volume of a cube 10 cm on each side.
-  - q: Is a liter of water one kilogram?
-    a: Very nearly, at around 4 °C. Other liquids have different densities, so a liter of oil weighs less and a liter of honey weighs more.
+  - q: "Why are there US and UK units?"
+    a: "The US and the UK use different sizes for gallons, pints and fluid ounces. A US gallon is about 3.785 liters, while a UK (imperial) gallon is about 4.546 liters. Choose the version that matches where your recipe or product comes from."
+  - q: "How many milliliters are in a US cup?"
+    a: "About 236.6 ml. Many recipes round this to 240 ml, and some countries use a metric cup of 250 ml, so check which cup a recipe means."
+  - q: "Can I convert cups of flour to grams here?"
+    a: "No. This tool converts volume to volume. Flour, sugar and butter weigh different amounts per cup, so use the Cooking Converter, which knows the density of common ingredients."
+  - q: "How many liters are in a cubic meter?"
+    a: "Exactly 1,000. A cubic meter is a cube 1 meter on each side, and one liter is the volume of a cube 10 cm on each side."
+  - q: "Is a tablespoon the same everywhere?"
+    a: "No. A US tablespoon is about 14.8 ml, while in Australia a tablespoon is 20 ml. This tool uses US teaspoons and tablespoons."
 ---
 
-## What this converter does
+## When to use it
 
-The volume converter changes measurements of capacity between metric units, US customary units and UK imperial units. It covers everything from teaspoons and milliliters to gallons, cubic meters and cubic feet.
+Use this converter to switch between liters, milliliters, gallons, pints, cups, fluid ounces and other volume units. It is useful for recipes, fuel and paint quantities, aquarium and pool sizes, drink portions, and science lessons.
 
 ## How to use it
 
-1. Type the **volume**.
-2. Choose the unit you have and the unit you want. US and UK units are grouped separately.
-3. Read the result and the full table.
+1. Enter the amount in **Value**.
+2. Choose the unit you have, such as **Liters (L)**.
+3. Choose the unit you want, such as **Gallons (US) (US gal)**.
+4. Read the result, or use **Copy result**.
+5. Use the swap button to convert back.
 
-## Common volume conversions
+The **All conversions** table lists every unit, including cubic meters, cubic inches and feet, US teaspoons, tablespoons, cups, pints and quarts, and the UK fluid ounce, pint and gallon.
 
-- 1 liter ≈ 0.264 US gallons ≈ 0.220 UK gallons
-- 1 US gallon = 4 US quarts = 8 US pints ≈ 3.785 L
-- 1 UK gallon = 8 UK pints ≈ 4.546 L
-- 1 US cup ≈ 236.6 ml; 1 US fluid ounce ≈ 29.57 ml
-- 1 tablespoon (US) ≈ 14.8 ml; 1 teaspoon ≈ 4.9 ml
-- 1 cubic foot ≈ 28.3 L
+## Worked example
 
-## Everyday uses
+You need to buy 10 liters of paint, but the store sells it in US gallons. Enter 10, choose liters and US gallons, and the result is 2.641720524 US gal, so three 1-gallon cans will cover it with some to spare.
 
-- **Fuel:** compare fuel prices or tank sizes in liters and gallons.
-- **Drinks:** a standard can is 330 ml or 12 US fl oz (355 ml).
-- **Aquariums and pools:** convert tank sizes and calculate treatment doses.
-- **Moving and storage:** van and storage space is often given in cubic feet or cubic meters.
-- **Medicine:** liquid doses are measured in milliliters; use a proper measuring syringe rather than kitchen spoons.
+If you were in the UK, the table shows the same 10 liters as about 2.2 UK gallons. That gap is why a UK gallon of fuel always seems larger than an American one.
 
-## US or UK?
+For drinks, a 750 ml bottle of wine is about 25.4 US fluid ounces.
 
-If a recipe or product comes from the United States, use US units; from the UK, Ireland or older Commonwealth sources, use UK (imperial) units. The difference matters for larger quantities: 10 gallons is about 37.9 L in the US but 45.5 L in the UK.
+## US and UK sizes
 
-## Related converters
+| Unit | US | UK |
+|---|---|---|
+| Fluid ounce | 29.57 ml | 28.41 ml |
+| Pint | 473 ml | 568 ml |
+| Gallon | 3.785 L | 4.546 L |
 
-For recipes with dry ingredients, use the [Cooking Measurement Converter](/cooking-converter). For weight, see the [Weight Converter](/weight-converter).
+## Cooking with cups and spoons
+
+For liquids such as milk, water and oil, converting cups and spoons to milliliters works well. For dry ingredients, a cup of flour weighs much less than a cup of sugar, so a volume conversion is not enough. Use the [Cooking Converter](/cooking-converter) to turn cups into grams for common ingredients.
+
+## Tank and pool sizes
+
+For a rectangular tank, multiply length, width and depth in centimeters and divide by 1,000 to get liters. A tank 60 × 30 × 40 cm holds 72 liters, about 19 US gallons.
+
+## Tips
+
+- **Check the recipe's origin.** An American recipe means US cups and pints. A British one means UK pints.
+- **Use milliliters for small amounts.** They are easier to measure with a jug or syringe than fractions of a cup.
+- **Round for practical use.** Nobody can pour 2.6417 gallons, so round to what your container shows.
+
+## Common mistakes
+
+- **Mixing up US and UK pints.** A UK pint is about 20% larger.
+- **Using fluid ounces for weight.** Fluid ounces measure volume, not weight.
+- **Treating a cup as 250 ml in US recipes.** The difference adds up in baking.

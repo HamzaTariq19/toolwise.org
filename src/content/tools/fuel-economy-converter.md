@@ -2,52 +2,50 @@
 seoTitle: "Fuel Economy Converter: MPG to L/100km and km/L | toolwise"
 metaDescription: "Convert fuel economy between US MPG, UK MPG, liters per 100 km, km per liter and miles per liter. Compare cars from any country."
 faqs:
-  - q: How do I convert MPG to L/100km?
-    a: For US miles per gallon, divide 235.215 by the MPG. 30 US mpg is about 7.84 L/100 km. For UK mpg, divide 282.481 by the MPG.
-  - q: Why is lower better for L/100km but higher better for MPG?
-    a: MPG measures distance per fuel, so a higher number is more efficient. L/100km measures fuel per distance, so a lower number is more efficient.
-  - q: Why are US and UK MPG different?
-    a: A UK (imperial) gallon is about 20% larger than a US gallon, so the same car shows a higher MPG figure in the UK. 30 US mpg equals about 36 UK mpg.
-  - q: Why does my real fuel economy differ from the official figure?
-    a: Official figures come from standard laboratory tests. Driving style, speed, traffic, weather, tire pressure and air conditioning all affect real-world economy.
+  - q: "Why does a lower L/100 km number mean better economy?"
+    a: "Liters per 100 km measures how much fuel you use, so lower is better. Miles per gallon and km per liter measure how far you go on a set amount of fuel, so higher is better. That is why the conversion is not a simple multiplication."
+  - q: "Why are US and UK mpg different?"
+    a: "A UK (imperial) gallon is about 20% larger than a US gallon. The same car does more miles per UK gallon, so a figure of 30 mpg (US) is about 36 mpg (UK)."
+  - q: "How do I work out my car's real fuel economy?"
+    a: "Fill the tank and reset the trip meter. At the next fill-up, note the distance driven and the fuel added. Divide distance by fuel for mpg or km/L, or divide fuel by distance and multiply by 100 for L/100 km."
+  - q: "Can I convert electric car efficiency here?"
+    a: "No. Electric cars are measured in kWh per 100 km or miles per kWh, which describe energy rather than fuel volume. This converter covers liquid fuels only."
+  - q: "Why does the tool reject zero?"
+    a: "A fuel economy of zero has no meaning, and converting it between distance-per-fuel and fuel-per-distance would mean dividing by zero. Enter a number greater than zero."
 ---
 
-## What this converter does
+## When to use it
 
-The fuel economy converter translates fuel efficiency between the units used around the world: miles per US gallon, miles per UK gallon, liters per 100 kilometers, kilometers per liter and miles per liter. It's handy when comparing cars from different countries, reading foreign car reviews or estimating fuel costs abroad.
+Use this converter to compare fuel economy figures from different countries. Car reviews in the US use miles per US gallon, the UK uses miles per imperial gallon, and most other countries use liters per 100 km or km per liter. Converting them lets you compare cars fairly, plan trip costs and understand rental car figures abroad.
 
 ## How to use it
 
-1. Type the **fuel economy** figure.
-2. Choose the unit you have and the unit you want.
-3. Read the result and every other unit in the table.
+1. Enter the figure in **Value**.
+2. Choose the unit you have, such as **Miles per gallon (US)**.
+3. Choose the unit you want, such as **Liters per 100 km (L/100 km)**.
+4. Read the result, or click **Copy result**.
+5. Use the swap button to convert the other way.
 
-## Quick reference
+The **All conversions** table shows the same economy in mpg (US), mpg (UK), L/100 km, km/L and miles per liter.
 
-- 20 US mpg ≈ 11.8 L/100 km
-- 30 US mpg ≈ 7.8 L/100 km
-- 40 US mpg ≈ 5.9 L/100 km
-- 50 UK mpg ≈ 5.6 L/100 km
-- 15 km/L ≈ 6.7 L/100 km ≈ 35.3 US mpg
+## Worked example
 
-## Where each unit is used
+An American review says a car gets 30 mpg. Enter 30, choose mpg (US) and L/100 km, and the result is 7.840486119 L/100 km. The table shows 36.03 mpg (UK), so in a British review the same car would look more efficient.
 
-- **US mpg:** United States.
-- **UK mpg:** United Kingdom, alongside L/100 km.
-- **L/100 km:** most of Europe, Canada, Australia and China.
-- **km/L:** India, Japan, Latin America and parts of Asia.
+Now compare it with a European car rated at 6 L/100 km. Swap the units and enter 6. That is about 39.2 mpg (US), so the European car uses nearly a quarter less fuel.
 
-## Estimating fuel cost
+## Estimating trip fuel
 
-With L/100 km, multiply your distance (in hundreds of km) by the figure and the price per liter. A 500 km trip in a car using 6.5 L/100 km needs 32.5 liters; at 1.80 per liter that is 58.50.
+With a figure in L/100 km, multiply by the distance and divide by 100. A 500 km trip at 7.84 L/100 km needs about 39 liters. At 6 L/100 km it needs 30 liters. Multiply the liters by the local fuel price to estimate the cost, and compare the two cars in money rather than in mpg.
 
-## Tips to save fuel
+## Tips
 
-- Keep tires inflated to the recommended pressure.
-- Drive smoothly and avoid hard acceleration and braking.
-- Reduce speed on highways: fuel use rises quickly above about 90 to 100 km/h (55 to 60 mph).
-- Remove roof racks and extra weight when not needed.
+- **Compare in L/100 km.** Because it measures fuel used, differences between cars are easier to judge in money terms.
+- **Treat official figures as a best case.** Real-world economy is often 10 to 20% worse, especially in cities and cold weather.
+- **Check which gallon a source uses.** Older or international sites may not say.
 
-## Related converters
+## Common mistakes
 
-Convert volumes with the [Volume Converter](/volume-converter), distances with the [Length Converter](/length-converter), or work out trip savings with the [Percentage Calculator](/percentage-calculator).
+- **Assuming bigger is always better.** For mpg and km/L it is, but for L/100 km smaller is better.
+- **Mixing US and UK mpg.** A 20% difference can make a car look better or worse than it is.
+- **Averaging mpg figures.** To average economy over several trips, add up all the distance and all the fuel, then divide.

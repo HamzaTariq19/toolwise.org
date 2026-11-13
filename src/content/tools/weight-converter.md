@@ -2,51 +2,52 @@
 seoTitle: "Weight Converter: kg to lbs, Pounds to kg, Stones, Ounces | toolwise"
 metaDescription: "Convert weight between kilograms, grams, pounds, ounces, stones, tonnes and carats. Exact conversion factors, instant results, free."
 faqs:
-  - q: How many pounds are in a kilogram?
-    a: One kilogram is about 2.20462 pounds. The pound is defined as exactly 0.45359237 kilograms.
-  - q: How many pounds are in a stone?
-    a: One stone is exactly 14 pounds, or about 6.35 kilograms. Body weight is often given in stones and pounds in the UK and Ireland.
-  - q: What is the difference between a US ton and a UK ton?
-    a: A US (short) ton is 2,000 pounds, or 907.18 kg. A UK (long) ton is 2,240 pounds, or 1,016.05 kg. A metric tonne is 1,000 kg.
-  - q: Is weight the same as mass?
-    a: Strictly, kilograms and pounds measure mass, while weight is the force of gravity on it. In everyday use, including on scales, the two words mean the same thing.
+  - q: "How many pounds are in a kilogram?"
+    a: "One kilogram is about 2.2046 pounds. The exact definition goes the other way, with one pound equal to 0.45359237 kg."
+  - q: "What is a stone?"
+    a: "A stone is 14 pounds, about 6.35 kg. It is still common in the UK and Ireland for body weight, often written as stones and pounds, such as 11 st 4 lb."
+  - q: "What is the difference between a US ton and a UK ton?"
+    a: "A US (short) ton is 2,000 pounds, about 907 kg. A UK (long) ton is 2,240 pounds, about 1,016 kg. A metric tonne is exactly 1,000 kg, which sits between the two."
+  - q: "Are ounces for weight the same as fluid ounces?"
+    a: "No. Ounces measure weight and fluid ounces measure volume. They only match roughly for water. For liquids, use the volume converter."
+  - q: "What is a carat?"
+    a: "A carat is used for gemstones and equals exactly 200 milligrams, or 0.2 grams. It is different from the karat used for the purity of gold."
 ---
 
-## What this converter does
+## When to use it
 
-The weight converter changes a value between metric and imperial units of weight (mass). It handles everyday units such as kilograms, grams, pounds and ounces, plus stones for body weight, tonnes and tons for large loads, and carats for gemstones.
+Use this converter to switch between metric and imperial weights. It helps with recipes from other countries, shipping and luggage limits, body weight in kilograms, pounds or stones, gym plates, and gemstone weights in carats.
 
 ## How to use it
 
-1. Type the **value**.
-2. Choose the **unit you have** and the **unit you want**.
-3. Read the result and the full table of other units.
+1. Enter a number in **Value**.
+2. Choose the unit you are starting from, such as **Kilograms (kg)**.
+3. Choose the unit you want, such as **Pounds (lb)**.
+4. Read the result, or click **Copy result** to copy the number.
+5. Use the swap button to reverse the direction.
 
-## Common weight conversions
+Scroll to **All conversions** to see the same weight in milligrams, grams, kilograms, metric tonnes, ounces, pounds, stones, US tons, UK tons and carats.
 
-- 1 kg ≈ 2.205 lb
-- 1 lb = 16 oz ≈ 453.6 g
-- 1 oz ≈ 28.35 g
-- 1 stone = 14 lb ≈ 6.35 kg
-- 1 metric tonne = 1,000 kg ≈ 2,204.6 lb
-- 1 carat = 0.2 g
+## Worked example
 
-## Everyday uses
+Your doctor writes your weight as 70 kg. Enter 70 with kilograms and pounds selected. The result is 154.3235835 lb, so about 154 pounds. The table shows about 11.02 stones.
 
-- **Body weight:** switch between kilograms, pounds and stones for health apps and doctor visits.
-- **Cooking:** convert grams and ounces in recipes. For cups and spoons, use the [Cooking Measurement Converter](/cooking-converter).
-- **Shipping and luggage:** airline allowances are often 23 kg (about 50 lb).
-- **Fitness:** gym plates are labeled in kilograms or pounds.
-- **Jewelry:** gemstones are weighed in carats.
+To turn that into stones and pounds, take the whole number, 11 stones, which is 154 pounds. The remaining 0.3 lb rounds to nothing, so you weigh about 11 st 0 lb.
 
-## Converting stones and pounds
+Now try it the other way. Someone in the UK says they weigh 11 st 4 lb. That is 11 × 14 + 4 = 158 pounds. Enter 158 with pounds selected and kilograms as the target to get about 71.67 kg.
 
-UK body weights are often written like "10 st 7 lb". Convert the stones to pounds (10 × 14 = 140), add the extra pounds (147 lb), then convert to kilograms if needed (about 66.7 kg).
+## Weight and mass
 
-## Precision
+Strictly speaking, kilograms and pounds measure mass, the amount of matter in something. In everyday life we call it weight, and the numbers are the same anywhere on Earth. Kitchen, bathroom and luggage scales all show mass in these units, so the converter works for all of them.
 
-The converter uses exact international definitions, such as 1 lb = 0.45359237 kg, and shows up to ten significant digits. For everyday use, rounding to one decimal place is usually plenty.
+## Tips
 
-## Related converters
+- **Use grams for baking.** Weighing flour and sugar in grams is far more accurate than cups. Convert ounces to grams and use a kitchen scale.
+- **Check luggage limits in both units.** A 23 kg bag limit is about 50.7 lb. Airlines usually round down, so pack a little under.
+- **Round to suit the job.** One decimal place is enough for body weight, while medicine and jewellery may need more.
 
-Convert lengths with the [Length Converter](/length-converter), volumes with the [Volume Converter](/volume-converter), or check your BMI with the [BMI Calculator](/bmi-calculator).
+## Common mistakes
+
+- **Mixing up tonnes and tons.** A shipping quote in tons may be US or UK tons, which differ by about 12%.
+- **Treating 11.4 stones as 11 st 4 lb.** 11.4 stones is 11 st 5.6 lb, because a stone has 14 pounds, not 10.
+- **Using weight ounces for liquids.** Recipes in fluid ounces need the volume converter.
