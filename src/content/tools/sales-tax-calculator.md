@@ -2,56 +2,49 @@
 seoTitle: "VAT and Sales Tax Calculator: Add or Remove Tax | toolwise"
 metaDescription: "Add VAT, GST or sales tax to a price, or remove tax from a tax-inclusive price. Quick rate buttons and instant results. Free and private."
 faqs:
-  - q: How do I remove VAT from a price?
-    a: Divide the price including VAT by 1 plus the rate as a decimal. With 20% VAT, 120 ÷ 1.2 = 100 before tax, so the VAT is 20. Simply taking 20% off 120 gives the wrong answer (96).
-  - q: How do I add sales tax?
-    a: Multiply the price by 1 plus the rate as a decimal. With 8.25% sales tax, 50 × 1.0825 = 54.13.
-  - q: What is the difference between VAT, GST and sales tax?
-    a: They are all consumption taxes. VAT and GST are charged at each stage of production and are usually included in shop prices. US sales tax is charged only at the final sale and is usually added at the checkout.
-  - q: Which rate should I use?
-    a: Use the rate that applies to the product and place of sale. Many countries have reduced rates for food, books or children's clothing, and US rates vary by state and city.
+  - q: "How do I remove tax from a price?"
+    a: "Divide the price by 1 plus the tax rate. For 20% tax, divide by 1.2. Taking 20% off the total gives the wrong answer, because the tax was worked out on the lower, pre-tax price. Choose Remove tax from a price and the tool does this for you."
+  - q: "Does it work for VAT and GST?"
+    a: "Yes. VAT, GST and sales tax are all a percentage added to a price, so the maths is the same. Enter your local rate in the Tax rate box."
+  - q: "What rate should I use in the US?"
+    a: "US sales tax combines state, county and city rates, so it changes from place to place. Look up the combined rate for the address where the sale happens and enter it, for example 8.25."
+  - q: "Why is my receipt a cent different?"
+    a: "Shops often work out tax on each item and round each one, while the calculator works on the total. Small rounding differences of a cent or two are normal."
+  - q: "Can I use a rate with decimals?"
+    a: "Yes. Type rates like 7.5 or 8.875 into the Tax rate box. The quick buttons cover common whole and half rates."
 ---
 
-## What this calculator does
+## When to use it
 
-The VAT and sales tax calculator adds tax to a price or removes it from a price that already includes tax. It works for value added tax (VAT), goods and services tax (GST), harmonized sales tax (HST) and US sales tax. Quick buttons fill in common rates, and you can type any rate you need.
+Use this calculator whenever you need to add tax to a price or find the price before tax. It is useful for shoppers checking a total, freelancers writing invoices, and small businesses that need to show the net price, the tax and the gross price separately. It works for sales tax, VAT and GST.
 
 ## How to use it
 
-1. Choose **Add tax to a price** or **Remove tax from a price**.
-2. Enter the **price**.
-3. Enter the **tax rate**, or tap one of the common rates.
-4. Read the price before tax, the tax amount and the price including tax.
+1. Choose your **Currency**.
+2. Under **I want to**, choose **Add tax to a price** or **Remove tax from a price**.
+3. Enter the **Price**. When removing tax, this is the price that already includes tax.
+4. Enter the **Tax rate**, or tap one of the quick rates such as 5%, 10% or 20%.
+5. Read the **Price including tax**, the **Price before tax** and the **Tax amount**.
 
-## Examples
+## Worked example
 
-- **Adding 20% VAT** to 100 gives 120, with 20 of tax.
-- **Removing 20% VAT** from 120 gives 100 before tax.
-- **Adding 7% sales tax** to 45 gives 48.15.
-- **Removing 15% GST** from 230 gives 200, with 30 of GST.
+**Adding tax:** you charge $100 for a job and must add 20% VAT. The tax is $20, so the invoice total is $120.
 
-## The common mistake
+**Removing tax:** a jacket costs $100 including 20% tax and you need the net price for your records. Choose **Remove tax from a price** and enter 100. The price before tax is $83.33 and the tax is $16.67. Notice that the tax is not $20. That is because 20% was added to $83.33, not taken from $100.
 
-To remove tax, you can't simply subtract the tax percentage from the total. That's because the tax was calculated on the lower, pre-tax price. Always divide by (1 + rate), which this calculator does for you.
+## Tips
 
-## Common standard rates (check current rates for your situation)
+- **Check the rate for the place of sale.** Rates differ between countries, states and sometimes cities, and some goods such as food or children's clothes may have a lower rate.
+- **Show all three numbers on invoices.** Many tax rules ask for the net price, the tax and the total.
+- **Work out a budget backwards.** If you can spend $200 in total and tax is 8%, use **Remove tax from a price** with 200 to see the most you can spend before tax: $185.19.
+- **Keep the tax amount for your records.** Businesses that charge VAT or GST usually need to report the tax they collected.
 
-- **United Kingdom VAT:** 20%
-- **Germany VAT:** 19%
-- **France VAT:** 20%
-- **Ireland VAT:** 23%
-- **Australia GST:** 10%
-- **New Zealand GST:** 15%
-- **Canada GST:** 5% (plus provincial tax in many provinces)
-- **India GST:** several rates, commonly 5%, 18% and 28%
-- **United States sales tax:** set by states and cities, typically between 0% and about 10%
+## Common mistakes
 
-## Tips for businesses
+- **Taking the rate off a total.** Subtracting 20% from a price that includes 20% tax gives too little. Always divide by 1.2 instead, or use **Remove tax from a price**.
+- **Adding tax twice.** Make sure the price you start with does not already include tax.
+- **Mixing up rates.** A rate of 7.5% should be typed as 7.5, not 0.075.
 
-- Show prices consistently, either all including or all excluding tax, especially on invoices.
-- Keep records of tax charged and paid; you will need them for returns.
-- Round tax per invoice line or per total consistently, as required by your tax authority.
+## Quick reference
 
-## Related calculators
-
-Work out sale prices with the [Discount Calculator](/discount-calculator), or set prices with the [Profit Margin Calculator](/profit-margin-calculator).
+To add tax, multiply by 1 plus the rate: $50 at 8% becomes $50 × 1.08 = $54. To remove it, divide: $54 ÷ 1.08 = $50.

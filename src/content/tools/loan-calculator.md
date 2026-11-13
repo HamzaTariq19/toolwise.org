@@ -2,46 +2,60 @@
 seoTitle: "Loan Calculator: Monthly Payment and Total Interest | toolwise"
 metaDescription: "Calculate the monthly payment, total interest and payoff date for a personal or business loan. Include fees to see the true cost. Free and instant."
 faqs:
-  - q: How is the monthly payment calculated?
-    a: The calculator uses the standard amortization formula, which spreads repayment of the amount borrowed plus interest into equal monthly payments. Early payments are mostly interest; later payments are mostly principal.
-  - q: What is APR?
-    a: APR (annual percentage rate) is the yearly cost of borrowing as a percentage. Lenders are usually required to show it so you can compare offers. Some lenders include fees in the APR; if yours does not, add the fees in the upfront fees field.
-  - q: Is a longer loan term better?
-    a: A longer term gives a lower monthly payment but costs more interest overall. A shorter term costs more each month but less in total. Try both terms in the calculator to see the trade-off.
-  - q: Does this include insurance or late fees?
-    a: No. It covers the loan amount, the interest rate and any upfront fees you enter. Payment protection insurance, late payment charges and variable rates are not included.
+  - q: "What does APR mean?"
+    a: "The Annual Percentage Rate is the yearly cost of borrowing as a percentage. Lenders must show it so loans can be compared. Enter the APR from your loan offer for the most realistic payment."
+  - q: "Why add upfront fees?"
+    a: "Arrangement or origination fees increase the real cost of a loan even though they don't change the monthly payment. Adding them shows the total you'll pay, which makes comparing offers fair."
+  - q: "Is a longer loan term better?"
+    a: "It lowers the monthly payment but increases the total interest. On $15,000 at 7.5%, a 5-year loan costs about $3,034 in interest; stretching it to 7 years lowers the payment but adds roughly $1,300 more interest."
+  - q: "Does this work for personal loans, student loans and others?"
+    a: "Yes, for any fixed-rate loan repaid in equal monthly payments. For mortgages with property tax and insurance, use the Mortgage Calculator; for cars, the Car Loan Calculator includes tax and trade-ins."
+  - q: "Is this financial advice?"
+    a: "No. It's an estimate for planning. Check your loan agreement or lender for exact figures."
 ---
 
-## What this calculator does
+## When to use it
 
-The loan calculator works out how much you will repay each month for a fixed-rate loan, how much interest you will pay in total, and when the loan will be paid off. It suits personal loans, home improvement loans, student loans, business loans and any other loan with fixed monthly payments.
+The loan calculator shows the monthly payment, total interest and total cost of a fixed-rate loan. Use it before applying for a personal loan, comparing offers from different lenders, choosing between a shorter or longer term, deciding how much to borrow for a home improvement, or checking whether a loan fits your budget.
 
-## How to use it
+## How to calculate a loan payment
 
-1. Enter the **loan amount** you want to borrow.
-2. Enter the **interest rate (APR)** from the lender's offer.
-3. Enter the **loan term** in years or months.
-4. Optionally add **upfront fees** such as an arrangement or origination fee.
-5. Read the monthly payment, total interest and payoff date on the right. The bar shows how much of what you repay is interest and fees.
+1. Choose your **Currency**.
+2. Enter the **Loan amount**.
+3. Enter the **Interest rate (APR)**.
+4. Enter the **Loan term** and choose the **Term unit**: years or months.
+5. Optionally add **Upfront fees** (arrangement or origination fees).
+6. Read the **Monthly payment**, **Total interest**, **Total repaid**, **Number of payments** and the month it's **Paid off by**. The bar shows how much of what you repay is principal and how much is interest and fees.
 
-## Example
+## A worked example
 
-Borrowing 15,000 at 7.5% APR over 5 years costs about 300.57 a month. Over 60 payments you repay about 18,034, so the loan costs roughly 3,034 in interest. Stretching the same loan to 7 years lowers the payment to about 230 a month but raises the interest to around 4,330.
+You want to borrow $15,000 for home repairs at 7.5% APR over 5 years. The monthly payment is **$300.57** for 60 months. You'd pay **$3,034.15** in interest, so **$18,034.15** in total. A second lender offers 6.9% but charges a $400 arrangement fee: enter both offers to see which really costs less overall, not just per month.
 
-## Comparing loan offers
+## What changes the cost most
 
-- **Compare APR, not just the monthly payment.** A low payment can hide a long term and a high total cost.
-- **Add fees.** A loan with a lower rate but a large fee can cost more than a slightly higher rate with no fee.
-- **Check for early repayment charges** if you might pay the loan off sooner.
-- **Fixed or variable?** This calculator assumes a fixed rate. Variable-rate loans can become more expensive if rates rise.
+- **Interest rate:** even 1% makes a noticeable difference over several years.
+- **Term:** longer terms mean smaller payments but more interest overall.
+- **Amount:** borrowing only what you need saves interest every month.
+- **Fees:** an upfront fee can make a lower-rate loan more expensive in total.
 
-## Ways to pay less interest
+## Reading the result
 
-- Borrow only what you need.
-- Choose the shortest term you can comfortably afford.
-- Improve your credit score before applying, as it usually earns a lower rate.
-- Make extra payments when you can, if the lender allows it without a penalty.
+Early payments on a loan are mostly interest, because interest is charged on the full balance. As the balance falls, more of each payment goes toward the amount you borrowed. That's why paying extra early on saves the most.
 
-## Related calculators
+## Tips
 
-Buying a car? Use the [Car Loan Calculator](/car-loan-calculator), which includes trade-in and sales tax. For a home, use the [Mortgage Calculator](/mortgage-calculator). Paying off cards? Try the [Credit Card Payoff Calculator](/credit-card-payoff-calculator).
+- **Compare total cost, not just monthly payments.**
+- **Check for early repayment fees** if you might pay the loan off early.
+- **Keep payments comfortable:** many advisers suggest total debt payments under about a third of take-home pay.
+- **Improve your credit score before applying** for a better rate.
+
+## Common mistakes
+
+- **Entering a monthly rate** instead of the yearly APR.
+- **Choosing the longest term** just for the lowest payment, without seeing the extra interest.
+- **Ignoring fees,** which can add hundreds to the true cost.
+- **Borrowing to the limit** with nothing left for emergencies.
+
+## Related tools
+
+Compare car financing with the [Car Loan Calculator](/car-loan-calculator), plan home borrowing with the [Mortgage Calculator](/mortgage-calculator), or plan repayment of several debts with the [Debt Snowball Calculator](/debt-snowball-calculator).

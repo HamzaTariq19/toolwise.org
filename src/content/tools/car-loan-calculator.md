@@ -2,42 +2,56 @@
 seoTitle: "Car Loan Calculator: Auto Payment with Tax and Trade-In | toolwise"
 metaDescription: "Estimate your monthly car payment including down payment, trade-in, sales tax and fees. Compare loan terms and total cost. Free auto loan calculator."
 faqs:
-  - q: How much should I put down on a car?
-    a: A common guideline is at least 10% for a used car and 20% for a new one. A bigger down payment means borrowing less, a lower monthly payment, less interest, and less risk of owing more than the car is worth.
-  - q: Is sales tax included in the loan?
-    a: In this calculator, yes. Sales tax and fees are added to the amount financed, which is common at dealerships. If you pay tax and fees upfront instead, set them to zero and reduce the car price accordingly.
-  - q: Does a trade-in reduce sales tax?
-    a: In most US states, sales tax is charged on the price minus the trade-in value, which saves money. A few states tax the full price. Untick the option if that applies to you.
-  - q: Is a 72 or 84-month car loan a good idea?
-    a: Long loans lower the monthly payment but greatly increase total interest, and you may owe more than the car is worth for years. If you choose a long term, try to pay extra when you can.
+  - q: "Should sales tax be calculated before or after the trade-in?"
+    a: "In most US states, tax is charged on the price minus your trade-in, which saves money. A few states tax the full price. Tick or untick \"Tax only the price minus the trade-in\" to match your state's rule."
+  - q: "What does \"amount financed\" include?"
+    a: "The car price plus sales tax and fees, minus your down payment and trade-in. It's the amount you actually borrow."
+  - q: "Is a 72 or 84-month loan a good idea?"
+    a: "It lowers the monthly payment but costs much more interest, and cars lose value fast, so you can owe more than the car is worth for years. Shorter terms are usually safer if you can afford them."
+  - q: "What APR should I expect?"
+    a: "It depends on your credit score, the lender, whether the car is new or used, and current rates. Get a pre-approval from your bank or credit union to compare with the dealer's offer."
+  - q: "Is this financial advice?"
+    a: "No. Use it to compare options, then check the exact figures with your lender."
 ---
 
-## What this calculator does
+## When to use it
 
-The car loan calculator estimates your monthly payment for a new or used vehicle. Unlike a basic loan calculator, it includes the things that matter when buying a car: your down payment, the value of your trade-in, sales tax and dealer or registration fees. It shows the amount you will finance, the total interest, and the full cost of the car over the loan.
+The car loan calculator works out the monthly payment and the true total cost of financing a car, including sales tax, fees, your down payment and any trade-in. Use it before visiting a dealer to know what you can afford, to compare dealer finance with a bank loan, to see how a bigger down payment helps, or to choose between loan terms.
 
-## How to use it
+## How to calculate a car payment
 
-1. Enter the **car price** (the negotiated price, not the sticker price if you got a discount).
-2. Enter your **down payment** and **trade-in value**.
-3. Enter the **interest rate (APR)** and choose a **loan term**.
-4. Enter your local **sales tax** rate and any **fees**.
-5. See your monthly payment and totals on the right, plus a comparison with a shorter or longer term.
+1. Choose your **Currency**.
+2. Enter the **Car price**, **Down payment** and **Trade-in value**.
+3. Enter the **Interest rate (APR)** and choose the **Loan term** (36 to 84 months).
+4. Enter the **Sales tax** rate and **Fees (title, registration)**.
+5. Tick **Tax only the price minus the trade-in** if your state works that way (most US states do).
+6. Read the **Monthly payment**, **Amount financed**, **Sales tax**, **Total interest** and **Total cost of car**, plus a comparison with a shorter loan.
 
-## Understanding the results
+## A worked example
 
-- **Amount financed** is what you borrow: price plus tax and fees, minus down payment and trade-in.
-- **Total interest** is what the loan costs you on top of the car.
-- **Total cost of car** adds your down payment, trade-in and all monthly payments, so you see what the car really costs.
+You're buying a $32,000 car with $4,000 down, 7% sales tax, $500 fees and a 6.9% APR over 60 months. Sales tax adds **$2,240**, so the **amount financed** is **$30,740**. The monthly payment is **$607.24**, total interest **$5,694**, and the **total cost of the car** is **$40,434**. The calculator also shows that a 48-month loan would be **$734.68** a month but save **$1,170** in interest.
 
-## Tips for a better car loan
+## Ways to lower the total cost
 
-- **Get pre-approved** by your bank or credit union before visiting a dealer. You can then compare the dealer's offer with yours.
-- **Negotiate the price first,** then discuss financing. Focusing only on the monthly payment can hide a higher price or longer term.
-- **Watch the term.** A 60-month loan is common; going to 72 or 84 months often adds thousands in interest.
-- **Remember running costs:** insurance, fuel, maintenance and parking. A comfortable car budget usually keeps all car costs well under 15 to 20% of take-home pay.
-- **0% offers** sometimes require giving up a cash rebate; compare both options with this calculator.
+- **Bigger down payment:** less to borrow and less interest.
+- **Shorter term:** higher payments but much less interest.
+- **Better rate:** shop around; a 1% lower APR saves hundreds.
+- **Negotiate the price, not the payment:** dealers can hit any monthly figure by stretching the term.
+- **Trade-in value:** compare dealer offers with private sale prices.
 
-## Related calculators
+## Tips
 
-For other borrowing, use the [Loan Calculator](/loan-calculator). Comparing fuel costs between cars? The [Fuel Economy Converter](/fuel-economy-converter) helps. Saving up instead of borrowing? Try the [Savings Goal Calculator](/savings-goal-calculator).
+- **Budget for running costs** too: insurance, fuel, servicing and parking.
+- **Get pre-approved** before visiting the dealer, so you have a rate to beat.
+- **Check for add-ons** like extended warranties rolled into the loan.
+
+## Common mistakes
+
+- **Focusing only on the monthly payment,** which hides the cost of long terms.
+- **Forgetting tax and fees,** which can add thousands.
+- **Rolling negative equity** from an old car loan into the new one.
+- **Choosing 84 months** for an expensive car you couldn't otherwise afford.
+
+## Related tools
+
+Compare other loans with the [Loan Calculator](/loan-calculator), save for a down payment with the [Savings Goal Calculator](/savings-goal-calculator), or check fuel costs with the [Fuel Economy Converter](/fuel-economy-converter).
