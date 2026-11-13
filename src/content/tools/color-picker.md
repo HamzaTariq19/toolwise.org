@@ -2,45 +2,49 @@
 seoTitle: "Color Picker and Converter: HEX, RGB, HSL Codes | toolwise"
 metaDescription: "Pick a color and get HEX, RGB and HSL codes, shades and tints, matching color harmonies and WCAG text contrast. Free color converter."
 faqs:
-  - q: How do I convert HEX to RGB?
-    a: Type the HEX code, such as #1D4ED8, into the box. The RGB and HSL values appear instantly. Each pair of hex digits is one channel, so 1D = 29 red, 4E = 78 green, D8 = 216 blue.
-  - q: What is HSL?
-    a: HSL describes a color by hue (the position on the color wheel, 0 to 360), saturation (how vivid, 0 to 100%) and lightness (0% black to 100% white). It is handy for creating lighter or darker versions of a color.
-  - q: What does the contrast check mean?
-    a: It shows whether white or black text on your color is readable according to the WCAG accessibility guidelines. Normal text needs a contrast ratio of at least 4.5:1 (AA); large text needs 3:1.
-  - q: Can I enter color names?
-    a: Yes. Any CSS color name, such as teal, coral or rebeccapurple, is converted to its codes.
+  - q: "What is the difference between HEX, RGB and HSL?"
+    a: "They are three ways of writing the same color. HEX is a short code like #1D4ED8, common in web design. RGB gives the amounts of red, green and blue from 0 to 255. HSL gives the hue, saturation and lightness, which makes it easy to create lighter or darker versions."
+  - q: "Can I pick a color from my screen or a photo?"
+    a: "The color box opens your device's own color picker. On some computers, that picker includes an eyedropper for choosing colors from the screen. If yours does not, use an image color tool, then paste the code into the box here."
+  - q: "What do AA and AAA mean?"
+    a: "They are levels from the Web Content Accessibility Guidelines (WCAG). AA needs a contrast of at least 4.5:1 for normal text, and AAA needs 7:1. Large text only needs 3:1 for AA. Higher contrast is easier to read for everyone."
+  - q: "How does opacity change the codes?"
+    a: "Below 100%, the HEX code gets two extra digits for the transparency, and RGB and HSL include a slash and the opacity value, which modern browsers understand."
+  - q: "Which color formats can I type?"
+    a: "HEX codes with or without the #, rgb() and hsl() values, and named CSS colors such as red, teal or rebeccapurple."
 ---
 
-## What this tool does
+## When to use it
 
-The color picker lets you choose a color visually or type one in any format, then shows its codes in HEX, RGB and HSL, ready to copy into CSS, design tools or documents. It also generates shades and tints, matching color schemes, and an accessibility check for text on that color.
+Use this tool to choose a color and get its codes for websites, apps, slides or design tools. It also shows lighter and darker versions, colors that go well with it, and whether white or black text will be readable on top of it. It is useful for designers, developers, students and anyone building a simple brand.
 
 ## How to use it
 
-1. Tap the color swatch to open your device's color picker, or type a color such as `#1D4ED8`, `rgb(29 78 216)`, `hsl(224 76% 48%)` or `teal`.
-2. Adjust **Opacity** if you need transparency.
-3. Copy any **color code**.
-4. Explore **shades and tints**, **matching colors** and **text contrast**. Tap any swatch to use it.
+1. Click the large color box marked **Tap to pick** to open your device's color picker, or type any color in **Or type any color**.
+2. Move the **Opacity** slider if you need a see-through color.
+3. Under **Color codes**, copy the **HEX**, **RGB**, **HSL** or **CSS variable** with its **Copy** button.
+4. Under **Shades and tints**, tap a swatch to switch to a darker or lighter version.
+5. Under **Matching colors**, see **Complementary**, **Analogous**, **Triadic** and **Split complementary** colors. Tap one to use it.
+6. Check **Text contrast (WCAG)** to see how readable white and black text are on your color.
 
-## Color formats explained
+## Worked example
 
-- **HEX** (`#1D4ED8`): the most common format in web design.
-- **RGB** (`rgb(29, 78, 216)`): red, green and blue values from 0 to 255.
-- **HSL** (`hsl(224, 76%, 48%)`): hue, saturation and lightness, easy to adjust by hand.
-- **Alpha:** opacity from 0 (transparent) to 1 (solid), added as an extra value.
+You want a blue for buttons on a website. Type #1D4ED8. The codes are rgb(29, 78, 216) and hsl(224, 76%, 48%). The contrast check shows 6.70:1 for white text, which passes AA, and 3.13:1 for black text, which is only good for large text. So white text on this blue is the right choice for buttons.
 
-## Building a color palette
+For a hover effect, tap one of the darker shades. For a second accent color, look at the complementary color, which sits on the opposite side of the color wheel.
 
-- **Complementary** colors sit opposite each other on the color wheel and create strong contrast.
-- **Analogous** colors sit next to each other and feel calm and harmonious.
-- **Triadic** schemes use three evenly spaced colors for a lively, balanced look.
-- **Shades and tints** of one brand color give you backgrounds, borders and hover states that match.
+## Using the codes
 
-## Accessibility
+Paste the HEX code into design apps such as Canva or Figma. Use the RGB or HSL value in CSS, or copy the **CSS variable** line into your stylesheet and rename it to suit your project.
 
-Good contrast makes text readable for everyone, including people with low vision. Aim for at least 4.5:1 for body text. The contrast panel tells you whether white or black text works better on your color.
+## Tips
 
-## Related tools
+- **Check contrast early.** A color that looks good may still be hard to read with text on top.
+- **Use shades for a set.** Picking a light tint for backgrounds and a dark shade for text keeps a design consistent.
+- **Keep a short palette.** One main color, one accent and a few greys is enough for most projects.
 
-Pick colors from a photo with the [Color Picker from Image](/image-color-picker), or create backgrounds with the [CSS Gradient Generator](/css-gradient-generator).
+## Common mistakes
+
+- **Relying on color alone.** Some people cannot tell red from green. Add text or icons to show meaning.
+- **Copying codes by hand.** One wrong letter changes the color. Use the copy buttons.
+- **Forgetting the opacity.** A semi-transparent color looks different on light and dark backgrounds.

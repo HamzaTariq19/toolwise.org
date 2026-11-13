@@ -2,41 +2,47 @@
 seoTitle: "Trim Video Online: Cut the Start and End of a Video | toolwise"
 metaDescription: "Trim a video in your browser. Choose the start and end, keep original quality with fast cutting, or cut on the exact frame. No upload, no watermark."
 faqs:
-  - q: What's the difference between Fast and Exact frame?
-    a: Fast copies the video without re-encoding, so it's quick and keeps the original quality, but the cut snaps to the nearest keyframe and may start up to a couple of seconds early. Exact frame re-encodes the clip so it starts and ends precisely where you chose, which takes longer.
-  - q: Is there a watermark?
-    a: No. toolwise never adds watermarks, and there is no sign-up.
-  - q: Is my video uploaded?
-    a: No. The video is read and trimmed on your device using a WebAssembly version of FFmpeg, so it never leaves your computer or phone.
-  - q: Why is there no preview for my file?
-    a: Browsers can't play some formats, such as MKV or AVI, but they can still be trimmed. Type the start and end times instead of using the preview.
-  - q: Can I cut out a part in the middle?
-    a: This tool keeps one section. To remove a middle part, trim the two pieces you want to keep separately.
+  - q: "Is my video uploaded?"
+    a: "No. The video is processed inside your browser using FFmpeg compiled for the web. It never leaves your device."
+  - q: "Why does the fast cut start a little early?"
+    a: "Videos store a full picture only every few seconds, at points called keyframes. The fast method copies the video without re-encoding, so it has to start at a keyframe. Choose Exact frame if the start must be precise."
+  - q: "Which method keeps the best quality?"
+    a: "Fast, original quality copies the video data exactly, so there is no loss at all. Exact frame re-encodes the clip as MP4 at high quality, which is very close to the original but not identical."
+  - q: "Why does it download something before the first video?"
+    a: "The video tools are a large program that runs in your browser. It is downloaded once, then kept by your browser so later visits start much faster."
+  - q: "My browser cannot play the file. Can I still trim it?"
+    a: "Yes. If there is no preview, type the start and end times instead. The cut still works for most formats, including MKV and AVI."
 ---
 
-## What this tool does
+## When to use it
 
-Trim Video cuts a video down to the part you want to keep. Watch the preview, drag the start and end handles or type exact times, and press **Trim video**. The **Fast** method copies the original video stream, so it's done in seconds with no quality loss. The **Exact frame** method re-encodes the clip so it begins and ends on precisely the frames you picked. You can also remove the sound.
+Use this tool to cut a video down to the part you want. It is great for removing a slow start, trimming a phone recording before sharing it, cutting a clip from a longer screen recording, or making a short video fit a social media time limit. You can also remove the sound at the same time.
 
-## How to trim a video
+## How to use it
 
-1. Choose a video, or drag it onto the page. Files up to 2 GB.
-2. Play the video and drag the handles under it, or type times like `0:12.5`. The pin buttons set the start or end to the current playback position.
-3. Press **Play selection** to check your cut.
-4. Choose **Fast, original quality** or **Exact frame**.
+1. Click **Choose video** or drop a file. MP4, MOV, WebM, MKV and more work, up to 2 GB.
+2. Wait while the video tools load and the file is read. The name, length, size and resolution appear.
+3. Set the **Start** and **End** times. Type them in, or play the video and use the buttons next to each box to set them to the current position. Use **Play selection** to check.
+4. Choose a **Cutting method**:
+   - **Fast, original quality** copies the video without re-encoding. It is quick and keeps the quality, but can start up to a couple of seconds early.
+   - **Exact frame** re-encodes the clip so it starts and ends exactly where you chose. It is slower and saves as MP4.
 5. Tick **Remove the sound** if you want a silent clip.
-6. Press **Trim video**, then **Download**.
+6. Click **Trim video**, watch the result, then click **Download**.
 
-## Why fast cuts snap to keyframes
+## Worked example
 
-Compressed video stores complete pictures (keyframes) only every second or two; frames in between only record changes. A cut without re-encoding has to start on a keyframe, so it may begin slightly before the time you chose. If you need frame-perfect timing, for example to remove a single word, use **Exact frame**.
+You filmed a 3-minute clip of a school concert on your phone, but your child's song starts at 1:05 and ends at 2:20. Load the MOV file, set the start to 1:05 and the end to 2:20, and keep the fast method. A 75-second clip is ready in a few seconds, at the original quality, saved as MOV.
+
+If the first second shows the end of the previous song, switch to **Exact frame** and trim again. It takes longer, but starts exactly at 1:05.
 
 ## Tips
 
-- **Phones:** short videos trim quickly; long 4K videos may take a while in Exact mode.
-- **Social media:** many platforms limit clip length, such as 60 or 90 seconds for short videos. Check the **Selected** time under the slider.
-- **Keep the original** until you're happy with the result.
+- **Try fast first.** It is much quicker, and the small offset rarely matters for casual clips.
+- **Use exact frame for tight edits.** Tutorials, memes and clips that will be joined to others usually need precise starts.
+- **Make it smaller next.** If the trimmed file is still too big to send, run it through [Compress Video](/compress-video).
 
-## Related tools
+## Common mistakes
 
-Make a smaller file with [Compress Video](/compress-video), turn a moment into an animation with [Video to GIF](/video-to-gif), or save the soundtrack with [Extract Audio](/extract-audio).
+- **Selecting the whole video.** Move at least one handle, or there is nothing to trim.
+- **Expecting a different format.** Fast mode keeps MP4, MOV, WebM and MKV files in their original format. Other formats are saved as MP4.
+- **Closing the tab while it works.** Processing happens on your device, so keep the page open until the download is ready.

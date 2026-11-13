@@ -2,55 +2,58 @@
 seoTitle: "Hash Generator: MD5, SHA-1, SHA-256, SHA-512 for Text and Files | toolwise"
 metaDescription: "Calculate MD5, SHA-1, SHA-256, SHA-384 and SHA-512 hashes of text or files, and compare with a checksum. Free, files never uploaded."
 faqs:
-  - q: What is a hash?
-    a: A hash is a short, fixed-length fingerprint of data. The same input always gives the same hash, but changing even one character gives a completely different one. Hashes are used to check that files haven't been changed or corrupted.
-  - q: How do I verify a download?
-    a: Choose File, select the downloaded file, then paste the checksum from the download page into "Compare with an expected hash". A green tick confirms the file matches.
-  - q: Can I reverse a hash to get the original text?
-    a: No. Hash functions are one-way. However, short or common inputs can be guessed by trying many possibilities, which is why passwords need special slow hashing.
-  - q: Why is MD5 not secure?
-    a: Researchers can create two different inputs with the same MD5 or SHA-1 hash. They are still fine for detecting accidental corruption, but use SHA-256 or stronger for security.
+  - q: "What is a hash?"
+    a: "A hash is a short fingerprint made from any text or file. The same input always gives the same hash, but changing even one character gives a completely different one. You cannot turn a hash back into the original text."
+  - q: "Which algorithm should I use?"
+    a: "Use SHA-256 unless something asks for a different one. MD5 and SHA-1 are still fine for checking that a download is not damaged, but they are no longer secure for passwords or digital signatures."
+  - q: "Are my files uploaded?"
+    a: "No. Text and files are hashed inside your browser and never leave your device. Files can be up to 1 GB."
+  - q: "Why does my hash not match the website's?"
+    a: "Check that you used the same algorithm and the exact same input. For text, an extra space or line break at the end changes the hash. For downloads, a mismatch can mean the file is incomplete or has been changed, so download it again from the official site."
+  - q: "Should I use this to store passwords?"
+    a: "No. Plain hashes like these are too fast to compute, so leaked password hashes can be guessed quickly. Websites should use slow password hashing methods such as bcrypt, scrypt or Argon2."
 ---
 
-## What this tool does
+## When to use it
 
-The hash generator calculates cryptographic hashes of text or files using MD5, SHA-1, SHA-256, SHA-384 and SHA-512, all at once. You can copy any hash or paste an expected checksum to verify that a file or text matches exactly.
+Use this tool to create MD5, SHA-1, SHA-256, SHA-384 and SHA-512 hashes of text or files. The most common use is checking that a download is complete and has not been changed, by comparing its hash with the checksum on the download page. Developers also use hashes to test code, compare data and spot duplicate files.
 
-## How to generate a hash
+## How to use it
 
-1. Choose **Text** or **File**.
-2. Type or paste your text, or choose a file (up to 1 GB).
-3. Read the five hashes and copy the one you need.
-4. Optionally paste an expected checksum to check for a match.
+**For text**
 
-## Examples
+1. Choose **Text**.
+2. Type or paste into **Text to hash**. The hashes update as you type.
 
-The text `hello world` produces:
+**For a file**
 
-- MD5: `5eb63bbbe01eeed093cb22bb8f5acdc3`
-- SHA-256: `b94d27b9934d3e08a52e52d7da7dabfac484efe37a5380ee9088f7ace2efcde9`
+1. Choose **File**.
+2. Click **Choose a file** and select a file of up to 1 GB.
 
-## Common uses
+**Then**
 
-- **Verifying downloads:** software sites publish checksums so you can confirm the file wasn't corrupted or tampered with.
-- **Detecting duplicates:** identical files have identical hashes.
-- **Developers:** create cache keys, content fingerprints and test values.
-- **Integrity checks:** confirm a file hasn't changed since it was archived.
+1. Read the five hashes and use **Copy** next to the one you need.
+2. Tick **Uppercase letters** if you need capitals.
+3. To check a download, paste the expected value into **Compare with an expected hash**. The tool tells you if it matches and which algorithm it is.
 
-## Choosing an algorithm
+## Worked example
 
-- **SHA-256:** the best default; secure and widely supported.
-- **SHA-384 and SHA-512:** longer hashes for higher security margins.
-- **MD5 and SHA-1:** only for compatibility and non-security checksums.
+Type hello world, with no line break. The SHA-256 hash is b94d27b9934d3e08a52e52d7da7dabfac484efe37a5380ee9088f7ace2efcde9. Now change it to Hello world with a capital H. The hash becomes completely different, starting 64ec88ca. This is why hashes are good at spotting even tiny changes.
 
-## Good to know
+To check a download, open the file here and paste the SHA-256 checksum from the download page into the compare box. If you see "Match: this is the SHA-256 hash", the file is exactly the one the publisher released. If there is no match, download the file again.
 
-Text is hashed exactly as entered, using UTF-8. A trailing space or line break changes the hash, so copy text carefully. File hashing reads the whole file into memory, so very large files depend on your device.
+## Tips
 
-## Related tools
+- **Copy checksums carefully.** Paste the whole value. The compare box ignores capitals, and a label such as "sha256:" at the start.
+- **Watch for hidden line breaks.** Text copied from a document may end with a line break that changes the hash.
+- **Get checksums from the official site.** A checksum from the same place as a tampered file proves little.
 
-Create random IDs with the [UUID Generator](/uuid-generator), or encode data with the [Base64 Encoder and Decoder](/base64-encoder-decoder).
+## Large files
 
-## Private
+Hashing a big file, such as a 900 MB installer, can take a little while, especially on phones. Keep the page open until the hashes appear. The file stays on your device the whole time.
 
-Hashing happens on your device using the Web Crypto API. Your text and files are never uploaded.
+## Common mistakes
+
+- **Comparing different algorithms.** An MD5 hash will never match a SHA-256 checksum. The length is a clue: MD5 has 32 characters and SHA-256 has 64.
+- **Thinking a hash is encryption.** Hashing cannot be reversed. To protect data you want to read again, use encryption instead.
+- **Using MD5 for security.** It is fine for spotting accidental damage, not for protecting against attackers.

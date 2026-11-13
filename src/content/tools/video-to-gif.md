@@ -2,41 +2,54 @@
 seoTitle: "Video to GIF Converter: Make a GIF from a Video | toolwise"
 metaDescription: "Turn part of a video into an animated GIF in your browser. Pick the clip, width, frame rate and colors, preview it and download. No upload, no watermark."
 faqs:
-  - q: How long can the GIF be?
-    a: Up to 30 seconds, but 2 to 6 seconds works best. GIFs store every frame as a picture, so longer clips quickly become very large files.
-  - q: How do I make the GIF smaller?
-    a: Lower the width (480 or 320 pixels), choose 10 frames per second, reduce the colors to 128 or 64, and keep the clip short. Each of these can halve the file size.
-  - q: Why does my GIF look grainy?
-    a: GIFs can only show 256 colors per frame. toolwise builds the best palette for your clip and uses dithering to blend colors, but smooth gradients and skies may still look a little grainy. That's a limit of the GIF format.
-  - q: Is my video uploaded?
-    a: No. The GIF is made on your device using a WebAssembly version of FFmpeg.
+  - q: "Why is my GIF so much bigger than the video?"
+    a: "GIF is an old format that stores every frame as a full picture with up to 256 colors. Modern video formats only store what changes between frames. A few seconds of GIF can easily be larger than a minute of MP4."
+  - q: "How long can the GIF be?"
+    a: "Up to 30 seconds. Short clips of 2 to 6 seconds work best, because they stay small enough to share and loop smoothly."
+  - q: "Will the GIF have sound?"
+    a: "No. The GIF format cannot store sound. If you need sound, keep the clip as a video with the Trim Video tool instead."
+  - q: "Is my video uploaded?"
+    a: "No. The GIF is made inside your browser and saved straight to your device."
+  - q: "Why do some colors look grainy?"
+    a: "A GIF can only use up to 256 colors. The tool picks the best colors for your clip and blends them with dithering, which can look grainy on smooth gradients like skies. Choose 256 colors for the best result."
 ---
 
-## What this tool does
+## When to use it
 
-Video to GIF turns a moment from a video into an animated GIF that you can share in chats, emails, documentation and social posts. Choose the part of the video with the start and end handles, set the width, smoothness (frames per second), number of colors and whether it loops, and press **Make GIF**. You'll see the finished GIF and its file size before you download it.
+Use this tool to turn a short part of a video into an animated GIF. GIFs play automatically and loop in chats, emails, documentation and presentations, even where videos are not supported. They are perfect for reactions, quick product demos, or showing a few steps in an app.
 
-## How to make a GIF
+## How to use it
 
-1. Choose a video file, or drag it onto the page.
-2. Select the clip: drag the handles, type times, or use the pin buttons to mark the current playback position. The first 5 seconds are selected to start with.
-3. Choose the **width**, **smoothness**, **colors** and **repeat** setting. The estimate under the options updates as you go.
-4. Press **Make GIF**.
-5. Check the result. If it's too big, press **Change settings** and lower the width or frame rate.
-6. Press **Download GIF**.
+1. Click **Choose video** or drop a file. MP4, MOV, WebM, MKV and more work, up to 1 GB.
+2. Wait while the video tools load and the file is read.
+3. Set the **Start** and **End** times. The tool starts with a 5-second section, and GIFs can be up to 30 seconds long.
+4. Choose the settings:
+   - **Width**: 320, 480, 640 or 800 px. The height follows the video's shape.
+   - **Smoothness**: 10, 15, 20 or 25 frames per second.
+   - **Colors**: 256 (best), 128 or 64 (smaller).
+   - **Repeat**: **Loop forever** or **Play once**.
+5. Check the size estimate under the settings, then click **Make GIF**.
+6. Preview the result and click **Download GIF**.
 
-## Getting a great GIF
+## Worked example
 
-- **Keep it short:** a reaction or a single action of 2 to 4 seconds is ideal.
-- **Crop the moment, not the context:** start just before the action and end just after.
-- **480 pixels wide** suits chats and most websites; 320 is enough for small previews.
-- **15 fps** looks smooth; 10 fps is fine for screen recordings and makes much smaller files.
-- **Check size limits:** many apps reject GIFs over 8 to 15 MB.
+You recorded a 2-minute screen video and want to show one 4-second click in a help article. Set the start and end around that moment. Keep the width at 480 px and 15 fps. That is 60 frames, and the estimate shows the approximate file size before you start.
 
-## How it works
+If the result is over 8 MB, the tool warns you, since some apps and sites reject large GIFs. Try 320 px or 10 fps, which can cut the size by more than half.
 
-toolwise first analyzes the clip to create a custom 256-color palette, then converts each frame using that palette with careful dithering. This two-pass method gives clearly better colors than simple converters that use a fixed palette.
+## Choosing the right moment
 
-## Related tools
+Pick a moment with one clear action, such as a button click, a smile or a ball going into a net. GIFs loop, so a clip that ends close to where it started looks smoother. Play the selection a few times before you make the GIF.
 
-Shorten the video first with [Trim Video](/trim-video), make it smaller with [Compress Video](/compress-video), or edit still images with [Resize Image](/resize-image).
+## Tips
+
+- **Keep it short.** Every extra second adds frames. Two to six seconds is usually plenty.
+- **Lower the width first.** Halving the width roughly quarters the file size.
+- **Use 10 fps for screen recordings.** Mouse clicks and menus still look fine and the file is much smaller.
+- **Choose fewer colors for simple content.** Screenshots and cartoons often look the same at 64 colors.
+
+## Common mistakes
+
+- **Making long GIFs.** A 30-second GIF at full settings can be tens of megabytes. Use a video for anything long.
+- **Picking 25 fps for everything.** Higher smoothness mostly helps fast motion and costs a lot of space.
+- **Expecting sound.** GIFs are always silent.

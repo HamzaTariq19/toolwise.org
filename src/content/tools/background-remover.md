@@ -2,49 +2,52 @@
 seoTitle: "Background Remover: Remove Image Background Free | toolwise"
 metaDescription: "Remove the background from a photo automatically with AI that runs on your device. Download a transparent PNG or add a new color. No upload, free."
 faqs:
-  - q: Is my photo uploaded to a server?
-    a: No. The AI model is downloaded to your browser and runs on your device, so your photos never leave it. That makes it safe for personal photos and product images before launch.
-  - q: Why is there a download the first time?
-    a: The AI model and its engine are about 61 MB. They're downloaded once, then stored by your browser so the next photos are processed straight away, even after you close the page.
-  - q: What kind of photos work best?
-    a: Photos with a clear main subject (people, pets, products, cars) and a background that contrasts with it. Fine details such as loose hair, fur or glass are harder and may need touching up.
-  - q: What's the maximum image size?
-    a: Photos up to 30 MB. Very large images are processed at up to 4,096 pixels on the longest side, which is plenty for websites, marketplaces and social media.
-  - q: Can I use the result commercially?
-    a: Yes, the result is your image. The AI model (IS-Net) is released under the Apache License 2.0, which allows commercial use.
+  - q: "Is my photo uploaded?"
+    a: "No. The AI model runs inside your browser, so your photo never leaves your device. That is why the model is downloaded to your browser first."
+  - q: "Why is there a large download the first time?"
+    a: "The AI model and the program that runs it are about 61 MB together. Your browser keeps them after the first time, so later photos start much faster. On mobile data, you may prefer to wait for Wi-Fi."
+  - q: "Why are some edges not perfect?"
+    a: "Fine hair, fur, glass and objects that are a similar color to the background are hard for any automatic tool. Photos with a clear subject and a plain, contrasting background give the cleanest result."
+  - q: "What is the difference between PNG and JPG downloads?"
+    a: "With a transparent background, the result is saved as a PNG, which keeps the see-through areas. When you choose a background color, it is saved as a JPG, which is smaller and works everywhere."
+  - q: "Is there a size limit?"
+    a: "Photos can be up to 30 MB. Very large images are scaled so the longest side is at most 4,096 pixels, which keeps the tool fast and avoids running out of memory."
 ---
 
-## What this tool does
+## When to use it
 
-The background remover finds the main subject of your photo and removes everything behind it, automatically. You get a cut-out on a transparent background, ready to download as a PNG, or you can place it on white, black or any color you choose and download a JPG. The AI model runs entirely in your browser, so your photo is never uploaded.
+Use this tool to cut out the main subject of a photo and remove everything behind it. It is perfect for product photos for an online shop, profile pictures, stickers, slides and simple designs. You can keep a transparent background or place the subject on a solid color.
 
-## How to remove a background
+## How to use it
 
-1. Choose a photo (JPG, PNG, WebP or HEIC), or drag it onto the page.
-2. The first time, confirm the one-time model download. You'll see its progress.
-3. Wait a few seconds while the background is removed.
-4. Switch between **Result** and **Original** to compare.
-5. Choose a **background**: transparent, a preset color, or any color.
-6. Press **Download PNG** (transparent) or **Download JPG** (with a color).
+1. Click **Choose photo** or drop a file. JPG, PNG, WebP and HEIC work, up to 30 MB.
+2. The first time, you will be asked about a **One-time download of the AI model** of about 61 MB. Click **Download and remove background**, or **Not now** to cancel.
+3. Wait while the model loads and removes the background. The download shows a progress bar, and the cut-out itself takes a few seconds, longer on phones.
+4. Use the **Result** and **Original** switch to compare the two.
+5. Under **Background**, choose transparent, one of the colors, or **Pick any color**.
+6. Click **Download PNG** for a transparent result, or **Download JPG** when you have chosen a color.
 
-## Tips for the best cut-out
+## Worked example
 
-- **Use good light** and a background that differs in color from your subject.
-- **Keep the subject in focus** and fully in the frame.
-- **Avoid busy backgrounds** with objects touching the subject.
-- **Start with a large, sharp photo.** More detail gives cleaner edges.
+You sell handmade mugs and took a photo of one on your kitchen table. Load the photo and let the tool work. The mug is cut out, and the table and wall are gone. Choose white as the background and download a clean JPG for your shop listing.
 
-## Popular uses
+For a sticker or a logo on a slide, keep the background transparent and download the PNG. It will sit neatly on any color.
 
-- **Product photos** on plain white for online shops and marketplaces.
-- **Profile pictures** with a clean or colored background.
-- **Stickers and graphics** from your own photos.
-- **Presentations and flyers** where the subject sits on top of a design.
+## Tips
 
-## About the AI model
+- **Use good light.** A well-lit subject with clear edges gives a sharper cut-out.
+- **Pick a contrasting background when you shoot.** A dark object on a light wall is easiest for the model.
+- **Fill the frame.** The subject should be large and clearly in focus.
+- **Try different colors.** A soft grey or pale color often looks more natural than pure white for portraits.
 
-toolwise uses IS-Net, a model designed for highly accurate image segmentation by Xuebin Qin and colleagues, released under the Apache License 2.0. It runs with ONNX Runtime Web on your device's processor. Processing a photo usually takes about 5 to 15 seconds, depending on your device.
+## More than one photo
 
-## Related tools
+Click **Another photo** to load the next one. The model is already in your browser, so it starts right away.
 
-Resize the result with [Resize Image](/resize-image), shrink it with [Compress Image](/compress-image), or crop it with [Crop Image](/crop-image).
+## Common mistakes
+
+- **Expecting it to pick one person in a crowd.** The model looks for the main subject. Busy photos with several people may keep more than you want.
+- **Saving a transparent result as JPG.** JPG cannot store transparency. Keep the background set to transparent to get a PNG.
+- **Using tiny images.** Small, blurry photos give rough edges. Start with the biggest copy you have.
+
+The tool uses the open-source IS-Net model and runs with ONNX Runtime Web, both credited under the tool.

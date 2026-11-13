@@ -2,47 +2,51 @@
 seoTitle: "Extract Audio from Video: MP4 to MP3, M4A or WAV | toolwise"
 metaDescription: "Save the soundtrack of a video as an audio file. Keep the original quality with no re-encoding, or convert to MP3 or WAV. Works in your browser."
 faqs:
-  - q: Which video formats are supported?
-    a: MP4, MOV, M4V, WebM, MKV, AVI, WMV, FLV, 3GP and MPEG-TS, up to 2 GB. The tool reads the file on your device, so even large videos aren't uploaded.
-  - q: What does "Original" mean?
-    a: The audio track is copied out of the video exactly as it is, without re-encoding. It's the fastest option and keeps the original quality. For most MP4 and MOV videos the result is an M4A file.
-  - q: Why is M4A better than MP3 here?
-    a: Most videos already store sound as AAC, which M4A holds directly. Converting to MP3 means decoding and re-encoding, which takes longer and can lose a little quality. Choose MP3 only if your device needs it.
-  - q: Why does the first use take longer?
-    a: The page downloads the video processing engine (about 32 MB) the first time. Your browser stores it, so later uses start almost instantly.
+  - q: "What does the Original format do?"
+    a: "It copies the soundtrack exactly as it is stored in the video, with no quality loss. Most phone and web videos use AAC sound, which is saved as an M4A file. It is the fastest option."
+  - q: "Which format should I choose?"
+    a: "Choose Original for the best quality and speed. Choose MP3 if you need a file that plays on every device and app. Choose WAV if you will edit the audio in a sound editor."
+  - q: "Is my video uploaded?"
+    a: "No. The audio is extracted inside your browser and saved straight to your device."
+  - q: "Can I extract just part of the soundtrack?"
+    a: "This tool saves the whole soundtrack. To keep just a section, extract the audio first, then open the result in Cut Audio."
+  - q: "Does it work with videos from YouTube or other sites?"
+    a: "It works with video files that are already on your device. It does not download videos from websites. Only extract audio from videos you own or have permission to use."
 ---
 
-## What this tool does
+## When to use it
 
-Extract Audio saves the sound from a video as a separate audio file. It reads your video, shows what kind of audio track it has, and lets you save that track **exactly as it is** (no quality loss), or convert it to **MP3** for maximum compatibility or **WAV** for editing. It works with MP4, MOV, WebM, MKV, AVI and many other formats, and runs entirely in your browser.
+Use this tool to save the sound from a video as an audio file. It is handy for keeping the audio of a recorded lecture or meeting, turning a video podcast into something you can listen to on a walk, saving a voice memo you filmed by mistake, or getting a soundtrack ready for editing.
 
-## How to extract audio from a video
+## How to use it
 
-1. Choose a video file, or drag it onto the page.
-2. Wait a moment while the video tools load and the file is read. You'll see its length and audio format.
-3. Choose **Original**, **MP3** or **WAV**.
-4. Press **Extract audio**.
-5. Listen to the result and press **Download**.
+1. Click **Choose video** or drop a file. MP4, MOV, WebM, MKV, AVI and more work, up to 2 GB.
+2. Wait while the tools load and the file is read. You will see the size, length and details of the sound.
+3. Choose an **Audio format**:
+   - **Original** saves the sound exactly as it is in the video. The button shows the format, such as M4A.
+   - **MP3** plays everywhere. Choose an **MP3 quality** of 128, 192 or 320 kbps.
+   - **WAV** is uncompressed, for editing.
+4. Click **Extract audio**, listen to the result, then click **Download**.
 
-## Which format to choose
+## Worked example
 
-- **Original (M4A, OGG, Opus, FLAC…)** keeps the exact audio from the video. It's usually done in seconds, even for long videos.
-- **MP3** plays everywhere, including older car stereos and media players. Choose 192 kbps for music or 128 kbps for speech.
-- **WAV** is uncompressed, which is best for audio editors and transcription software, but files are large.
+You recorded a 45-minute lecture on your phone as an MP4 file of 900 MB. Load it and choose **Original**. Because the sound is AAC, it is copied as an M4A file in seconds, usually 45 to 90 MB depending on the phone, with the same quality as the video.
 
-## Common uses
+If your car stereo only plays MP3, choose **MP3** at 128 kbps instead. Speech sounds clear at that quality, and the file is around 43 MB.
 
-- Saving a lecture, webinar or meeting recording as audio to listen to on the go.
-- Turning a music video or performance you filmed into a song file.
-- Getting clean audio for transcription or subtitles.
-- Reusing the sound from your own video in a podcast or presentation.
+## When the Original option converts
 
-Please only extract audio from videos you own or have permission to use.
+A few soundtrack types, such as some used by older cameras, have no common audio file of their own. In that case the hint under the format choice tells you, and the tool converts the sound to MP3 instead.
 
-## Privacy and speed
+## Tips
 
-Unlike most online converters, nothing is uploaded. The video is read directly from your device by a WebAssembly version of FFmpeg, the same open-source engine used by professional video software.
+- **Start with Original.** It is the fastest and loses nothing. Only convert if you need a specific format.
+- **Use 128 kbps for speech.** Lectures, meetings and podcasts sound fine and the files are smaller.
+- **Use 192 kbps or higher for music.** It keeps more detail in songs and instruments.
+- **Edit afterwards.** Use [Cut Audio](/cut-audio) to keep only the part you need, or the [MP3 Converter](/mp3-converter) to convert other audio files.
 
-## Related tools
+## Common mistakes
 
-Convert other audio files with the [MP3 Converter](/mp3-converter), trim the result with [Cut Audio](/cut-audio), or shorten the video itself with [Trim Video](/trim-video).
+- **Choosing WAV for listening.** WAV files are about ten times larger than MP3 and offer no benefit for everyday listening.
+- **Converting to MP3 at 320 kbps from low-quality sound.** A higher bit rate cannot add detail that was not there. It only makes the file bigger.
+- **Using a video with no sound.** If the video has no soundtrack, the tool will tell you there is nothing to extract.
