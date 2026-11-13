@@ -13,3 +13,11 @@
   X-Content-Type-Options: nosniff
   Referrer-Policy: strict-origin-when-cross-origin
   Permissions-Policy: camera=(self), microphone=(self), display-capture=(self), geolocation=()
+
+# Keep the Cloudflare preview addresses out of search engines. These rules match only
+# *.pages.dev hostnames, so the real domain (connected later) is not affected.
+https://:project.pages.dev/*
+  X-Robots-Tag: noindex, nofollow
+
+https://:version.:project.pages.dev/*
+  X-Robots-Tag: noindex, nofollow
