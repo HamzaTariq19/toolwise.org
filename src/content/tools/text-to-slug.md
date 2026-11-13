@@ -2,56 +2,58 @@
 seoTitle: "Text to Slug Generator: Clean URL Slugs from Titles | toolwise"
 metaDescription: "Turn titles into clean, SEO-friendly URL slugs. Removes accents and symbols, lowercase, hyphens or underscores, optional length limit. Free."
 faqs:
-  - q: What is a slug?
-    a: A slug is the readable part of a web address that identifies a page, like how-to-bake-bread in example.com/blog/how-to-bake-bread. Good slugs are short, lowercase and use hyphens between words.
-  - q: Should I use hyphens or underscores?
-    a: Use hyphens for URLs. Search engines treat hyphens as word separators, while underscores can join words together. Underscores are common for file names and database keys.
-  - q: What happens to accents and symbols?
-    a: Accented letters are converted to plain letters (é becomes e), symbols like & and @ become words (and, at), and other punctuation is removed, so the slug works in every browser.
-  - q: Should I remove short words like "the" and "of"?
-    a: Often yes, for shorter URLs, but keep them if removing them changes the meaning or makes the slug unclear. The first word is always kept.
+  - q: "What is a slug?"
+    a: "The readable part of a web address that identifies a page, such as better-sleep-tips in example.com/blog/better-sleep-tips. Good slugs are short, lowercase and use hyphens between words."
+  - q: "Hyphens or underscores?"
+    a: "Use hyphens for web addresses. Google treats hyphens as word separators, while underscores can join words together. Underscores are fine for file names and code identifiers."
+  - q: "What happens to accents and symbols?"
+    a: "Accented letters become plain letters, so café becomes cafe. The & sign becomes \"and\", @ becomes \"at\" and % becomes \"percent\". Other punctuation is removed, and apostrophes disappear so beginner's becomes beginners."
+  - q: "Can I convert many titles at once?"
+    a: "Yes. Put each title on its own line and you get one slug per line, ready to paste into a spreadsheet."
+  - q: "How does the maximum length work?"
+    a: "If the slug is longer than your limit, it is cut, and where possible the cut happens at the end of a whole word, so you do not get half a word at the end."
 ---
 
-## What this tool does
+## When to use it
 
-Text to Slug converts titles and phrases into clean, URL-friendly slugs. It lowercases the text, swaps spaces for hyphens, converts accented letters to plain ones, turns symbols into words and removes everything else that could break a web address. Paste several titles, one per line, to create many slugs at once.
+Use this tool to turn a title into a clean, URL-friendly slug for a blog post, product page, file name or anchor link. It removes accents, punctuation and spaces, and can drop small words to keep addresses short. It is handy for bloggers, shop owners, developers and anyone naming files consistently.
 
-## How to create a slug
+## How to use it
 
-1. Type or paste a title into **Your text**. Add one title per line for several slugs.
-2. Choose a **Separator**: hyphen for URLs, underscore for file names and code.
-3. Optionally set a **Maximum length** and choose whether to remove short words.
-4. Copy the result.
+1. Type or paste titles into **Your text**, one per line, or click **Example**.
+2. Choose the **Separator**: **Hyphen ( - )** or **Underscore ( _ )**.
+3. Set a **Maximum length** if your system has one, or leave it empty.
+4. Keep **Lowercase** ticked for web addresses.
+5. Tick **Remove short words (a, the, of…)** for shorter slugs.
+6. Copy the **Slug** with **Copy result**, or download it as a .txt file.
 
-## Examples
+## Worked example
 
-- "10 Easy Tips for Better Sleep (2024 Edition)!" becomes `10-easy-tips-for-better-sleep-2024-edition`.
-- "Café Crème & Crêpes: A Beginner's Guide" becomes `cafe-creme-and-crepes-a-beginners-guide`.
-- With short words removed: `cafe-creme-crepes-beginners-guide`.
+The example has two titles. "10 Easy Tips for Better Sleep (2024 Edition)!" becomes 10-easy-tips-for-better-sleep-2024-edition. The brackets and exclamation mark are removed.
+
+"Café Crème & Crêpes: A Beginner's Guide" becomes cafe-creme-and-crepes-a-beginners-guide. The accents are removed, & becomes "and", and the apostrophe disappears.
+
+Tick **Remove short words** and the first title becomes 10-easy-tips-better-sleep-2024-edition, a little shorter and just as clear.
 
 ## What makes a good slug
 
-- **Short and descriptive:** three to six meaningful words is ideal.
-- **Lowercase:** some servers treat uppercase and lowercase URLs as different pages.
-- **Hyphens between words** for readability and search engines.
-- **Stable:** avoid dates or numbers that will go out of date, unless the content is about that date.
-- **Keyword-focused:** include the main topic of the page, but don't stuff in extra keywords.
+- **Short and descriptive.** Three to six words is a good target.
+- **Includes the main keyword.** It helps people and search engines know what the page is about.
+- **No dates unless needed.** A slug without a year stays useful when you update the content.
+- **Stable.** Once a page is published, avoid changing its slug, or old links will break.
 
-## Changing existing slugs
+## Other uses
 
-If a page is already published, changing its slug changes its address. Set up a redirect from the old URL to the new one so visitors and search engines don't hit a broken link.
+Slugs are not only for web pages. They make tidy file names for photos and documents, IDs for headings in a long page, branch names in Git, and keys in spreadsheets or databases where spaces and symbols cause problems.
 
-## Uses beyond URLs
+## Tips
 
-- File names for images and documents.
-- IDs and anchor links in HTML.
-- Keys in configuration files and databases.
-- Hashtag-like labels in content systems.
+- **Remove filler words.** Words like "a" and "the" add length without meaning.
+- **Use the same rules everywhere.** Consistent slugs make a site easier to manage.
+- **Set up a redirect if you must change a slug.** It sends old links to the new address.
 
-## Related tools
+## Common mistakes
 
-Build tracked campaign links with the [UTM Builder](/utm-builder), or create page titles and descriptions with the [Meta Tag Generator](/meta-tag-generator).
-
-## Private
-
-Slugs are generated in your browser. Nothing is uploaded.
+- **Leaving spaces or capitals.** They are encoded as %20 or treated differently by some servers.
+- **Copying the full title.** Long slugs are hard to share and read.
+- **Using non-Latin letters without checking.** Letters outside A to Z without accents are removed, so check slugs for titles in other alphabets.

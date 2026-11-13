@@ -2,46 +2,56 @@
 seoTitle: "Instagram Caption Formatter: Keep Line Breaks and Spacing | toolwise"
 metaDescription: "Format Instagram captions so empty lines and paragraph breaks survive posting. Check the 2,200 character, 30 hashtag and 20 mention limits."
 faqs:
-  - q: Why does Instagram remove my empty lines?
-    a: Instagram often collapses empty lines, so paragraphs run together. toolwise puts an invisible character on each empty line, which Instagram keeps, so your spacing stays exactly as you wrote it.
-  - q: What is the invisible character?
-    a: It is the Braille blank character (U+2800). It looks like an empty space but counts as a real character, so Instagram doesn't strip the line.
-  - q: How many hashtags can I use?
-    a: Instagram allows up to 30 hashtags per post, but many creators find that 3 to 5 relevant hashtags perform as well or better.
-  - q: How much of my caption shows in the feed?
-    a: Roughly the first 125 characters or first two lines, then "more". Put your hook at the start.
+  - q: "Why does Instagram remove my line breaks?"
+    a: "Instagram often deletes empty lines between paragraphs, so a caption turns into one block of text. This tool replaces each empty line with an invisible character that Instagram keeps, so your spacing stays."
+  - q: "What is the invisible character?"
+    a: "A Braille blank (U+2800). It looks like an empty line but counts as a character, so Instagram does not remove it. It counts towards the 2,200-character limit like any other character."
+  - q: "What are Instagram's caption limits?"
+    a: "Up to 2,200 characters, 30 hashtags and 20 mentions. The counters show where you are against each limit."
+  - q: "Why move hashtags to the end?"
+    a: "Hashtags in the middle of sentences make a caption harder to read. Move hashtags to the end collects them into one line after your text, removing duplicates."
+  - q: "What does the preview show?"
+    a: "Roughly how the caption looks in the feed. Only the first part is shown before \"more\", so put the most important words in the first line or two."
 ---
 
-## What this tool does
+## When to use it
 
-The Instagram caption formatter prepares your caption so it looks the way you intended after posting. It keeps empty lines between paragraphs, removes stray trailing spaces, can move all hashtags to the end, and checks Instagram's limits for characters, hashtags and mentions. A preview shows how the caption appears in the feed before "more".
+Use this tool to format an Instagram caption so its paragraphs and spacing survive posting. It also counts characters, hashtags and mentions against Instagram's limits, can tidy hashtags to the end, and shows a preview of how the caption appears in the feed before people tap "more".
 
 ## How to use it
 
-1. Write or paste your caption, with empty lines between paragraphs.
-2. Keep **Keep empty lines** ticked.
-3. Optionally tick **Move hashtags to the end**.
-4. Check the counts and preview.
-5. Press **Copy formatted caption** and paste it into Instagram.
+1. Write or paste your caption into **Your caption**, with empty lines between paragraphs.
+2. Leave **Keep empty lines (invisible character)** ticked to preserve spacing.
+3. Tick **Move hashtags to the end** if you want all tags in one line at the bottom.
+4. Check the counters for **Characters**, **Hashtags** and **Mentions**, and the checks below them.
+5. Look at the **Preview** to see what shows before "more".
+6. Click **Copy formatted caption** and paste it into Instagram.
 
-## Caption writing tips
+## Worked example
 
-- **Hook in the first line:** a question, a bold statement or a promise.
-- **Short paragraphs** with space between them are far easier to read on a phone.
-- **Add a call to action:** ask a question, invite saves or point to the link in your bio.
-- **Emoji as bullets** make lists scannable.
-- **Hashtags at the end** keep the caption clean, or in the first comment if you prefer.
+The sample caption has a short opening line, a numbered list of three habits, a question for followers, and three hashtags at the end. It is 205 characters, with 3 hashtags and no mentions, so every check passes.
 
-## Instagram caption limits
+In the preview, only the first part shows in the feed, followed by "… more". The opening line "Sunday reset ☀️" is short and catchy, which is what people see first. After copying and posting, the empty lines between the list and the question stay in place.
 
-- **2,200 characters** maximum.
-- **30 hashtags** maximum; over that, the caption won't post.
-- **20 mentions** maximum.
+## Writing captions that work
 
-## Related tools
+- **Hook in the first line.** It is the only part many people read.
+- **Use short paragraphs.** Two or three lines each are easy to read on a phone.
+- **End with a question or call to action.** It invites comments.
+- **Use a few relevant hashtags.** 3 to 5 that match the post often work better than dozens.
 
-Generate hashtags from your own keywords with the [Hashtag Generator](/hashtag-generator), style your bio with the [Fancy Text Generator](/fancy-text-generator), or count characters with the [Character Counter](/character-counter).
+## Other apps
 
-## Private
+The same trick helps on other platforms that squash empty lines, such as some Facebook and TikTok views. Paste the formatted caption and check how it looks before you post.
 
-Your caption is formatted in your browser and never uploaded.
+## Tips
+
+- **Write in a notes app, then format here.** Draft freely, then paste in to fix spacing.
+- **Check the counter before posting.** Long captions with many emoji can be closer to the limit than they look.
+- **Keep the copied caption.** The invisible characters are already in it, so you can reuse it.
+
+## Common mistakes
+
+- **Typing the caption straight into Instagram.** Your blank lines may disappear when you post.
+- **Hiding the main message.** If the key point is at the end, most people never see it.
+- **Using 30 hashtags.** It looks spammy and distracts from the content.

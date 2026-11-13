@@ -2,50 +2,56 @@
 seoTitle: "Roman Numeral Converter: Numbers to Roman Numerals and Back | toolwise"
 metaDescription: "Convert numbers to Roman numerals and Roman numerals to numbers from 1 to 3999, with a step-by-step breakdown and validity check. Free."
 faqs:
-  - q: How do Roman numerals work?
-    a: Seven letters stand for values, with I = 1, V = 5, X = 10, L = 50, C = 100, D = 500, M = 1000. Values are added from left to right, except when a smaller value comes before a larger one, in which case it is subtracted, as in IV = 4 and XC = 90.
-  - q: What is the largest Roman numeral?
-    a: In standard form, MMMCMXCIX (3999) is the largest. Larger numbers were written with a bar over letters to multiply by 1,000, but that notation is rarely used today.
-  - q: Is there a Roman numeral for zero?
-    a: No. The Romans had no symbol for zero. Medieval scholars sometimes wrote "nulla" (nothing).
-  - q: Why is IIII sometimes used on clocks?
-    a: Many clock faces use IIII instead of IV for 4, mostly for visual balance with VIII on the other side. It is a tradition rather than the standard form.
+  - q: "What is the largest Roman numeral?"
+    a: "In standard form, 3999, written MMMCMXCIX. Larger numbers were written with a bar over a letter to multiply it by 1,000, but there is no single agreed modern form, so the tool stops at 3999."
+  - q: "Is there a Roman numeral for zero?"
+    a: "No. The Roman system had no symbol for zero, so the converter works from 1 upwards."
+  - q: "Why is 4 written IV and not IIII?"
+    a: "Standard Roman numerals use subtraction for 4 and 9 at each level: IV is 5 − 1, IX is 10 − 1, XL is 40, XC is 90, CD is 400 and CM is 900. IIII appears on some clock faces for style, but IV is the standard form."
+  - q: "What if I type a non-standard numeral?"
+    a: "The tool tells you it is not in standard form, works out what it probably means, and shows the correct way to write it. For example, IIII is read as 4, correctly written IV."
+  - q: "Can I type lowercase letters?"
+    a: "Yes. Lowercase numerals like xiv are accepted and shown in capitals."
 ---
 
-## What this converter does
+## When to use it
 
-The Roman numeral converter turns ordinary numbers into Roman numerals and Roman numerals back into numbers. Type in either box and the other updates instantly. A breakdown shows how the numeral is built, and if you type a numeral that isn't in standard form, the tool explains the correct way to write it.
+Use this tool to convert numbers to Roman numerals and back. It is useful for reading dates on buildings and film credits, writing years for tattoos, invitations or certificates, numbering book chapters and outlines, understanding clock faces, and checking homework.
 
 ## How to use it
 
-1. Type a **number** from 1 to 3999 to see its Roman numeral, or
-2. Type a **Roman numeral** to see its value.
-3. Read the breakdown and press **Copy** to copy the numeral.
+1. Type a whole number from 1 to 3999 in **Number** to see it as a Roman numeral.
+2. Or type a numeral in **Roman numeral**, using I, V, X, L, C, D and M, to see the number.
+3. Read **How it's built**, which breaks the numeral into its parts.
+4. Click **Copy Roman numeral** to copy it.
+5. Check the **Roman numeral symbols** table if you need a reminder.
 
-## The rules
+## Worked example
 
-- Symbols are written from largest to smallest and added together: VIII = 5 + 1 + 1 + 1 = 8.
-- A smaller symbol before a larger one is subtracted. Only these pairs are used: IV (4), IX (9), XL (40), XC (90), CD (400) and CM (900).
-- A symbol can repeat up to three times in a row: III = 3, but 4 is IV, not IIII.
-- V, L and D are never repeated.
+The default number is 2026. It becomes MMXXVI, built as M (1000) + M (1000) + X (10) + X (10) + V (5) + I (1).
 
-## Examples
+Going the other way, a film's credits end with MCMXCIX. Type it into **Roman numeral** and the number is 1999, built as M (1000) + CM (900) + XC (90) + IX (9). CM, XC and IX are the subtractive pairs: 1000 − 100, 100 − 10 and 10 − 1.
 
-- 2026 = MMXXVI
-- 1999 = MCMXCIX
-- 444 = CDXLIV
-- 14 = XIV
-- 3999 = MMMCMXCIX
+If you type IIII, the tool explains that it is not standard form and suggests IV instead.
 
-## Where you still see Roman numerals
+## How to read Roman numerals
 
-- Clock faces and watches.
-- Movie copyright years and book chapter numbers.
-- Names of monarchs and popes, like Elizabeth II.
-- Sporting events such as the Super Bowl and Olympic Games.
-- Outlines, lists and page numbers in book introductions (i, ii, iii).
-- Tattoos and engravings of important dates.
+Read from left to right and add the values. When a smaller symbol comes before a larger one, subtract it instead. So VI is 5 + 1 = 6, while IV is 5 − 1 = 4.
 
-## Related tools
+Only these subtractive pairs are used: IV, IX, XL, XC, CD and CM. A symbol is never repeated more than three times in a row.
 
-Spell numbers in words with the [Number to Words Converter](/number-to-words), or convert between number bases with the [Binary, Decimal and Hex Converter](/number-base-converter).
+## Where Roman numerals are still used
+
+You will see them on clock faces, in the names of monarchs and popes such as Elizabeth II, for big events like the Olympic Games and the Super Bowl, in movie copyright years, and for page numbers at the front of books.
+
+## Tips
+
+- **Break big numbers into parts.** For 1987, write 1000 (M), 900 (CM), 80 (LXXX) and 7 (VII) to get MCMLXXXVII.
+- **Check before engraving.** For tattoos, rings and plaques, copy the numeral rather than typing it by hand.
+- **Use the steps to learn.** They show exactly which symbols make up each number.
+
+## Common mistakes
+
+- **Writing 99 as IC.** The correct form is XCIX (90 + 9).
+- **Writing 1990 as MXM.** The correct form is MCMXC.
+- **Repeating V, L or D.** These are never doubled. 10 is X, not VV.
