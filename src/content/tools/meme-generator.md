@@ -2,50 +2,60 @@
 seoTitle: "Meme Generator: Add Top and Bottom Text to Your Photo | toolwise"
 metaDescription: "Make a meme from your own photo with classic bold top and bottom captions. Adjustable size, white or black text, instant download. Free and private."
 faqs:
-  - q: Can I use any picture for a meme?
-    a: Use your own photos or images you have permission to use. Many popular meme images are copyrighted, and characters from films, games and cartoons usually belong to their owners. toolwise does not include any template images for that reason.
-  - q: What font do memes use?
-    a: Classic memes use a bold, condensed font with white letters and a black outline. toolwise uses Anton, an open-source font with the same punchy look, so it renders the same on every device.
-  - q: Why does long text get smaller?
-    a: To keep the picture visible, each caption is limited to about a third of the image height. Long captions are wrapped onto several lines and shrunk to fit.
-  - q: Which format is best for sharing?
-    a: JPG is selected by default because it is small and accepted by every chat app and social network. Choose PNG if your picture has transparent areas or sharp graphics.
+  - q: "Does toolwise provide meme templates?"
+    a: "No. You use your own photo or a picture you have permission to use. Famous meme images and film or cartoon characters are usually owned by someone else, so toolwise doesn't include them."
+  - q: "Why is the text in that classic meme style?"
+    a: "The tool uses a bold, condensed poster font with a dark outline, the look people expect from memes. The outline keeps white text readable on both light and dark photos."
+  - q: "My text is too long and gets small. What can I do?"
+    a: "Long lines wrap to fit the width, which can make the text crowded. Shorten the caption, split it between top and bottom, or lower the Text size slightly."
+  - q: "Can I leave the top or bottom empty?"
+    a: "Yes. Clear either box to use only one line of text."
+  - q: "Is my photo uploaded?"
+    a: "No. The meme is created in your browser."
 ---
 
-## What this tool does
+## When to use it
 
-The meme generator puts classic bold captions on the top and bottom of a picture. Upload a photo of your pet, a funny moment from your day or a reaction shot, type your captions and download a meme ready to share in group chats and on social media.
+The meme generator adds classic top and bottom captions to your own photo. Use it for a funny post in a group chat, a team in-joke for a work channel, a caption for a pet photo, or a light-hearted slide in a presentation. It's quick: choose a photo, type two lines, download.
 
 ## How to make a meme
 
-1. Tap **Choose image** and pick your own photo.
-2. Type the **Top text** and **Bottom text**. Leave one empty if you only need one caption.
-3. Adjust **Text size**, choose **White** or **Black** text, and switch **ALL CAPS** on or off.
-4. Press **Download meme**.
+1. Tap **Choose image** and pick your own photo or picture (JPG, PNG or WebP).
+2. Type the **Top text** and **Bottom text**. The preview updates as you type.
+3. Adjust the **Text size**, keep **ALL CAPS** on for the classic look, and choose a **Text color**: **White** or **Black**.
+4. Choose **Save as** and press **Download meme**.
 
-## Tips for funnier memes
+Use your own photos, or pictures you have permission to use.
 
-- **Short and punchy wins.** The best captions are a handful of words. Put the setup on top and the punchline at the bottom.
-- **Let the picture do half the work.** Expressive faces, unexpected situations and dramatic poses make the caption land.
-- **Keep the faces clear.** Captions sit at the top and bottom edges so they don't cover the middle of the picture.
-- **Know your audience.** Inside jokes are great for group chats but may confuse people on public feeds.
-- **Use white text with a black outline** for most photos; switch to black text for very bright pictures with a white background.
+## A worked example
 
-## Using images responsibly
+Your dog fell asleep on your laptop keyboard just before a deadline. Open the photo, type "WHEN YOU SAY YOU'LL HELP" at the top and "WITH THE REPORT" at the bottom, keep white text in ALL CAPS, and set the size to 10%. The outlined text reads clearly over the dark fur and bright screen. Download it as JPG and share it with your team.
 
-Memes are often built on photos that belong to someone else. To stay on the safe side, use photos you took yourself or images released for reuse. Avoid sharing memes that use other people's faces without their permission, especially when they could embarrass or harass someone. toolwise deliberately does not offer famous characters or copyrighted templates.
+## Writing a good meme caption
 
-## Photo ideas
+- **Set up, then pay off:** the top line sets the scene, the bottom line delivers the joke.
+- **Keep it short:** under about 30 characters per line reads best on a phone.
+- **Match the photo:** the expression or situation in the picture should do half the work.
+- **Know your audience:** in-jokes work brilliantly in small groups but may confuse others.
 
-- Your pet's best grumpy face.
-- A messy kitchen after a family dinner.
-- A screenshot of a calendar full of meetings.
-- A blurry action shot from a game or match.
+## Tips
+
+- **Use photos with space** at the top and bottom, so the text doesn't cover faces.
+- **Pick black text** for very bright, plain backgrounds like snow or white walls.
+- **Square or portrait photos** look best in feeds and chats.
+- **Save as JPG** for photos to keep files small.
+
+## Common mistakes
+
+- **Using copyrighted images** such as film stills, cartoon characters or other people's photos without permission.
+- **Posting photos of people without their agreement,** especially children or colleagues.
+- **Text over the important part** of the picture.
+- **Captions that are too long,** which shrink and become hard to read.
+
+## Private by design
+
+Your photo stays on your device; the meme is made in your browser.
 
 ## Related tools
 
-Need more control over fonts and placement? Use [Add Text to Image](/add-text-to-image). Want to crop the picture to a square first? Try [Crop Image](/crop-image).
-
-## Private
-
-Your photo and captions are combined in your browser. Nothing is uploaded or stored.
+Add text anywhere on a picture with [Add Text to Image](/add-text-to-image), put several photos together with the [Collage Maker](/collage-maker), or crop first with [Crop Image](/crop-image).

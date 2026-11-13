@@ -2,49 +2,60 @@
 seoTitle: "Collage Maker: Combine Photos into a Grid Online Free | toolwise"
 metaDescription: "Arrange 2 to 9 photos into a tidy collage. Choose a layout, size for posts or stories, spacing, rounded corners and background. Free and private."
 faqs:
-  - q: How many photos can I put in a collage?
-    a: Between 2 and 9. The layouts change to suit the number of photos you add, from side-by-side pairs to a 3 × 3 grid.
-  - q: Why are parts of my photos cut off?
-    a: Each photo is scaled to fill its frame completely, so photos with a different shape from their frame are trimmed at the edges. Try another layout or collage size where the frames match your photos better.
-  - q: How do I change the order of photos?
-    a: Tap a photo in the thumbnail row to move it one place earlier. The first photo goes in the largest frame in layouts that have one.
-  - q: What size should I choose for Instagram?
-    a: Square 1080 × 1080 or Portrait 1080 × 1350 for feed posts, and Story 1080 × 1920 for stories. Choose Print 2400 × 1800 for a 6 × 4 inch photo print.
+  - q: "How many photos can a collage have?"
+    a: "Between 2 and 9. The layout list changes to match the number of photos, from \"Side by side\" for two to \"Grid 3 × 3\" for nine."
+  - q: "How do I change the order of photos?"
+    a: "Tap a photo in the list to move it one place earlier, and use the cross to remove one. The first photo goes in the largest or first cell of the layout."
+  - q: "Which size should I choose?"
+    a: "Square 1080 × 1080 or Portrait 1080 × 1350 for Instagram posts, Story 1080 × 1920 for Stories and Reels covers, Landscape 1920 × 1080 for slides and screens, and Print 2400 × 1800 for a 6 × 8 in print."
+  - q: "Are my photos cropped?"
+    a: "Yes, each photo is cropped to fill its cell without stretching, keeping the middle of the picture. Put your most important photo in a larger cell for the best fit."
+  - q: "Are my photos uploaded?"
+    a: "No. The collage is assembled in your browser."
 ---
 
-## What this tool does
+## When to use it
 
-Collage Maker combines several photos into one neat image. It is perfect for before-and-after comparisons, holiday highlights, product showcases, event recaps, birthday boards and social media posts where you want to show more than one picture at a time.
+The collage maker combines 2 to 9 photos into a single image. Use it for a holiday highlights post, a before-and-after comparison, a product range in one picture, a birthday or anniversary card, a grid of team photos, or a mood board. One collage is easier to share than a stack of separate photos, and it tells a story at a glance.
 
 ## How to make a photo collage
 
-1. Tap **Choose photos** and pick 2 to 9 images.
-2. Choose a **Layout**. The options depend on how many photos you added.
-3. Pick a **Size** for where you will use it: square, portrait, story, landscape or print.
-4. Adjust **Spacing** between photos, **Corners** for rounded edges, and the **Background** color.
-5. Tap thumbnails to reorder photos, use **Add photos** to include more, or the cross to remove one.
+1. Tap **Choose photos** and select 2 to 9 JPG, PNG, WebP or HEIC photos.
+2. Tap a photo in the list to move it one place earlier; use the cross to remove it, or **Add photos** for more.
+3. Choose a **Layout** from the list (for example "Big top, two below" or "Grid 2 × 2").
+4. Pick a **Size**: **Square 1080 × 1080**, **Portrait 1080 × 1350**, **Story 1080 × 1920**, **Landscape 1920 × 1080** or **Print 2400 × 1800**.
+5. Adjust **Spacing**, **Corners** and **Background** colour.
 6. Press **Download collage**.
 
-## Design tips
+## A worked example
 
-- **Pick a hero photo.** In layouts with one large frame, put your best picture first so it fills the big space.
-- **Mix close-ups and wide shots** for a more interesting collage.
-- **Keep colors consistent.** Photos taken in similar light look calmer together. A white or soft background suits most collages; black makes colors pop.
-- **Use spacing and rounded corners** for a modern, airy look, or zero spacing for a seamless grid.
-- **Before and after:** use the two-photo side-by-side or stacked layout with the before photo first.
+After a weekend trip you want one Instagram post with your four best photos. Choose them, make sure the beach panorama is first, and choose "Big top, three below". Set **Portrait 1080 × 1350** so it fills more of the feed, add a little spacing with a white background, and slightly rounded corners. Download it: one clean image with the panorama on top and three smaller moments underneath.
 
-## Collage sizes explained
+## Layout ideas
 
-- **Square 1080 × 1080** works on almost every social network.
-- **Portrait 1080 × 1350** takes up more space in Instagram and Facebook feeds.
-- **Story 1080 × 1920** fills a phone screen for stories and status updates.
-- **Landscape 1920 × 1080** suits presentations, YouTube thumbnails and desktop wallpapers.
-- **Print 2400 × 1800** prints sharply on standard 6 × 4 inch photo paper.
+- **Before and after:** "Side by side" with two photos.
+- **One hero shot plus details:** "Big left, three right" or "One big, six small".
+- **Even grid for a set:** "Grid 2 × 2" or "Grid 3 × 3".
+- **Story format:** "Stacked" or "Three rows" in Story size.
+
+## Tips
+
+- **Mix wide shots and close-ups** for variety.
+- **Keep colours consistent;** photos with similar light look better together.
+- **Use spacing** to separate busy photos, and a background colour that matches your theme.
+- **Put faces away from edges,** since photos are cropped to fit their cells.
+
+## Common mistakes
+
+- **Too many photos for a small size,** making each one tiny on a phone.
+- **Important details cut off** by cropping; choose a layout with a larger cell for that photo.
+- **Using the Print size for social media,** which is larger than needed.
+- **Mixing very dark and very bright photos,** which looks uneven.
+
+## Private by design
+
+Your photos are combined in your browser and never uploaded.
 
 ## Related tools
 
-To prepare individual photos first, use [Crop Image](/crop-image) or [Rotate and Flip Image](/rotate-flip-image). To add a title to the finished collage, use [Add Text to Image](/add-text-to-image).
-
-## Private
-
-Your photos are arranged in your browser and never uploaded.
+Crop photos first with [Crop Image](/crop-image), add a caption with [Add Text to Image](/add-text-to-image), or shrink the result with [Compress Image](/compress-image).

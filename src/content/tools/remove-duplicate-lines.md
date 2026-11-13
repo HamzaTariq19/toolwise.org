@@ -2,49 +2,62 @@
 seoTitle: "Remove Duplicate Lines: Dedupe a List Online Free | toolwise"
 metaDescription: "Delete repeated lines from a list and keep only unique entries. Ignore case or spaces, remove blank lines and sort. Free, fast and private."
 faqs:
-  - q: Which copy of a duplicate is kept?
-    a: The first time a line appears, it is kept in its original position. Later copies are removed. The original order of the list is preserved unless you tick Sort the result.
-  - q: Why are some duplicates not removed?
-    a: They probably differ slightly, for example in capital letters or spaces at the end. Tick Ignore capital letters and Ignore spaces at the start and end to treat them as the same.
-  - q: How many lines can it handle?
-    a: Hundreds of thousands of lines. The work is done instantly in your browser, so very large lists only take a moment.
-  - q: Can I remove duplicates from a spreadsheet column?
-    a: Yes. Copy the column from Excel or Google Sheets, paste it here, then copy the unique list back. Each cell becomes one line.
+  - q: "Which copy of a duplicate is kept?"
+    a: "The first one. Lines stay in their original order, and later repeats are removed, unless you tick \"Sort the result A to Z\"."
+  - q: "Are \"Apple\" and \"apple\" duplicates?"
+    a: "Only if you tick \"Ignore capital letters (Apple = apple)\". By default, lines with different capitals are treated as different."
+  - q: "What does \"Ignore spaces at the start and end\" do?"
+    a: "It treats \" apple\" and \"apple \" as the same line, which catches duplicates caused by stray spaces when copying from spreadsheets or documents. It's on by default."
+  - q: "How many lines can it handle?"
+    a: "Hundreds of thousands of lines work fine on a computer. Very large lists (millions of lines) may be slow on phones."
+  - q: "Is my list uploaded?"
+    a: "No. Everything is processed in your browser, which makes it safe for email lists and customer data."
 ---
 
-## What this tool does
+## When to use it
 
-Remove Duplicate Lines cleans up lists by deleting repeated entries. Paste email addresses, product codes, names, keywords, URLs or any list with one item per line, and get back a list where every entry appears only once. The tool shows how many duplicates were removed.
+Remove Duplicate Lines cleans up any list so each line appears only once. Use it for email lists before a mailing, keyword and tag lists, product SKUs, URLs, names from several sign-up sheets, log files, or any data copied from spreadsheets where the same entry crept in more than once.
 
-## How to remove duplicates
+## How to remove duplicate lines
 
-1. Paste your list into **Your text**, one item per line.
-2. Choose the options you need:
-   - **Ignore capital letters** treats "Apple" and "apple" as the same.
-   - **Ignore spaces at the start and end** catches entries with stray spaces.
-   - **Remove empty lines** drops blank lines.
-   - **Sort the result A to Z** alphabetizes the unique list.
-3. Copy or download the **Unique lines**.
+1. Paste your list into **Your text**, one item per line, or press **Example**.
+2. Choose your options:
+   - **Ignore capital letters (Apple = apple)**
+   - **Ignore spaces at the start and end** (on by default)
+   - **Remove empty lines** (on by default)
+   - **Sort the result A to Z**
+3. Read the **Unique lines**, with a note of how many were kept and how many duplicates were removed.
+4. Press **Copy result** or **Download .txt**.
 
-## Common uses
+## A worked example
 
-- **Email and mailing lists:** merge lists from several sources without sending people the same message twice.
-- **Keyword research:** combine keyword exports and remove repeats.
-- **Inventory and product codes:** find the distinct SKUs in an order export.
-- **Guest lists and registrations:** spot people who signed up twice.
-- **Log files and URLs:** reduce thousands of repeated entries to the unique ones.
+You combined three event sign-up sheets into one list of 412 email addresses. Paste them in and tick **Ignore capital letters**, because "Ana@Mail.com" and "ana@mail.com" are the same address. The note says "378 unique · 34 duplicates removed". Copy the result into your mailing tool, and nobody gets your announcement twice.
 
 ## Tips
 
-- **Check the count.** The summary shows unique lines and duplicates removed, which is a quick way to see how messy a list was.
-- **Watch for near-duplicates.** "Jon Smith" and "John Smith" are different lines; review important lists by eye after deduplicating.
-- **Email addresses are case-insensitive,** so tick Ignore capital letters for email lists.
-- **Need to count how often each line appeared?** Paste the list into the [Word Frequency Counter](/word-frequency-counter) with phrases, or use [Sort Lines](/sort-lines) to group identical lines together.
+- **Ignore capital letters for emails and usernames;** keep it off for case-sensitive data like passwords or product codes.
+- **Sort A to Z** to make lists easier to scan and compare.
+- **Check the note:** an unexpectedly high number of duplicates can reveal a copy-paste mistake.
+- **For spreadsheets,** copy a single column, clean it here, and paste it back.
+
+## Other uses
+
+- **Keyword research:** merge keyword exports from several tools and remove repeats.
+- **Tag lists:** clean up hashtags or categories before importing them.
+- **Log files:** reduce repeated error lines to see each distinct message once.
+- **Sign-in sheets:** find out how many different people attended.
+
+## Common mistakes
+
+- **Leaving capital letters on** when the list should ignore them, so near-duplicates survive.
+- **Pasting several columns at once.** Each whole line is compared, so rows with different second columns don't count as duplicates.
+- **Sorting when order matters,** such as a ranked list or a sequence of steps.
+- **Hidden characters** from web pages or PDFs that make lines look identical but differ; pasting into a plain text editor first can help.
+
+## Private by design
+
+Your list is processed in your browser and never uploaded.
 
 ## Related tools
 
-Alphabetize or shuffle lists with [Sort Lines](/sort-lines), count list entries with the [Line Counter](/line-counter), or tidy up spacing with [Remove Extra Spaces](/remove-extra-spaces).
-
-## Private
-
-Lists often contain personal data like email addresses. toolwise processes everything in your browser and never uploads it.
+Sort a list with [Sort Lines](/sort-lines), count lines with the [Line Counter](/line-counter), or change words across a list with [Find and Replace](/find-and-replace).

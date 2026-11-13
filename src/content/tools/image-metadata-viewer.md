@@ -2,45 +2,58 @@
 seoTitle: "Image Metadata Viewer: See EXIF, Camera and GPS Data | toolwise"
 metaDescription: "View the hidden EXIF data in a photo: camera, lens, settings, date taken and GPS location. Free, private, works in your browser."
 faqs:
-  - q: What is EXIF data?
-    a: EXIF is information that cameras and phones save inside photos, such as the camera model, date and time, exposure settings and often the GPS location where the photo was taken.
-  - q: Why does my photo show no metadata?
-    a: Many apps and websites, including most social networks and messaging apps, remove metadata when you upload or send a photo. Screenshots and edited images often have none either.
-  - q: Can the GPS location be wrong?
-    a: Phones record location from GPS, Wi-Fi and mobile networks, which can be off by a few meters or, indoors, much more. The coordinates show where the phone thought it was.
-  - q: Is my photo uploaded to read the data?
-    a: No. The metadata is read in your browser. The only outside link is the optional map link, which opens OpenStreetMap if you choose to click it.
+  - q: "What is photo metadata?"
+    a: "Hidden information stored inside an image file, often called EXIF. It can include the camera or phone model, the date and time taken, camera settings, editing software and the GPS location where the photo was taken."
+  - q: "Do photos from social media still contain metadata?"
+    a: "Usually not. Facebook, Instagram, X and WhatsApp remove most metadata, including location, when you upload. Photos sent as files or by email, or downloaded from cloud storage, often keep everything."
+  - q: "Why does my photo show no information?"
+    a: "Screenshots, edited exports and images saved from websites or messaging apps often have no metadata, because it was removed along the way. That's normal."
+  - q: "How do I remove the location before sharing?"
+    a: "Use Remove EXIF Data, which strips location and other hidden details without changing how the photo looks. You can also turn off location for your phone's camera."
+  - q: "Is my photo uploaded?"
+    a: "No. The metadata is read in your browser. The map link only opens if you click it."
 ---
 
-## What this tool does
+## When to use it
 
-The image metadata viewer reveals the hidden information stored inside photos. It shows the camera and lens, the date and time the photo was taken, exposure settings like shutter speed, aperture and ISO, editing software, author and copyright notes, and the GPS location if one was recorded. A full table lists every field found.
+The image metadata viewer shows the hidden details stored inside a photo: camera or phone model, lens, date and time taken, camera settings, size, editing software and, often, the exact GPS location. Use it to check what a photo would reveal before you share it, to find out when and where an old photo was taken, to check the settings behind a great shot, or to verify a photo's details for work.
 
-## How to view a photo's metadata
+## How to view photo metadata
 
-1. Tap **Choose photo** and select an image.
-2. A warning appears at the top if the photo contains a **GPS location**, with a link to view it on a map.
-3. The main details are shown as cards: camera, lens, date taken, settings and more.
-4. Open **All metadata** to see every field.
+1. Tap **Choose photo**, or drag a JPG, PNG, WebP, TIFF or HEIC file (up to 100 MB) onto the box.
+2. The location panel shows whether the photo contains a GPS position, with coordinates and a map link, or says "No GPS location found in this photo".
+3. The summary shows key details such as **Camera**, **Lens** and **Taken**, plus camera settings and dimensions when available.
+4. Open **All metadata** for the complete list of every field.
+5. Press **Another photo** to check the next one.
 
-## Why check metadata?
+## A worked example
 
-- **Privacy:** photos taken at home can reveal your address through GPS coordinates. Check before posting photos online or sending them to strangers, for example when selling items.
-- **Photography:** learn which settings produced a great shot, or compare lenses and cameras.
-- **Organizing:** find the original date a photo was taken when file dates have changed.
-- **Verification:** journalists and researchers use metadata as one clue to check where and when an image was made, though it can be edited and should never be the only evidence.
+You're about to sell a bike online and took the listing photo outside your home. Open the photo here: the location panel shows coordinates accurate to a few metres, pointing at your street. Before posting, you run the photo through Remove EXIF Data, then check the clean copy here again: "No GPS location found in this photo". Now the listing doesn't reveal where you live.
 
-## Understanding camera settings
+## What metadata can reveal
 
-- **Exposure time** (shutter speed): how long the sensor collected light. 1/1000 s freezes action; 1 s blurs motion.
-- **Aperture** (f-number): smaller numbers like f/1.8 give a blurred background; larger numbers like f/11 keep more in focus.
-- **ISO:** sensitivity to light. Higher ISO allows dark scenes but adds grain.
-- **Focal length:** shorter numbers are wider views; longer numbers zoom in.
+- **Location:** often precise enough to identify a house.
+- **Date and time:** when you were somewhere.
+- **Device:** your phone or camera model and sometimes its serial number.
+- **Software:** which apps edited the image.
+- **Thumbnail:** some files keep a small preview of the original, even after cropping.
 
-## Removing metadata
+## Tips
 
-If you find information you don't want to share, especially GPS location, use [Remove EXIF Data](/remove-exif-data) to create a clean copy before posting the photo.
+- **Check before posting** photos of your home, children or valuables to marketplaces and forums.
+- **Use it for photography:** compare aperture, shutter speed and ISO across shots.
+- **Date old family photos** that were scanned from digital originals.
 
-## Private
+## Common mistakes
 
-Everything is read on your device. Your photo is never uploaded.
+- **Assuming all sites strip metadata.** Many forums, file-sharing services and email do not.
+- **Thinking a screenshot is the original.** Screenshots don't show the original photo's metadata.
+- **Trusting dates blindly.** A camera with the wrong clock records the wrong date.
+
+## Private by design
+
+Your photo is read in your browser and never uploaded.
+
+## Related tools
+
+Remove hidden details with [Remove EXIF Data](/remove-exif-data), hide faces and number plates with [Blur Image](/blur-image), or convert iPhone photos with [HEIC to JPG](/heic-to-jpg).

@@ -2,44 +2,58 @@
 seoTitle: "Color Picker from Image: Get HEX and RGB from a Photo | toolwise"
 metaDescription: "Tap any point of an image to get its HEX, RGB and HSL color code, with a magnifier and the image's main colors. Free and private."
 faqs:
-  - q: How do I pick the exact color I want?
-    a: Press and drag on the image. A magnifier shows the pixels under your finger or cursor, with the selected pixel outlined in the center. Let go when you are on the right spot.
-  - q: What are HEX, RGB and HSL?
-    a: They are three ways of writing the same color. HEX (like #1D4ED8) is common in web design and design apps. RGB gives the red, green and blue amounts from 0 to 255. HSL describes hue, saturation and lightness, which is handy for making lighter or darker versions.
-  - q: Why does the color look slightly different from what I see?
-    a: Photos contain small variations between neighboring pixels, especially in shadows and textures. Pick from the middle of a flat area, or use the main colors palette, which averages similar pixels.
-  - q: Does it work with screenshots?
-    a: Yes. Screenshots are ideal because their colors are exact, which makes this a quick way to find the color code of a logo or website element.
+  - q: "Which colour codes do I get?"
+    a: "HEX (like #1D4ED8), RGB (like rgb(29, 78, 216)) and HSL (like hsl(224, 76%, 48%)), each with a Copy button. HEX is the most common for websites and design apps."
+  - q: "Why is the colour I picked slightly different from what I expected?"
+    a: "Photos contain tiny variations, shadows and compression noise, so neighbouring pixels can differ. Drag to fine-tune, and for a typical colour, use the \"Main colors in this image\" palette instead."
+  - q: "How are the main colours chosen?"
+    a: "The tool samples the whole image and picks up to eight common colours that are clearly different from each other. They're a quick starting point for a matching palette."
+  - q: "Can I pick colours from a screenshot of a website?"
+    a: "Yes. Take a screenshot, open it here and click the colour. Screenshots give exact colours because they aren't compressed like photos."
+  - q: "Is my image uploaded?"
+    a: "No. Colours are read in your browser."
 ---
 
-## What this tool does
+## When to use it
 
-The image color picker finds the exact color code of any pixel in a picture. Tap a spot to get its HEX, RGB and HSL values, copy them with one press, and see a palette of the main colors in the whole image. It is useful for designers, developers, crafters, decorators and anyone trying to match a color.
+The image colour picker finds the exact colour code of any point in a picture. Designers use it to match brand colours from a logo, web developers to copy a colour from a screenshot, crafters and decorators to match paint or fabric to a photo, and social media creators to build a palette that fits their photos. It also suggests the main colours in the whole image.
 
-## How to pick a color from an image
+## How to pick a colour from an image
 
-1. Tap **Choose image** and select a photo or screenshot.
-2. Tap or click anywhere on the image. Press and drag to fine-tune with the magnifier.
-3. The picked color appears in the panel with its HEX, RGB and HSL codes.
-4. Press **Copy** next to the format you need.
-5. Tap a swatch in **Main colors** or **Picked so far** to see its codes again.
+1. Tap **Choose image**, or drag a JPG, PNG, WebP or HEIC file onto the box.
+2. **Tap or click anywhere on the image.** Drag to fine-tune while watching the swatch.
+3. Read the **Picked color**, with its HEX, RGB and HSL codes, and press **Copy** next to the one you need.
+4. Check **Main colors in this image** for a ready-made palette; tap one to select it.
+5. Every colour you pick is kept under **Picked so far** (up to 12) so you can compare them.
+6. Press **Choose another image** for a different picture.
 
-## Ideas for using it
+## A worked example
 
-- **Branding:** find the exact colors in a logo to use on your website or documents.
-- **Web design:** match a button or background to a color in a hero photo.
-- **Home and fashion:** pull a palette from an inspiring room or outfit photo to guide paint or fabric choices.
-- **Art and crafts:** find matching yarn, paint or thread colors.
-- **Presentations:** pick slide colors that harmonize with your photos.
+A client sends their logo as a PNG but doesn't know the brand colours. Open the logo and click the blue part of the symbol: the tool shows #1D4ED8 with its RGB and HSL values. Click the orange accent: #F97316. Both appear under Picked so far. Copy the HEX codes into your design app or CSS, and the new website matches the logo exactly.
 
-## Building a palette
+## Which code to use where
 
-The **Main colors** row groups similar pixels and shows up to eight distinct colors, most common first. A good palette usually has one dominant color, one or two supporting colors and an accent. Copy the codes into your design app, then fine-tune shades with our [Color Picker](/color-picker), which converts between formats and shows lighter and darker variations.
+- **HEX:** websites, design tools, presentation apps.
+- **RGB:** code, video and image editors.
+- **HSL:** CSS when you want lighter or darker versions of the same colour, by changing the last number.
 
-## Accuracy notes
+## Tips
 
-The picker reads colors exactly as your browser decodes the image. Photos taken in different light will produce different codes for the same object, so for physical paint and fabric matching, treat the result as a starting point and compare samples in real daylight.
+- **Zoom into your browser** to click small details precisely.
+- **Use PNG logos or screenshots** for exact colours; JPG photos vary slightly from pixel to pixel.
+- **Pick from flat, well-lit areas** of photos, avoiding highlights and shadows.
+- **Check contrast** for text with the Color Picker's contrast checker before using colours together.
 
-## Private
+## Common mistakes
 
-Your image is analyzed in your browser and never uploaded.
+- **Picking from a blurry edge,** which gives a blend of two colours.
+- **Trusting colours from a heavily edited photo** to match a real product.
+- **Expecting printed colours to match the screen exactly;** print uses a different colour system.
+
+## Private by design
+
+Your image is analysed in your browser and never uploaded.
+
+## Related tools
+
+Work with colour codes and contrast in the [Color Picker](/color-picker), build backgrounds with the [CSS Gradient Generator](/css-gradient-generator), or remove the background of a logo with the [Background Remover](/background-remover).
