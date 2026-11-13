@@ -2,46 +2,50 @@
 seoTitle: "Ovulation Calculator: Fertile Window and Ovulation Date | toolwise"
 metaDescription: "Estimate your fertile window and ovulation date for the next three cycles from your last period and cycle length. Free and private."
 faqs:
-  - q: When am I most fertile?
-    a: You are most likely to conceive during the five days before ovulation and on the day of ovulation itself, because sperm can survive for several days while the egg survives for about a day.
-  - q: How is ovulation estimated?
-    a: Ovulation usually happens about 14 days before your next period. The calculator adds your cycle length to the first day of your last period, then counts back by your luteal phase (14 days unless you change it).
-  - q: How accurate is an ovulation calculator?
-    a: It is a helpful estimate for regular cycles, but ovulation can shift from month to month due to stress, illness or travel. Ovulation test kits, cervical mucus changes and basal body temperature tracking give more personal information.
-  - q: Can I use this to avoid pregnancy?
-    a: No. Calendar estimates are not reliable enough for contraception. Speak to a doctor or family planning service about effective methods.
+  - q: "How accurate is the estimate?"
+    a: "It is a calendar estimate based on averages. Ovulation can shift by several days from one cycle to the next because of stress, illness, travel or other changes. Ovulation tests or tracking body temperature give a more personal picture."
+  - q: "Can I use this to avoid pregnancy?"
+    a: "No. Never use this calculator as a method of contraception. Sperm can survive for several days and ovulation dates vary, so calendar estimates are not reliable enough. Speak to a doctor or pharmacist about contraception."
+  - q: "What is the luteal phase?"
+    a: "It is the time from ovulation to the start of your next period. It is usually about 14 days and tends to stay fairly steady for each person. If you know yours from tracking, enter it for a better estimate."
+  - q: "My cycles are irregular. Can I still use it?"
+    a: "You can, but the estimate will be less reliable. Use your average cycle length over the last few months. If your cycles vary a lot, consider ovulation tests and talk to a doctor."
+  - q: "Why does it ask for a date within the last four months?"
+    a: "Small differences in cycle length add up over time, so projecting from an old period date gives a poor estimate. Use your most recent period."
 ---
 
-## What this calculator does
+## When to use it
 
-The ovulation calculator estimates when you are likely to ovulate and which days make up your fertile window. It shows the next three cycles so you can plan ahead, along with the expected start of each period. It is designed for people who are trying to conceive and want to understand their cycle.
+Use this calculator if you are trying to get pregnant and want to know your most fertile days. It estimates when you will ovulate and shows your fertile window for the next three cycles, along with the date your next period is likely to start.
 
 ## How to use it
 
-1. Choose the **first day of your last period**.
-2. Enter your **average cycle length**: the number of days from the first day of one period to the first day of the next.
-3. If you know it, adjust the **luteal phase**, the days between ovulation and your next period. Most people can leave it at 14.
-4. See your next ovulation date and fertile windows.
+1. Choose the **First day of your last period**.
+2. Enter your **Average cycle length**, counted from the first day of one period to the first day of the next. It is usually between 21 and 35 days.
+3. If you know it, enter your **Luteal phase**, the days from ovulation to your next period. Leave it at 14 if you are not sure.
+4. Read the **Next estimated ovulation** date and how many days away it is.
+5. Below that, see the **Fertile window**, ovulation date and next period date for each of the next three cycles.
 
-## Understanding your cycle
+## How it works
 
-- **Menstrual phase:** your period, days 1 to about 5.
-- **Follicular phase:** an egg matures; this phase varies most in length between people.
-- **Ovulation:** the egg is released, typically around the middle of the cycle.
-- **Luteal phase:** after ovulation, usually 12 to 16 days, ending with your next period.
+Ovulation usually happens about 14 days before your next period, not 14 days after your last one. The tool takes your cycle length, subtracts the luteal phase, and counts from the first day of your last period. The fertile window runs from five days before ovulation to one day after, because sperm can live for several days.
 
-## Tips if you're trying to conceive
+## Worked example
 
-- **Have sex every one to two days** during the fertile window.
-- **Track signs of ovulation** such as clearer, stretchy cervical mucus or a positive ovulation test.
-- **Keep a cycle log** for a few months to find your true average cycle length.
-- **Look after your health:** take folic acid if advised, avoid smoking and limit alcohol.
-- **See a doctor** if you've been trying for 12 months without success (6 months if you're over 35), or sooner if your cycles are very irregular.
+Your last period started on 1 November and your cycles are 28 days long. Ovulation is estimated for about 15 November. Your fertile window is 10 to 16 November, and your next period is due around 29 November.
 
-## Irregular cycles
+If your cycle is 32 days instead, ovulation moves to about 19 November, four days later. This is why using your own cycle length matters.
 
-If your cycles vary by more than a week, calendar predictions are less reliable. Ovulation tests and temperature tracking are better guides, and a doctor can check for common causes such as thyroid problems or polycystic ovary syndrome.
+## Tips
 
-## Related calculators
+- **Track a few cycles first.** Write down the first day of each period for three months and work out the average length.
+- **Have sex every one to two days in the fertile window.** The days just before ovulation usually give the best chance.
+- **Combine with body signs.** Clear, stretchy cervical mucus and a positive ovulation test both point to ovulation coming soon.
 
-Once pregnant, estimate your due date with the [Pregnancy Due Date Calculator](/pregnancy-due-date-calculator).
+## Common mistakes
+
+- **Counting from the last day of your period.** Always use the first day of bleeding.
+- **Assuming day 14 for everyone.** Day 14 only applies to a 28-day cycle with a 14-day luteal phase.
+- **Relying on the dates for contraception.** The estimate is not reliable enough to prevent pregnancy.
+
+If you have been trying for a year, or six months if you are over 35, speak to a doctor.

@@ -2,51 +2,50 @@
 seoTitle: "Tip Calculator: Calculate Tip and Split the Bill | toolwise"
 metaDescription: "Calculate the tip on a bill and split the total between friends. Choose 10% to 25% or a custom tip, and round up each share. Free and instant."
 faqs:
-  - q: How much should I tip?
-    a: It depends on the country. In the United States, 15 to 20% is standard at sit-down restaurants, with 18 to 20% common for good service. In the UK and much of Europe, around 10% is usual if service isn't already included. In some countries, such as Japan, tipping isn't expected.
-  - q: Should I tip on the amount before or after tax?
-    a: Etiquette guides traditionally suggest tipping on the pre-tax amount, but many people simply tip on the total. Enter whichever amount you prefer as the bill.
-  - q: What does rounding up do?
-    a: It rounds each person's share up to a whole amount, which makes paying in cash or by transfer easier. The extra goes to the tip, and the calculator shows the new tip amount.
-  - q: Is a service charge the same as a tip?
-    a: Not always. Check your bill. If a service charge is already included, you usually don't need to add a full tip on top.
+  - q: "Should I tip on the amount before or after tax?"
+    a: "Many people tip on the pre-tax amount, since tax is not part of the service. Others tip on the total because it is simpler. Enter whichever amount you prefer as the bill. The difference is usually small."
+  - q: "How much should I tip?"
+    a: "It depends on the country and the service. In the US, 15% to 20% is common at sit-down restaurants. In many other countries a service charge is already included or smaller tips are normal. Check the bill for a service charge before adding a tip."
+  - q: "What does rounding up do?"
+    a: "It rounds each person's share up to the next whole amount, so nobody has to deal with coins. The extra goes to the tip, and the tool shows the new total and tip."
+  - q: "Can I enter a tip that is not in the list?"
+    a: "Yes. Choose Custom and type any percentage, such as 22 or 17.5."
+  - q: "Does the split include the tip?"
+    a: "Yes. Each person pays an equal share of the bill plus an equal share of the tip. The results also show the bill per person and tip per person separately."
 ---
 
-## What this calculator does
+## When to use it
 
-The tip calculator works out the tip for a restaurant, café, taxi, salon or delivery bill and splits the total between everyone at the table. Choose a common tip percentage or type your own, round each person's share up if you like, and see exactly what everyone owes.
+Use this calculator at a restaurant, café, salon or taxi when you want to work out a tip quickly, or split a bill fairly between friends. It shows the tip, the total and how much each person pays, so nobody has to do mental maths at the table.
 
 ## How to use it
 
-1. Enter the **bill amount**.
-2. Tap a **tip** percentage, or choose **Custom** and type one.
-3. Enter how many **people** are splitting the bill.
-4. Tick **round up** if you want whole-number shares.
-5. Read what each person pays, the tip, and the total.
+1. Choose your **Currency**.
+2. Enter the **Bill amount**.
+3. Tap a **Tip** percentage: 10%, 12.5%, 15%, 18%, 20% or 25%. Or choose **Custom** and enter your own in **Custom tip**.
+4. Enter how many people to **Split between**. Leave it at 1 if you are paying alone.
+5. Tick **Round each person's share up to a whole amount** if you want simple, even payments.
+6. Read **Each person pays**, plus the **Tip**, **Total with tip**, **Tip per person** and **Bill per person**.
 
-## Example
+## Worked example
 
-A bill of 64.50 with an 18% tip adds 11.61, making 76.11. Split between two people, each pays 38.06. With rounding up, each pays 39, and the tip becomes 13.50.
+Two friends have dinner and the bill is $64.50. They choose an 18% tip. The tip is $11.61, so the total is $76.11. Split two ways, each person pays $38.06: $32.25 for the meal and $5.81 for the tip.
 
-## Tipping guidelines in the US
+They tick the rounding box. Each person now pays $39.00, so the total is $78.00 and the tip rises to $13.50, about 21%. That is a neat amount to pay by card or cash, and the server gets a little more.
 
-- **Sit-down restaurants:** 15 to 20%.
-- **Bars:** 1 to 2 per drink or 15 to 20% of the tab.
-- **Food delivery:** 15 to 20%, more in bad weather or for large orders.
-- **Taxis and rideshares:** 15 to 20%.
-- **Hairdressers and salons:** 15 to 20%.
-- **Takeaway counters:** optional, often 10% or less.
+## A quick way to check
 
-## Splitting fairly
+For a rough 20% tip in your head, move the decimal point one place left and double it. On $64.50 that is $6.45 × 2, about $12.90. The calculator gives you the exact figure.
 
-Splitting evenly is simplest, but if one person ordered much more, it may be fairer for each person to pay for their own items plus their share of the tip. You can calculate each person's share separately by entering their part of the bill with one person.
+## Tips
 
-## Tips for tipping
+- **Check for a service charge.** Some restaurants add one automatically, especially for large groups. If so, you may not need to tip again.
+- **Tip on the original price.** If you used a voucher or discount, consider tipping on what the meal would normally cost.
+- **Use the per-person tip when people order differently.** If one person had much more, each can pay their own food plus the shared tip per person.
+- **Agree on the percentage first.** It avoids awkward moments when the bill arrives.
 
-- Check whether a service charge is already on the bill.
-- If paying by card, make sure the tip goes to staff; ask if you're unsure.
-- Tip on the original price when using a discount voucher, since the service was the same.
+## Common mistakes
 
-## Related calculators
-
-Need percentages for something else? Use the [Percentage Calculator](/percentage-calculator). Checking prices with tax? Try the [VAT and Sales Tax Calculator](/sales-tax-calculator).
+- **Tipping twice.** Read the bill carefully for "service included" or a "gratuity" line.
+- **Splitting evenly when it is not fair.** An even split is simple, but if one person only had a drink, it may be kinder to work out their share separately.
+- **Forgetting the rounding changes the tip.** When you round up, the tip percentage goes up too. The tool shows the new tip so you know exactly what you are leaving.

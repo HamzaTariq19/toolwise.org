@@ -2,55 +2,51 @@
 seoTitle: "Body Fat Calculator: US Navy Method with a Tape Measure | toolwise"
 metaDescription: "Estimate your body fat percentage from neck, waist and hip measurements using the US Navy method. See your fat mass, lean mass and category."
 faqs:
-  - q: How accurate is the US Navy method?
-    a: For most people it is within about 3 to 4 percentage points of more precise methods such as DEXA scans. Accuracy depends heavily on measuring carefully and consistently.
-  - q: What is a healthy body fat percentage?
-    a: According to the American Council on Exercise, average ranges are about 25 to 31% for women and 18 to 24% for men. Fitness ranges are 21 to 24% for women and 14 to 17% for men. Some essential fat is needed for health.
-  - q: How should I measure?
-    a: Use a flexible tape measure on bare skin, standing relaxed. Measure the neck just below the larynx, the waist at the navel (men) or narrowest point (women), and the hips at their widest. Take each measurement twice and use the average.
-  - q: Why is body fat better than BMI?
-    a: BMI only uses height and weight, so it can't tell muscle from fat. A body fat estimate gives a better picture of body composition, especially for muscular people.
+  - q: "How accurate is this method?"
+    a: "The US Navy tape method is usually within about 3 to 4 percentage points of lab methods for most people, but it can be further out for very muscular or very lean bodies. It is best for tracking change over time with the same tape and technique."
+  - q: "Why do women need a hip measurement?"
+    a: "Women tend to store more fat around the hips, so the formula for women uses neck, waist and hips. The formula for men uses neck and waist only."
+  - q: "Is body fat better than BMI?"
+    a: "They measure different things. BMI uses only height and weight, so it cannot tell muscle from fat. A body fat estimate takes body shape into account. Using both, along with waist size, gives a fuller picture."
+  - q: "What is a healthy body fat percentage?"
+    a: "The categories shown come from the American Council on Exercise. For women, 21 to 31% covers the fitness and average ranges, and for men it is 14 to 24%. Healthy ranges also change with age, so ask a doctor what suits you."
+  - q: "How often should I measure?"
+    a: "Every two to four weeks is enough. Body fat changes slowly, and daily measurements mostly show water and tape differences."
 ---
 
-## What this calculator does
+## When to use it
 
-The body fat calculator estimates what percentage of your body weight is fat, using a tape measure and the US Navy formula. Enter your height and a few body measurements, and it shows your estimated body fat, your fat mass and lean mass, and which category you fall into.
+Use this calculator to estimate your body fat percentage at home with only a tape measure. It uses the US Navy method, which works out body fat from your height and the size of your neck, waist and, for women, hips. It is a useful way to track progress when you are changing your diet or training, because the scale alone cannot tell fat from muscle.
 
 ## How to use it
 
-1. Choose **metric** or **US** units and select your **sex**.
-2. Enter your **height** and, optionally, your **weight** to see fat and lean mass.
-3. Measure and enter your **neck** and **waist**, and **hips** if you are female.
-4. Read your estimated body fat percentage and category.
+1. Choose your **Units**: **Metric (cm, kg)** or **US (ft, lb)**.
+2. Choose your **Sex**.
+3. Enter your **Height** and **Weight**.
+4. Measure and enter your **Neck**, **Waist** and, for women, **Hips**.
+5. Read your **Estimated body fat**, **Fat mass**, **Lean mass** and the category it falls in.
 
-## How to measure accurately
+## How to measure
 
-- **Same time, same conditions:** measure in the morning before eating, relaxed, not after exercise.
-- **Keep the tape level** and snug, without pressing into the skin.
-- **Don't suck in your stomach** when measuring the waist.
-- **Repeat each measurement** and use the average.
-- **Track trends:** measure every two to four weeks rather than daily.
+Stand up straight and relax. Measure the neck just below the voice box. For men, measure the waist at the belly button. For women, measure the waist at its narrowest point and the hips at the widest point. Keep the tape level and snug, but not tight, and do not pull your stomach in.
 
-## The formula
+## Worked example
 
-For men: body fat % = 495 ÷ (1.0324 − 0.19077 × log10(waist − neck) + 0.15456 × log10(height)) − 450.
+A woman is 168 cm tall and weighs 68 kg. Her neck is 34 cm, waist 78 cm and hips 98 cm. The estimate is 28.6% body fat, in the Average range of 25–31%. That means about 19.5 kg of fat mass and 48.5 kg of lean mass, which includes muscle, bone, organs and water.
 
-For women: body fat % = 495 ÷ (1.29579 − 0.35004 × log10(waist + hip − neck) + 0.221 × log10(height)) − 450.
+If she measures again in two months and her waist has dropped while her weight stays the same, the result will show lower body fat and more lean mass.
 
-All measurements are in centimeters; toolwise converts inches automatically.
+## Tips
 
-## Body fat categories (ACE)
+- **Measure at the same time of day.** First thing in the morning, before eating, gives the most consistent results.
+- **Take each measurement twice.** If the numbers differ, use the average.
+- **Use the same tape.** A soft, non-stretchy tailor's tape gives the most reliable readings.
+- **Watch the trend, not one number.** A steady fall over months matters more than a single reading.
 
-- **Essential fat:** women 10–13%, men 2–5%
-- **Athletes:** women 14–20%, men 6–13%
-- **Fitness:** women 21–24%, men 14–17%
-- **Average:** women 25–31%, men 18–24%
-- **Above average:** women 32%+, men 25%+
+## Common mistakes
 
-## Using your result
+- **Pulling the tape too tight.** This makes the waist smaller and the result too low.
+- **Measuring the waist in the wrong place.** Men and women use different points. Follow the guide above.
+- **Mixing units.** If your tape is in inches, switch the units to US first.
 
-Body fat is one indicator of health, alongside blood pressure, fitness, diet and sleep. If you're working on body composition, focus on regular strength training, enough protein and sustainable eating habits.
-
-## Related calculators
-
-Compare with the [BMI Calculator](/bmi-calculator), or estimate your energy needs with the [Calorie Calculator](/calorie-calculator).
+This is a general estimate, not a medical test. Talk to a doctor if you have concerns about your weight or health.

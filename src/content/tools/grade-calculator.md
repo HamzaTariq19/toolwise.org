@@ -2,46 +2,50 @@
 seoTitle: "Grade Calculator: Weighted Grade and Final Exam Score Needed | toolwise"
 metaDescription: "Calculate your current weighted grade and the score you need on the final exam to reach your target grade. Free, saved in your browser."
 faqs:
-  - q: How is a weighted grade calculated?
-    a: Each score is multiplied by its weight, the results are added up, and the total is divided by the sum of the weights. A 90% on homework worth 20% and an 80% midterm worth 30% gives (90 × 20 + 80 × 30) ÷ 50 = 84%.
-  - q: What if my weights don't add up to 100%?
-    a: That's fine while the course is in progress. The current grade is based only on the work completed so far. Including the final exam, the weights should not exceed 100%; the calculator warns you if they do.
-  - q: What does it mean if I need more than 100% on the final?
-    a: It means the target grade can't be reached even with a perfect final exam. The calculator shows the best overall grade you could still get.
-  - q: Is my data saved?
-    a: Your rows are saved in your own browser so they are there next time. Nothing is uploaded.
+  - q: "How is the current grade worked out?"
+    a: "Each score is multiplied by its weight, the results are added, and the total is divided by the weights so far. So a 92% homework grade worth 20% counts for less than a 78% midterm worth 30%."
+  - q: "What if my weights do not add up to 100%?"
+    a: "That is fine before the final. Your grades so far plus the final exam weight should add up to 100% or less. If they add up to more, the tool will tell you."
+  - q: "What does it mean if I need more than 100%?"
+    a: "Your target cannot be reached, even with a perfect final. The tool shows the best overall grade you could still get, so you can set a realistic goal."
+  - q: "Which letter grade scale does it use?"
+    a: "A common US scale where 93% and above is an A, 90% is A−, 87% is B+, 83% is B, and so on down to below 60% for an F. Your school may use a different scale, so check your course guide."
+  - q: "Can I use points instead of percentages?"
+    a: "Convert points to a percentage first. For example, 43 out of 50 is 86%. Then enter 86 as the score."
 ---
 
-## What this calculator does
+## When to use it
 
-The grade calculator works out your current grade in a course from weighted assignments, quizzes, projects and exams. It then tells you what score you need on the final exam to finish with the grade you want. It's ideal for planning revision and knowing where you stand before results day.
+Use this calculator before a final exam to find out what score you need to reach your target grade for the course. It also shows your current grade from the work already marked. Students use it to plan their revision, and teachers use it to answer the common question, "What do I need on the final?"
 
 ## How to use it
 
-1. For each piece of graded work, enter your **score** as a percentage and its **weight**, the percentage of the course grade it counts for. Names are optional.
-2. Use **Add row** for more items.
-3. Enter the **final exam weight** and the **grade you want overall**.
-4. Read your current grade, the letter equivalent, and the score needed on the final.
+1. Under **Grades so far**, add a row for each marked piece of work. Enter a name if you like, the **Score %** and the **Weight %** from your course outline.
+2. Use **Add row** for more items, or the remove button on a row to delete it.
+3. Enter the **Final exam weight**.
+4. Enter the **Grade you want overall**.
+5. Read your **Current grade** and the score **Needed on the final**.
 
-## Example
+The current grade note shows the letter grade and how much of the course has been graded so far.
 
-You have 92% on homework (20%), 78% on the midterm (30%) and 88% on a project (20%). Your current grade is about **84.9%**. If the final is worth 30% and you want 85% overall, you need about **85.3%** on the final.
+## Worked example
 
-## Finding your weights
+Your course outline gives these weights: homework 20%, midterm 30%, project 20% and the final exam 30%. You scored 92% on homework, 78% on the midterm and 88% on the project.
 
-Weights are usually listed in the course syllabus or outline, for example "Homework 20%, Midterm 30%, Project 20%, Final 30%". If your teacher uses points instead of percentages, convert each score to a percentage and use the points available as the weight.
+Your current grade is 84.9%, a B, based on 70% of the course. To finish with 85% overall, you need 85.3% on the final. If you would be happy with 80%, change the target and you need only 68.7%. Aiming for 90% would need 102%, so the tool tells you it is out of reach: even 100% on the final gives 89.4% overall.
 
-## Study tips
+## Tips
 
-- **Focus where it counts.** Items with larger weights affect your grade most.
-- **Plan early.** Knowing the score you need helps you plan revision time realistically.
-- **Don't ignore small items.** Several small assignments can add up to a significant weight.
-- **Ask about extra credit or retakes** if the target is out of reach.
+- **Find the real weights.** Check your syllabus or course page. Guessing the weights gives a misleading answer.
+- **Try a few targets.** Seeing the score needed for an A, a B and a pass helps you decide how much revision to plan.
+- **Use it during the term.** Add grades as they come in to see how you are doing and where to focus.
 
-## Letter grades
+## Common mistakes
 
-The letter shown uses a common US scale: A 93+, A− 90+, B+ 87+, B 83+, B− 80+, C+ 77+, C 73+, C− 70+, D+ 67+, D 60+, F below 60. Your school may use a different scale.
+- **Entering points instead of percentages.** A score of 43 out of 50 should be entered as 86, not 43.
+- **Leaving out small items.** Quizzes and participation marks can add up to a big share of the grade.
+- **Counting dropped grades.** If your teacher drops your lowest quiz, leave it out and adjust the weight to match.
 
-## Related tools
+## Before the exam
 
-Turn letter grades into a GPA with the [GPA Calculator](/gpa-calculator), check percentages with the [Percentage Calculator](/percentage-calculator), or plan study sessions with the [Pomodoro Timer](/pomodoro-timer).
+If the score you need is close to your recent results, focus revision on the topics that carry the most marks. If it is out of reach, ask your teacher about extra credit or resits.

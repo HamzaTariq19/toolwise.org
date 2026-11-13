@@ -2,50 +2,49 @@
 seoTitle: "Sleep Cycle Calculator: Best Time to Sleep or Wake Up | toolwise"
 metaDescription: "Find the best bedtime for your wake-up time, or the best time to wake up if you go to bed now, based on 90-minute sleep cycles."
 faqs:
-  - q: How long is a sleep cycle?
-    a: A full sleep cycle, moving through light sleep, deep sleep and REM sleep, lasts about 90 minutes on average, although it can range from roughly 70 to 120 minutes. Adults usually go through four to six cycles a night.
-  - q: Why do I feel groggy even after enough sleep?
-    a: Waking up during deep sleep causes sleep inertia, that heavy, foggy feeling. Waking at the end of a cycle, during lighter sleep, usually feels easier.
-  - q: How much sleep do adults need?
-    a: Most adults need 7 to 9 hours a night, which is about 5 to 6 sleep cycles. Teenagers need 8 to 10 hours, and children more.
-  - q: What does "time to fall asleep" do?
-    a: Most people take 10 to 20 minutes to fall asleep. The calculator adds this time so the sleep cycles start when you actually fall asleep, not when you get into bed.
+  - q: "Why does the calculator use 90-minute cycles?"
+    a: "Sleep moves through light, deep and dream (REM) stages in cycles that last about 90 minutes on average. Waking at the end of a cycle, when sleep is lighter, usually feels easier than waking from deep sleep."
+  - q: "What if my cycles are not exactly 90 minutes?"
+    a: "They vary from about 70 to 120 minutes between people and through the night. Treat the times as a good starting point. If you wake groggy, try moving your alarm 10 to 15 minutes earlier or later."
+  - q: "How much sleep do I need?"
+    a: "Most adults need 7 to 9 hours, which is about five or six cycles. Teenagers and children need more. That is why the 5 and 6 cycle times are marked as recommended."
+  - q: "Why does it ask how long I take to fall asleep?"
+    a: "The cycles start once you are asleep, not when you get into bed. Adding the time it takes you to drop off makes the suggested times more accurate."
+  - q: "Is it bad to get only 4 cycles?"
+    a: "Six hours now and then is not a problem for most people, but regularly sleeping that little can affect mood, focus and health over time. Use the shorter options only when you have to."
 ---
 
-## What this calculator does
+## When to use it
 
-The sleep calculator helps you time your sleep so you wake up at the end of a sleep cycle rather than in the middle of deep sleep. Tell it when you need to wake up and it suggests bedtimes, or tell it when you're going to bed (or that you're going now) and it suggests wake-up times.
+Use this calculator to choose a bedtime or alarm time that lets you wake at the end of a sleep cycle. Many people feel less groggy when they wake between cycles instead of in the middle of deep sleep. It is handy before an early start, a flight, an exam or any day you want to feel fresh.
 
 ## How to use it
 
-1. Choose **Wake up at**, **Go to bed at** or **Sleep now**.
-2. Enter the time, if needed.
-3. Choose how long it usually takes you to **fall asleep**.
-4. Pick one of the suggested times. The recommended options give 7.5 or 9 hours of sleep.
+1. Under **I want to**, choose one option:
+   - **Wake up at** to get bedtimes for a set alarm time.
+   - **Go to bed at** to get wake-up times for a planned bedtime.
+   - **Sleep now** to get wake-up times if you go to bed right away.
+2. Enter the time, unless you chose **Sleep now**.
+3. Choose the **Time it takes you to fall asleep**: about 5, 15 or 30 minutes.
+4. Read the list of times. Each one shows the number of cycles and hours of sleep, and the 5 and 6 cycle options are marked **Recommended**.
 
-## How sleep cycles work
+## Worked example
 
-Each night you move through repeating cycles of about 90 minutes:
+You need to wake up at 7:00 AM and usually fall asleep in about 15 minutes. The calculator suggests going to bed at 9:45 PM for 6 cycles (9 hours) or 11:15 PM for 5 cycles (7.5 hours). If you have a late night, 12:45 AM gives 4 cycles, or 6 hours.
 
-- **Light sleep (N1 and N2):** your body relaxes and your heart rate slows.
-- **Deep sleep (N3):** the most restorative stage for the body; hardest to wake from.
-- **REM sleep:** dreaming, memory and learning; longer in the second half of the night.
+Now say you go to bed at 11:00 PM. Choose **Go to bed at** and enter 11:00 PM. The best alarm times are 6:45 AM for 5 cycles or 8:15 AM for 6 cycles. Setting an alarm for 7:30 AM instead might wake you in deep sleep, even though it gives you more time in bed.
 
-Waking from light sleep or at the end of REM usually feels more natural than an alarm in the middle of deep sleep.
+## Tips
 
-## Tips for better sleep
+- **Keep a steady routine.** Going to bed and waking at the same time each day, even at weekends, helps your body clock.
+- **Be honest about falling asleep.** If you usually scroll on your phone for half an hour, choose 30 minutes.
+- **Adjust from experience.** If the suggested time still feels hard, move your alarm by 10 to 15 minutes and see what works.
+- **Wind down first.** Dim lights and less screen time in the last hour make it easier to fall asleep on time.
 
-- **Keep a consistent schedule,** even at weekends.
-- **Get daylight** in the morning and dim lights in the evening.
-- **Limit caffeine** after early afternoon and avoid heavy meals late at night.
-- **Keep the bedroom cool, dark and quiet.**
-- **Put screens away** 30 to 60 minutes before bed.
-- **Wind down** with reading, stretching or a warm shower.
+## Common mistakes
 
-## When to get help
+- **Counting time in bed as sleep.** The cycles only start once you are asleep.
+- **Choosing short sleep every night.** Waking between cycles helps, but it does not replace getting enough sleep.
+- **Using snooze.** Snoozing can drop you back into a new cycle and leave you groggier.
 
-If you regularly struggle to fall or stay asleep, snore loudly, stop breathing during sleep, or feel exhausted despite enough time in bed, talk to a doctor. Conditions such as insomnia and sleep apnea are common and treatable.
-
-## Related tools
-
-Set a gentle alarm with the [Alarm Clock](/alarm-clock), or use the [Countdown Timer](/countdown-timer) for a power nap of about 20 minutes, which avoids deep sleep.
+If you often feel tired despite enough sleep, or snore loudly, talk to a doctor.

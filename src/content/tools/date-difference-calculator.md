@@ -2,48 +2,57 @@
 seoTitle: "Date Difference Calculator: Days Between Two Dates | toolwise"
 metaDescription: "Count the days, weeks, months and working days between two dates, or add and subtract days, weeks, months or working days from a date."
 faqs:
-  - q: Does the count include both the start and end date?
-    a: By default it counts the days from the start date up to, but not including, the end date, which is how most date differences are measured. Tick "Include the end date" if you need both days counted, for example for the length of an event.
-  - q: What are working days?
-    a: Monday to Friday. Weekends are excluded. Public holidays are not taken into account because they differ by country and region.
-  - q: How are months counted?
-    a: Months are counted by calendar, so from 15 January to 15 March is exactly 2 months, even though February is short. Any remaining days are shown separately.
-  - q: What happens when adding a month to 31 January?
-    a: Because February has no 31st, the result is the last day of February. The calculator always stays within the target month.
+  - q: "Should I include the end date?"
+    a: "It depends on what you are counting. For \"how long until\" questions, leave it off. For things like hotel nights or a holiday where both the first and last day count, tick Include the end date to add one day."
+  - q: "Does the working days count skip public holidays?"
+    a: "No. It counts Monday to Friday only and does not know about public holidays, which differ by country and region. Subtract any holidays that fall in your date range yourself."
+  - q: "How does adding months work at the end of a month?"
+    a: "Adding a month keeps the same day number where possible. If that day does not exist, the date moves to the last day of the month. For example, 31 January plus one month gives 28 February, or 29 February in a leap year."
+  - q: "Can I count backwards?"
+    a: "Yes. In Count days between dates, the end date can be earlier than the start date, and the result shows a minus sign. In Add or subtract days, choose Subtract to go back in time."
+  - q: "Does it handle leap years?"
+    a: "Yes. It uses the real calendar, so 29 February is counted in leap years."
 ---
 
-## What this calculator does
+## When to use it
 
-The date difference calculator counts the time between two dates in days, weeks, months and years, and shows how many working days (Monday to Friday) fall in between. Switch modes to add or subtract days, weeks, months, years or working days from any date, for example to find a deadline 30 working days from today.
+Use this calculator to count the days between two dates, or to find a date a set number of days, weeks, months or years away. It is useful for deadlines, notice periods, pregnancy and travel planning, project schedules, or simply counting down to a birthday or holiday.
 
 ## How to use it
 
-**Count days between dates:**
+The calculator has two modes under **I want to**.
 
-1. Choose a **start date** and an **end date**.
-2. Tick **Include the end date** if both days should count.
-3. See the total days, the breakdown in years, months and days, weeks, working days, hours and minutes.
+**Count days between dates**
 
-**Add or subtract:**
+1. Choose the **Start date** and the **End date**. They start as today and three months from today.
+2. Tick **Include the end date (count both days)** if both the first and last day should count.
+3. Read the total days, plus months, weeks, **Working days (Mon–Fri)**, hours and minutes.
 
-1. Choose a **start date**.
-2. Choose **Add** or **Subtract**, enter an amount and a unit.
-3. See the resulting date and its day of the week.
+**Add or subtract days**
 
-## Common uses
+1. Choose the **Start date**.
+2. Under **Add or subtract**, pick **Add** or **Subtract**.
+3. Enter the **Amount** and choose the **Unit**: days, working days, weeks, months or years.
+4. Read the resulting date, including the day of the week.
 
-- **Countdowns:** days until a holiday, birthday, exam or wedding.
-- **Deadlines:** a contract notice period, a 30-day return window, or "10 working days" from today.
-- **Project planning:** the length of a project or sprint.
-- **Age of things:** how long ago an event happened, or how long you've worked somewhere.
-- **Pregnancy and health:** weeks since a date, though the [Pregnancy Due Date Calculator](/pregnancy-due-date-calculator) is more specific.
+## Worked example
 
-## Good to know
+A project runs from Monday 1 March 2027 to Tuesday 1 June 2027. The calculator shows 92 days, which is 3 months. Of those, 67 are working days, counting both the start and end dates.
 
-- Dates are counted in your local calendar, so daylight saving time changes don't affect the number of days.
-- Working-day counts exclude weekends only. Subtract public holidays yourself if they fall in the period.
-- If the end date is before the start date, the result is shown as negative.
+Next, you need to reply to a letter within 30 working days of 1 March 2027. Switch to **Add or subtract days**, enter 30 and choose **working days**. The deadline is Monday 12 April 2027. If you had chosen 30 plain days instead, it would be 31 March.
 
-## Related tools
+## Tips
 
-Find someone's exact age with the [Age Calculator](/age-calculator), compare times around the world with the [Time Zone Converter](/time-zone-converter), or print a calendar with the [Calendar Generator](/calendar-generator).
+- **Read the exact wording of deadlines.** "Within 14 days" and "14 working days" can be weeks apart.
+- **Check holidays for working days.** Take off any public holidays in your range, since the calculator counts all weekdays.
+- **Use weeks for pregnancy and training plans.** The weeks figure shows full weeks plus spare days, such as 13 weeks 1 day.
+
+## Counting down
+
+To count down to an event, leave the start date as today and set the end date to the event. Come back any day and the count updates, because the start date always opens on the current day.
+
+## Common mistakes
+
+- **Counting the start day by accident.** Most deadlines start counting from the next day. The calculator does this by default.
+- **Assuming all months are 30 days.** Months range from 28 to 31 days. Use the months unit rather than multiplying 30 days.
+- **Forgetting time zones for travel.** The calculator counts calendar days. Long flights across time zones can make a trip feel a day shorter or longer.
