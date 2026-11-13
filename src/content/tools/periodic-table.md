@@ -2,45 +2,51 @@
 seoTitle: "Interactive Periodic Table with Element Details | toolwise"
 metaDescription: "Explore all 118 elements: atomic number, mass, category, group, period, block, state, electronegativity and electron configuration. Search and filter."
 faqs:
-  - q: Why are some masses in square brackets?
-    a: Elements with no stable isotopes don't have a standard atomic weight. The number in brackets is the mass number of their longest-lived isotope, which is the convention used by IUPAC.
-  - q: Where does the data come from?
-    a: Atomic masses follow IUPAC standard atomic weights (abridged values), and electronegativity uses the Pauling scale as listed in standard chemistry references. Electron configurations are ground-state configurations, including well-known exceptions such as chromium and copper.
-  - q: Why do lanthanides and actinides sit below the table?
-    a: Placing them inside the table would make it very wide. They belong in period 6 and period 7, between groups 2 and 4, which the 57–71 and 89–103 markers show.
-  - q: Why do elements 109 to 118 say "unknown properties"?
-    a: These superheavy elements have only been made a few atoms at a time and last fractions of a second, so their chemical properties haven't been measured. Their electron configurations are predictions.
+  - q: "Where does the data come from?"
+    a: "Atomic masses are the IUPAC standard atomic weights. Electronegativity uses the Pauling scale. Group, period, block, state and electron configuration follow the standard arrangement of the table."
+  - q: "What does a number in brackets mean?"
+    a: "For elements with no stable isotopes, such as technetium or the heaviest elements, there is no standard atomic weight. The number in brackets is the mass number of the most stable known isotope."
+  - q: "Why do some elements have no electronegativity?"
+    a: "Electronegativity describes how strongly an atom pulls electrons in a bond. Noble gases like helium and neon rarely form bonds, and many very heavy elements have never been measured, so they have no value."
+  - q: "What are the colors for?"
+    a: "Each color is a category, such as alkali metal, halogen or noble gas. Tap a category in the key to highlight only those elements, and tap it again to show all."
+  - q: "Can I use it offline?"
+    a: "Yes. Once the page has loaded, the whole table and its data work without an internet connection."
 ---
 
-## What this tool does
+## When to use it
 
-This interactive periodic table shows all 118 chemical elements, colored by category. Tap any element to see its atomic number, atomic mass, category, group and period, block, state at room temperature, electronegativity and electron configuration. Search by name, symbol or atomic number, or tap a category in the key to highlight that family of elements.
+Use this interactive periodic table to look up any of the 118 elements quickly. It shows the atomic number, symbol, name, atomic mass, group and period, block, state at room temperature, electronegativity and electron configuration. It is handy for chemistry homework, revision and quick checks during lab work.
 
 ## How to use it
 
-- **Tap or click an element** to show its details in the panel above the table.
-- **Type in the search box,** such as "iron", "Fe" or "26", to jump straight to it.
-- **Tap a category** in the key, such as Halogen or Noble gas, to highlight those elements. Tap it again to show all.
-- **On a phone,** swipe the table sideways to see all 18 groups.
+1. Tap any element in the table to see its details at the top.
+2. Or type in **Find an element**. You can search by name, symbol or atomic number, such as iron, Fe or 26.
+3. Read the details: **Atomic mass**, **Group · Period**, **Block**, **State at 20 °C**, **Electronegativity** and **Electron configuration**.
+4. Tap a category in the key, such as **Halogen** or **Noble gas**, to highlight that group. Tap it again to clear.
 
-## Reading the periodic table
+## Worked example
 
-- **Periods** are the rows. Elements in the same period have the same number of electron shells.
-- **Groups** are the columns, numbered 1 to 18. Elements in a group have similar outer electrons, so they behave in similar ways. For example, group 1 alkali metals all react strongly with water.
-- **Blocks** (s, p, d and f) show which type of orbital is being filled.
-- **Atomic number** is the number of protons, which defines the element.
-- **Atomic mass** is the average mass of an atom, in unified atomic mass units (u).
+Search for iron. The table highlights element 26, Fe. Its details show an atomic mass of 55.845 u, group 8 and period 4, the d-block, solid at 20 °C, electronegativity 1.83 and the electron configuration [Ar] 3d6 4s2. The [Ar] part is shorthand for the 18 electrons of argon, the noble gas before it.
 
-## Element categories
+For a chemistry question about table salt, look up sodium (22.990, electronegativity 0.93) and chlorine (35.45, electronegativity 3.16). The large difference in electronegativity, 2.23, is why sodium chloride forms an ionic bond.
 
-- **Metals** (alkali, alkaline earth, transition, post-transition, lanthanides, actinides) are mostly shiny, conduct electricity and lose electrons in reactions.
-- **Nonmetals** (reactive nonmetals, halogens, noble gases) are often gases or brittle solids and tend to gain or share electrons.
-- **Metalloids** such as silicon have properties in between, which makes them useful in electronics.
+## Reading the table
 
-## Electronegativity
+- **Rows** are periods. Moving right, atoms gain one proton and one electron each step.
+- **Columns** are groups. Elements in the same group have similar outer electrons and often behave alike.
+- **Blocks** (s, p, d and f) show which type of orbital the outer electrons fill.
+- The two rows at the bottom are the lanthanides and actinides, placed separately to keep the table a sensible width.
 
-Electronegativity measures how strongly an atom attracts electrons in a bond. Fluorine is the highest at 3.98. It increases across a period and decreases down a group, which helps predict whether bonds will be ionic or covalent.
+## Tips
 
-## Related tools
+- **Use the categories to revise.** Highlight the halogens or alkali metals and learn their trends together.
+- **Round masses for school work.** Most problems use masses to one decimal place, such as 35.5 for chlorine.
+- **Search by number when you are not sure of spelling.** Typing 74 finds tungsten, whose symbol W comes from its old name, wolfram.
+- **Compare electronegativity to predict bonds.** A big difference usually means an ionic bond, a small one a covalent bond.
 
-Convert measurements with the [Weight Converter](/weight-converter), make revision cards with the [Flashcard Maker](/flashcard-maker), or test yourself with the [Quiz Maker](/quiz-maker).
+## Common mistakes
+
+- **Mixing up atomic number and mass.** The atomic number is the count of protons. The mass includes neutrons too.
+- **Assuming symbols match English names.** Fe is iron, Na is sodium and K is potassium, from their Latin names.
+- **Forgetting the f-block.** Lanthanides and actinides belong inside periods 6 and 7.

@@ -2,47 +2,53 @@
 seoTitle: "Homework Planner: Track Assignments and Due Dates Free | toolwise"
 metaDescription: "Track homework and assignments by due date and subject. See what's overdue, due today and this week, tick off finished work and print your list."
 faqs:
-  - q: Where is my homework list stored?
-    a: Only in this browser on this device, using local storage. Nothing is uploaded and there's no account. If you clear your browser data or use a private window, the list is removed, so save a backup now and then.
-  - q: Can I use the planner on my phone and computer?
-    a: Each device keeps its own list. To move your list, use Save backup on one device and Open backup on the other.
-  - q: How are assignments sorted?
-    a: By due date, in groups (overdue, due today, due tomorrow, the next 7 days and later). Completed work moves to a separate list that you can clear.
-  - q: Can I print my homework list?
-    a: Yes. Press Print to get a clean list of what's still to do, grouped by due date. Choose a subject first to print only that subject.
+  - q: "Where are my assignments saved?"
+    a: "Only in this browser on this device. There is no account and nothing is uploaded. Clearing your browser data deletes the planner, so save a backup file now and then."
+  - q: "How do I move my planner to another device?"
+    a: "Open Back up or move your planner, click Save backup to download a file, then open this page on the other device or browser and use Open backup to load it."
+  - q: "How are assignments sorted?"
+    a: "By due date, in groups: Overdue, Due today, Due tomorrow, Next 7 days and Later. Completed work moves to a Completed section that you can open or hide."
+  - q: "Can I see just one subject?"
+    a: "Yes. Use Show subject to filter the list. Subjects you have typed before are suggested as you add new assignments, which keeps the names consistent."
+  - q: "Can I print my homework list?"
+    a: "Yes. Click Print for a clean list of what is still to do, without the buttons and forms."
 ---
 
-## What this tool does
+## When to use it
 
-The homework planner keeps all your assignments in one place and sorts them by due date, so you always know what to do next. Add the task, its subject and its due date, and it lands in the right group: **Overdue**, **Due today**, **Due tomorrow**, **Next 7 days** or **Later**. Tick work off when it's done, filter by subject, and print your list.
+Use this planner to keep track of homework, projects and deadlines in one simple list. It suits school and college students, parents helping younger children stay organised, and anyone who wants a quick to-do list sorted by due date, without signing up for an app.
 
 ## How to use it
 
-1. Type the **assignment**, for example "History essay plan".
-2. Add the **subject**. Subjects you've used before are suggested.
-3. Pick the **due date** (it starts as tomorrow) and press **Add assignment**.
-4. Tick the box when you finish. Completed work moves to the **Completed** list.
-5. Use ✎ to edit or ✕ to delete an assignment.
+1. Type the **Assignment**, such as "Read chapter 4 and answer questions".
+2. Add the **Subject**, such as History.
+3. Choose the **Due date**.
+4. Click **Add assignment**. It goes straight into the right place in the list.
+5. Tick an assignment when it is finished, or use **Edit** to change it.
+6. Use **Show subject** to filter, and **Print** for a paper copy.
+7. Open **Back up or move your planner** to **Save backup**, **Open backup** or **Delete everything**.
 
 The summary at the top shows how many tasks are left, how many are overdue and how many are due within a week.
 
-## Planning tips that work
+## Worked example
 
-- **Write it down straight away.** Add homework as soon as it's set, before you forget the details.
-- **Break big projects into steps,** each with its own date: research, outline, draft, final copy.
-- **Do the hardest task first** when your energy is highest.
-- **Plan backwards from the deadline.** If an essay is due Friday, aim to finish the draft by Wednesday.
-- **Check the planner daily.** A quick look each evening keeps surprises away.
-- **Use focus sessions.** The [Pomodoro Timer](/pomodoro-timer) breaks big tasks into manageable 25-minute blocks.
+On Monday you add three tasks: a maths worksheet due Tuesday, a history essay due Friday and a science project due in three weeks. The planner shows the maths worksheet under **Due tomorrow**, the essay under **Next 7 days** and the project under **Later**. The summary says 3 to do, 2 due within a week.
 
-## Backups
+On Tuesday evening you tick the worksheet. It moves to **Completed**, and the essay is now the next thing on the list. If you forget to finish something, it appears in red under **Overdue** so it cannot be missed.
 
-Because your planner lives on your device, it's worth saving a backup file now and then. Open **Back up or move your planner** and press **Save backup**. To restore it, or move it to another device, use **Open backup**. Assignments already in the planner aren't duplicated.
+## Planning backwards
 
-## For parents
+For a big deadline, start from the due date and work back. If an essay is due on Friday, add "plan" for Tuesday and "first draft" for Wednesday. Each step shows up in the right group, so the work is spread across the week instead of left to Thursday night.
 
-The planner gives children a simple, private way to stay organized, without accounts or email addresses. Printing the list for the fridge is a good way to make the week's work visible.
+## Tips
 
-## Related tools
+- **Add work as soon as it is set.** It takes ten seconds and saves remembering later.
+- **Break big projects into steps.** Add "research", "first draft" and "final copy" with their own dates.
+- **Check the list at the same time each day.** For example, straight after school.
+- **Back up regularly.** Especially before clearing your browser or changing devices.
 
-Check essay length with the [Essay Word Counter](/essay-word-counter), revise with the [Flashcard Maker](/flashcard-maker), or calculate grades with the [Grade Calculator](/grade-calculator).
+## Common mistakes
+
+- **Using different names for the same subject.** "Maths" and "Math" become two subjects in the filter.
+- **Only writing the due date of big projects.** Without smaller steps, they get left to the last night.
+- **Relying on one browser.** If you use both a school laptop and a home computer, move the planner with a backup file.

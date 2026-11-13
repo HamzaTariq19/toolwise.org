@@ -2,50 +2,53 @@
 seoTitle: "Flashcard Maker: Create and Study Flashcards Online Free | toolwise"
 metaDescription: "Make flashcards by typing or pasting front | back pairs, then study with flip, shuffle and a still-learning pile. Saved on your device. Free."
 faqs:
-  - q: Where are my flashcards saved?
-    a: In your browser's local storage on this device only. Nothing is uploaded, so there's no account to make. Clearing your browser data, or using a private window, removes the decks.
-  - q: Can I paste cards from a spreadsheet or another app?
-    a: Yes. Copy two columns from Excel, Google Sheets or Numbers and paste them in. Each row becomes a card, with the first column on the front.
-  - q: How do I put a line break on a card?
-    a: Type \n where you want the break, for example "Photosynthesis | Light energy\nmakes glucose".
-  - q: Can I study the answer side first?
-    a: Yes. Tick "Show the back first" to see the definition and recall the term, which is great for vocabulary practice in both directions.
-  - q: Can I use these on my phone?
-    a: Yes. The study screen is built for touch. Tap the card to flip it and use the big buttons to sort cards.
+  - q: "Where are my flashcards saved?"
+    a: "Only in this browser on this device. Nothing is uploaded, and there is no account. Clearing your browser data deletes your decks, so keep a copy of the card text in a document if it matters."
+  - q: "Can I import cards from a spreadsheet?"
+    a: "Yes. Copy two columns from Excel or Google Sheets, front in the first and back in the second, and paste them into Cards. Each row becomes a card."
+  - q: "What does Show the back first do?"
+    a: "It reverses the cards, so you see the answer and must recall the question. Practising both directions helps you remember, especially for vocabulary."
+  - q: "How does Still learning and I know it work?"
+    a: "Mark each card as you go. At the end of the round, choose Study the ones I missed to repeat only the cards you marked Still learning."
+  - q: "Can I use the keyboard?"
+    a: "Yes. Press Space to flip the card and use the arrow keys to move between cards."
 ---
 
-## What this tool does
+## When to use it
 
-The flashcard maker turns a simple list into a deck you can study right away. Type or paste one card per line with a `|` between the front and the back, press **Study cards**, and flip through them. Mark each card as **I know it** or **Still learning**, then go back over only the cards you missed until you know them all.
+Use this tool to make simple digital flashcards and study them with a flip-card view. It is great for vocabulary in a new language, key terms for a science test, dates for history, capital cities, formulas, or any question-and-answer facts you need to remember.
 
-## How to make a deck
+## How to use it
 
-1. Choose **New deck** and give it a name, such as "Biology unit 3".
-2. Type each card on its own line: `mitochondria | where cellular respiration happens`.
-3. Watch the counter under the box. It tells you which lines are missing a back side.
-4. Press **Study cards**.
+1. Choose a **Deck**, or click **New deck** and give it a **Deck name**.
+2. Type your **Cards**, one per line, as front | back. For example: France | Paris.
+3. Click **Study cards**. Tick **Show the back first** or **Shuffle** if you want.
+4. Tap the card or press Space to flip it.
+5. Mark each card **Still learning** or **I know it**, or use **Previous** and **Skip**.
+6. At **Round complete**, choose **Study the ones I missed** or **Study all again**. Use **Edit cards** to change the deck.
 
-You can keep several decks. Switch between them with the **Deck** menu.
+## Worked example
 
-## How to study
+The sample deck has six world capitals. Study it with **Shuffle** on. You know Paris, Tokyo and Ottawa, but mark Kenya, Brazil and Australia as **Still learning**. At the end, **Study the ones I missed** gives you a short round of just those three: Nairobi, Brasília and Canberra.
 
-- **Tap the card** (or press Space) to flip it.
-- Choose **I know it** if you answered correctly without peeking, or **Still learning** if not.
-- Use **Shuffle** so you don't learn the order instead of the content.
-- At the end, press **Study the ones I missed** to repeat just those cards.
+For a language, you might write cards like el perro | the dog. Then study again with **Show the back first** to practise from English to Spanish.
 
-## Why flashcards work
+## Writing good cards
 
-Flashcards use two of the most effective study methods known. **Active recall** means pulling an answer from memory instead of rereading notes, which strengthens memory far more. **Spaced repetition** means reviewing material over several days, with more practice on the cards you find hardest. A good routine is a short session today, again tomorrow, and again a few days later, focusing on the "still learning" pile each time.
+- **One fact per card.** Short cards are easier to remember than long paragraphs.
+- **Use your own words.** Rewriting a definition helps you understand it.
+- **Add a clue for tricky ones.** For example: Canberra (not Sydney!).
+- **Split long answers over lines.** Type \n inside a card to start a new line, such as a list of three steps on the back.
 
-## Tips for better cards
+## Tips
 
-- **One fact per card.** Short cards are faster to review and easier to remember.
-- **Write questions, not headings.** "What does the mitochondria do?" beats "Mitochondria".
-- **Use your own words** for the answer; it shows you understand it.
-- **Study both directions** for vocabulary with the "Show the back first" option.
-- **Mix topics** in a review session before a test.
+- **Study a little every day.** Short, regular sessions beat one long cram.
+- **Say the answer before flipping.** Actively recalling it is what makes memory stick.
+- **Shuffle often.** Learning cards in a fixed order can make you rely on the order instead of the fact.
+- **Make separate decks per topic.** Smaller decks are less overwhelming.
 
-## Related tools
+## Common mistakes
 
-Test yourself with multiple-choice questions in the [Quiz Maker](/quiz-maker), time your sessions with the [Pomodoro Timer](/pomodoro-timer), or keep track of deadlines with the [Homework Planner](/homework-planner).
+- **Flipping too soon.** Give yourself a few seconds to try to remember.
+- **Marking cards as known after one correct answer.** Repeat them a few times over several days.
+- **Forgetting the | separator.** A line without one has no back. The card count lists the lines that need fixing, and studying will not start until each line has a front and a back.

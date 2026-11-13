@@ -2,56 +2,69 @@
 seoTitle: "Quiz Maker: Create a Multiple-Choice Quiz and Take It Free | toolwise"
 metaDescription: "Write multiple-choice questions in plain text, take the quiz with instant feedback and explanations, print a worksheet with answer key, or save it."
 faqs:
-  - q: How do I mark the correct answer?
-    a: Put an asterisk (*) at the start of the correct answer line, like "*Paris". Each question needs exactly one correct answer.
-  - q: Can I share a quiz with friends or students?
-    a: Press Save as file to download it as a small text file. Send it to anyone, and they can use Open file on this page to load it. Nothing is uploaded to toolwise.
-  - q: How many answers can a question have?
-    a: Between 2 and 8. True or false questions work too; just write True and False as the two answers.
-  - q: Can I print the quiz?
-    a: Yes. Print worksheet creates a clean paper version with checkboxes and a separate answer key page.
+  - q: "How do I mark the correct answer?"
+    a: "Put an asterisk (*) at the start of the correct answer's line, such as *Jupiter. Each question needs at least two answers and one marked correct."
+  - q: "Can I add explanations?"
+    a: "Yes. Add a line starting with > after the answers. It is shown after the question is answered, which is a good way to teach the reason, not just the right answer."
+  - q: "Where are my quizzes saved?"
+    a: "In this browser on this device only. Nothing is uploaded. Use Save as file to keep a copy or move a quiz to another device, then Open file to load it."
+  - q: "Can I print a quiz for a class?"
+    a: "Yes. Print worksheet makes a clean printable page with the title, a name and date line, the questions with their answer choices, and an answer key."
+  - q: "Can I share a quiz with students?"
+    a: "Save it as a file and share the file. Students can open it in this tool on their own device and take the quiz there."
 ---
 
-## What this tool does
+## When to use it
 
-The quiz maker lets you write a multiple-choice quiz in seconds and take it right away. Type questions and answers as plain text, mark the correct answers with a star, and press **Take the quiz**. Each question shows instant feedback and an optional explanation, and at the end you get a score with a review of every question. You can also print it as a worksheet with an answer key, or save it as a file to share.
+Use this tool to write a multiple-choice quiz and take it right away, or print it as a worksheet. It works well for revision, classroom starters, homework, training sessions, family quiz nights and checking your own understanding of a topic.
 
-## How to write questions
+## How to use it
 
-Write the question on one line, then each answer on its own line. Put `*` before the correct answer, and leave a blank line between questions:
+1. Choose a **Quiz**, or click **New quiz** and type a **Quiz title**.
+2. Write the **Questions** in the box:
+   - The first line is the question.
+   - Each following line is an answer. Put * before the correct one.
+   - A line starting with > is an explanation shown after answering.
+   - Leave a blank line between questions.
+3. Tick **Shuffle questions** and **Shuffle answers** if you want a different order each time.
+4. Click **Take the quiz**, or **Print worksheet** for paper.
+5. Use **Save as file** and **Open file** to keep and share quizzes.
+
+## Worked example
+
+The sample quiz on the solar system starts like this:
 
 ```
-What is the boiling point of water at sea level?
-90 °C
-*100 °C
-120 °C
-> Water boils at 100 °C at normal air pressure.
+Which planet is closest to the Sun?
+*Mercury
+Venus
+Earth
+Mars
+> Mercury orbits about 58 million km from the Sun.
 ```
 
-A line starting with `>` is an explanation, shown after the question is answered. It's a great way to learn from mistakes.
+Take the quiz and choose Venus. The tool shows that Mercury was correct and displays the explanation. Click **Next question** to carry on. At the end, **Your score** shows how many you got right, and you can **Take it again** or **Edit questions**.
 
-The counter under the box tells you how many questions are ready, and the error message points to any question that needs fixing.
+## Writing good questions
 
-## Taking the quiz
+- **Make every wrong answer believable.** Silly options make the quiz too easy.
+- **Keep answers a similar length.** A much longer option often gives the answer away.
+- **Test one idea per question.** It shows clearly what someone does or does not know.
+- **Use explanations.** They turn a wrong answer into a learning moment.
 
-1. Choose whether to **shuffle questions** and **shuffle answers**.
-2. Press **Take the quiz**.
-3. Tap an answer. The correct one turns green, and a wrong choice turns red.
-4. Read the explanation, then press **Next question**.
-5. At the end, review what you got right and wrong, or take it again.
+## Using it for revision
 
-## Writing good multiple-choice questions
+Turning your notes into questions is one of the best ways to revise. Write five questions after each lesson, then take the quiz a few days later. The questions you get wrong show exactly what to go over again.
 
-- **Ask one clear thing** in each question.
-- **Make wrong answers believable.** Use common mistakes rather than silly options.
-- **Keep answers a similar length** so the correct one doesn't stand out.
-- **Avoid "all of the above"** and double negatives.
-- **Add explanations** so the quiz teaches, not just tests.
+## Tips
 
-## Ideas
+- **Shuffle answers for repeat practice.** Learners cannot just remember that the answer was "the second one".
+- **Save a file of each quiz.** Your browser storage can be cleared, but a file keeps your work safe.
+- **Print for offline use.** Worksheets are useful in class or as homework.
 
-Students can turn class notes into self-tests before exams. Teachers can make quick checks of understanding, print worksheets, or share the quiz file with a class. Families can make fun quiz nights.
+## Common mistakes
 
-## Related tools
-
-Learn facts with the [Flashcard Maker](/flashcard-maker), stay focused with the [Pomodoro Timer](/pomodoro-timer), or plan revision with the [Homework Planner](/homework-planner).
+- **Forgetting the blank line between questions.** Without it, the next question is read as an extra answer.
+- **Marking two answers with *.** Each question must have exactly one correct answer, and the tool points out any question that has more.
+- **Writing too many options.** Up to 8 answers are allowed per question, but 3 or 4 is usually best.
+- **Putting the * in the wrong place.** It must be at the very start of the answer line.

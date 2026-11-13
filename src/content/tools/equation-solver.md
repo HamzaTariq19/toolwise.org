@@ -2,52 +2,57 @@
 seoTitle: "Equation Solver with Steps: Linear and Quadratic | toolwise"
 metaDescription: "Solve linear and quadratic equations step by step. Shows expanding, collecting terms, the discriminant and the quadratic formula with exact answers."
 faqs:
-  - q: What kinds of equations can it solve?
-    a: Linear equations like 3(x − 2) = 2x + 4 and quadratic equations like 2x² + 3x − 2 = 0, with one variable. It handles brackets, fractions, decimals and both sides of the equals sign.
-  - q: Does it give exact answers?
-    a: Yes. It works with exact fractions, so you get answers like 7/3 or −2 ± √5 rather than rounded decimals, plus the decimal value for checking.
-  - q: What if there is no real solution?
-    a: When the discriminant is negative, the solver explains that there are no real solutions and shows the two complex solutions using i.
-  - q: Can I use a letter other than x?
-    a: Yes, any single letter works, such as y, t or n. Use only one letter per equation.
-  - q: Should I just copy the answer?
-    a: Use it to check your work and understand each step. Try the problem yourself first, then compare your working with the steps shown.
+  - q: "What kinds of equations can it solve?"
+    a: "Linear equations like 3(x − 2) = 2x + 4 and quadratic equations like x² − 5x + 6 = 0, with one letter. It handles brackets, fractions such as x/4, and powers up to squared."
+  - q: "What if a quadratic has no real solutions?"
+    a: "When the discriminant (b² − 4ac) is negative, there are no real-number answers. The tool explains this and shows the complex solutions, which use i, the square root of −1."
+  - q: "Can I use a letter other than x?"
+    a: "Yes. Any single letter works, such as y = 2y − 5 or 3t + 1 = 10. The equation must use only one letter."
+  - q: "How do I type a square?"
+    a: "Type ^2, use the ² button, or write x*x. Use the buttons above the box on a phone for symbols like ×, ÷ and brackets."
+  - q: "Should I just copy the answer for homework?"
+    a: "Use the steps to understand the method, then try a similar question yourself. Teachers usually want to see working, and practising is what helps in tests."
 ---
 
-## What this tool does
+## When to use it
 
-The equation solver works out linear and quadratic equations and shows every step, just like a worked example in a textbook. It expands brackets, collects like terms, moves terms across the equals sign, and divides to find the answer. For quadratics it clears fractions, finds the discriminant, applies the quadratic formula and simplifies square roots. Answers are exact, with decimals alongside.
+Use this tool to solve linear and quadratic equations and see every step of the working. It is made for students checking homework, parents helping with algebra, and anyone who wants to understand how an answer was reached rather than just seeing the number.
 
-## How to type an equation
+## How to use it
 
-- Use **^** or **²** for powers: `x^2` or `x²`.
-- Multiplication can be written as `*`, `×`, or left out: `2x`, `3(x + 1)`, `(x + 1)(x − 2)`.
-- Use **/** or **÷** for division by numbers: `x/4`.
-- Decimals and fractions both work: `0.5x` or `x/2`.
-- The symbol buttons under the box help on a phone.
+1. Type your equation into **Equation**, such as 2x + 3 = 11. On a phone, use the symbol buttons for x, ², brackets and operators.
+2. Click **Solve**, or tap one of the examples next to **Try**.
+3. Read the **Answer** at the top.
+4. Follow **Step by step** to see how it was solved. Each step has a short title, the maths and a note explaining why.
 
-## Solving linear equations
+## Worked example: a linear equation
 
-A linear equation has the variable only to the power 1. The method is:
+Solve 2x + 3 = 11. The steps are:
 
-1. Expand any brackets on each side.
-2. Collect the variable terms on one side and numbers on the other by adding or subtracting the same thing on both sides.
-3. Divide both sides by the number in front of the variable.
-4. Check by putting the answer back into the original equation.
+1. Start with the equation: 2x + 3 = 11.
+2. Subtract 3 from both sides to get x terms on one side: 2x = 8.
+3. Divide both sides by 2: x = 8 ÷ 2 = 4.
+4. Check the answer by putting x = 4 back in: both sides equal 11.
 
-If the variable cancels out, the equation is either true for every value (like x + 1 = x + 1) or has no solution (like x + 1 = x + 2).
+## Worked example: a quadratic
 
-## Solving quadratic equations
+Solve x² − 5x + 6 = 0. The tool identifies a = 1, b = −5 and c = 6, then works out the discriminant: D = (−5)² − 4 × 1 × 6 = 1. Because D is positive, there are two answers. Using the quadratic formula, x = (5 ± 1) ÷ 2, so x = 2 or x = 3.
 
-A quadratic has an x² term. The solver rearranges it to **ax² + bx + c = 0** and then:
+## Sharing a problem
 
-- **If c = 0,** it factors out x, giving x = 0 as one answer.
-- **Otherwise** it calculates the **discriminant**, D = b² − 4ac:
-  - D > 0: two different real answers.
-  - D = 0: one repeated answer.
-  - D < 0: no real answers (two complex ones).
-- It applies the **quadratic formula**, x = (−b ± √D) / 2a, and simplifies, for example √20 = 2√5.
+You can open the solver with an equation already filled in by adding ?eq= and the equation to the page address, for example ?eq=3x%2B1%3D10 for 3x + 1 = 10. Teachers can use this to prepare links for a class worksheet, so each link opens on a different question.
 
-## Related tools
+## Tips
 
-Check calculations with the [Scientific Calculator](/scientific-calculator), work with fractions in the [Fraction Calculator](/fraction-calculator), or explore angles with the [Unit Circle](/unit-circle).
+- **Check by substituting.** Put your answer back into the original equation. If both sides match, it is right.
+- **Use brackets carefully.** 3(x − 2) means 3 times everything in the brackets.
+- **Read the notes.** They explain the reason for each step, which is what teachers look for.
+- **Try the examples.** They show the range of equations the tool can handle.
+- **Simplify fractions first if you like.** Multiplying every term by the same number can make an equation with fractions easier to follow.
+
+## Common mistakes
+
+- **Doing something to only one side.** Whatever you do to one side, you must do to the other.
+- **Losing a minus sign.** Subtracting a negative number is the same as adding.
+- **Forgetting the second answer.** Most quadratics have two solutions.
+- **Typing two different letters.** The tool solves for one unknown at a time.

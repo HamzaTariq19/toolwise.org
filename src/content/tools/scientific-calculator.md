@@ -2,53 +2,53 @@
 seoTitle: "Scientific Calculator Online: Trig, Logs, Powers | toolwise"
 metaDescription: "A free online scientific calculator with sin, cos, tan, logs, powers, roots, factorials, degrees and radians, keyboard input and history."
 faqs:
-  - q: Does it use degrees or radians?
-    a: Degrees by default. Press DEG to switch to RAD. The current mode is shown at the top left of the display, and your choice is remembered.
-  - q: What order are operations calculated in?
-    a: Standard mathematical order, with brackets first, then powers, then multiplication and division, then addition and subtraction. So 2 + 3 × 4 = 14, and 2^3^2 is calculated as 2^(3^2) = 512.
-  - q: Can I type with my keyboard?
-    a: Yes, on a computer. Type numbers, + − * / ^ and brackets, function names like sin( or sqrt(, and press Enter for the result or Escape to clear.
-  - q: What is Ans?
-    a: Ans stores the result of your last calculation so you can use it in the next one, for example Ans × 2.
+  - q: "What is the difference between DEG and RAD?"
+    a: "They are two ways of measuring angles. DEG uses degrees, where a full turn is 360. RAD uses radians, where a full turn is 2π. School geometry usually uses degrees, while calculus and programming usually use radians. Tap the DEG button to switch."
+  - q: "What do log and ln mean?"
+    a: "log is the logarithm to base 10, so log(1000) = 3. ln is the natural logarithm, to base e, which is used in science and finance for growth and decay."
+  - q: "What does the % key do?"
+    a: "It divides the number before it by 100. So 15% gives 0.15, and 200 × 15% gives 30."
+  - q: "How do I enter very large or small numbers?"
+    a: "Use EXP for scientific notation. For 3 × 10⁸, type 3, press EXP, then type 8. The display shows 3e8."
+  - q: "Does it remember my calculations?"
+    a: "The history and your DEG or RAD choice are saved in your browser on this device only. Press Clear in the history to remove them."
 ---
 
-## What this calculator does
+## When to use it
 
-The scientific calculator handles everything from everyday sums to trigonometry, logarithms, powers, roots and factorials. It follows the correct order of operations, shows a live preview of the answer as you type, keeps a history of your calculations, and works with both the on-screen keypad and your keyboard.
+Use this calculator for maths and science work that needs more than basic arithmetic: trigonometry, powers and roots, logarithms, factorials and scientific notation. It suits students, teachers and anyone who needs a quick, reliable scientific calculator on a phone or computer without installing an app.
 
 ## How to use it
 
-1. Tap the keys or type your calculation, for example `2 × (3 + 4)^2`.
-2. The preview below the expression updates as you type.
-3. Press **=** or Enter to get the result. It's added to the history on the right.
-4. Tap an item in the history to use it again.
+1. Tap the buttons, or type directly into the **Calculation** box using numbers, + − * / ^ and brackets.
+2. Press **=** or Enter to work it out. Press Escape or **C** to clear.
+3. Use **⌫** to delete the last character.
+4. Check the angle mode at the top: **DEG** or **RAD**.
+5. Use **Ans** to insert the last answer in a new calculation.
+6. Find earlier results under **History**. Tap one to put that calculation back in the box, so you can change a number and work it out again.
 
-## Functions available
+## Worked examples
 
-- **Trigonometry:** sin, cos, tan and their inverses asin, acos, atan, in degrees or radians.
-- **Logarithms:** ln (natural log) and log (base 10).
-- **Powers and roots:** x², xʸ, √ and 1/x.
-- **Constants:** π and e.
-- **Other:** factorial (n!), percent (%), change sign (±), brackets and Ans.
+- **Trigonometry:** in DEG mode, sin(30) = 0.5. Switch to RAD and sin(30) gives about −0.988, because 30 radians is a very different angle.
+- **Powers and roots:** 2^10 = 1024, and √(144) = 12.
+- **Brackets:** 3 × (4 + 5)² = 243. Without the brackets, 3 × 4 + 5² = 37.
+- **Scientific notation:** the speed of light is about 3e8 meters per second. Multiply by 60 to get the distance light travels in a minute: 1.8e10 meters.
+- **Factorials:** 5! = 120, the number of ways to arrange five books on a shelf.
 
-## Examples
+## Order of operations
 
-- `sin(30)` in degrees = 0.5
-- `log(1000)` = 3
-- `5!` = 120
-- `2^10` = 1024
-- `√(2)` ≈ 1.41421356237
-- `20% × 150` = 30
-
-Implicit multiplication is supported, so `2π` means 2 × π and `3(4 + 1)` means 3 × 5.
+The calculator follows the standard order: brackets first, then powers and roots, then multiplication and division, then addition and subtraction. Factorials and percentages apply to the number just before them. When in doubt, add brackets to make your meaning clear. You can also leave out the × sign before brackets and constants, so 2π and 3(4 + 1) work as expected.
 
 ## Tips
 
-- **Check the angle mode** before trigonometry. sin(90) is 1 in degrees but 0.894 in radians.
-- **Use brackets** to make your intention clear, especially with negative numbers and powers: (−2)² = 4, but −2² = −4.
-- **Very large or tiny results** are shown in scientific notation, such as 1.2e+20.
-- If something can't be calculated, such as dividing by zero or the square root of a negative number, a plain-language message explains why.
+- **Check the angle mode first.** A wrong DEG or RAD setting is the most common reason trig answers look wrong.
+- **Use brackets generously.** They make the order of operations clear and avoid surprises.
+- **Chain calculations with Ans.** After working out an area, type Ans × 2.5 to find the cost.
+- **Type on a keyboard.** It is faster for long expressions, and Enter works like =.
 
-## Related tools
+## Common mistakes
 
-Work with fractions using the [Fraction Calculator](/fraction-calculator), solve equations with the [Equation Solver](/equation-solver), or convert numbers between bases with the [Binary, Decimal and Hex Converter](/number-base-converter).
+- **Forgetting order of operations.** Powers come before multiplication, and multiplication before addition: 2 + 3 × 4 = 14, not 20.
+- **Missing brackets in fractions.** Type (1 + 2) / 3, not 1 + 2 / 3.
+- **Mixing up log and ln.** They give different answers for the same number.
+- **Very large factorials.** Anything above 170! is too big for the calculator and shows as infinity.

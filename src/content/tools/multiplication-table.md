@@ -2,49 +2,58 @@
 seoTitle: "Multiplication Table Chart and Times Tables Practice | toolwise"
 metaDescription: "Printable multiplication chart up to 20 × 20, single times tables, and a quick quiz to practice facts with score, time and mistakes to review."
 faqs:
-  - q: How can I print the multiplication table?
-    a: Choose the size or a single times table, then press Print. Only the chart is printed, without the rest of the page. You can also save it as a PDF from the print dialog.
-  - q: What is the best way to learn times tables?
-    a: Short, frequent practice works best. Learn tables in an easy order (2, 5 and 10 first, then 3, 4 and 9, then the rest), use the chart to spot patterns, and practice for a few minutes each day.
-  - q: Why does the practice include facts both ways round?
-    a: Because 7 × 8 and 8 × 7 are the same fact. Seeing both helps children understand that multiplication can be done in any order.
-  - q: Is anything saved?
-    a: No. Practice scores aren't stored or sent anywhere. Each practice starts fresh.
+  - q: "Which times tables should children learn first?"
+    a: "Most children start with the 2, 5 and 10 times tables because they follow easy patterns. Then come 3, 4 and 11, and finally 6, 7, 8, 9 and 12, which are usually the hardest."
+  - q: "Can I print the chart?"
+    a: "Yes. Click Print for a clean, printer-friendly version of the chart or a single table, without the rest of the page."
+  - q: "How does practice mode work?"
+    a: "Choose the tables to practise, the number of questions and whether to go up to × 12. The questions come in random order. At the end you see your score, your time and a list of facts to review."
+  - q: "What does Practice my mistakes do?"
+    a: "It starts a new round using only the facts you got wrong, so you can focus on the ones that need more work."
+  - q: "Why is the chart useful even after learning the facts?"
+    a: "It shows patterns, such as the diagonal of square numbers and the symmetry that makes 3 × 7 the same as 7 × 3. Spotting patterns helps with division, fractions and mental maths."
 ---
 
-## What this tool does
+## When to use it
 
-This multiplication table tool has two parts. The **chart** shows a full times table grid (10 × 10, 12 × 12, 15 × 15 or 20 × 20) or a single times table, ready to print. Tap any square to see the fact and highlight its row and column. The **practice** mode gives quick-fire questions from the tables you choose, with instant feedback, a score, your time and a list of facts to review.
+Use this tool to look up, learn and practise multiplication facts. The chart is a handy reference for homework, and the practice mode turns learning times tables into a short quiz with a score and a list of facts to review. It suits children, parents, teachers and adults brushing up on mental maths.
 
-## Using the chart
+## How to use it
 
-1. Choose the **size** of the chart, or pick a **single table**, such as the 7 times table.
-2. Tap or hover over a square to see, for example, "6 × 8 = 48".
-3. Press **Print** for a clean paper copy for the fridge, a desk or a folder.
+**Times table chart**
 
-## Practicing times tables
+1. Choose a **Size**: 10 × 10, 12 × 12, 15 × 15 or 20 × 20.
+2. To focus on one table, choose it under **Single table**, or leave **Show the full chart**.
+3. Tap a square to see the fact, such as 7 × 8 = 56.
+4. Click **Print** for a paper copy.
+
+**Practice**
 
 1. Switch to **Practice**.
-2. Tap the tables to include. Highlighted numbers are selected.
-3. Choose 10, 20 or 30 questions and press **Start practice**.
-4. Type each answer and press Enter or **Check**.
-5. At the end, press **Practice my mistakes** to go over the facts you missed.
+2. Choose the **Tables to practice**, the number of **Questions** (10, 20 or 30) and whether to **Include up to × 12**.
+3. Click **Start practice** and type each answer, then press **Check**.
+4. See **Your score**, your time and the **Facts to review**. Choose **Practice again** or **Practice my mistakes**.
 
-## Patterns that make it easier
+## Worked example
 
-- **× 1:** the number stays the same.
-- **× 2:** double the number.
-- **× 5:** answers end in 0 or 5.
-- **× 9:** the digits of the answer add up to 9 (up to 9 × 10), and the tens digit is one less than the number you multiply by.
-- **× 10:** add a zero.
-- **× 11:** up to 9, repeat the digit (11 × 4 = 44).
-- **Square numbers** run along the diagonal of the chart (shown in bold).
-- **Swap them:** 3 × 8 is the same as 8 × 3, so there are fewer facts to learn than it seems.
+A child is learning the 7 and 8 times tables. Choose those two, 10 questions and up to × 12. After the round, the score is 8 out of 10, and the facts to review are 7 × 8 = 56 and 8 × 12 = 96. Tap **Practice my mistakes** to try just those two again until they stick.
 
-## Tips for parents and teachers
+## Patterns worth pointing out
 
-Keep practice short and positive: five minutes a day beats an hour once a week. Celebrate improvement in score or time rather than perfection, and focus on the facts in the "to review" list.
+- Every answer in the 5 times table ends in 0 or 5.
+- In the 9 times table up to 9 × 10, the digits of each answer add up to 9: 9 × 7 = 63, and 6 + 3 = 9.
+- 11 × 1 to 11 × 9 repeat the digit: 11, 22, 33.
+- Swapping the numbers gives the same answer, so learning 3 × 8 also gives 8 × 3.
 
-## Related tools
+## Tips
 
-Practice spelling with [Spelling Practice](/spelling-practice), make your own revision cards with the [Flashcard Maker](/flashcard-maker), or create a quiz with the [Quiz Maker](/quiz-maker).
+- **Little and often.** Five minutes a day works better than one long session.
+- **Say the facts out loud.** Hearing and saying them helps memory.
+- **Use the timer as a game.** Try to beat your own time without losing accuracy.
+- **Stick a printed chart on the wall.** Seeing it every day helps the facts sink in.
+
+## Common mistakes
+
+- **Moving on too fast.** Make sure one table is solid before adding the next.
+- **Only practising in order.** Random order, as in practice mode, is closer to how facts come up in real work.
+- **Counting on fingers for every question.** Use patterns and known facts, such as doubling the 4s to get the 8s.

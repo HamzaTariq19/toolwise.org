@@ -2,52 +2,54 @@
 seoTitle: "Spelling Practice: Words Read Aloud with Instant Feedback | toolwise"
 metaDescription: "Type your spelling list and practice: hear each word read aloud, type it, and see which letters to fix. Also has a look, cover, write mode. Free."
 faqs:
-  - q: Which browsers can read the words aloud?
-    a: Most modern browsers, including Chrome, Edge, Safari and Firefox, include text-to-speech voices. If yours doesn't, the tool switches to "Look, cover, write", which works everywhere.
-  - q: Can I add a sentence for words that sound alike?
-    a: Yes. Add it after a | on the same line, like "their | They forgot their coats." The word is read, then the sentence, then the word again, so homophones like their, there and they're are clear.
-  - q: Is the word list saved?
-    a: Yes, in this browser on this device, so it's there next time. Nothing is uploaded, and the voice runs on your device.
-  - q: Are capital letters checked?
-    a: No. Answers are checked without caring about capital letters, so "wednesday" counts for "Wednesday". The correct spelling is always shown afterwards.
+  - q: "Where does the voice come from?"
+    a: "From your device's built-in text-to-speech. Choose a voice under Voice, such as a British or American English one, and set the Speed. The voices available depend on your browser and operating system."
+  - q: "Why add a sentence after the word?"
+    a: "Words like their, there and they're sound the same. With a sentence such as \"They forgot their coats.\", the tool reads the word, then the sentence, then the word again, so the learner knows which spelling is meant."
+  - q: "What is Look, cover, write?"
+    a: "A classic way to learn spellings. The word is shown for a few seconds, then hidden, and you write it from memory. It works without sound, so it is also used when a browser can't read aloud."
+  - q: "Does it care about capital letters?"
+    a: "No. Answers are checked without worrying about capitals or extra spaces, so the focus stays on the letters."
+  - q: "Is the word list saved?"
+    a: "Yes, in this browser on this device only. Nothing is uploaded. Clearing your browser data deletes it."
 ---
 
-## What this tool does
+## When to use it
 
-Spelling practice turns any word list into an interactive spelling test. In **Listen and spell** mode, each word is read aloud by your device's built-in voice, you type what you hear, and you find out right away whether it's correct. If not, the correct spelling appears with the tricky letters highlighted. In **Look, cover, write** mode, the word appears for a moment, disappears, and you write it from memory.
+Use this tool to practise a weekly spelling list, learn tricky words in a new language, or revise subject vocabulary. It reads words aloud for a listening test, or shows them briefly for the look, cover, write method, then marks each answer and highlights the letters to watch.
 
 ## How to use it
 
-1. Type or paste the spelling words, one per line.
-2. For words that sound like others, add an example sentence after a `|`.
-3. Choose **Listen and spell** or **Look, cover, write**.
-4. Pick a **voice** and **speed** if you like.
-5. Press **Start practice**, type each word and press **Check**.
-6. At the end, press **Practice missed words** to try those again.
+1. Type the **Spelling words**, one per line. Add an example sentence after a |, like their | They forgot their coats.
+2. Under **How to practice**, choose **Listen and spell** or **Look, cover, write**.
+3. Tick **Mix up the order** if you want a random order.
+4. Choose a **Voice** and **Speed**: **Slow**, **Normal** or **Quick**.
+5. Click **Start practice**.
+6. In listen mode, use **Hear the word** or **Slower** as often as you like. In look mode, study the word until it disappears.
+7. Type the word and press **Check**.
+8. At the end, see **Your score**, then **Practice missed words** or **Change the list**.
 
-## Look, cover, write, check
+## Worked example
 
-This classic method from primary schools works because it builds a picture of the word in memory:
+A child has this week's list: because, friend, their, separate and Wednesday. With **Listen and spell** and **Mix up the order**, the tool says "friend" and the child types "freind". The answer is marked wrong, the correct spelling is shown, and the letters to watch are highlighted.
 
-1. **Look** carefully at the word and notice tricky parts.
-2. **Cover** it.
-3. **Write** it from memory.
-4. **Check** it letter by letter.
-
-The tool shows the word for a little longer when it's longer, then hides it for you.
-
-## Tips for learning spellings
-
-- **Practice little and often:** ten minutes a day is better than one long session.
-- **Look for patterns:** group words with the same ending, like -tion, -ous or -ible.
-- **Say it as it's spelled:** "Wed-nes-day" or "bus-i-ness" helps with silent letters.
-- **Use memory tricks:** "necessary has one collar and two sleeves" (one c, two s's).
-- **Focus on mistakes:** the highlighted letters show exactly what to work on.
+After the round, the score shows 4 out of 5. **Practice missed words** gives a quick extra round with just "friend" until it is right.
 
 ## For parents and teachers
 
-Enter the weekly list once and it's remembered on that device. Children can practice independently, and the score at the end shows which words still need work.
+Type the list once and it stays in the browser for the week. Children can practise on their own, and the score and missed words show at a glance which spellings need more attention before the test.
 
-## Related tools
+## Tips
 
-Hear any text read aloud with [Text to Speech](/text-to-speech), learn word meanings with the [Flashcard Maker](/flashcard-maker), or practice math facts with the [Multiplication Table](/multiplication-table).
+- **Practise a few words at a time.** Five to ten words a day is more effective than a long list once a week.
+- **Say the word in syllables.** Wed-nes-day helps you remember the silent d.
+- **Use sentences for sound-alike words.** They make it clear which spelling you need.
+- **Switch modes.** Listening tests recall, while look, cover, write builds a picture of the word.
+
+## Common mistakes
+
+- **Rushing.** Use **Slower** to hear each sound clearly, as many times as you need.
+- **Practising only the words you know.** The missed words round is where most learning happens.
+- **Choosing an unfamiliar accent.** Pick a voice that matches how your school or teacher pronounces words.
+
+Everything runs in your browser, so the list and the answers stay private.
