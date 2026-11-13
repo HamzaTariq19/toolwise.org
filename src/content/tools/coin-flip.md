@@ -40,7 +40,7 @@ In a maths lesson, a teacher flips 10 coins with the many-coins option and gets 
 
 ## Tips
 
-- **Agree the outcome first.** Decide what heads and tails mean before flipping.
+- **Agree the outcome first.** Decide out loud what heads and tails mean before flipping.
 - **Use best of three for big decisions.** It feels fairer if someone does not like the first result.
 - **Notice your reaction.** If you hope for one side while the coin spins, that tells you what you really want.
 

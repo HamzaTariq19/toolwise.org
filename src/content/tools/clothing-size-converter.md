@@ -2,51 +2,57 @@
 seoTitle: "Clothing Size Converter: US, UK, EU Size Charts | toolwise"
 metaDescription: "Convert women's and men's clothing sizes between US, UK, EU, Italy, Japan and Australia, plus letter sizes S, M, L. Free size charts."
 faqs:
-  - q: Why do my clothes fit differently in different shops?
-    a: There is no single international standard. Brands design for their own customers and many use "vanity sizing", labeling garments a size smaller than their measurements suggest. Treat these charts as a starting point and check each brand's measurements.
-  - q: How do I convert UK women's sizes to US?
-    a: A UK women's size is usually four numbers higher than the US size. A UK 12 is roughly a US 8 and an EU 38 to 40.
-  - q: How are men's suit sizes measured?
-    a: US and UK suit sizes match the chest measurement in inches, such as 40. European sizes are roughly the chest in inches plus 10, so a 40 is about an EU 50.
-  - q: What measurements should I take?
-    a: For tops and dresses, measure bust or chest, waist and hips. For shirts, measure the neck. For trousers, measure the natural waist and the inside leg. Use a soft tape measure and keep it level.
+  - q: "Are clothing sizes the same for every brand?"
+    a: "No. Sizes vary between brands, countries and even styles, and some brands use \"vanity sizing\", labelling clothes a size smaller than they are. Use the converter as a starting point and check the brand's own size chart and measurements."
+  - q: "Why are US and UK women's sizes different?"
+    a: "They use different number scales. A US women's size is usually 4 smaller than the UK size for the same fit, so US 10 is about UK 14. EU, Italian, Japanese and Australian sizes use their own scales too."
+  - q: "How do I measure for a men's suit or shirt?"
+    a: "For suits and jackets, measure around the fullest part of your chest under your arms. For shirts, measure around your neck where the collar sits, with one finger of space. The charts show these measurements in centimeters."
+  - q: "What do sizes like M/L mean?"
+    a: "Some sizes fall between two letter sizes. M/L means the size sits between medium and large, so it may fit either depending on the brand."
+  - q: "Which measurement matters most when buying online?"
+    a: "The one for the part that must fit closely: chest for jackets, neck for shirts, waist for trousers, and bust, waist and hips for dresses. Compare your measurements with the seller's chart."
 ---
 
-## What this converter does
+## When to use it
 
-The clothing size converter helps you find your size when shopping from another country. It covers women's clothing, men's suits and jackets, men's shirts, and men's trousers and jeans, with sizes for the US, UK, EU and, where relevant, Italy, Japan and Australia, plus the letter sizes S, M, L and XL.
+Use this converter when buying clothes from another country, ordering from an international online shop, or buying a gift when you only know someone's size in one system. It covers women's clothing and men's suits and jackets, shirts, and trousers and jeans, across letter, US, UK, EU, Italian, Japanese and Australian sizes.
 
 ## How to use it
 
-1. Choose the type of **clothing**.
-2. Choose the system you know your size in.
-3. Pick your size.
-4. Read the equivalent sizes and find your row in the full chart.
+1. Choose the **Clothing**: **Women's clothing**, **Men's suits and jackets**, **Men's shirts** or **Men's trousers and jeans**.
+2. Under **I know my size in**, choose the system you know, such as **US** or **UK**.
+3. Pick your **Size** from the list.
+4. Read the **Equivalent sizes** in every system.
+5. Check the full chart below. Your size is highlighted, and men's charts include body measurements in centimeters.
 
-## Women's clothing at a glance
+## Worked example
 
-- US 4 ≈ UK 8 ≈ EU 34–36 ≈ Small
-- US 8 ≈ UK 12 ≈ EU 38–40 ≈ Medium
-- US 12 ≈ UK 16 ≈ EU 42–44 ≈ Large
+You wear a women's US 10 and want to order a dress from a British shop. Choose **Women's clothing**, **US** and size 10. The equivalent sizes are UK 14, EU 40, Italy 46, Japan 13, Australia 14 and letter size M/L.
 
-## Men's clothing at a glance
+For a men's shirt, choose **Men's shirts** and find your collar size. A US 15.5 inch collar is a European 39, for a neck of about 39 to 40 cm.
 
-- Suit 40 (US/UK) ≈ EU 50 ≈ Medium
-- Shirt collar 15.5 in ≈ EU 39 ≈ Medium
-- Waist 32 in ≈ EU 48 ≈ Medium
+## Measuring yourself
 
-## Tips for buying clothes online
+Use a soft tape measure and keep it level and snug, not tight.
 
-- **Use measurements over size labels.** Most retailers publish a measurement chart; compare it with your own measurements.
-- **Check the fit description:** slim, regular and relaxed fits of the same size feel very different.
-- **Read reviews** for comments such as "runs small".
-- **Look at the fabric:** stretch fabrics are more forgiving; cotton may shrink slightly after washing.
-- **Know the returns policy** before ordering several sizes.
+- **Chest or bust:** around the fullest part.
+- **Waist:** around your natural waist, usually just above the belly button.
+- **Hips:** around the widest part.
+- **Neck:** around the base of the neck, plus one finger for comfort.
 
-## A note on accuracy
+## Buying for someone else
 
-These charts reflect common conversions used by many retailers, but sizes are not standardized internationally. When in doubt, choose based on your largest measurement for the garment, for example the hips for trousers.
+If you are buying a gift, look at the label of something they already wear and convert that size here. When in doubt, choose a slightly larger size and keep the receipt, since a little room is easier to live with than a tight fit, and many shops offer gift returns.
 
-## Related converters
+## Tips
 
-Convert shoe sizes with the [Shoe Size Converter](/shoe-size-converter), or inches to centimeters with the [Length Converter](/length-converter).
+- **Read the reviews.** Shoppers often say whether an item runs small or large.
+- **Check the fabric.** Stretchy fabrics are more forgiving than stiff ones.
+- **Size up for layering.** Coats and jackets worn over thick jumpers may need one size more.
+
+## Common mistakes
+
+- **Assuming a UK 12 is a US 12.** It is closer to a US 8.
+- **Ignoring Italian sizes.** Many designer brands use them, and they run larger in number than EU sizes.
+- **Buying by letter size only.** M in one brand can be L in another.

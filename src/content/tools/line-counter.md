@@ -2,46 +2,55 @@
 seoTitle: "Line Counter: Count Lines in Text or a File Online | toolwise"
 metaDescription: "Count total, non-empty, empty and unique lines in text or a text file. Copy with line numbers. Free, instant and private."
 faqs:
-  - q: Does an empty line at the end count?
-    a: Yes, if the text ends with a line break followed by nothing, that final empty line is counted, just as most text editors show it. The Lines with text figure ignores empty lines.
-  - q: Can I count lines in a file without opening it?
-    a: Yes. Press Open text file and choose a .txt, .csv, .log or similar file up to 50 MB. The file is read in your browser and never uploaded.
-  - q: What are unique lines?
-    a: The number of different non-empty lines, ignoring extra spaces at the ends. If a list has 100 lines but 80 unique lines, it contains 20 repeats. Remove them with Remove Duplicate Lines.
-  - q: How do I add line numbers?
-    a: Press Copy with line numbers. Every line is copied with its number in front, aligned neatly, ready to paste into an email, document or code review.
+  - q: "Does an empty line at the end count?"
+    a: "Yes, if there is one. Many files end with a line break, which creates a final empty line. The Lines with text count ignores it, so use that number if you only care about real content."
+  - q: "How are unique lines counted?"
+    a: "Lines with text are compared after removing spaces at the start and end. Two lines that differ only in spaces count as the same. Capital letters do matter, so Apple and apple are different."
+  - q: "What does Copy with line numbers do?"
+    a: "It copies your text with a number in front of each line, with spaces before the smaller numbers so that the text lines up neatly in a column. This is useful for code reviews, transcripts and legal documents."
+  - q: "Can I open large files?"
+    a: "Yes. Open text file loads a plain text file such as .txt, .csv or a log file directly from your device. Nothing is uploaded."
+  - q: "What is the longest line count for?"
+    a: "It shows the number of characters in the longest line. It is handy for checking code style limits, such as 80 or 120 characters, or fields with a maximum length."
 ---
 
-## What this tool does
+## When to use it
 
-The line counter tells you how many lines a piece of text contains, and how many of them actually have content. It also counts empty lines, unique lines and the length of the longest line. You can paste text or open a text file directly, and copy the text with line numbers added.
+Use this tool to count lines in any text: a list of email addresses, a CSV file, a log file, lines of code, poem lines or a list of names. It also shows how many lines are empty, how many are unique, and how long the longest line is, which helps when cleaning data or checking limits.
 
-## How to count lines
+## How to use it
 
-1. Paste your text into the box, or press **Open text file**.
-2. Read the counts on the right (below the box on phones): total lines, lines with text, empty lines, unique lines and the longest line.
-3. Press **Copy with line numbers** if you need numbered lines.
+1. Paste text into **Your text**, or click **Open text file** to load a file from your device.
+2. Read the results:
+   - **Total lines**, including empty ones.
+   - **Lines with text**, ignoring empty lines.
+   - **Empty lines**.
+   - **Unique lines**, counting repeats only once.
+   - **Longest line**, in characters.
+3. Click **Copy with line numbers** to copy the text with numbered lines, or **Clear** to start again.
 
-## Common uses
+## Worked example
 
-- **Lists:** count entries in a list of emails, products, names or keywords.
-- **Spreadsheets and CSV files:** count rows before importing. Remember the header row counts as a line.
-- **Log files:** see how many entries a log contains.
-- **Code:** count lines of code in a snippet or file.
-- **Poetry and lyrics:** count lines in verses and stanzas.
-- **Data checks:** compare the number of lines before and after cleaning.
+You export a list of newsletter subscribers and paste it in. The tool shows 1,204 total lines, 1,198 lines with text, 6 empty lines and 1,150 unique lines. That tells you there are 48 duplicate addresses to remove before importing the list somewhere else.
+
+A programmer pastes a function and sees the longest line is 132 characters, over the team's 120-character limit, so they know a line needs wrapping.
+
+## What counts as a line?
+
+A line ends wherever there is a line break, whether it came from Windows, Mac or Linux, since the tool understands all three styles. A line with only spaces counts as empty. A single line can be thousands of characters long, which is common in exported data or minified code.
+
+## Cleaning a list
+
+For a messy list, check the counts here first, then tidy it up with [Remove Duplicate Lines](/remove-duplicate-lines) and [Sort Lines](/sort-lines). Running the counter again afterwards confirms that nothing important was lost along the way.
 
 ## Tips
 
-- **Unique lines** reveal duplicates: if it is lower than "lines with text", your list contains repeats.
-- **Very long lines** in data files can indicate a missing line break or a broken record.
-- **Different line endings** (Windows, Mac and Linux) are all recognized.
-- The text box doesn't wrap lines, so each line you see is a real line.
+- **Compare Lines with text and Unique lines.** The difference is the number of duplicates.
+- **Use it before importing data.** Many systems limit how many rows you can upload at once.
+- **Number lines for feedback.** Sending numbered text makes it easy to say "see line 14".
 
-## Related tools
+## Common mistakes
 
-Clean up a list with [Remove Duplicate Lines](/remove-duplicate-lines), [Sort Lines](/sort-lines) or [Remove Extra Spaces](/remove-extra-spaces). For word and character counts, use the [Word Counter](/word-counter).
-
-## Private
-
-Files and text are processed in your browser and never uploaded.
+- **Counting wrapped lines as separate lines.** A long line that wraps on screen is still one line. Only real line breaks start a new line.
+- **Forgetting the header row.** In a CSV file, the first line is usually column names, not data.
+- **Expecting case-insensitive duplicates.** Email addresses in different capitals count as different lines, so convert the list to lowercase first with the [Case Converter](/case-converter) if needed.
