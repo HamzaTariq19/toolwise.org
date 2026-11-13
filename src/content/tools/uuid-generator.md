@@ -2,46 +2,53 @@
 seoTitle: "UUID Generator: Random v4 and Time-Ordered v7 UUIDs | toolwise"
 metaDescription: "Generate random version 4 or time-ordered version 7 UUIDs in bulk, choose the format, and validate existing UUIDs. Free and secure."
 faqs:
-  - q: Are these UUIDs unique?
-    a: Version 4 UUIDs contain 122 random bits from your browser's cryptographically secure random generator. The chance of two ever being the same is so small that it can be ignored in practice.
-  - q: What is the difference between v4 and v7?
-    a: v4 UUIDs are completely random. v7 UUIDs start with a timestamp, so they sort in creation order. That makes them efficient as database primary keys while remaining unique.
-  - q: Is a UUID the same as a GUID?
-    a: Yes. GUID (globally unique identifier) is the name Microsoft uses for the same 128-bit identifier. Windows tools often show GUIDs in uppercase with braces, which you can choose in Format.
-  - q: Can a v7 UUID reveal information?
-    a: It reveals the time it was created, to the millisecond. If creation time should stay private, use v4.
+  - q: "What is the difference between v4 and v7?"
+    a: "Version 4 UUIDs are completely random. Version 7 UUIDs start with the current time in milliseconds, followed by random data, so they sort in the order they were created. That makes v7 a good choice for database keys."
+  - q: "Can two UUIDs ever be the same?"
+    a: "In theory yes, but in practice no. A v4 UUID has 122 random bits. You would need to create billions every second for many years before a repeat became likely."
+  - q: "Are these UUIDs secure?"
+    a: "They use your browser's cryptographic random number generator, so they are unpredictable. Still, a UUID is an identifier, not a password, and v7 UUIDs reveal when they were created."
+  - q: "What is a GUID?"
+    a: "GUID is Microsoft's name for a UUID. They are the same thing. Some Microsoft tools write them in curly braces and uppercase, which you can choose under Format."
+  - q: "How many can I create at once?"
+    a: "From 1 to 10,000. Use Download .txt for large batches, with one UUID per line."
 ---
 
-## What this tool does
+## When to use it
 
-The UUID generator creates universally unique identifiers: 128-bit IDs written as 36 characters, such as `3f2b8c1e-7d4a-4f6b-9a1c-2e5d8f0b7c3a`. You can create one or thousands at once, choose random version 4 or time-ordered version 7, pick a format, and validate UUIDs you already have.
+Use this tool to create universally unique identifiers (UUIDs), also called GUIDs. Developers use them as database keys, file names, request IDs, test data and anywhere a unique ID is needed without asking a central server. You can also paste any UUID to check whether it is valid and see its version.
 
-## How to generate UUIDs
+## How to use it
 
-1. Choose the **version**: v4 for random IDs, v7 for IDs that sort by time.
-2. Enter **how many** you need.
-3. Choose a **format**: lowercase, uppercase, without hyphens or with braces.
-4. Press **Copy all** or **Download .txt**. Press **Generate new** for a fresh set.
+1. Choose the **Version**: **v4 (random)** or **v7 (time-ordered)**.
+2. Enter **How many** you need, from 1 to 10,000.
+3. Choose a **Format**: **lowercase**, **UPPERCASE**, **No hyphens** or **With {braces}**.
+4. Click **Generate new** for a fresh set.
+5. Use **Copy all** or **Download .txt** to save them.
+6. To check one, paste it into **Check a UUID**.
 
-## Where UUIDs are used
+## Worked example
 
-- **Databases:** primary keys that can be created anywhere without a central counter.
-- **APIs and distributed systems:** request IDs, message IDs and correlation IDs.
-- **Files and uploads:** unique file names that never clash.
-- **Testing:** sample IDs for fixtures and mock data.
+You need five test IDs for a database. Leave v4 and 5 selected and copy the list. Each looks like 22594f3c-a0d8-4faf-8974-d5d30e5c53ea: 32 hexadecimal digits in groups of 8, 4, 4, 4 and 12. The 4 at the start of the third group shows it is version 4.
 
-## Checking a UUID
+Now switch to v7 and generate again. The IDs start with similar characters, because the first part is the current time. Paste one into **Check a UUID** and the tool says it is valid, version 7, and shows the date and time it was created.
 
-Paste any UUID into **Check a UUID** to see whether it is valid and which version it is. For version 7 UUIDs, toolwise also shows when it was created.
+Paste something wrong, like a UUID with a missing digit, and it tells you it is not valid.
 
-## UUID anatomy
+## Why not just count 1, 2, 3?
 
-A UUID has 32 hexadecimal digits in five groups: 8-4-4-4-12. The first digit of the third group shows the version (4 or 7), and the first digit of the fourth group shows the variant (8, 9, A or B for standard UUIDs).
+Numbered IDs need one place that hands out the next number. UUIDs can be created on any device at any time without checking with anyone, and they will still not clash. That is useful for offline apps, merging data from several sources, and IDs that should not reveal how many records exist.
 
-## Related tools
+## Tips
 
-Generate secure passwords with the [Password Generator](/password-generator), or create checksums with the [Hash Generator](/hash-generator).
+- **Use v7 for database keys.** Because v7 values increase over time, new rows are added at the end of an index, which keeps inserts fast in many databases.
+- **Use v4 when timing should stay private.** Random IDs reveal nothing about when they were created.
+- **Pick the format your system expects.** Most use lowercase with hyphens. Some older Windows tools expect uppercase in braces.
 
-## Private
+## Common mistakes
 
-UUIDs are generated on your device using the Web Crypto API. Nothing is sent to a server.
+- **Using UUIDs as secret tokens.** They are unique, not secret. Use a password or token generator for secrets.
+- **Comparing UUIDs as case-sensitive text.** ABC and abc are the same UUID. Store them in one consistent format.
+- **Removing hyphens in one place but not another.** Mixed formats make matching and searching harder.
+
+UUIDs are created on your device with secure randomness and never sent anywhere.

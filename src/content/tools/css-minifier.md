@@ -2,47 +2,54 @@
 seoTitle: "CSS Minifier: Compress CSS Online Free | toolwise"
 metaDescription: "Minify CSS by removing comments, whitespace and redundant characters. Keeps strings and license comments intact. Shows the size saving."
 faqs:
-  - q: Will minifying change how my site looks?
-    a: No. Minification only removes characters the browser doesn't need, such as comments, line breaks and extra spaces. The rules and their meaning stay exactly the same.
-  - q: What are license comments?
-    a: Comments starting with /*! are often used for copyright and license notices that must be kept. They are preserved by default.
-  - q: Are strings and URLs safe?
-    a: Yes. Text inside quotes, such as font names and URLs with spaces, is copied exactly as written.
-  - q: How much smaller will my CSS get?
-    a: Typically 15 to 40%, depending on how many comments and how much indentation the original has. Server compression (gzip or Brotli) then reduces it further.
+  - q: "Will minifying change how my site looks?"
+    a: "No. The minifier only removes things browsers ignore, such as comments, spaces, line breaks and the last semicolon in each rule, and shortens values like #ffffff to #fff. The styles stay the same."
+  - q: "What are license comments?"
+    a: "Comments that start with /*! are a convention for copyright and license notices that must stay with the code. Keep license comments is on by default so they are not removed."
+  - q: "Should I keep the original file?"
+    a: "Yes. Always edit the readable version and minify again when you publish. Minified CSS is hard to read and change."
+  - q: "Why does it warn that brackets don't match?"
+    a: "The number of { and } in your CSS is different, which usually means a rule is not closed. The minified output may not work as expected until you fix the original."
+  - q: "Is my CSS uploaded?"
+    a: "No. Minifying happens in your browser, so your code stays on your device."
 ---
 
-## What this tool does
+## When to use it
 
-The CSS minifier shrinks stylesheets by removing comments, line breaks, indentation and unnecessary spaces and semicolons, and by shortening colors like `#ffffff` to `#fff`. Smaller CSS loads faster and helps pages render sooner.
+Use this tool to make a CSS file smaller before you put it on a website. Smaller files download faster, which helps page speed, especially on mobile. It is useful for small sites without a build tool, email templates, CSS you paste into a content management system, or a quick check of how much a stylesheet can shrink.
 
-## How to minify CSS
+## How to use it
 
-1. Paste your CSS, or press **Example**.
-2. Choose whether to keep **license comments**.
-3. Check the size saving, then copy the minified CSS or download it.
+1. Paste your CSS into **Your text**, or click **Example** to try a sample.
+2. Leave **Keep license comments (/*! … */)** ticked unless you are sure no license notice is needed.
+3. The **Minified CSS** appears straight away, with the old and new size and the percentage saved.
+4. Click **Copy result**, or **Download .css** to save a file.
 
-## What the minifier does
+## Worked example
 
-- Removes `/* comments */`
-- Collapses whitespace and line breaks
-- Removes spaces around `{ } : ; , >`
-- Removes the last semicolon before `}`
-- Shortens `0.5em` to `.5em` and `#aabbcc` to `#abc`
+The example has a comment, indented rules, a hover style, a license comment and a media query, 268 bytes in total. After minifying, it is 203 bytes, 24% smaller. You can see what changed:
 
-It deliberately avoids risky rewrites, such as changing units inside `calc()`, so your styles always behave the same.
+- The /* Main button */ comment is gone, but /*! License: keep me */ stays.
+- color: #ffffff becomes color:#fff.
+- margin: 0.5em 0 becomes margin:.5em 0.
+- Spaces, line breaks and the last semicolon in each rule are removed.
+- Text inside quotes, like "img/bg one.png", is left alone.
+
+On a real stylesheet with many comments and indents, savings of 20 to 40% are common.
+
+## What it does not do
+
+The minifier does not remove unused rules, merge duplicate selectors or change the order of your CSS, because those changes can alter how a page looks. It sticks to safe changes that never affect the result. If you need to find unused CSS, the coverage panel in your browser's developer tools can show it.
 
 ## Tips
 
-- **Keep the original.** Edit the readable version and minify a copy for publishing.
-- **Bracket warning:** if the number of `{` and `}` doesn't match, toolwise warns you, which usually means a typo in the original.
-- **Combine files** before minifying to reduce the number of downloads.
-- **Remove unused CSS** for the biggest savings; minifying alone can't remove rules you don't use.
+- **Name the file clearly.** A common habit is styles.css for the readable file and styles.min.css for the minified one.
+- **Turn on compression on your server too.** Gzip or Brotli shrink files further, and they work well together with minifying.
+- **Minify after you finish editing.** Make changes in the original, then minify again.
+- **Test the page afterwards.** A quick look confirms nothing broke, especially if the warning about brackets appeared.
 
-## Related tools
+## Common mistakes
 
-Minify HTML with the [HTML Minifier](/html-minifier) and JavaScript with the [JavaScript Minifier](/js-minifier). Design backgrounds with the [CSS Gradient Generator](/css-gradient-generator).
-
-## Private
-
-Your stylesheet is minified in your browser and never uploaded.
+- **Editing the minified file.** Changes are hard to make and easy to lose. Keep the original.
+- **Removing license comments from third-party code.** Many licenses require the notice to stay.
+- **Expecting big savings on tiny files.** A 1 KB stylesheet will only save a few hundred bytes. Removing unused CSS often helps more.

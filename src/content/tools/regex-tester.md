@@ -2,54 +2,54 @@
 seoTitle: "Regex Tester: Test Regular Expressions Online | toolwise"
 metaDescription: "Test JavaScript regular expressions with live highlighting, match details, capture groups and replace preview. Clear error messages. Free."
 faqs:
-  - q: Which regex flavor does this tester use?
-    a: JavaScript (ECMAScript) regular expressions, the same as in browsers and Node.js. Most syntax is shared with other languages, but some features, such as lookbehind support and flags, differ slightly between languages.
-  - q: What do the flags mean?
-    a: g finds all matches instead of the first, i ignores capital letters, m makes ^ and $ match at line starts and ends, s lets the dot match line breaks, u enables full Unicode, and y matches only at the current position.
-  - q: How do I use capture groups in a replacement?
-    a: Wrap part of the pattern in brackets, then refer to it as $1, $2 and so on in the replacement. $& inserts the whole match. Named groups like (?<year>\d{4}) appear by name in the match details.
-  - q: Why does my pattern freeze or time out?
-    a: Patterns with nested repetition, such as (a+)+, can take an extremely long time on some text. This is called catastrophic backtracking. Make repeated parts more specific.
+  - q: "Which regex flavor does it use?"
+    a: "JavaScript regular expressions, as built into your browser. Most everyday syntax is the same in Python, PHP, Java and other languages, but some advanced features differ, so test in your own language too."
+  - q: "What do the flags do?"
+    a: "g finds all matches instead of just the first. i ignores upper and lower case. m makes ^ and $ match at the start and end of each line. s lets the dot match line breaks. u turns on full Unicode support, which helps with emoji and letters outside English."
+  - q: "How do I use groups in the replacement?"
+    a: "Wrap parts of the pattern in brackets to capture them, then use $1, $2 and so on in Replace with. $& inserts the whole match. Named groups like (?<user>\\w+) are shown by name in the match details."
+  - q: "Why does it say the pattern is taking too long?"
+    a: "Some patterns, often with nested repeats like (a+)+, can take an extremely long time on certain text. This is called catastrophic backtracking. The tool stops after a second and a half so your browser does not freeze. Simplify the pattern."
+  - q: "Is my text sent anywhere?"
+    a: "No. Matching happens in your browser, so you can safely test patterns on logs or private data."
 ---
 
-## What this tool does
+## When to use it
 
-The regex tester lets you write and test regular expressions against your own text. Matches are highlighted as you type, a table shows each match with its position and capture groups, and a replace preview shows what a replacement would produce.
+Use this tool to build and test a regular expression before you use it in code, a spreadsheet, a text editor or a search-and-replace. Seeing the matches highlighted live makes it much easier to get a pattern right, whether you are pulling email addresses from text, validating input, cleaning data or renaming files.
 
-## How to test a regular expression
+## How to use it
 
-1. Type your **pattern** between the slashes, without the slashes themselves.
-2. Set the **flags**, such as `gi`.
-3. Paste or type **test text**.
-4. See matches highlighted on the right and listed in **Match details**.
-5. Optionally type a **replacement** to preview a find-and-replace.
+1. Type your pattern in **Regular expression**, between the slashes. Do not add the slashes yourself.
+2. Set the **Flags** by typing them or tapping **g**, **i**, **m**, **s** and **u**.
+3. Paste sample text into **Test text**.
+4. See **Matches highlighted** in the text, with the number of matches.
+5. Check **Match details**, which lists each match, its position and the value of every group.
+6. Optionally, type in **Replace with** to preview a search-and-replace.
 
-## Useful patterns
+## Worked example
 
-- Email (simple): `[\w.+-]+@[\w-]+\.[\w.]+`
-- Digits only: `^\d+$`
-- US ZIP code: `^\d{5}(-\d{4})?$`
-- Date YYYY-MM-DD: `\d{4}-\d{2}-\d{2}`
-- Hex color: `#(?:[0-9a-f]{3}){1,2}\b` with the `i` flag
-- Repeated words: `\b(\w+)\s+\1\b`
+The default pattern is `(\w+)@(\w+)\.com` with the flags gi. In the test text it finds 2 matches: anna@example.com and SUPPORT@toolwise.com. The match details show group $1 as anna and $2 as example for the first one.
 
-## Regex basics
+hello@ world is not matched because of the space, and bob@test.org is not matched because the pattern asks for .com.
 
-- `.` any character; `\d` digit; `\w` letter, digit or underscore; `\s` whitespace
-- `*` zero or more; `+` one or more; `?` optional; `{2,4}` between two and four
-- `^` start and `$` end; `[abc]` any of a, b or c; `(…)` a capture group
-- `\b` a word boundary; `|` either side
+Type `$1 at $2 dot com` in **Replace with**. The preview reads: Contact anna at example dot com or SUPPORT at toolwise dot com. This kind of replacement is handy for hiding email addresses from spam bots.
+
+## Handy building blocks
+
+- `\d` matches a digit, `\w` a letter, digit or underscore, and `\s` a space or line break.
+- `+` means one or more, `*` zero or more, and `{2,4}` between two and four.
+- `[abc]` matches any one of a, b or c, and `[^abc]` anything else.
 
 ## Tips
 
-- **Start small** and build the pattern up step by step, checking the highlights each time.
-- **Escape special characters** like `.`, `?` and `(` with a backslash when you mean them literally.
-- **Be careful with greedy matches:** `.*` grabs as much as possible; `.*?` grabs as little as possible.
+- **Start small.** Match one simple piece first, then add to the pattern step by step.
+- **Escape special characters.** A dot means any character, so use `\.` for a real dot. The same goes for ( ) [ ] { } + * ? ^ $ | and \.
+- **Use realistic test text.** Include examples that should not match, so you can check the pattern ignores them.
+- **Anchor validation patterns.** For checking a whole value, wrap the pattern in ^ and $.
 
-## Related tools
+## Common mistakes
 
-Run replacements on larger texts with [Find and Replace](/find-and-replace), or compare outputs with [Text Compare](/text-compare).
-
-## Private
-
-Everything runs in your browser. Your patterns and text are never uploaded.
+- **Forgetting the g flag.** Without it, only the first match is found and replaced.
+- **Being too greedy.** `.*` grabs as much as possible. Use `.*?` to match as little as possible.
+- **Trusting a regex to validate emails perfectly.** Real email rules are complex. Use a simple pattern and confirm by sending an email.

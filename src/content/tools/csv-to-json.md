@@ -2,55 +2,52 @@
 seoTitle: "CSV to JSON Converter: Spreadsheet Data to JSON | toolwise"
 metaDescription: "Convert CSV to JSON with automatic separator detection, number and true/false conversion, and quoted values handled correctly. Free."
 faqs:
-  - q: Does the first row need to be a header?
-    a: For the Array of objects output, yes. The first row provides the keys. If your CSV has no header, choose Array of arrays, which keeps every row as a list of values.
-  - q: How are numbers and booleans handled?
-    a: With "Convert numbers and true/false" on, values like 31 and true become JSON numbers and booleans, and empty cells become null. Turn it off to keep everything as text, for example to keep leading zeros in codes like 00123.
-  - q: Can it read semicolon or tab separated files?
-    a: Yes. The separator is detected automatically, or you can choose comma, semicolon, tab or pipe yourself.
-  - q: What if a row has too many or too few values?
-    a: The conversion still runs, and a note tells you which row has a different number of columns so you can check it.
+  - q: "What is the difference between an array of objects and an array of arrays?"
+    a: "An array of objects uses the first row as names, so each record looks like {\"name\": \"Bo\", \"age\": 27}. An array of arrays keeps every row, including the header, as a simple list, like [\"Bo\", 27]. Objects are easier to read and use in most code."
+  - q: "What does Convert numbers and true/false do?"
+    a: "It turns values like 31 into numbers and true or false into booleans, instead of leaving everything as text. Empty cells become null. Untick it if you need every value kept exactly as text."
+  - q: "Why did my zip codes lose their leading zero?"
+    a: "With number conversion on, 0150 is read as the number 150. Untick Convert numbers and true/false to keep codes, phone numbers and IDs exactly as written."
+  - q: "How does it handle commas inside values?"
+    a: "Values wrapped in double quotes, such as \"Lee, Ann\", are read as one value even though they contain a comma. This is standard CSV, and spreadsheet exports do it for you."
+  - q: "Why does it warn about a different number of columns?"
+    a: "One or more rows have more or fewer values than the header. This often means a missing comma or an unquoted comma in a value. The note shows the first row to check."
 ---
 
-## What this tool does
+## When to use it
 
-CSV to JSON converts spreadsheet data into JSON, the format used by web APIs, JavaScript apps and configuration files. It handles real-world CSV correctly: quoted values with commas, quotes inside quotes, line breaks within cells, different separators and a byte order mark from Excel.
+Use this tool to turn a CSV file or spreadsheet export into JSON for code, APIs, configuration or test data. It is handy for developers building a quick prototype, people moving data from Excel or Google Sheets into an app, and anyone who needs a list of records in a structured format.
 
-## How to convert CSV to JSON
+## How to use it
 
-1. Paste your CSV, open a `.csv` file, or press **Example**.
-2. Leave **Separator** on automatic, or choose one.
-3. Choose **Array of objects** (one object per row, using the header row as keys) or **Array of arrays**.
-4. Choose whether to **convert numbers and true/false**.
-5. Copy the JSON or download it as a `.json` file.
+1. Paste CSV into **Your text**, click **Open .csv file** to load a file of up to 30 MB, or click **Example**.
+2. Choose a **Separator**. **Detect automatically** works for most files, or pick **Comma**, **Semicolon**, **Tab** or **Pipe ( | )**.
+3. Choose the **Output**: **Array of objects** or **Array of arrays**.
+4. Tick or untick **Convert numbers and true/false**.
+5. The **JSON** appears straight away, with the number of rows and columns. Click **Copy result** or **Download .json**.
 
-## Example
+The first line of your CSV should be a header row with column names.
 
-```
-name,age
-Ann,31
-```
+## Worked example
 
-becomes `[{"name": "Ann", "age": 31}]`.
+The example has a header row (name, age, city, active) and three people. The result is an array of three objects with 3 rows and 4 columns.
 
-## Common uses
+"Lee, Ann" stays as one name because it is in quotes. Ages become numbers, so 31 rather than "31", and active becomes true or false. Cara has no age, so her age is null. "New York" keeps its space.
 
-- **Developers:** turn a spreadsheet into seed data, test fixtures or a static data file for a website.
-- **No-code tools:** prepare data for automation services that accept JSON.
-- **APIs:** convert an export before sending it to an API.
-- **Analysis:** load CSV data into JavaScript notebooks and charts.
+Switch the output to **Array of arrays** and you get four lists, starting with the header row ["name", "age", "city", "active"].
+
+## Using the result
+
+Most programming languages can read the JSON directly. In JavaScript, JSON.parse turns it into a list you can loop through. You can also save it as a .json file for a test fixture, a static website or a no-code tool that accepts JSON imports.
 
 ## Tips
 
-- **Export from Excel or Google Sheets** with File → Download or Save As → CSV.
-- **Clean headers:** short, consistent header names without special characters make better JSON keys.
-- **Check the result** in the [JSON Formatter](/json-formatter) if you need to validate or reformat it.
-- **Going the other way?** Use [JSON to CSV](/json-to-csv).
+- **Clean up the header row.** Short, simple column names without spaces, such as first_name, are easier to use in code.
+- **Turn off conversion for IDs.** Phone numbers, zip codes and account numbers should stay as text.
+- **Export from spreadsheets as CSV UTF-8.** It keeps accented letters and symbols correct.
 
-## Reliable parsing
+## Common mistakes
 
-toolwise uses PapaParse, a widely used, well-tested open-source CSV parser, loaded only on this page. It follows the CSV standard, so values like `"Lee, Ann"` stay in one field.
-
-## Private
-
-Your spreadsheet data is converted in your browser and never uploaded.
+- **Forgetting the header row.** Without it, the first record is used as column names.
+- **Mixing separators.** A file that uses both commas and semicolons will not split cleanly. Choose the right separator by hand.
+- **Expecting totals rows to disappear.** Blank lines are skipped, but a totals or notes row at the bottom of a spreadsheet becomes a record. Delete it before converting.
