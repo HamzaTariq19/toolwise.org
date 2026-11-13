@@ -2,47 +2,57 @@
 seoTitle: "Robots.txt Generator: Create a robots.txt File Free | toolwise"
 metaDescription: "Generate a correct robots.txt file: block folders, add exceptions, block AI crawlers, set crawl delay and add your sitemap. Free."
 faqs:
-  - q: Where does the robots.txt file go?
-    a: In the root of your website, so it opens at https://yourdomain.com/robots.txt. It does not work in a subfolder.
-  - q: Does robots.txt keep pages private?
-    a: No. It only asks well-behaved crawlers not to visit pages. The file itself is public, and blocked pages can still appear in search results if other sites link to them. Use passwords or a noindex tag for pages that must stay out of search.
-  - q: Should I block AI crawlers?
-    a: It's your choice. Blocking crawlers such as GPTBot, ClaudeBot and Google-Extended asks AI companies not to use your content for training or AI answers. It doesn't affect normal Google Search rankings.
-  - q: What does "Disallow:" with nothing after it mean?
-    a: It means nothing is disallowed, so crawlers may visit the whole site. This is the most common robots.txt.
+  - q: "Does robots.txt hide private pages?"
+    a: "No. It only asks well-behaved crawlers not to visit certain paths, and the file itself is public, so anyone can read the list. Protect private areas with a login, and use a noindex tag to keep pages out of search results."
+  - q: "Where do I upload robots.txt?"
+    a: "To the root of your website, so it opens at yourdomain.com/robots.txt. A robots.txt in a subfolder is ignored. Each subdomain needs its own file."
+  - q: "What do * and $ mean in paths?"
+    a: "The * matches any characters, so /*?sessionid= blocks any URL containing ?sessionid=. The $ means \"ends with\", so /*.pdf$ blocks addresses ending in .pdf."
+  - q: "Will blocking AI crawlers remove my site from Google?"
+    a: "No. The AI option blocks crawlers used for AI training and AI search, such as GPTBot, ClaudeBot and CCBot, and Google-Extended, which controls use in Google's AI models. Normal Google Search crawling is not affected."
+  - q: "Should I use crawl delay?"
+    a: "Only if a crawler is putting real load on your server. Google ignores it, and some other search engines respect it."
 ---
 
-## What this tool does
+## When to use it
 
-The robots.txt generator creates the small text file that tells search engines and other crawlers which parts of your website they may visit. You can allow or block everything, list folders and pages to block, add exceptions, ask AI crawlers to stay away, set a crawl delay and point to your sitemap.
+Use this tool to create a robots.txt file, the small text file that tells search engine and AI crawlers which parts of your site they may visit. It is useful when launching a site, keeping crawlers out of admin or checkout pages, avoiding endless filter and session URLs, pointing crawlers to your sitemap, or opting out of AI training.
 
-## How to create robots.txt
+## How to use it
 
-1. Choose **Allow everything** (most sites) or **Block everything** (staging or private sites).
-2. List **folders or pages to block**, one per line, such as `/admin/`.
-3. Add **exceptions** that should still be crawled.
-4. Tick **Block AI crawlers** if you want to.
-5. Add your **sitemap URL**.
-6. Download `robots.txt` and upload it to your site's root folder.
+1. Choose the **Default for all crawlers**: **Allow everything** or **Block everything**.
+2. List **Folders or pages to block**, one per line, each starting with /.
+3. Optionally, add **Exceptions to allow** inside blocked folders.
+4. Tick **Block AI training and AI search crawlers** if you want to opt out.
+5. Add your **Sitemap URL** and, if needed, a **Crawl delay in seconds**.
+6. Check the **robots.txt** preview, then **Copy robots.txt** or **Download robots.txt**.
 
-## Path patterns
+## Worked example
 
-- `/admin/` blocks everything inside the admin folder.
-- `/cart` blocks URLs starting with /cart.
-- `/*?sessionid=` blocks any URL containing that parameter.
-- `/*.pdf$` blocks URLs ending in .pdf.
+An online shop wants search engines to skip its admin area, its cart and URLs with session IDs. The default list does exactly that:
 
-## Common mistakes to avoid
+```
+User-agent: *
+Disallow: /admin/
+Disallow: /cart
+Disallow: /*?sessionid=
+```
 
-- **Blocking your whole site** by accident with `Disallow: /`. The tool warns you when everything is blocked.
-- **Blocking CSS and JavaScript** files that search engines need to render your pages.
-- **Using robots.txt to remove pages from Google.** Use a `noindex` tag instead, and let crawlers see it.
-- **Typos in paths:** paths are case-sensitive.
+Add https://example.com/sitemap.xml as the sitemap URL and a Sitemap line is added at the end, so crawlers find all your product pages. If the shop also wants to keep its product descriptions out of AI training, ticking the AI option adds one more group that lists each AI crawler by name, such as GPTBot, ClaudeBot and PerplexityBot, followed by Disallow: / to keep them off the whole site. Ordinary search engines still follow the rules above.
 
-## Testing
+## Allow and Disallow together
 
-After uploading, open `yourdomain.com/robots.txt` in a browser to check it. Google Search Console also reports robots.txt problems.
+An exception lets crawlers into one part of a blocked folder. For example, block /private/ but allow /private/press-kit/. The more specific rule wins, so the press kit stays visible while the rest of the folder is skipped.
 
-## Related tools
+## Tips
 
-Create a [Sitemap](/sitemap-generator) for your pages, and write title and description tags with the [Meta Tag Generator](/meta-tag-generator).
+- **Block as little as possible.** Every blocked path is something search engines will not see.
+- **Use a trailing slash for folders.** /admin/ blocks everything in that folder, while /admin also blocks /administrator.
+- **Test after uploading.** Google Search Console has a robots.txt report that shows how Google reads your file.
+- **Keep CSS and JavaScript crawlable.** Search engines need them to see your pages properly.
+
+## Common mistakes
+
+- **Blocking the whole site by accident.** Disallow: / on its own blocks everything. Check the preview carefully.
+- **Using robots.txt to remove pages from Google.** A blocked page can still appear in results if other sites link to it. Use noindex instead.
+- **Putting the file in the wrong place.** It must be at the root of the domain.

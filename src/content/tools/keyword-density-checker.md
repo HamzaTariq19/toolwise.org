@@ -2,48 +2,48 @@
 seoTitle: "Keyword Density Checker: Analyze Words and Phrases for SEO | toolwise"
 metaDescription: "Check keyword density and the most used words and 2 to 3 word phrases in your content. See where your target keyword appears. Free."
 faqs:
-  - q: What is a good keyword density?
-    a: There is no magic number. Most natural, well-written content uses a main keyword at roughly 0.5 to 2% density. Above about 3% usually reads as repetitive. Search engines focus on usefulness and relevance, not a percentage.
-  - q: How is keyword density calculated?
-    a: The number of times the keyword appears, multiplied by the number of words in it, divided by the total number of words, times 100. A two-word phrase used 5 times in 500 words has a density of 2%.
-  - q: Why are words like "the" and "and" missing?
-    a: Common words (stop words) are left out of the tables so that the words carrying meaning stand out. They still count toward the total word count.
-  - q: Does keyword stuffing hurt rankings?
-    a: Yes. Repeating keywords unnaturally is against search engine guidelines and makes content worse for readers. Use synonyms and related terms instead.
+  - q: "What is keyword density?"
+    a: "The share of the words in your text that belong to a keyword or phrase. The tool works it out as the times the phrase is used, multiplied by the number of words in the phrase, divided by the total number of words."
+  - q: "What is a good keyword density?"
+    a: "There is no magic number. Most natural writing lands around 0.5% to 2.5% for its main topic. Above 3%, the tool warns you, because the text may start to read as repetitive or stuffed with keywords."
+  - q: "Does Google rank pages by keyword density?"
+    a: "No. Search engines look at whether a page covers its topic well and helps the reader. Using the main phrase naturally, in a heading and early in the text, helps make the topic clear, but repeating it more does not help."
+  - q: "Why do common words like \"the\" not appear in the lists?"
+    a: "Very common words are left out of the single-word list so the useful terms stand out."
+  - q: "How do I mark headings?"
+    a: "Start heading lines with #, ## or ###, like in Markdown. The tool then checks whether your phrase appears in a heading."
 ---
 
-## What this tool does
+## When to use it
 
-The keyword density checker analyzes your content to show which words and phrases you use most, and how often a chosen keyword appears. It lists the top single words, two-word phrases and three-word phrases with their counts and density, and checks whether your target keyword appears in key places such as the first paragraph and headings.
+Use this tool to see which words and phrases you repeat most in a piece of writing, and how often you use a target keyword. It helps bloggers, marketers and students check that a page is clearly about its topic without overusing the same words.
 
 ## How to use it
 
-1. Paste your article, blog post or page content.
-2. Optionally enter a **target keyword or phrase**.
-3. Review the density and advice for your keyword, and the tables of top words and phrases.
+1. Paste your text into **Your content**. Mark headings by starting the line with #.
+2. Optionally, type a **Target keyword or phrase**, such as compress pdf.
+3. Read the density and how many times it is used, plus advice on whether it is too low or too high.
+4. Check the list: **In the first paragraph**, **In a heading**, **Near the end** and **Not overused**.
+5. Look at the tables of **Single words**, **2-word phrases** and **3-word phrases** to spot repetition.
 
-## Reading the results
+## Worked example
 
-- **Top phrases** reveal what your text is really about. If your main topic isn't near the top, the content may be unfocused.
-- **High density** for a phrase suggests repetition; vary your wording.
-- **Placement checks** show whether your keyword appears early, in a heading, and toward the end.
+A 47-word product blurb about compressing PDFs uses the phrase "compress pdf" twice. Because it is a two-word phrase, its density is 2 × 2 ÷ 47, or 8.51%. The tool says that is high. In such a short text, every use of a two-word phrase adds more than 4% to the density.
 
-## Writing content that ranks
+The single-word table shows pdf 4 times, compress 3 times and files 3 times. The checks show the phrase is in the first paragraph but not in a heading or near the end. A better version would add a heading such as "## How to compress a PDF", swap one repeat for "make your PDF smaller", and mention the topic again in the closing sentence.
 
-- **Answer the searcher's question** clearly and completely.
-- **Use the keyword naturally** in the title, first paragraph and at least one heading.
-- **Include related terms.** An article about "compress pdf" naturally mentions file size, quality and email attachments.
-- **Structure your content** with headings, short paragraphs and lists.
-- **Read it aloud.** If it sounds repetitive, it probably is.
+## Reading the phrase tables
 
-## Headings in pasted text
+The 2-word and 3-word tables show phrases that appear more than once. They are good at catching habits, such as starting several sentences with the same words. If a phrase you did not plan shows up near the top, try rewording one or two of those sentences.
 
-If your content uses Markdown-style headings (lines starting with `#`), toolwise checks whether your keyword appears in them.
+## Tips
 
-## Related tools
+- **Write for the reader first.** Then use the tool to catch accidental repetition.
+- **Use related words.** Synonyms and natural variations make text easier to read and cover more searches.
+- **Check longer pages.** Density on very short text swings a lot with each extra use.
 
-See every word's frequency with the [Word Frequency Counter](/word-frequency-counter), check readability with the [Readability Checker](/readability-checker), and write title tags with the [Meta Tag Generator](/meta-tag-generator).
+## Common mistakes
 
-## Private
-
-Your content is analyzed in your browser and never uploaded.
+- **Chasing a percentage.** Adding the keyword again and again makes text worse.
+- **Ignoring the phrase tables.** Repeated two- and three-word phrases are often the most noticeable to readers.
+- **Forgetting headings.** A clear heading with the main topic helps readers and search engines.

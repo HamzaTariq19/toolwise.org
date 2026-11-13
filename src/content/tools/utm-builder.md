@@ -2,46 +2,62 @@
 seoTitle: "UTM Builder: Create Campaign URLs for Google Analytics | toolwise"
 metaDescription: "Build campaign links with UTM parameters (source, medium, campaign, term, content) for Google Analytics. Validates URLs and cleans values. Free."
 faqs:
-  - q: What are UTM parameters?
-    a: UTM parameters are tags added to the end of a link, such as utm_source=newsletter. When someone clicks, analytics tools like Google Analytics record where the visit came from, so you can measure which campaigns work.
-  - q: Which parameters are required?
-    a: Source, medium and campaign should always be filled in. Term and content are optional; use content to tell apart two links in the same email or ad.
-  - q: Why lowercase the values?
-    a: UTM values are case-sensitive, so "Facebook" and "facebook" appear as two different sources in reports. Lowercasing keeps your data tidy.
-  - q: Should I use UTM links on my own website?
-    a: No. Use them only on links from outside your site, such as emails, ads and social posts. Internal UTM links can overwrite the real source of a visit.
+  - q: "What are UTM parameters?"
+    a: "Short tags added to the end of a link, such as utm_source=newsletter, that tell analytics tools like Google Analytics where a visitor came from. They do not change the page the link opens."
+  - q: "Which fields are required?"
+    a: "Source, medium and campaign name. Google Analytics groups traffic using these three. Term and content are optional."
+  - q: "Why should I use lowercase?"
+    a: "UTM values are case-sensitive, so Email and email would show up as two different mediums in your reports. The Lowercase and replace spaces with hyphens option keeps your data tidy."
+  - q: "Should I use UTM tags on links within my own website?"
+    a: "No. Tagging internal links starts a new session in analytics and hides where visitors originally came from. Use UTM tags only on links from outside your site, such as emails, ads and social posts."
+  - q: "What if my link already has UTM tags?"
+    a: "Paste it into Website URL and the tool fills in the fields from the existing tags, so you can edit them and get a clean new link."
 ---
 
-## What this tool does
+## When to use it
 
-The UTM builder creates trackable campaign links. Enter your page URL and campaign details, and it adds the correct `utm_` parameters, encodes special characters, and optionally cleans values to lowercase with hyphens. Paste an existing UTM link and the fields fill in, so you can edit it.
+Use this tool to build tracked links for marketing campaigns. Adding UTM tags to the links in your emails, social posts, ads, QR codes and printed material lets you see in Google Analytics exactly which ones bring visitors and sales.
 
-## How to build a campaign URL
+## How to use it
 
-1. Enter the **website URL** people should land on.
-2. Fill in **source**, **medium** and **campaign**.
-3. Optionally add **term** and **content**.
-4. Copy the URL, or make a QR code for print campaigns.
+1. Enter the **Website URL** of the page you are linking to.
+2. Fill in **Campaign source**, such as newsletter, facebook or google. Tap a suggestion to use it.
+3. Fill in **Campaign medium**, such as email, social or cpc.
+4. Enter a **Campaign name**, such as Spring Sale 2026.
+5. Optionally, add a **Term** for paid keywords, and **Content** to tell apart links in the same message, such as header-button.
+6. Leave **Lowercase and replace spaces with hyphens** ticked for consistent reports.
+7. Copy **Your campaign URL** with **Copy URL**, or click **Make a QR code** for printed material.
 
-## What each parameter means
+## Worked example
 
-- **utm_source:** where the traffic comes from, such as google, facebook or newsletter.
-- **utm_medium:** the type of channel, such as cpc, email, social or print.
-- **utm_campaign:** the campaign name, such as spring-sale-2026.
-- **utm_term:** paid search keywords.
-- **utm_content:** which link or ad was clicked, such as header-button.
+You are sending a newsletter about a spring sale. With the website URL https://example.com/spring-sale, source newsletter, medium email and campaign name Spring Sale 2026, the tool builds:
 
-## Naming conventions
+`https://example.com/spring-sale?utm_source=newsletter&utm_medium=email&utm_campaign=spring-sale-2026`
 
-Agree on a simple system and stick to it: lowercase, hyphens instead of spaces, and a fixed list of sources and mediums. Consistent naming makes reports easy to read; inconsistent naming splits the same campaign across several rows.
+The campaign name was turned into lowercase with hyphens. If the email has two links, one in the header and one at the bottom, add content values header-button and footer-link to see which one gets more clicks.
 
-## Common combinations
+## A simple naming plan
 
-- Email newsletter: source=newsletter, medium=email
-- Facebook ad: source=facebook, medium=paid_social
-- Instagram bio link: source=instagram, medium=social
-- Printed flyer QR code: source=flyer, medium=print
+Decide on a few names and stick to them:
 
-## Related tools
+- **Source:** where the link appears, such as newsletter, facebook or flyer.
+- **Medium:** the type of channel, such as email, social, cpc or print.
+- **Campaign:** the promotion, such as spring-sale-2026.
 
-Turn the link into a QR code with the [QR Code Generator](/qr-code-generator), or encode other URL values with the [URL Encoder and Decoder](/url-encoder-decoder).
+Write them down so everyone on your team uses the same words.
+
+## Tips
+
+- **Use a QR code for print.** Long tagged links are hard to type, so **Make a QR code** turns the link into something people can scan from a poster or flyer.
+- **Keep a list of your links.** A simple spreadsheet of every tagged link makes it easy to reuse names and compare results later.
+- **Test the link.** Click it once to check it opens the right page.
+
+## Where to see the results
+
+In Google Analytics, open the traffic acquisition report and choose session source / medium or session campaign. Visits from your tagged links appear under the names you chose.
+
+## Common mistakes
+
+- **Mixing spellings.** Facebook, facebook and fb become three sources in reports.
+- **Tagging internal links.** It breaks your session data.
+- **Putting the campaign in the source.** Keep each field for its own purpose, or reports become hard to filter.

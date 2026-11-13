@@ -2,50 +2,53 @@
 seoTitle: "YouTube Thumbnail Checker: Size Test and Preview | toolwise"
 metaDescription: "Check your YouTube thumbnail size, ratio and file size, and preview it in light mode, dark mode and small sizes before you upload. Free."
 faqs:
-  - q: What size should a YouTube thumbnail be?
-    a: 1280 × 720 pixels (16:9), with a minimum width of 640 pixels. The file must be under 2 MB and in JPG, PNG or GIF format.
-  - q: Why preview at small sizes?
-    a: Most people see thumbnails small, in the sidebar or on a phone. Text and details that look great full size can become unreadable. The small previews show what viewers really see.
-  - q: Does the time stamp cover my thumbnail?
-    a: Yes, YouTube puts the video length in the bottom-right corner. Keep important text and faces away from that area. The previews include a time badge so you can check.
-  - q: Is my image uploaded?
-    a: No. The image is displayed and checked in your browser only.
+  - q: "What size should a YouTube thumbnail be?"
+    a: "1280 × 720 pixels is recommended, in a 16:9 shape. The width must be at least 640 pixels, and the file must be under 2 MB."
+  - q: "Which file types does YouTube accept?"
+    a: "JPG, PNG and GIF. You can test a WebP image here, but the tool will remind you to convert it before uploading."
+  - q: "Is my image uploaded?"
+    a: "No. The image is checked and previewed in your browser, and it never leaves your device."
+  - q: "Why does the video length badge matter?"
+    a: "YouTube shows the length in the bottom right corner of the thumbnail. Anything important in that corner, such as a logo or text, will be covered."
+  - q: "Why check the small sizes?"
+    a: "Many people see thumbnails at a small size, in the sidebar or in search results on a phone. Text that looks clear on your computer can become unreadable when it is shrunk."
 ---
 
-## What this tool does
+## When to use it
 
-The YouTube thumbnail checker tests your thumbnail image against YouTube's requirements and shows how it will look on the home page in light and dark mode, and at the small sizes used in the sidebar and search on phones. It checks the resolution, the 16:9 aspect ratio, the file size limit and the file type.
+Use this tool before you upload a thumbnail to YouTube. It checks the size, shape, file size and file type against YouTube's rules, and shows how the thumbnail looks next to your title on the home page, in dark mode and at the small sizes used in sidebars and phone search results.
 
 ## How to use it
 
-1. Tap **Choose thumbnail** and pick your image.
-2. Read the checklist: resolution, minimum width, aspect ratio, file size and type.
-3. Type your **video title** and **length** to see a realistic preview.
-4. Check the light, dark and small previews before uploading to YouTube.
+1. Click **Choose thumbnail** or drag and drop an image. JPG, PNG, GIF and WebP up to 10 MB can be checked.
+2. Type your **Video title** and **Video length** so the previews look real.
+3. Read the checks for resolution, minimum width, aspect ratio, file size and file type.
+4. Look at the previews: **Home page, light**, **Home page, dark mode** and **Small sizes (sidebar, search on phone)**.
+5. Click **Try another image** to compare a different version.
 
-## YouTube thumbnail requirements
+## Worked example
 
-- Recommended resolution: **1280 × 720 pixels**
-- Minimum width: **640 pixels**
-- Aspect ratio: **16:9**
-- Maximum file size: **2 MB**
-- Formats: **JPG, PNG or GIF**
+You made a thumbnail at 1920 × 1080 pixels and saved it as a PNG of 3.4 MB. The tool says the resolution meets the recommended 1280 × 720 and the aspect ratio is 16:9, but the file size is over YouTube's 2 MB limit.
 
-## Tips for thumbnails that get clicks
+In the small preview, the text on the right is hidden under the 12:34 length badge, and the thin font is hard to read. You move the text to the left, make it bolder, and export a JPG at high quality, which comes out well under 2 MB. The checks all pass.
 
-- **One clear subject:** a face with a clear expression or a single object works better than a busy scene.
-- **Big, short text:** three to five words at most, in a bold font with high contrast.
-- **Bright, contrasting colors** stand out among other videos.
-- **Avoid the bottom-right corner,** where the time stamp sits.
-- **Stay honest:** the thumbnail should reflect what's in the video.
+## Light and dark mode
+
+Many viewers use YouTube in dark mode. A thumbnail with a black background can blend into the dark page, while a white one can look washed out in light mode. Check both previews and add a border or a brighter subject if it disappears in either.
+
+## Design tips
+
+- **Use three to five words at most.** Big, bold text reads at every size.
+- **Show a clear face or object.** Close-ups stand out in a busy feed.
+- **Use strong contrast.** Light text on a dark background, or the other way round, works in both light and dark mode.
+- **Keep the bottom right clear.** That is where the length badge goes.
+
+## Common mistakes
+
+- **Saving a huge PNG.** Photos are usually much smaller as JPG with no visible difference.
+- **Using a different shape.** A square or tall image gets black bars or cropping.
+- **Repeating the title.** The thumbnail and title are seen together, so make them work as a pair, not say the same thing.
 
 ## Fixing problems
 
-- Too large? Use [Compress Image](/compress-image) or [Compress Image to KB](/compress-image-to-kb) to get under 2 MB.
-- Wrong shape? Crop to 16:9 with [Crop Image](/crop-image).
-- Wrong size? Use [Resize Image](/resize-image) to make it 1280 × 720.
-- WebP image? Convert it with [WebP to JPG](/webp-to-jpg).
-
-## Related tools
-
-Check your title with the [YouTube Title Checker](/youtube-title-checker).
+If the file is too large, try the [Compress Image](/compress-image) tool. If the shape is wrong, crop the image to 16:9 before uploading.

@@ -2,46 +2,51 @@
 seoTitle: "Meta Tag Generator: Title, Description and Open Graph Tags | toolwise"
 metaDescription: "Create SEO meta tags, Open Graph and X card tags with a live Google preview and length checks. Copy the HTML into your page's head. Free."
 faqs:
-  - q: Do meta tags still matter for SEO?
-    a: The title tag is one of the most important on-page signals, and the meta description strongly influences whether people click your result. Open Graph tags control how links look when shared on social media and chat apps.
-  - q: Why does Google sometimes show a different description?
-    a: Google may rewrite the snippet if it thinks another part of the page better answers the search. A clear, accurate description that matches the page content is used more often.
-  - q: What about the meta keywords tag?
-    a: Major search engines have ignored it for many years, so toolwise doesn't include it.
-  - q: Where do I put the code?
-    a: Inside the head section of your HTML page, before the closing head tag. Website builders usually have SEO settings fields where you enter the title and description instead.
+  - q: "Where do I put the meta tags?"
+    a: "Inside the head section of your page's HTML, before the closing head tag. Many website builders and blog platforms have a \"custom head code\" or SEO settings box where you can paste them or fill in the same details."
+  - q: "How long should a title and description be?"
+    a: "Aim for 50 to 60 characters for the title and 120 to 160 for the description. Google cuts off longer text based on pixel width, so the preview in the tool shows roughly how yours will look."
+  - q: "Will Google always use my description?"
+    a: "Not always. Google sometimes writes its own snippet from the page text if it thinks that matches the search better. A clear, accurate description gives it the best chance of being used."
+  - q: "What is a canonical URL?"
+    a: "It tells search engines which address is the main version of a page. It helps when the same page can be reached through several URLs, for example with tracking parameters."
+  - q: "What are Open Graph and Twitter tags for?"
+    a: "They control the title, description and image shown when someone shares your link on Facebook, LinkedIn, WhatsApp, Slack or X. Without them, those sites guess, often badly."
 ---
 
-## What this tool does
+## When to use it
 
-The meta tag generator creates the HTML tags that control how your page appears in search results and when shared on Facebook, LinkedIn, X, WhatsApp and Slack. As you type, it shows a Google search preview, checks your title and description lengths, and builds ready-to-paste code including canonical, robots, Open Graph and X card tags.
+Use this tool to create the HTML meta tags for a web page: the title, description, canonical link, robots rules, and the Open Graph and X (Twitter) tags used when the link is shared. It is ideal for hand-built sites, landing pages and anyone who wants to check how a page will look in Google before publishing.
 
 ## How to use it
 
-1. Enter your **page title** and **meta description**, watching the character counts.
-2. Add the **page URL**, a **social share image** and your **site name**.
-3. Choose the **content type** and indexing options.
-4. Check the **Google preview** and the tips under it.
-5. Press **Copy code** and paste it into your page's `<head>`.
+1. Enter the **Page title**. Aim for 50 to 60 characters and put the main topic first.
+2. Write the **Meta description**, 120 to 160 characters that make people want to click.
+3. Add the **Page URL (canonical)** and a **Social share image URL**, ideally 1200 × 630 pixels.
+4. Optionally add the **Site name** and your **X (Twitter) handle**.
+5. Choose the **Content type**: **Website / page**, **Article / blog post** or **Product**, and the **Language**.
+6. Leave **Allow search engines to index** and **Allow following links** ticked for normal public pages.
+7. Check the **Google search preview**, then **Copy code** or **Download meta-tags.html**.
 
-## Writing a great title
+## Worked example
 
-- Keep it to about **50 to 60 characters** so it isn't cut off.
-- Put the **main topic first**, then a benefit, then your brand.
-- Make every page's title **unique**.
-- Example: "Compress PDF Online Free: Reduce File Size | toolwise".
+The default page is a tools website. The title "Free Online Tools for Everyday Tasks | toolwise" is 47 characters, so it fits in search results. The description explains the benefit in one sentence.
 
-## Writing a great description
+The generated code includes `<title>`, `<meta name="description">`, a canonical link to https://example.com/, and Open Graph tags such as `og:title` and `og:url`. Because no share image was added, the X card type is "summary". Add an image URL and it switches to a large image card, which gets far more attention in feeds.
 
-- Aim for **120 to 160 characters**.
-- Summarize what the page offers and why it is useful.
-- Include the main search phrase naturally; Google bolds matching words.
-- End with a gentle call to action, like "Free, no signup."
+## Choosing the content type
 
-## Social sharing tags
+Use **Website / page** for home, service and contact pages. Use **Article / blog post** for news and blog posts, so sharing apps treat them as articles. Use **Product** for a page that sells one item. The choice sets the `og:type` tag.
 
-Open Graph tags (`og:title`, `og:description`, `og:image`) decide the card that appears when someone shares your link. Use an image of **1200 × 630 pixels** so it looks sharp everywhere. Preview it with [Open Graph Preview](/open-graph-preview).
+## Tips
 
-## Related tools
+- **Write for people first.** The title and description are your advert in search results.
+- **Make every page unique.** Duplicate titles across pages make it hard for search engines to pick the right result.
+- **Use a share image with text in the middle.** Some apps crop the edges.
+- **Test shared links.** After publishing, paste the URL into the [Open Graph Preview](/open-graph-preview) tool to check how it looks.
 
-Create a [Robots.txt](/robots-txt-generator) and [Sitemap](/sitemap-generator) for your site, make icons with the [Favicon Generator](/favicon-generator), and check content with the [Keyword Density Checker](/keyword-density-checker).
+## Common mistakes
+
+- **Stuffing keywords.** Repeating the same words looks spammy and can lower clicks.
+- **Unticking index by accident.** That adds noindex, and the page will drop out of search results.
+- **Using a relative image URL.** Share images need a full address starting with https://.

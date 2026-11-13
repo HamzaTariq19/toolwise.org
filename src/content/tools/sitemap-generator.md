@@ -2,48 +2,51 @@
 seoTitle: "XML Sitemap Generator: Create sitemap.xml from URLs | toolwise"
 metaDescription: "Create a valid XML sitemap from a list of page URLs with last modified date, change frequency and priority. Download sitemap.xml free."
 faqs:
-  - q: Does my website need a sitemap?
-    a: Small, well-linked sites can be found without one, but a sitemap helps search engines discover all your pages quickly, especially new pages, large sites and pages with few links pointing to them.
-  - q: Does this tool crawl my website?
-    a: No. It builds the sitemap from the list of URLs you paste, entirely in your browser. You can get a list of URLs from your CMS, your analytics tool or a site crawler.
-  - q: Do priority and change frequency matter?
-    a: Google says it ignores them, though some other search engines may use them. Accurate last modified dates are more useful. You can leave priority and frequency out.
-  - q: How do I tell Google about my sitemap?
-    a: Upload sitemap.xml to your site, add a Sitemap line to robots.txt, and submit the URL in Google Search Console and Bing Webmaster Tools.
+  - q: "Do I need a sitemap?"
+    a: "Small, well-linked sites can be found without one, but a sitemap helps search engines discover new pages faster and find pages that few links point to. It is especially useful for new sites and large sites."
+  - q: "Where do I put sitemap.xml?"
+    a: "Upload it to the root of your site, so it opens at yourdomain.com/sitemap.xml. Then add a Sitemap line to robots.txt and submit the address in Google Search Console and Bing Webmaster Tools."
+  - q: "Does Google use priority and change frequency?"
+    a: "Google says it ignores both and relies on its own signals. Some other search engines may still read them. Last modified is useful if you keep it accurate."
+  - q: "Why is the & in my URL written as &amp;?"
+    a: "XML has special characters that must be escaped. An & inside a sitemap URL must be written as &amp;, and the tool does this for you, so the file stays valid."
+  - q: "How many URLs can a sitemap have?"
+    a: "Up to 50,000 URLs per file. Larger sites split their pages across several sitemaps and list them in a sitemap index."
 ---
 
-## What this tool does
+## When to use it
 
-The sitemap generator turns a list of page URLs into a valid XML sitemap file that search engines understand. It removes duplicates, skips invalid lines, escapes special characters, and lets you add the last modified date, change frequency and priority for each page.
+Use this tool to create a sitemap.xml file, the list of pages you want search engines to find. It is handy for new websites, small sites without a plugin that does it automatically, static sites, and quick fixes when a site's built-in sitemap is missing pages.
 
-## How to create a sitemap
+## How to use it
 
-1. Paste your page URLs, one per line, including `https://`.
-2. Choose whether to include **last modified**, **change frequency** and **priority**.
-3. Check any warnings, for example about invalid lines or mixed domains.
-4. Press **Download sitemap.xml** and upload it to your website's root folder.
+1. Paste your **Page URLs, one per line**. Use full addresses including https://. Duplicates are removed for you.
+2. Choose **Last modified**: **Today** or **Leave out**.
+3. Choose a **Change frequency**, from daily to yearly, or **Leave out**.
+4. Choose a **Priority**: **Automatic (by depth)**, **0.5 for all** or **Leave out**.
+5. Check the **sitemap.xml** preview, then **Copy sitemap** or **Download sitemap.xml**.
 
-## Which pages to include
+If a line is not a full URL, the tool skips it and tells you which one.
 
-- **Include** pages you want people to find in search: home, products, services, articles and important landing pages.
-- **Leave out** duplicate pages, login and cart pages, thank-you pages, search result pages and anything marked `noindex`.
-- **Use canonical URLs:** the exact version you want indexed, with the same `https://` and `www` choice everywhere.
+## Worked example
 
-## Sitemap limits
+The example lists four pages: the home page, an about page, a blog post and a contact page with tracking parameters. With automatic priority, the home page gets 1.0, top-level pages like /about and /contact get 0.8, and the deeper blog post gets 0.6. Every page gets today's date as last modified, and monthly as change frequency.
 
-One sitemap can list up to **50,000 URLs** and be up to 50 MB. Larger sites use several sitemaps and a sitemap index file.
+The contact URL contains ?ref=footer&lang=en. In the sitemap it is written with `&amp;`, which is how XML requires an ampersand to be stored.
 
-## After uploading
+## Collecting your URLs
 
-1. Visit `yourdomain.com/sitemap.xml` to confirm it opens.
-2. Add `Sitemap: https://yourdomain.com/sitemap.xml` to your [robots.txt](/robots-txt-generator).
-3. Submit it in Google Search Console.
-4. Update it whenever you add or remove important pages.
+For a small site, copy the links from your navigation menu and footer. For a larger site, export them from your content management system, or from a crawler tool, and paste them in. Leave out pages you do not want in search, such as thank-you pages, logins and duplicates.
 
-## Automatic priority
+## Tips
 
-With **Automatic (by depth)**, the home page gets 1.0 and deeper pages get lower values. This is a common convention, but as Google ignores priority, it's purely optional.
+- **List only canonical URLs.** Use the main version of each page, not copies with tracking tags.
+- **Keep it current.** Regenerate the sitemap when you add or remove pages, and upload the new file over the old one.
+- **Check it in Search Console.** The Sitemaps report shows how many pages Google read and any errors it found.
+- **Point to it from robots.txt.** Add a Sitemap line using the [Robots.txt Generator](/robots-txt-generator).
 
-## Related tools
+## Common mistakes
 
-Create robots.txt with the [Robots.txt Generator](/robots-txt-generator) and page tags with the [Meta Tag Generator](/meta-tag-generator).
+- **Mixing http and https, or www and non-www.** Use the same version your site actually uses.
+- **Including blocked or noindex pages.** A sitemap should only list pages you want indexed.
+- **Setting every page to priority 1.0.** It tells search engines nothing.
