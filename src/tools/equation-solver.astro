@@ -1,6 +1,8 @@
 ---
 import Icon from '../components/Icon.astro';
 const examples = ['2x + 3 = 11', '3(x − 2) = 2x + 4', 'x/4 + 1/2 = 3', 'x² − 5x + 6 = 0', '2x² + 3x − 2 = 0', 'x² + 4x − 1 = 0'];
+import { solve, stepsHtml, answerHtml } from '../lib/equation';
+const r0 = solve('2x + 3 = 11');
 const keys = ['x', '²', '(', ')', '+', '−', '×', '÷', '=', '^'];
 ---
 <div id="eq" class="space-y-4">
@@ -15,15 +17,15 @@ const keys = ['x', '²', '(', ')', '+', '−', '×', '÷', '=', '^'];
     <div class="alert alert-error" data-error hidden role="alert"><Icon name="CircleAlert" size={18} class="mt-0.5 flex-none" /><span data-msg></span></div>
     <div class="flex flex-wrap items-center gap-2 pt-1 text-sm"><span class="text-subtle">Try:</span>{examples.map((e) => <button type="button" class="chip mono !min-h-9 text-sm" data-ex={e}>{e}</button>)}</div>
   </form>
-  <section class="card p-5 sm:p-6" data-result hidden aria-live="polite">
+  <section class="card p-5 sm:p-6" data-result aria-live="polite">
     <p class="text-sm font-semibold uppercase tracking-wide text-subtle">Answer</p>
-    <p class="mono mt-1 text-2xl font-bold sm:text-3xl" data-answer></p>
+    <p class="mono mt-1 text-2xl font-bold sm:text-3xl" data-answer set:html={answerHtml(r0.answer)}></p>
     <h2 class="mt-6 text-base font-semibold">Step by step</h2>
-    <ol class="mt-3 space-y-3" data-steps></ol>
+    <ol class="mt-3 space-y-3" data-steps set:html={stepsHtml(r0.steps)}></ol>
   </section>
 </div>
 <script>
-  import { solve, EqError } from '../lib/equation';
+  import { solve, EqError, stepsHtml, answerHtml } from '../lib/equation';
   import { showError } from '../lib/ui';
   const root = document.getElementById('eq')!, q = <T extends HTMLElement = HTMLElement>(s: string) => root.querySelector(s) as T;
   const input = q<HTMLInputElement>('#eq-in'), err = q('[data-error]'), out = q('[data-result]');
@@ -32,8 +34,8 @@ const keys = ['x', '²', '(', ')', '+', '−', '×', '÷', '=', '^'];
     try {
       const r = solve(input.value);
       showError(err, null); input.removeAttribute('aria-invalid');
-      q('[data-answer]').innerHTML = r.answer.replace(/&(?!nbsp;)/g, '&amp;');
-      q('[data-steps]').innerHTML = r.steps.map((s, i) => `<li class="flex gap-3"><span class="flex h-7 w-7 flex-none items-center justify-center rounded-full bg-[var(--cat-soft)] text-sm font-bold text-[var(--cat)]">${i + 1}</span><div class="min-w-0 pt-0.5"><p class="font-semibold">${s.title}</p>${s.math ? `<p class="mono mt-1 rounded-lg bg-surface-2 px-3 py-2">${s.math}</p>` : ''}${s.note ? `<p class="mt-1 text-sm text-muted">${s.note}</p>` : ''}</div></li>`).join('');
+      q('[data-answer]').innerHTML = answerHtml(r.answer);
+      q('[data-steps]').innerHTML = stepsHtml(r.steps);
       out.hidden = false;
     } catch (e) {
       out.hidden = true; input.setAttribute('aria-invalid', 'true');

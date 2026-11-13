@@ -1,20 +1,24 @@
 ---
 import Icon from '../components/Icon.astro';
+import { p2, dateRows, tsRows, UNIT_S } from '../lib/timestamp';
+// Build-time sample so the page has its full height before the script runs (the script swaps in the current time).
+const B = new Date(); B.setUTCSeconds(0, 0); const bs = Math.floor(B.getTime() / 1000);
+const bDate = `${B.getUTCFullYear()}-${p2(B.getUTCMonth() + 1)}-${p2(B.getUTCDate())}`, bTime = `${p2(B.getUTCHours())}:${p2(B.getUTCMinutes())}:00`;
 ---
 <div id="ts" class="space-y-5">
-  <section class="card flex flex-wrap items-center justify-between gap-3 p-4"><div><p class="text-sm text-muted">Current Unix time</p><p class="mono text-2xl font-bold tabular" data-now></p></div><button type="button" class="btn btn-secondary btn-sm" data-copy-now><Icon name="Copy" size={16} /><span data-label>Copy</span></button></section>
+  <section class="card flex flex-wrap items-center justify-between gap-3 p-4"><div><p class="text-sm text-muted">Current Unix time</p><p class="mono text-2xl font-bold tabular" data-now>{bs}</p></div><button type="button" class="btn btn-secondary btn-sm" data-copy-now><Icon name="Copy" size={16} /><span data-label>Copy</span></button></section>
   <div class="grid gap-5 md:grid-cols-2 md:items-start">
     <section class="card space-y-4 p-5">
       <h2 class="text-base font-semibold">Timestamp to date</h2>
-      <div><label for="ts-in" class="label">Unix timestamp</label><input id="ts-in" class="input mono text-lg" inputmode="numeric" autocomplete="off" /><p class="hint" data-unit>Seconds or milliseconds are detected automatically.</p></div>
+      <div><label for="ts-in" class="label">Unix timestamp</label><input id="ts-in" class="input mono text-lg" inputmode="numeric" autocomplete="off" value={bs} /><p class="hint" data-unit>{UNIT_S}</p></div>
       <p class="alert alert-error" data-err hidden></p>
-      <dl class="space-y-2 text-[0.9375rem]" data-out></dl>
+      <dl class="space-y-2 text-[0.9375rem]" data-out set:html={dateRows(bs * 1000, { locale: 'en-US', timeZone: 'UTC', nowMs: bs * 1000 })}></dl>
     </section>
     <section class="card space-y-4 p-5">
       <h2 class="text-base font-semibold">Date to timestamp</h2>
-      <div class="grid grid-cols-2 gap-3"><div><label for="ts-d" class="label">Date</label><input id="ts-d" type="date" class="input" /></div><div><label for="ts-t" class="label">Time</label><input id="ts-t" type="time" step="1" class="input" /></div></div>
+      <div class="grid grid-cols-2 gap-3"><div><label for="ts-d" class="label">Date</label><input id="ts-d" type="date" class="input" value={bDate} /></div><div><label for="ts-t" class="label">Time</label><input id="ts-t" type="time" step="1" class="input" value={bTime} /></div></div>
       <fieldset><legend class="label">Time zone</legend><div class="segmented"><label><input type="radio" name="ts-z" value="local" checked /><span>My local time</span></label><label><input type="radio" name="ts-z" value="utc" /><span>UTC</span></label></div></fieldset>
-      <dl class="space-y-2 text-[0.9375rem]" data-out2></dl>
+      <dl class="space-y-2 text-[0.9375rem]" data-out2 set:html={tsRows(B.getTime())}></dl>
     </section>
   </div>
 </div>
@@ -22,9 +26,7 @@ import Icon from '../components/Icon.astro';
   import { copyText } from '../lib/ui';
   const root = document.getElementById('ts')!, q = (s: string) => root.querySelector<HTMLElement>(s)!;
   const $ = (id: string) => document.getElementById(id) as HTMLInputElement;
-  const p2 = (n: number) => String(n).padStart(2, '0');
-  const row = (k: string, v: string) => `<div class="flex items-start justify-between gap-3 rounded-lg bg-surface-2 px-3 py-2"><dt class="text-muted">${k}</dt><dd class="flex items-center gap-1 text-right"><span class="mono break-all">${v}</span><button type="button" class="btn btn-ghost h-8 w-8 flex-none !min-h-0 !p-0" data-copy="${v}" aria-label="Copy ${k}"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="8" y="8" width="14" height="14" rx="2"/><path d="M4 16V4a2 2 0 0 1 2-2h10"/></svg></button></dd></div>`;
-  function rel(ms: number) { const d = (ms - Date.now()) / 1000, a = Math.abs(d), rtf = new Intl.RelativeTimeFormat(undefined, { numeric: 'auto' }); const [n, u] = a < 60 ? [d, 'second'] : a < 3600 ? [d / 60, 'minute'] : a < 86400 ? [d / 3600, 'hour'] : a < 2629746 ? [d / 86400, 'day'] : a < 31556952 ? [d / 2629746, 'month'] : [d / 31556952, 'year']; return rtf.format(Math.round(n), u as Intl.RelativeTimeFormatUnit); }
+  import { p2, dateRows, tsRows } from '../lib/timestamp';
   function toDate() {
     const raw = $('ts-in').value.trim(), err = q('[data-err]'); err.hidden = true;
     if (!raw) { q('[data-out]').innerHTML = ''; return; }
@@ -35,14 +37,14 @@ import Icon from '../components/Icon.astro';
     const d = new Date(ms);
     if (isNaN(d.getTime())) { err.hidden = false; err.textContent = 'That timestamp is out of range.'; return; }
     q('[data-unit]').textContent = `Read as ${unit === 's' ? 'seconds' : unit === 'ms' ? 'milliseconds' : 'microseconds'} since 1 January 1970 (UTC).`;
-    q('[data-out]').innerHTML = [row('Your time', d.toLocaleString(undefined, { dateStyle: 'full', timeStyle: 'long' })), row('UTC', d.toUTCString()), row('ISO 8601', d.toISOString()), row('Relative', rel(ms)), row('Seconds', String(Math.floor(ms / 1000))), row('Milliseconds', String(Math.round(ms)))].join('');
+    q('[data-out]').innerHTML = dateRows(ms);
   }
   function toTs() {
     if (!$('ts-d').value) { q('[data-out2]').innerHTML = ''; return; }
     const [y, m, d] = $('ts-d').value.split('-').map(Number), [h = 0, mi = 0, s = 0] = ($('ts-t').value || '00:00:00').split(':').map(Number);
     const utc = (root.querySelector('input[name=ts-z]:checked') as HTMLInputElement).value === 'utc';
     const ms = utc ? Date.UTC(y, m - 1, d, h, mi, s) : new Date(y, m - 1, d, h, mi, s).getTime();
-    q('[data-out2]').innerHTML = [row('Seconds', String(Math.floor(ms / 1000))), row('Milliseconds', String(ms)), row('ISO 8601', new Date(ms).toISOString())].join('');
+    q('[data-out2]').innerHTML = tsRows(ms);
   }
   const now = new Date();
   $('ts-in').value = String(Math.floor(now.getTime() / 1000));

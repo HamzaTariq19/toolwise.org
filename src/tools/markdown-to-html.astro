@@ -1,7 +1,7 @@
 ---
 import TextTransform from '../components/TextTransform.astro';
 ---
-<TextTransform id="md" mono outLabel="HTML" downloadLabel="Download .html" copyLabel="Copy HTML" placeholder="Write or paste Markdown…" sample={'# Trip notes\n\nA **bold** idea and an *italic* thought, with a [link](https://example.com).\n\n## Packing list\n\n- Passport\n- Charger\n- [x] Tickets booked\n\n| Day | City |\n|-----|------|\n| 1 | Lisbon |\n| 2 | Porto |\n\n```js\nconsole.log("hello");\n```\n\n<script>alert("this is removed")</script>'}>
+<TextTransform id="md" mono outHidden outLabel="HTML" downloadLabel="Download .html" copyLabel="Copy HTML" placeholder="Write or paste Markdown…" sample={'# Trip notes\n\nA **bold** idea and an *italic* thought, with a [link](https://example.com).\n\n## Packing list\n\n- Passport\n- Charger\n- [x] Tickets booked\n\n| Day | City |\n|-----|------|\n| 1 | Lisbon |\n| 2 | Porto |\n\n```js\nconsole.log("hello");\n```\n\n<script>alert("this is removed")</script>'}>
   <div class="flex flex-wrap items-center gap-x-6 gap-y-2">
     <div class="segmented"><label><input type="radio" name="md-v" value="preview" checked /><span>Show preview</span></label><label><input type="radio" name="md-v" value="code" /><span>Show HTML code</span></label></div>
     <label class="flex min-h-11 items-center gap-3 text-[0.9375rem]"><input type="checkbox" id="md-breaks" class="h-5 w-5 accent-[var(--brand)]" />Line breaks become &lt;br&gt;</label>

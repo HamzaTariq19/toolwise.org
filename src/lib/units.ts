@@ -70,3 +70,16 @@ export function nice(v: number): string {
   if (a >= 1e15 || a < 1e-6) return v.toExponential(6).replace(/\.?0+e/, 'e').replace('e+', ' × 10^').replace('e-', ' × 10^-');
   return Number(v.toPrecision(10)).toLocaleString(undefined, { maximumFractionDigits: 10 });
 }
+
+/** Result, sentence and table for a conversion: rendered at build time (defaults) and in the browser. */
+export function convertView(kind: Kind, v: number, from: string, to: string) {
+  const u = (k: string) => kind.units.find((x) => x.k === k)!;
+  const result = nice(convert(kind, v, from, to));
+  let last = '';
+  const table = kind.units.map((x) => {
+    const head = x.group && x.group !== last ? `<tr><th colspan="2" class="bg-surface-2 px-5 py-1.5 text-left text-xs font-semibold uppercase tracking-wide text-subtle">${x.group}</th></tr>` : '';
+    last = x.group ?? '';
+    return `${head}<tr class="${x.k === from ? 'text-subtle' : ''}"><td class="px-5 py-2">${x.name}</td><td class="px-5 py-2 text-right font-semibold tabular">${nice(convert(kind, v, from, x.k))} ${x.short}</td></tr>`;
+  }).join('');
+  return { result, out: `${result} ${u(to).short}`, sentence: `<strong>${nice(v)} ${u(from).short}</strong> = <strong>${result} ${u(to).short}</strong>`, table };
+}

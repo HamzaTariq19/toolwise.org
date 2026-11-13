@@ -2,6 +2,10 @@
 import CalcLayout from '../components/CalcLayout.astro';
 import CurrencySelect from '../components/CurrencySelect.astro';
 import Field from '../components/Field.astro';
+import { money } from '../lib/ui';
+// Build-time result for the defaults ($52,000 a year, 40 hours, 5 days, 52 weeks) so the panel has its final height before the script runs.
+const y0 = 52000, rows0: [string, number][] = [['Hourly', y0 / (40 * 52)], ['Daily', y0 / (5 * 52)], ['Weekly', y0 / 52], ['Every 2 weeks', (y0 / 52) * 2], ['Monthly', y0 / 12], ['Yearly', y0]];
+const table0 = rows0.map(([l, v]) => `<tr><td class="py-2 text-muted">${l}</td><td class="py-2 text-right font-semibold">${money(v, '$')}</td></tr>`).join('');
 ---
 <CalcLayout id="sh">
   <Fragment slot="inputs">
@@ -16,8 +20,8 @@ import Field from '../components/Field.astro';
   <Fragment slot="results">
     <div data-ok>
       <p class="text-sm font-medium text-muted">Hourly pay</p>
-      <p class="mt-1 text-4xl font-extrabold tracking-tight tabular" data-r="main"></p>
-      <table class="mt-5 w-full text-[0.9375rem] tabular"><tbody class="divide-y divide-[var(--border)]" data-r="table"></tbody></table>
+      <p class="mt-1 text-4xl font-extrabold tracking-tight tabular" data-r="main">{money(rows0[0][1], '$')}</p>
+      <table class="mt-5 w-full text-[0.9375rem] tabular"><tbody class="divide-y divide-[var(--border)]" data-r="table" set:html={table0}></tbody></table>
       <p class="mt-3 text-sm text-muted">Before tax and deductions.</p>
     </div>
     <div data-empty class="py-8 text-center text-muted" hidden>Enter your pay to see it per hour, day, week, month and year.</div>

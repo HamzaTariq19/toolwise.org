@@ -5,7 +5,7 @@ import TextTransform from '../components/TextTransform.astro';
   <div class="flex flex-wrap items-center gap-x-6 gap-y-2">
     <div class="segmented"><label><input type="radio" name="ue-m" value="enc" checked /><span>Encode</span></label><label><input type="radio" name="ue-m" value="dec" /><span>Decode</span></label></div>
     <div data-for="enc"><label for="ue-what" class="sr-only">What to encode</label><select id="ue-what" class="select !w-auto"><option value="component">A value (query parameter, path part)</option><option value="uri">A whole URL (keep : / ? & =)</option></select></div>
-    <label class="flex min-h-11 items-center gap-3 text-[0.9375rem]" data-for="dec"><input type="checkbox" id="ue-plus" class="h-5 w-5 accent-[var(--brand)]" checked />Treat + as a space</label>
+    <label class="flex min-h-11 items-center gap-3 text-[0.9375rem]" data-for="dec" hidden><input type="checkbox" id="ue-plus" class="h-5 w-5 accent-[var(--brand)]" checked />Treat + as a space</label>
     <label class="flex min-h-11 items-center gap-3 text-[0.9375rem]" data-for="enc"><input type="checkbox" id="ue-space" class="h-5 w-5 accent-[var(--brand)]" />Write spaces as +</label>
   </div>
 </TextTransform>

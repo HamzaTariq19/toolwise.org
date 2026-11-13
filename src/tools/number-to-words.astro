@@ -1,5 +1,8 @@
 ---
 import Icon from '../components/Icon.astro';
+import { intToWords } from '../lib/num-words';
+// Default output for 1,234.56 in words mode, so the result line has its height before the script runs.
+const w0 = `${intToWords(1234n, false)} and ${intToWords(56n)} hundredths`;
 ---
 <div id="nw" class="space-y-5">
   <div class="card grid gap-4 p-5 sm:grid-cols-2 sm:p-6">
@@ -14,7 +17,7 @@ import Icon from '../components/Icon.astro';
   </div>
   <section class="card p-5" aria-live="polite">
     <p class="text-sm font-medium text-muted">In words</p>
-    <p class="mt-2 break-words text-xl font-semibold leading-relaxed" data-out></p>
+    <p class="mt-2 break-words text-xl font-semibold leading-relaxed" data-out>{w0}</p>
     <p class="alert alert-error mt-3" data-err hidden></p>
     <button type="button" class="btn btn-primary mt-4" data-copy><Icon name="Copy" size={18} /><span data-label>Copy</span></button>
   </section>

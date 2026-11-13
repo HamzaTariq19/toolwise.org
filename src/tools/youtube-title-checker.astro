@@ -1,39 +1,31 @@
 ---
+import { titleView, DEFAULT_TITLE } from '../lib/yt-title';
+const v0 = titleView(DEFAULT_TITLE, '');
 ---
 <div id="yt" class="grid grid-cols-1 gap-5 lg:grid-cols-2 lg:items-start">
   <div class="card space-y-4 p-5 sm:p-6">
-    <div><div class="flex justify-between"><label for="yt-t" class="label">Video title</label><span class="text-sm font-semibold tabular" data-count></span></div>
-      <textarea id="yt-t" class="textarea !min-h-24 text-lg" maxlength="150">How I Saved $10,000 in One Year (Simple Budget That Actually Works)</textarea>
-      <div class="mt-2 h-2 overflow-hidden rounded-full bg-surface-2"><div class="h-full rounded-full" data-bar></div></div>
+    <div><div class="flex justify-between"><label for="yt-t" class="label">Video title</label><span class="text-sm font-semibold tabular" data-count>{v0.count}</span></div>
+      <textarea id="yt-t" class="textarea !min-h-24 text-lg" maxlength="150">{DEFAULT_TITLE}</textarea>
+      <div class="mt-2 h-2 overflow-hidden rounded-full bg-surface-2"><div class="h-full rounded-full" data-bar style={`width:${v0.width};background:${v0.color}`}></div></div>
       <p class="hint">YouTube allows up to 100 characters. About 60 to 70 show in search results before being cut off.</p></div>
     <div><label for="yt-kw" class="label">Main keyword (optional)</label><input id="yt-kw" class="input" placeholder="e.g. budget" /></div>
-    <ul class="space-y-1.5 text-[0.9375rem]" data-checks aria-live="polite"></ul>
+    <ul class="space-y-1.5 text-[0.9375rem]" data-checks aria-live="polite" set:html={v0.checks}></ul>
   </div>
   <div class="space-y-4">
-    <section><h2 class="mb-2 text-sm font-semibold text-muted">Search results (desktop)</h2><div class="flex gap-3 rounded-lg bg-white p-3"><div class="aspect-video w-40 flex-none rounded-lg bg-[#e5e5e5]"></div><div class="min-w-0"><p class="line-clamp-2 text-[18px] leading-6 text-[#0f0f0f] [overflow-wrap:anywhere]" data-p></p><p class="mt-1 text-xs text-[#606060]">Your Channel · 12K views · 2 days ago</p></div></div></section>
-    <section><h2 class="mb-2 text-sm font-semibold text-muted">Home feed (phone)</h2><div class="w-full max-w-[360px] rounded-lg bg-white"><div class="aspect-video rounded-t-lg bg-[#e5e5e5]"></div><div class="flex gap-3 p-3"><div class="h-9 w-9 flex-none rounded-full bg-[#d9d9d9]"></div><div class="min-w-0"><p class="line-clamp-2 text-[15px] font-medium leading-5 text-[#0f0f0f] [overflow-wrap:anywhere]" data-p></p><p class="mt-1 text-xs text-[#606060]">Your Channel · 12K views</p></div></div></div></section>
-    <section><h2 class="mb-2 text-sm font-semibold text-muted">Suggested videos sidebar</h2><div class="flex max-w-md gap-2 rounded-lg bg-white p-2"><div class="aspect-video w-36 flex-none rounded-lg bg-[#e5e5e5]"></div><p class="line-clamp-2 text-[14px] font-medium leading-5 text-[#0f0f0f] [overflow-wrap:anywhere]" data-p></p></div></section>
+    <section><h2 class="mb-2 text-sm font-semibold text-muted">Search results (desktop)</h2><div class="flex gap-3 rounded-lg bg-white p-3"><div class="aspect-video w-40 flex-none rounded-lg bg-[#e5e5e5]"></div><div class="min-w-0"><p class="line-clamp-2 text-[18px] leading-6 text-[#0f0f0f] [overflow-wrap:anywhere]" data-p>{DEFAULT_TITLE}</p><p class="mt-1 text-xs text-[#606060]">Your Channel · 12K views · 2 days ago</p></div></div></section>
+    <section><h2 class="mb-2 text-sm font-semibold text-muted">Home feed (phone)</h2><div class="w-full max-w-[360px] rounded-lg bg-white"><div class="aspect-video rounded-t-lg bg-[#e5e5e5]"></div><div class="flex gap-3 p-3"><div class="h-9 w-9 flex-none rounded-full bg-[#d9d9d9]"></div><div class="min-w-0"><p class="line-clamp-2 text-[15px] font-medium leading-5 text-[#0f0f0f] [overflow-wrap:anywhere]" data-p>{DEFAULT_TITLE}</p><p class="mt-1 text-xs text-[#606060]">Your Channel · 12K views</p></div></div></div></section>
+    <section><h2 class="mb-2 text-sm font-semibold text-muted">Suggested videos sidebar</h2><div class="flex max-w-md gap-2 rounded-lg bg-white p-2"><div class="aspect-video w-36 flex-none rounded-lg bg-[#e5e5e5]"></div><p class="line-clamp-2 text-[14px] font-medium leading-5 text-[#0f0f0f] [overflow-wrap:anywhere]" data-p>{DEFAULT_TITLE}</p></div></section>
   </div>
 </div>
 <script>
+  import { titleView } from '../lib/yt-title';
   const root = document.getElementById('yt')!, t = document.getElementById('yt-t') as HTMLTextAreaElement, kw = document.getElementById('yt-kw') as HTMLInputElement;
   function run() {
-    const s = t.value.replace(/\s+/g, ' ').trim(), n = [...s].length;
-    root.querySelector('[data-count]')!.textContent = `${n} / 100`;
-    const bar = root.querySelector<HTMLElement>('[data-bar]')!; bar.style.width = `${Math.min(100, n)}%`; bar.style.background = n > 100 ? '#dc2626' : n > 70 ? '#f59e0b' : '#16a34a';
-    root.querySelectorAll<HTMLElement>('[data-p]').forEach((e) => (e.textContent = s || 'Your video title'));
-    const words = s.split(' ').filter(Boolean), caps = words.filter((w) => w.length > 3 && /^[^a-z]*[A-Z][^a-z]*$/.test(w)).length;
-    const emoji = (s.match(/\p{Extended_Pictographic}/gu) ?? []).length, k = kw.value.trim().toLowerCase();
-    const c: [boolean, string][] = [
-      [n > 0 && n <= 100, n > 100 ? `Too long: YouTube will not accept more than 100 characters (${n - 100} over).` : n === 0 ? 'Add a title.' : 'Within YouTube\'s 100-character limit.'],
-      [n <= 70, n > 70 ? 'Likely to be cut off in search after about 60 to 70 characters. Put the most important words first.' : 'Short enough to show in full in most places.'],
-      [n >= 20, n < 20 ? 'Very short. Add detail that tells viewers what they will get.' : 'Descriptive length.'],
-      [caps <= 2, caps > 2 ? `${caps} words in ALL CAPS. Use capitals for one or two words at most so the title doesn't look like clickbait.` : 'Capital letters used sparingly.'],
-      [emoji <= 2, emoji > 2 ? 'Lots of emoji. One or two can help; more looks spammy.' : 'Emoji use is fine.'],
-      [!k || s.toLowerCase().includes(k), !k ? 'Add a main keyword to check its position.' : s.toLowerCase().includes(k) ? (s.toLowerCase().indexOf(k) < 40 ? 'Keyword appears early. Great.' : 'Keyword appears, but late; try moving it nearer the start.') : 'Your keyword is not in the title.'],
-      [!/(.)\1{3,}|[!?]{3,}/.test(s), /(.)\1{3,}|[!?]{3,}/.test(s) ? 'Avoid repeated characters like !!! or ????.' : 'No excessive punctuation.'],
-    ];
-    root.querySelector('[data-checks]')!.innerHTML = c.map(([ok, m]) => `<li class="flex gap-2 ${ok ? '' : 'text-[#b45309] dark:text-[#fbbf24]'}"><span class="${ok ? 'text-success' : ''}">${ok ? '✓' : '!'}</span>${m}</li>`).join('');
+    const v = titleView(t.value, kw.value);
+    root.querySelector('[data-count]')!.textContent = v.count;
+    const bar = root.querySelector<HTMLElement>('[data-bar]')!; bar.style.width = v.width; bar.style.background = v.color;
+    root.querySelectorAll<HTMLElement>('[data-p]').forEach((e) => (e.textContent = v.s || 'Your video title'));
+    root.querySelector('[data-checks]')!.innerHTML = v.checks;
   }
   root.addEventListener('input', run); run();
 </script>

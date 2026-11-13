@@ -21,18 +21,21 @@ import Icon from '../components/Icon.astro';
     </div>
     <div>
       <span class="label">Authors</span>
-      <ul class="space-y-2" data-authors></ul>
+      <ul class="space-y-2" data-authors><li class="grid grid-cols-[1fr_1fr_auto] gap-2">
+      <input class="input" placeholder="First name" aria-label="Author 1 first name" data-ai="0" data-k="first" value="" />
+      <input class="input" placeholder="Last name" aria-label="Author 1 last name" data-ai="0" data-k="last" value="" />
+      <button type="button" class="btn btn-ghost h-11 w-11 !p-0" data-rm="0" aria-label="Remove author 1" disabled><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg></button></li></ul>
       <button type="button" class="btn btn-ghost btn-sm mt-2" data-add-author><Icon name="Plus" size={16} />Add author</button>
       <p class="hint">Leave empty if there is no author; the organization or title is used instead.</p>
     </div>
     <div class="grid gap-4 sm:grid-cols-2">
       <div class="sm:col-span-2"><label for="cg-title" class="label" data-title-label>Page or article title</label><input id="cg-title" class="input" /></div>
       <div data-f="web journal"><label for="cg-site" class="label" data-site-label>Website name</label><input id="cg-site" class="input" /></div>
-      <div data-f="book"><label for="cg-pub" class="label">Publisher</label><input id="cg-pub" class="input" /></div>
-      <div data-f="book"><label for="cg-ed" class="label">Edition (optional)</label><input id="cg-ed" class="input" placeholder="e.g. 3" inputmode="numeric" /></div>
-      <div data-f="journal"><label for="cg-vol" class="label">Volume</label><input id="cg-vol" class="input" inputmode="numeric" /></div>
-      <div data-f="journal"><label for="cg-iss" class="label">Issue</label><input id="cg-iss" class="input" inputmode="numeric" /></div>
-      <div data-f="journal"><label for="cg-pages" class="label">Pages</label><input id="cg-pages" class="input" placeholder="e.g. 45-67" /></div>
+      <div data-f="book" hidden><label for="cg-pub" class="label">Publisher</label><input id="cg-pub" class="input" /></div>
+      <div data-f="book" hidden><label for="cg-ed" class="label">Edition (optional)</label><input id="cg-ed" class="input" placeholder="e.g. 3" inputmode="numeric" /></div>
+      <div data-f="journal" hidden><label for="cg-vol" class="label">Volume</label><input id="cg-vol" class="input" inputmode="numeric" /></div>
+      <div data-f="journal" hidden><label for="cg-iss" class="label">Issue</label><input id="cg-iss" class="input" inputmode="numeric" /></div>
+      <div data-f="journal" hidden><label for="cg-pages" class="label">Pages</label><input id="cg-pages" class="input" placeholder="e.g. 45-67" /></div>
       <div><label for="cg-year" class="label">Year published</label><input id="cg-year" class="input" inputmode="numeric" placeholder="e.g. 2024" /></div>
       <div data-f="web"><label for="cg-date" class="label">Full publish date (optional)</label><input id="cg-date" type="date" class="input" /></div>
       <div data-f="web journal"><label for="cg-url" class="label" data-url-label>URL</label><input id="cg-url" class="input" inputmode="url" placeholder="https://" /></div>

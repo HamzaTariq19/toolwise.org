@@ -1,5 +1,7 @@
 ---
 import CalcLayout from '../components/CalcLayout.astro';
+// Typical result for the defaults (today to three months from today), so the panel has its final height before the script sets the real dates.
+const grid0 = [['Weeks', '13 wk 1 d'], ['Working days (Mon–Fri)', '66'], ['Hours', '2,208'], ['Minutes', '132,480']].map(([k, v]) => `<div class="stat"><dt class="stat-label">${k}</dt><dd class="text-lg font-bold tabular">${v}</dd></div>`).join('');
 ---
 <CalcLayout id="dd2">
   <Fragment slot="inputs">
@@ -19,10 +21,10 @@ import CalcLayout from '../components/CalcLayout.astro';
   </Fragment>
   <Fragment slot="results">
     <div data-ok>
-      <p class="text-sm font-medium text-muted" data-r="head"></p>
-      <p class="mt-1 text-4xl font-extrabold tracking-tight tabular" data-r="main"></p>
-      <p class="mt-1 text-[0.9375rem] text-muted" data-r="sub"></p>
-      <dl class="mt-5 grid grid-cols-2 gap-3" data-r="grid"></dl>
+      <p class="text-sm font-medium text-muted" data-r="head">Time between the dates</p>
+      <p class="mt-1 text-4xl font-extrabold tracking-tight tabular" data-r="main">92 days</p>
+      <p class="mt-1 text-[0.9375rem] text-muted" data-r="sub">3 months</p>
+      <dl class="mt-5 grid grid-cols-2 gap-3" data-r="grid" set:html={grid0}></dl>
     </div>
     <div data-empty class="py-8 text-center text-muted" hidden>Choose the dates.</div>
     <p class="alert alert-error" data-msg hidden role="alert"></p>

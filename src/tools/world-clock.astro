@@ -1,19 +1,20 @@
 ---
 import Icon from '../components/Icon.astro';
 import LocalNote from '../components/LocalNote.astro';
+import { placeholderCards } from '../lib/world-clock';
 ---
 <div id="wc" class="space-y-4">
   <section class="card p-5 text-center sm:p-6">
     <p class="text-sm font-semibold uppercase tracking-wide text-subtle">Your time</p>
     <p class="mt-1 text-[clamp(2.75rem,13vw,4.75rem)] font-bold leading-none tracking-tight tabular" data-local>--:--</p>
-    <p class="mt-2 text-muted" data-localinfo></p>
+    <p class="mt-2 text-muted" data-localinfo>&nbsp;</p>
   </section>
   <div class="flex flex-wrap items-center justify-between gap-3">
     <div class="segmented" role="radiogroup" aria-label="Clock format"><label><input type="radio" name="wc-h" value="12" /><span>12-hour</span></label><label><input type="radio" name="wc-h" value="24" /><span>24-hour</span></label></div>
     <div class="flex items-center gap-2"><label for="wc-at" class="text-sm text-muted">Compare at</label><input id="wc-at" type="time" class="input !min-h-10 w-auto py-1.5" /><button type="button" class="btn btn-ghost btn-sm" data-nowbtn hidden>Back to now</button></div>
   </div>
   <p class="text-sm font-medium text-[var(--cat)]" data-atnote hidden></p>
-  <ul class="grid gap-3 sm:grid-cols-2" data-list aria-live="off"></ul>
+  <ul class="grid gap-3 sm:grid-cols-2" data-list aria-live="off" set:html={placeholderCards()}></ul>
   <form class="card flex flex-col gap-3 p-4 sm:flex-row sm:items-end" novalidate data-add>
     <div class="flex-1"><label for="wc-city" class="label">Add a city or time zone</label><input id="wc-city" class="input" list="wc-opts" placeholder="e.g. Tokyo, Lagos, Chicago" autocomplete="off" spellcheck="false" /></div>
     <button type="submit" class="btn btn-primary"><Icon name="Plus" size={18} />Add city</button>
@@ -25,6 +26,7 @@ import LocalNote from '../components/LocalNote.astro';
 <script>
   import { CITIES } from '../lib/cities';
   import { store, esc } from '../lib/ui';
+  import { cardHtml, DEFAULT_CITIES } from '../lib/world-clock';
   type C = { name: string; tz: string };
   const root = document.getElementById('wc')!, q = <T extends HTMLElement = HTMLElement>(s: string) => root.querySelector(s) as T;
   const KEY = 'tw-worldclock', localTz = Intl.DateTimeFormat().resolvedOptions().timeZone || 'UTC';
@@ -32,7 +34,7 @@ import LocalNote from '../components/LocalNote.astro';
   const valid = (tz: string): string | null => { try { new Intl.DateTimeFormat('en', { timeZone: tz }); return tz; } catch { return ALIAS[tz] && valid(ALIAS[tz]) ? ALIAS[tz] : null; } };
   const zones: string[] = (Intl as any).supportedValuesOf ? (Intl as any).supportedValuesOf('timeZone') : [];
   q('#wc-opts').innerHTML = CITIES.map(([c, n]) => `<option value="${esc(c)}">${esc(n)}</option>`).join('') + zones.map((z) => `<option value="${esc(z)}"></option>`).join('');
-  const def: C[] = [['London', 'Europe/London'], ['New York', 'America/New_York'], ['Dubai', 'Asia/Dubai'], ['Tokyo', 'Asia/Tokyo']].map(([name, tz]) => ({ name, tz }));
+  const def: C[] = DEFAULT_CITIES.map(([name, tz]) => ({ name, tz }));
   const saved = store.get<{ list: C[]; h: string }>(KEY, { list: def, h: '' });
   let list = (Array.isArray(saved.list) ? saved.list : def).filter((c) => valid(c.tz)).map((c) => ({ ...c, tz: valid(c.tz)! }));
   const h12default = new Intl.DateTimeFormat([], { hour: 'numeric' }).resolvedOptions().hourCycle?.startsWith('h1') ?? false;
@@ -58,11 +60,7 @@ import LocalNote from '../components/LocalNote.astro';
     q('[data-list]').innerHTML = list.map((c, i) => {
       const o = offset(c.tz, d), hr = +new Intl.DateTimeFormat('en-US', { timeZone: c.tz, hour: 'numeric', hourCycle: 'h23' }).format(d), k = dayKey(c.tz, d);
       const rel = k === today ? 'Today' : k > today ? 'Tomorrow' : 'Yesterday', night = hr < 6 || hr >= 20, work = hr >= 9 && hr < 17;
-      return `<li class="card flex items-center gap-3 p-4">
-        <span class="flex h-10 w-10 flex-none items-center justify-center rounded-full text-lg ${night ? 'bg-[#1e293b] text-[#fde68a]' : 'bg-[#fef3c7] text-[#b45309]'}" aria-hidden="true">${night ? '☾' : '☀'}</span>
-        <div class="min-w-0 flex-1"><p class="truncate font-semibold">${esc(c.name)}</p><p class="text-sm text-subtle">${rel} · ${offTxt(o)}<br class="sm:hidden" /><span class="hidden sm:inline"> · </span>${diffTxt(o - lo)}</p>${work ? '<p class="text-xs font-medium text-success">Working hours</p>' : ''}</div>
-        <p class="text-2xl font-bold tabular">${d.toLocaleTimeString([], { ...opt, timeZone: c.tz })}</p>
-        <button type="button" class="btn btn-ghost btn-sm !px-2 text-subtle" data-rm="${i}" aria-label="Remove ${esc(c.name)}">✕</button></li>`;
+      return cardHtml({ name: c.name, i, night, work, sub: `${rel} · ${offTxt(o)}`, diff: diffTxt(o - lo), time: d.toLocaleTimeString([], { ...opt, timeZone: c.tz }) });
     }).join('') || '<li class="card px-5 py-6 text-center text-muted sm:col-span-2">Add a city below to see its time.</li>';
   }
   q('[data-add]').addEventListener('submit', (e) => {

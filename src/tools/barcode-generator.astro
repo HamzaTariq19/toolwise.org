@@ -5,7 +5,7 @@ const formats = [['CODE128', 'Code 128 (letters and numbers)', 'TOOLWISE-2026'],
 <div id="bc" class="grid gap-5 md:grid-cols-[1fr_340px] md:items-start">
   <form class="card space-y-5 p-5 sm:p-6" novalidate onsubmit="return false" data-formats={JSON.stringify(formats)}>
     <div><label for="bc-fmt" class="label">Barcode type</label><select id="bc-fmt" class="select">{formats.map(([v, l]) => <option value={v}>{l}</option>)}</select></div>
-    <div><label for="bc-val" class="label">Content</label><input id="bc-val" class="input mono text-lg" value="TOOLWISE-2026" autocomplete="off" spellcheck="false" /><p class="hint" data-hint></p></div>
+    <div><label for="bc-val" class="label">Content</label><input id="bc-val" class="input mono text-lg" value="TOOLWISE-2026" autocomplete="off" spellcheck="false" /><p class="hint" data-hint>Any letters, numbers and symbols on a standard keyboard.</p></div>
     <div class="grid grid-cols-2 gap-3">
       <div><label for="bc-h" class="label">Height</label><input id="bc-h" type="range" min="40" max="200" value="100" class="h-11 w-full accent-[var(--brand)]" /></div>
       <div><label for="bc-w" class="label">Bar width</label><input id="bc-w" type="range" min="1" max="4" value="2" class="h-11 w-full accent-[var(--brand)]" /></div>
@@ -13,7 +13,7 @@ const formats = [['CODE128', 'Code 128 (letters and numbers)', 'TOOLWISE-2026'],
     <label class="flex min-h-11 items-center gap-3 text-[0.9375rem]"><input type="checkbox" id="bc-text" class="h-5 w-5 accent-[var(--brand)]" checked />Show the text under the bars</label>
   </form>
   <aside class="card p-5 md:sticky md:top-24">
-    <div class="flex min-h-40 items-center justify-center overflow-x-auto rounded-lg bg-white p-3"><svg data-svg role="img" aria-label="Barcode preview"></svg></div>
+    <div class="flex min-h-40 items-center justify-center overflow-x-auto rounded-lg bg-white p-3"><svg data-svg role="img" aria-label="Barcode preview" width="358" height="144"></svg></div>
     <p class="alert alert-error mt-3" data-err hidden role="alert"></p>
     <button type="button" class="btn btn-primary btn-lg mt-4 w-full" data-png><Icon name="Download" size={18} />Download PNG</button>
     <button type="button" class="btn btn-secondary mt-2 w-full" data-svgdl>Download SVG</button>

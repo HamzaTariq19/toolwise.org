@@ -208,3 +208,7 @@ export function solve(input: string): Solution {
 const cap = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
 const evalP = (p: Poly, x: F) => p.reduceRight((acc, c) => acc.mul(x).add(c), F.of(0));
 const pretty = (s: string) => s.trim().replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/\*/g, ' × ').replace(/\//g, ' ÷ ').replace(/\^(\d+)/g, '<sup>$1</sup>').replace(/-/g, '−').replace(/\s+/g, ' ');
+
+/** Step list markup, shared by the build-time default and the browser. */
+export const stepsHtml = (steps: Step[]) => steps.map((s, i) => `<li class="flex gap-3"><span class="flex h-7 w-7 flex-none items-center justify-center rounded-full bg-[var(--cat-soft)] text-sm font-bold text-[var(--cat)]">${i + 1}</span><div class="min-w-0 pt-0.5"><p class="font-semibold">${s.title}</p>${s.math ? `<p class="mono mt-1 rounded-lg bg-surface-2 px-3 py-2">${s.math}</p>` : ''}${s.note ? `<p class="mt-1 text-sm text-muted">${s.note}</p>` : ''}</div></li>`).join('');
+export const answerHtml = (a: string) => a.replace(/&(?!nbsp;)/g, '&amp;');

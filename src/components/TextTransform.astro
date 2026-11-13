@@ -1,8 +1,8 @@
 ---
 // Shared layout for text tools: your text in, result out (side by side on desktop), live as you type.
 import Icon from './Icon.astro';
-interface Props { id: string; placeholder?: string; outLabel?: string; sample?: string; copyLabel?: string; downloadLabel?: string; mono?: boolean }
-const { id, placeholder = 'Type or paste your text here…', outLabel = 'Result', sample, copyLabel = 'Copy result', downloadLabel = 'Download .txt', mono = false } = Astro.props;
+interface Props { id: string; placeholder?: string; outLabel?: string; sample?: string; copyLabel?: string; downloadLabel?: string; mono?: boolean; outHidden?: boolean }
+const { id, placeholder = 'Type or paste your text here…', outLabel = 'Result', sample, copyLabel = 'Copy result', downloadLabel = 'Download .txt', mono = false, outHidden = false } = Astro.props;
 ---
 <div id={id} class="space-y-4">
   <div class="card space-y-4 p-4 sm:p-5" data-options><slot /></div>
@@ -20,7 +20,7 @@ const { id, placeholder = 'Type or paste your text here…', outLabel = 'Result'
     </div>
     <div>
       <div class="mb-1.5 flex items-center justify-between gap-2"><label for={`${id}-out`} class="label !mb-0">{outLabel}</label><span class="text-sm text-subtle tabular" data-out-stats></span></div>
-      <textarea id={`${id}-out`} class:list={["textarea !min-h-[260px] bg-surface-2", mono && "mono text-sm"]} readonly spellcheck="false" data-out></textarea>
+      <textarea id={`${id}-out`} class:list={["textarea !min-h-[260px] bg-surface-2", mono && "mono text-sm"]} readonly spellcheck="false" data-out hidden={outHidden}></textarea>
       <slot name="after-output" />
     </div>
   </div>

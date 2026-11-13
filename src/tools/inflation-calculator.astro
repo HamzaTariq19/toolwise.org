@@ -5,6 +5,10 @@ import Field from '../components/Field.astro';
 import ResultPanel from '../components/ResultPanel.astro';
 import cpi from '../data/cpi-us.json';
 const years = Object.keys(cpi.values).map(Number).sort((a, b) => b - a);
+import { money, fmt } from '../lib/ui';
+// Build-time result for the default (100 dollars, 2000 to the latest year) so the panel has its final height before the script runs.
+const V0 = cpi.values as Record<string, number>, ra = V0['2000'], L = cpi.lastYear, rb = V0[String(L)], res0 = 100 * (rb / ra);
+const d0 = { main: money(res0, '$'), sub: `${money(100, '$')} in 2000 has the same buying power as ${money(res0, '$')} in ${L}.`, chg: `+${fmt((rb / ra - 1) * 100, 1)}%`, avg: `${fmt((Math.pow(rb / ra, 1 / (L - 2000)) - 1) * 100, 2)}%`, pplabel: `What ${money(100, '$', 0)} in ${L} would have cost in 2000`, pp: money(100 * (ra / rb), '$') };
 ---
 <CalcLayout id="if">
   <Fragment slot="inputs">
@@ -25,14 +29,14 @@ const years = Object.keys(cpi.values).map(Number).sort((a, b) => b - a);
     </div>
   </Fragment>
   <Fragment slot="results">
-    <ResultPanel label="Equivalent value">
+    <ResultPanel label="Equivalent value" main={d0.main} sub={d0.sub}>
       <dl class="mt-5 grid grid-cols-2 gap-3">
-        <div class="stat"><dt class="stat-label">Total price change</dt><dd class="text-lg font-bold tabular" data-r="chg"></dd></div>
-        <div class="stat"><dt class="stat-label">Average per year</dt><dd class="text-lg font-bold tabular" data-r="avg"></dd></div>
-        <div class="stat col-span-2"><dt class="stat-label" data-r="pplabel">Buying power</dt><dd class="text-lg font-bold tabular" data-r="pp"></dd></div>
+        <div class="stat"><dt class="stat-label">Total price change</dt><dd class="text-lg font-bold tabular" data-r="chg">{d0.chg}</dd></div>
+        <div class="stat"><dt class="stat-label">Average per year</dt><dd class="text-lg font-bold tabular" data-r="avg">{d0.avg}</dd></div>
+        <div class="stat col-span-2"><dt class="stat-label" data-r="pplabel">{d0.pplabel}</dt><dd class="text-lg font-bold tabular" data-r="pp">{d0.pp}</dd></div>
       </dl>
     </ResultPanel>
-    <p class="mt-4 text-xs text-subtle" data-src>Data: {cpi.source}. Annual averages up to {cpi.lastYear}, last updated {cpi.updated}. Source: <a href={cpi.sourceUrl} rel="noopener">bls.gov/cpi</a>.</p>
+    <p class="mt-4 text-xs text-subtle" data-src>Data: {cpi.source}. Annual averages up to {cpi.lastYear}, last updated {cpi.updated}. Source: <a href={cpi.sourceUrl} rel="noopener" class="underline">bls.gov/cpi</a>.</p>
   </Fragment>
 </CalcLayout>
 <script>

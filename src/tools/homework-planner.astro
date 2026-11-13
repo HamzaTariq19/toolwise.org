@@ -20,7 +20,7 @@ import LocalNote from '../components/LocalNote.astro';
       <button type="button" class="btn btn-secondary btn-sm" data-print><Icon name="Printer" size={16} />Print</button>
     </div>
   </div>
-  <div class="space-y-5" data-list data-printable></div>
+  <div class="space-y-5" data-list data-printable><div class="card px-5 py-10 text-center"><p class="font-semibold">No assignments yet</p><p class="mt-1 text-sm text-muted">Add your first one above. It will be sorted by due date automatically.</p></div></div>
 
   <details class="card p-4" data-backup>
     <summary class="flex min-h-11 cursor-pointer items-center gap-2 font-semibold"><Icon name="DatabaseBackup" size={18} />Back up or move your planner</summary>

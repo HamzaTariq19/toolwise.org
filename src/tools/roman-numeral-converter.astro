@@ -5,12 +5,12 @@ import Icon from '../components/Icon.astro';
   <div class="card grid items-end gap-4 p-5 sm:grid-cols-[1fr_auto_1fr] sm:p-6">
     <div><label for="rm-n" class="label">Number</label><input id="rm-n" class="input text-lg tabular" inputmode="numeric" value="2026" autocomplete="off" /></div>
     <Icon name="ArrowLeftRight" size={20} class="mx-auto mb-3 text-subtle" />
-    <div><label for="rm-r" class="label">Roman numeral</label><input id="rm-r" class="input mono text-lg uppercase" autocomplete="off" spellcheck="false" /></div>
+    <div><label for="rm-r" class="label">Roman numeral</label><input id="rm-r" class="input mono text-lg uppercase" autocomplete="off" spellcheck="false" value="MMXXVI" /></div>
   </div>
   <p class="alert alert-error" data-err hidden role="alert"></p>
   <section class="card p-5" aria-live="polite">
     <p class="text-sm font-medium text-muted">How it's built</p>
-    <p class="mono mt-2 text-lg" data-steps></p>
+    <p class="mono mt-2 text-lg" data-steps>M (1000) + M (1000) + X (10) + X (10) + V (5) + I (1)</p>
     <button type="button" class="btn btn-primary mt-4" data-copy><Icon name="Copy" size={18} /><span data-label>Copy Roman numeral</span></button>
   </section>
   <section class="card overflow-hidden"><h2 class="border-b border-line px-5 py-3 text-base font-semibold">Roman numeral symbols</h2>
