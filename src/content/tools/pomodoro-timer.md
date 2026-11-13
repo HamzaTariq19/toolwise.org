@@ -2,50 +2,52 @@
 seoTitle: "Pomodoro Timer: Free Online Study Timer with Breaks | toolwise"
 metaDescription: "Focus in 25-minute sessions with 5-minute breaks and a longer break every four rounds. Custom lengths, sound alert and a daily count. Free."
 faqs:
-  - q: What is the Pomodoro Technique?
-    a: A time-management method created by Francesco Cirillo in the late 1980s. You work in focused blocks, traditionally 25 minutes, separated by short breaks, with a longer break after four blocks.
-  - q: Does the timer keep running if I switch tabs?
-    a: Yes. It is based on the clock time when the session ends, so it stays accurate even if your browser slows down background tabs. The tab title also shows the time left.
-  - q: Can I change the session lengths?
-    a: Yes. Open Timer settings to set focus, short break and long break lengths, and how many focus sessions come before a long break. Your choices are remembered on this device.
-  - q: Why didn't I hear the sound?
-    a: Check that your device isn't muted and "Play a sound when time is up" is ticked. Some phones pause web pages when the screen is off; keep the page open for reliable alerts.
+  - q: "What is the Pomodoro Technique?"
+    a: "A way of working in short, focused sessions with regular breaks. The classic pattern is 25 minutes of focus, a 5-minute break, and a longer 15 to 30 minute break after every four sessions. It was named after a tomato-shaped kitchen timer."
+  - q: "Can I change the session lengths?"
+    a: "Yes. Open Timer settings to change the focus, short break and long break minutes, and how often the long break comes. Many people find 50 minutes of focus and 10 minutes of rest works better for deep work."
+  - q: "What happens at the end of a session?"
+    a: "A sound plays if Play a sound when time is up is on, and the timer moves to the next session. If Start the next session automatically is ticked, it starts straight away. Otherwise press Start when you are ready."
+  - q: "How do desktop notifications help?"
+    a: "If you turn them on and allow them in your browser, a notification appears when a session ends, even if this tab is hidden behind other windows."
+  - q: "Is my session count saved?"
+    a: "Today's count of focus sessions and minutes, and your settings, are saved in this browser on this device. The count resets each day."
 ---
 
-## What this tool does
+## When to use it
 
-The Pomodoro timer helps you study or work in focused bursts. Start a 25-minute focus session, take a 5-minute break when the chime plays, and after four sessions enjoy a longer 15-minute break. The ring shows how much time is left, the tab title counts down so you can see it from other tabs, and the page keeps a tally of your focus sessions today.
+Use this Pomodoro timer to work in focused blocks with planned breaks. It suits studying, writing, coding, cleaning, or any task you tend to put off. Short sessions make it easier to start, and regular breaks help you keep going without burning out.
 
 ## How to use it
 
-1. Optionally type **what you're working on** to keep your goal in mind.
-2. Press **Start** and work on that one task until the chime.
-3. When the break starts, step away: stretch, drink water or look out of a window.
-4. Press **Start** again for the next round, or tick **Start the next session automatically**.
-5. Use **Reset** to restart the current session, or **Skip** to move on.
+1. Check the mode at the top: **Focus**, **Break** or **Long break**. It starts on Focus at 25:00.
+2. Optionally, type what you are working on in **What are you working on?**.
+3. Press **Start** and work until the timer ends.
+4. Take the break the timer gives you, then start the next focus session.
+5. Below the timer, see how many sessions and minutes you have done today.
+6. Open **Timer settings** to change the **Focus (min)**, **Short break**, **Long break** and **Long break every**, and to turn on **Start the next session automatically**, **Play a sound when time is up** and **Turn on desktop notifications**.
 
-## Choosing your times
+## Worked example
 
-The classic setting is 25 minutes of focus and 5 minutes of rest. Some people prefer longer blocks:
+You need to revise for an exam. Type "Biology chapter 3", press **Start**, and focus for 25 minutes. The label shows "Time to focus · 1 of 4". When the sound plays, take a 5-minute break: stand up, drink water, look away from the screen.
 
-- **Short tasks or getting started:** 15 minutes focus, 3 minutes break.
-- **Classic:** 25 / 5 with a 15-minute break every 4 sessions.
-- **Deep work:** 50 minutes focus with a 10-minute break.
+After four focus sessions, the timer gives you a 15-minute long break. By then the counter shows 4 focus sessions and 100 minutes, a solid morning of revision.
 
-Try a few and stick with what keeps you fresh.
+## Why it works
 
-## Getting the most from each session
+A fixed end time makes a task feel smaller, so it is easier to begin. Breaks give your eyes and mind a rest before tiredness sets in. Counting sessions also shows real progress, which is motivating on long projects like a thesis or exam revision.
 
-- **Pick one task** before you start, and write it down.
-- **Silence notifications** on your phone and close unrelated tabs.
-- **If a thought pops up,** jot it on paper and return to your task.
-- **Really rest during breaks.** Scrolling social media rarely refreshes your brain as well as moving around.
-- **Review at the end of the day.** The daily count shows how much focused time you actually put in.
+## Making it work
 
-## Notifications
+- **Pick one task per session.** Write it in the box so you remember what you are doing.
+- **Keep a note for distractions.** If you remember something else, jot it down and come back to it in the break.
+- **Really take the breaks.** Moving away from the screen helps you focus in the next session.
+- **Adjust the lengths.** If 25 minutes feels too short for your work, try 45 or 50.
 
-On a computer, press **Turn on desktop notifications** in the settings to get an alert when a session ends while you're in another window. Your browser will ask for permission first.
+## Common mistakes
 
-## Related tools
+- **Skipping breaks when busy.** Tiredness builds up and focus drops later.
+- **Checking messages during focus.** Put your phone away or on silent.
+- **Starting without a clear goal.** A vague task makes sessions drift.
 
-Use the [Flashcard Maker](/flashcard-maker) during focus sessions, plan your week with the [Homework Planner](/homework-planner), or time other activities with the [Countdown Timer](/countdown-timer).
+Keep this tab open while you work. The tab title shows the time left so you can check it at a glance.

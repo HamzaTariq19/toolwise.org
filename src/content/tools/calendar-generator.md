@@ -2,51 +2,62 @@
 seoTitle: "Printable Calendar Generator: Monthly and Yearly | toolwise"
 metaDescription: "Make a printable monthly or yearly calendar for any year. Choose the week start, language, paper size and color, add your own events. Free."
 faqs:
-  - q: How do I save the calendar as a PDF?
-    a: Press Print or save as PDF, then in the print window choose "Save as PDF" (or "Microsoft Print to PDF" on Windows) as the printer.
-  - q: Does it include public holidays?
-    a: Holidays differ by country and region, so toolwise doesn't add them automatically. Type the ones you need in the events box, such as "12-25 Christmas Day", and they appear every year.
-  - q: Which week numbers are used?
-    a: ISO 8601 week numbers, where weeks start on Monday and week 1 contains the year's first Thursday. This is the standard used in most of Europe and in business.
-  - q: Can I print all 12 months?
-    a: Yes. In Monthly mode, tick "All 12 months" to print a full year with one month on each page, ready to bind or pin up.
+  - q: "How do I save the calendar as a PDF?"
+    a: "Click Print or save as PDF, then in the print window choose Save as PDF as the printer. This works in Chrome, Edge, Firefox and Safari."
+  - q: "Can I add holidays and birthdays?"
+    a: "Yes. Under Add birthdays, holidays or events, type one per line. Use YYYY-MM-DD for a single date, like 2027-03-14 Dentist, or MM-DD for every year, like 07-21 Mum's birthday."
+  - q: "What are week numbers?"
+    a: "Week numbers count the weeks of the year and are common in Europe for planning at work and school. The tool uses ISO week numbers, where week 1 is the week containing the first Thursday of January."
+  - q: "Why does the week start on Monday?"
+    a: "Monday is the standard in most countries. Choose Sunday for the US, Canada and some other countries, or Saturday for parts of the Middle East."
+  - q: "Can I print a whole year?"
+    a: "Yes. Choose Yearly for all twelve months on one page, or tick All 12 months (one per page) in Monthly mode for a large calendar per month."
 ---
 
-## What this tool does
+## When to use it
 
-The calendar generator creates clean, printable calendars for any month or year. Choose a **monthly** calendar with big boxes to write in, or a **yearly** calendar with all 12 months on one page. You can start weeks on Monday, Sunday or Saturday, show week numbers, shade weekends, pick a language and accent color, and add birthdays, holidays or events that appear on the right dates.
+Use this tool to make a printable calendar for any month or year. It is handy for a wall planner, a school or work schedule, a family calendar with birthdays, a habit tracker, or a quick printout for planning a project. You can change the language, paper size, colors and first day of the week.
 
-## How to make a calendar
+## How to use it
 
 1. Choose **Monthly** or **Yearly**.
-2. Pick the **year**, and the **month** for a monthly calendar.
-3. Set the **week start**, **language**, **paper size** and **orientation**.
-4. Add events under **Add birthdays, holidays or events** if you like.
-5. Check the preview, then press **Print or save as PDF**.
+2. Pick the **Year** and, for a monthly calendar, the **Month**.
+3. Set **Week starts** to **Monday**, **Sunday** or **Saturday**.
+4. Choose the **Language**, **Paper** (**A4** or **US Letter**) and **Orientation** (**Landscape** or **Portrait**).
+5. Pick an **Accent color**, and tick **Week numbers** or **Shade weekends** if you like.
+6. In Monthly mode, tick **All 12 months (one per page)** for a full set.
+7. Add events under **Add birthdays, holidays or events**.
+8. Click **Print or save as PDF**.
 
-## Adding events
+## Worked example
 
-Write one event per line:
+A family wants a 2027 wall calendar. They choose **Monthly**, 2027, **All 12 months (one per page)**, **A4** and **Landscape**, with weekends shaded. Under events they type:
 
-- `12-25 Christmas Day` repeats every year.
-- `2026-07-14 Sam's party` appears on that date only.
+```
+01-01 New Year's Day
+07-21 Mum's birthday
+2027-08-02 Summer holiday starts
+```
 
-Events show inside the day boxes on monthly calendars, and as underlined days with a list underneath on yearly calendars.
+The birthday appears every year on 21 July, while the holiday appears only on 2 August 2027. They click **Print or save as PDF**, save the file, and print it at a local shop.
 
-## Printing tips
+## Ideas for printable calendars
 
-- **Landscape** suits monthly calendars; the boxes are wider for writing.
-- **Portrait** suits yearly calendars on a wall or in a binder.
-- Turn on **background graphics** in the print settings if the weekend shading doesn't appear.
-- Set margins to **Default** for the best fit.
+- **Habit tracker:** print one month and tick off each day you exercise, read or practise.
+- **School term planner:** add test dates and holidays as single-date events.
+- **Shared family calendar:** add every birthday once with MM-DD and reprint each year.
 
-## Ideas
+## Tips
 
-- A family wall calendar with everyone's birthdays.
-- A **year planner** for school terms, projects or holidays.
-- Monthly sheets for habit tracking, meal planning or work rotas.
-- Calendars in another language for language learners or relatives abroad.
+- **Use landscape for monthly calendars.** The boxes are wider and easier to write in.
+- **Use portrait for a yearly overview.** All twelve months fit neatly on one page.
+- **Check the preview before printing.** Make sure events fit in their boxes.
+- **Pick a light accent color for ink-saving prints.**
 
-## Related tools
+## Common mistakes
 
-Count days between dates with the [Date Difference Calculator](/date-difference-calculator), track assignments with the [Homework Planner](/homework-planner), or see what time it is around the world with the [World Clock](/world-clock).
+- **Typing dates in the wrong order.** Events must start with the date as MM-DD or YYYY-MM-DD, such as 12-25, not 25/12.
+- **Leaving browser headers on.** Turn off headers and footers in the print settings for a clean page.
+- **Choosing the wrong paper size.** Use US Letter in the US and Canada, and A4 almost everywhere else.
+
+The calendar is made in your browser, so your events are not uploaded anywhere.

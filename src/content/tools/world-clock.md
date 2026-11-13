@@ -2,39 +2,48 @@
 seoTitle: "World Clock: Current Time in Cities Around the World | toolwise"
 metaDescription: "See the current time in cities worldwide with time differences, UTC offsets, day or night and working hours. Compare any time across all your cities."
 faqs:
-  - q: Does the world clock handle daylight saving time?
-    a: Yes. It uses your browser's built-in time zone database, which includes daylight saving rules for every region, so offsets change automatically on the right dates.
-  - q: How do I find a good meeting time?
-    a: Enter a time in "Compare at" to see what time it will be in every city on your list. Cities shown as "Working hours" are between 9:00 and 17:00 at that moment.
-  - q: My city isn't in the suggestions. What can I do?
-    a: Add the nearest major city in the same time zone, or type an official time zone name such as Europe/Paris or America/Chicago. Every time zone your browser knows can be added.
-  - q: Is my city list saved?
-    a: Yes, on this device only, so your cities are there next time you visit.
+  - q: "Does the world clock adjust for daylight saving time?"
+    a: "Yes. It uses your browser's time zone data, which includes the daylight saving rules for each place, so times and offsets change automatically on the right dates."
+  - q: "Which cities can I add?"
+    a: "Major cities from around the world, plus any standard time zone name such as Europe/Paris or America/Chicago. If a small town is not listed, add a nearby big city in the same time zone."
+  - q: "What does Compare at do?"
+    a: "It shows every city at a time you choose, instead of now. Enter 15:00 to see what time it will be everywhere when it is 3 PM for you today. Press Back to now to return to the live clock."
+  - q: "Why does a city say Tomorrow or Yesterday?"
+    a: "When a city is far enough ahead or behind you, its date is different from yours. The label makes it clear which day it is there."
+  - q: "Is my city list saved?"
+    a: "Yes, in this browser on this device, along with your choice of 12-hour or 24-hour time."
 ---
 
-## What this tool does
+## When to use it
 
-The world clock shows the current time in cities around the world, updating every second. Each city shows whether it's today, tomorrow or yesterday there, its UTC offset, how many hours it is ahead of or behind you, whether it's day or night, and whether it's within normal working hours. Add the cities you care about, and use **Compare at** to see what time a chosen moment will be everywhere.
+Use this world clock to see the time in several cities at once. It helps when working with remote colleagues, calling family abroad, planning travel, booking international meetings or following events in other countries. Each city shows whether people are likely to be at work or asleep.
 
 ## How to use it
 
-1. Your own time and time zone appear at the top.
-2. Type a city in **Add a city or time zone** and press **Add city**.
-3. Remove a city with ✕.
-4. Choose a **12-hour** or **24-hour** clock.
-5. To plan a call, enter a time in **Compare at**. Press **Back to now** to return to live clocks.
+1. **Your time** at the top shows your local time, date and time zone, updated every second.
+2. The default cities are London, New York, Dubai and Tokyo. Remove any with ✕.
+3. Type a city or time zone in **Add a city or time zone** and add it.
+4. Choose **12-hour** or **24-hour** time.
+5. Use **Compare at** to see every city at a time you choose, then **Back to now**.
 
-## Planning across time zones
+Each card shows the local time, whether it is today, tomorrow or yesterday there, the UTC offset, how far ahead or behind you it is, and whether it is within working hours. A sun or moon shows day or night.
 
-- **Look for overlap:** the best meeting times put everyone inside working hours.
-- **Watch the date line:** Asia and Australia are often already on the next day compared with the Americas.
-- **Check daylight saving:** the gap between two cities can change by an hour in spring and autumn, because countries change their clocks on different dates and some don't change at all.
-- **Use UTC for schedules** that involve many countries; it never changes for daylight saving.
+## Worked example
 
-## Understanding UTC offsets
+You live in London and need a call with colleagues in New York and Tokyo. Add both cities. With **Compare at**, try 13:00. New York shows 8:00 AM, five hours behind, and Tokyo shows 10:00 PM, nine hours ahead in winter, outside working hours. Try 08:00 instead: New York is 3:00 AM, which is worse.
 
-UTC (Coordinated Universal Time) is the world's reference time. A city at UTC+5:30, such as Delhi, is five and a half hours ahead of UTC, while New York at UTC−5 is five hours behind (UTC−4 in summer). Some places use half-hour or 45-minute offsets, like India, Iran and Nepal.
+There is no time that suits everyone, so you choose 13:00 London and agree to rotate the time each month so the late call is shared.
 
-## Related tools
+## Tips
 
-Convert a specific date and time between zones with the [Time Zone Converter](/time-zone-converter), set an alarm with the [Alarm Clock](/alarm-clock), or count down to an event with the [Countdown Timer](/countdown-timer).
+- **Add your colleagues' cities once.** The list is saved, so it is ready every time you open the page.
+- **Watch the working hours line.** It shows at a glance who is likely to be available.
+- **Check around daylight saving changes.** Countries switch on different dates, so the gap between cities can change by an hour for a few weeks in spring and autumn.
+- **Use 24-hour time for planning.** It avoids AM and PM mix-ups across time zones.
+- **Keep the page open during a busy day.** The clocks update every second.
+
+## Common mistakes
+
+- **Forgetting the date change.** A 9 AM meeting in Sydney may be the previous evening for you.
+- **Assuming offsets stay the same all year.** Daylight saving changes them.
+- **Using country names for large countries.** The US, Canada, Australia and Russia have several time zones, so add a city instead.

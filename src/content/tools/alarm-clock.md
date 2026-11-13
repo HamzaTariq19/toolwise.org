@@ -2,44 +2,52 @@
 seoTitle: "Online Alarm Clock: Set an Alarm in Your Browser Free | toolwise"
 metaDescription: "Set one or more alarms that ring in your browser, with a label, a choice of sounds and 5-minute snooze. Alarms are saved on your device."
 faqs:
-  - q: Will the alarm ring if I close the page?
-    a: No. A web page can only play sound while it's open. Keep this tab open, your device awake and the volume up. For waking up in the morning, your phone's built-in clock app is more reliable.
-  - q: Does the alarm repeat every day?
-    a: Yes. An alarm that is switched on rings at that time every day the page is open. Switch it off with the toggle, or delete it.
-  - q: Can I set more than one alarm?
-    a: Yes, up to 30. They're listed in time order, each with its own label and sound.
-  - q: What does snooze do?
-    a: It silences the alarm and rings it again in 5 minutes.
+  - q: "Will the alarm ring if I close the tab?"
+    a: "No. The alarm only rings while this page stays open, your device is awake and the volume is up. For important wake-ups, use your phone's built-in clock app as well."
+  - q: "Why do I need to tap the page first?"
+    a: "Browsers block sound until you have tapped or clicked a page, to stop websites playing noise unexpectedly. Tap the page once, or press Test sound, and the alarm will be able to ring."
+  - q: "What does Keep the screen on do?"
+    a: "It asks your device not to dim or lock the screen while the page is open, so the alarm can ring on time. It is not available in every browser, and it uses more battery."
+  - q: "Can I set more than one alarm?"
+    a: "Yes. Each alarm appears in the list with its time and label, and you can remove any of them. They are saved in this browser on this device."
+  - q: "How does snooze work?"
+    a: "When an alarm rings, Snooze 5 min stops the sound and sets the same alarm again for five minutes later. Stop ends it."
 ---
 
-## What this tool does
+## When to use it
 
-The online alarm clock rings at the time you choose, right in your browser. Set several alarms with labels like "Take a break" or "Call the dentist", pick a sound for each, and switch them on or off with a tap. The page shows the current time and how long until your next alarm. When an alarm goes off, a full-screen message appears with **Stop** and **Snooze 5 min** buttons.
+Use this online alarm clock as a quick reminder while you work, study or cook at your computer: a meeting in 20 minutes, a break every hour, or the end of a study session. It is simple to set, plays a choice of sounds, and needs no app.
 
-## How to set an alarm
+## How to use it
 
-1. Choose the **time**. It starts one hour from now.
-2. Add a **label** if you like.
-3. Pick a **sound** and press **Test sound** to check your volume.
-4. Press **Set alarm**. It appears in the list with the time left until it rings.
-5. Leave this page open. Use the toggle to switch an alarm off without deleting it.
+1. Tap the page once to allow sound. The message **Tap here once to turn on alarm sound** disappears.
+2. Under **Set an alarm**, choose the **Time**.
+3. Add a **Label**, such as "Take a break", if you like.
+4. Choose a **Sound**: **Classic beep**, **Chime**, **Digital** or **Gentle rise**. Press **Test sound** to hear it.
+5. Click **Set alarm**. It appears in your list with the time left until it rings.
+6. Tick **Keep the screen on while this page is open** on laptops and tablets.
+7. When it rings, choose **Stop** or **Snooze 5 min**.
 
-If your browser supports it, tick **Keep the screen on** so your device doesn't go to sleep.
+## Worked example
 
-## Good uses for a browser alarm
+You are writing a report and want to stop for lunch at 12:30. Set the time to 12:30, label it "Lunch", choose **Chime** and click **Set alarm**. The list shows "rings in 1 h 15 min". Keep the tab open in the background while you work. At 12:30 the chime plays and the label appears on screen.
 
-- **Breaks while working:** a reminder to stand up, stretch or drink water.
-- **Meetings and calls:** a gentle nudge a few minutes before they start.
-- **Cooking and laundry:** when you know the finish time rather than the duration.
-- **Medication reminders** while you're at your computer.
-- **Naps:** set a short power nap alarm of 20 minutes.
+If you need ten more minutes, press **Snooze 5 min** twice, once each time it rings.
 
-For a duration instead of a clock time, the [Countdown Timer](/countdown-timer) is simpler.
+## Important limits
 
-## Limitations to know
+Phones and tablets often pause web pages when the screen locks or you switch apps, so an alarm in a browser is not reliable for waking up in the morning. Use this tool for alarms while you are at your device, and your phone's built-in clock for anything you cannot miss.
 
-Web pages can't wake a sleeping device or play sound after they're closed. Phones in particular may pause pages in the background or in low-power mode. That's why the page reminds you to keep it open. If an alarm time passes while the tab was briefly paused, it still rings when the page wakes up, as long as that's within 10 minutes.
+## Tips
 
-## Related tools
+- **Test the sound first.** Make sure the volume is loud enough and the device is not muted.
+- **Plug in a laptop.** Keeping the screen on uses more power.
+- **Use labels.** "Call Sam" is clearer than a time alone when the alarm goes off.
+- **Switch alarms off instead of deleting them.** Each alarm has a toggle, so a daily reminder can be turned on again tomorrow.
+- **Use the countdown timer for short spans.** For "in 15 minutes", a timer is quicker to set.
 
-See other time zones with the [World Clock](/world-clock), or plan your study time with the [Pomodoro Timer](/pomodoro-timer).
+## Common mistakes
+
+- **Closing the tab.** The alarm will not ring.
+- **Muting the computer.** Check the volume and any "do not disturb" settings.
+- **Mixing up AM and PM.** Check the time in the list after setting it.

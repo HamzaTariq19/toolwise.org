@@ -2,41 +2,52 @@
 seoTitle: "Countdown Timer: Free Online Timer with Alarm Sound | toolwise"
 metaDescription: "Set a countdown timer in hours, minutes and seconds with one-tap presets, an alarm sound, full-screen mode and +1 minute. Works on any device."
 faqs:
-  - q: Will the timer keep running in another tab?
-    a: Yes. It counts down to a fixed end time, so it stays accurate even when your browser slows down background tabs. The tab title shows the time left so you can check at a glance.
-  - q: Why didn't I hear the alarm?
-    a: Check that your device isn't muted and the volume is up. Press Test next to the sound menu to check. Phones may pause web pages when the screen locks, so keep the page open and the screen on for important timers.
-  - q: Can I add time while it's running?
-    a: Yes. Press +1 min as many times as you like. The end time updates straight away.
-  - q: How long can the timer run?
-    a: Up to 99 hours, 59 minutes and 59 seconds.
+  - q: "Will the timer keep running in another tab?"
+    a: "Yes. It keeps counting while the page is open, and the browser tab title shows the time left so you can check it from another tab. Phones may pause the page when the screen locks, so keep the screen on for important timers."
+  - q: "Why do I need to press Test or Start first for sound?"
+    a: "Browsers only allow a page to play sound after you have interacted with it. Pressing Start or Test unlocks the sound."
+  - q: "Can I add time while it is running?"
+    a: "Yes. Press +1 min to add a minute without stopping the timer. It is handy when the pasta needs a little longer."
+  - q: "What does Full screen do?"
+    a: "It shows the countdown in very large numbers that fill the screen, ideal for a classroom, a meeting or a workout across the room."
+  - q: "What happens when time is up?"
+    a: "The sound plays, Time's up! appears with your label, and the tab title changes so you notice it. Press Stop to silence it."
 ---
 
-## What this tool does
+## When to use it
 
-This countdown timer counts down from any time you choose and plays an alarm when it reaches zero. Set hours, minutes and seconds, or tap a preset such as 5 minutes or 1 hour to start immediately. While it runs you can pause, add a minute, reset, or switch to full screen so the time is visible from across the room. The alarm keeps ringing until you press **Stop**.
+Use this countdown timer for anything with a fixed length: cooking, exams and quizzes in class, presentations, meetings, workouts, short breaks and focused work sprints. It is quick to set, shows the time in large numbers, and plays a sound when time is up.
 
 ## How to use it
 
-1. Enter the **hours**, **minutes** and **seconds**, or tap a **preset**.
-2. Optionally add a **label**, like "Pasta" or "Presentation", so you remember what the timer is for.
-3. Choose an alarm **sound** and press **Test** to hear it.
-4. Press **Start**. The progress bar and the "Ends at" time show where you are.
-5. When time is up, a full-screen message appears with the alarm. Press **Stop** (or Esc).
+1. Set the **Hours**, **Minutes** and **Seconds**, or tap a preset: **1 min**, **3 min**, **5 min**, **10 min**, **15 min**, **30 min** or **1 hour**.
+2. Add a **Timer label**, such as Pasta, so you know what it is for.
+3. Choose a **Sound**: **Classic beep**, **Chime**, **Digital** or **Gentle rise**. Press **Test** to hear it.
+4. Press **Start**. The same button changes to **Pause**, then **Resume**.
+5. Use **+1 min** to add time, and **Full screen** for a big display.
+6. When **Time's up!** appears, press **Stop**.
 
-## Ideas for using a countdown timer
+## Worked example
 
-- **Cooking:** boiling eggs (7–9 minutes), pasta (8–12 minutes), resting dough.
-- **Studying:** focus for 25 minutes, then rest. The [Pomodoro Timer](/pomodoro-timer) automates this cycle.
-- **Workouts:** planks, stretches and interval rounds.
-- **Meetings and talks:** keep presentations and stand-ups on time in full-screen mode.
-- **Classrooms:** show a big timer for tests, group work and tidy-up time.
-- **Screen time and games:** set clear, fair limits for kids or turns in a board game.
+A teacher gives the class 15 minutes for a quiz. Tap **15 min**, label it "Quiz", and press **Full screen** so the whole room can see the time on the projector. With five minutes left, a student asks for extra time, so the teacher presses **+1 min** twice. When time runs out, the chime plays and Time's up! fills the screen.
 
-## Accurate timing
+At home, the same timer works for 8-minute pasta: type 8 in **Minutes**, label it "Pasta" and start it before you go back to another tab. The tab title shows the time left at a glance.
 
-Many simple web timers lose time because browsers slow down hidden tabs. This one calculates the remaining time from the clock each time it updates, so it stays correct even if you switch tabs or apps for a while. Where your browser supports it, the screen is also kept awake while the timer runs.
+## Timers for focus
 
-## Related tools
+A visible countdown helps you start a task you have been putting off. Set 10 minutes and promise yourself you only have to work until it ends. Often you keep going, and if not, you have still made a start.
 
-Set an alarm for a specific time with the [Alarm Clock](/alarm-clock), see the time around the world with the [World Clock](/world-clock), or work in focused sessions with the [Pomodoro Timer](/pomodoro-timer).
+## Tips
+
+- **Test the sound before you rely on it.** Check the volume and that your device is not muted.
+- **Keep the page open.** Closing the tab stops the timer.
+- **Use labels for several timers.** Open the page in two tabs for two dishes, and give each a label.
+- **Plug in for long timers.** Full screen and an always-on display use battery.
+
+## Common mistakes
+
+- **Leaving the device muted.** The timer will finish silently.
+- **Letting a phone lock.** Some phones pause web pages in the background.
+- **Typing 90 seconds as 1:30 in the wrong box.** Put 1 in minutes and 30 in seconds.
+
+For repeated work and break cycles, the [Pomodoro Timer](/pomodoro-timer) does the switching for you.
