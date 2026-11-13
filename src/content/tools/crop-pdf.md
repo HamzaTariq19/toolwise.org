@@ -2,47 +2,58 @@
 seoTitle: "Crop PDF Online: Trim Margins and White Space Free | toolwise"
 metaDescription: "Trim the margins of PDF pages by dragging a crop box or typing measurements in millimeters. Crop all pages or just one. Free and private."
 faqs:
-  - q: Does cropping delete the content outside the box?
-    a: No. Cropping sets the visible area of each page, which is how PDF readers and printers decide what to show. The hidden content is still in the file and could be revealed by someone with editing software, so do not use cropping to hide confidential information.
-  - q: Can I crop just one page?
-    a: Yes. Use the arrows under the preview to go to the page you want, then choose Only this page. Otherwise the same crop is applied to every page.
-  - q: How are the margins measured?
-    a: In millimeters from each edge of the page as you see it. 10 mm is about the width of a fingernail. The values update as you drag the blue corners, and you can type exact values too.
-  - q: Will cropping make the file smaller?
-    a: Usually not, because the content outside the crop area is kept in the file. To make the PDF smaller, use Compress PDF.
+  - q: "Is the cropped-away content deleted from the file?"
+    a: "No. Cropping hides the area outside the new page edges, as PDF readers and printers do, but the hidden content is still inside the file. Don't use cropping to remove confidential information; to remove it for good, use Flatten PDF with \"Everything\" after cropping."
+  - q: "Can I crop pages differently?"
+    a: "Yes. Choose \"Only this page\" under Apply to, set the crop for that page, then move to another page and set its own crop. \"All pages\" applies the same margins everywhere."
+  - q: "What units are the margins in?"
+    a: "Millimetres, measured from each edge of the page. 10 mm is about 0.4 inches."
+  - q: "Will cropping reduce the file size?"
+    a: "Usually not, because the hidden content stays in the file. To make the file smaller, use Compress PDF."
+  - q: "Why does my cropped page print smaller?"
+    a: "The printer sees a smaller page. Choose \"Fit to page\" or \"Actual size\" in your print settings, depending on whether you want it enlarged."
 ---
 
-## What this tool does
+## When to use it
 
-Crop PDF trims the edges of PDF pages. Remove wide white margins so a document is easier to read on a phone or tablet, cut away scanner borders and black edges, focus on one part of a page such as a chart, or make slides and posters fit a different screen.
+Crop PDF trims the edges of PDF pages. Use it to remove the white borders around scanned documents, cut away a scanner's grey edge or a phone photo's background, focus a slide or e-book page on its content for easier reading on a phone, or trim printer's marks from a design proof. Cropped pages fill more of the screen, which makes small text easier to read.
 
 ## How to crop a PDF
 
-1. Tap **Choose PDF file** and select your document.
-2. A preview of the first page appears with a blue crop box. Drag the **corners** to resize it, or drag the middle to move it.
-3. For precise results, type the **margins to remove** in millimeters.
-4. Choose **All pages** or **Only this page**. Use the arrows to preview other pages.
-5. Press **Crop PDF** and download the result.
+1. Tap **Choose PDF file**, or drag a PDF onto the box.
+2. A preview of **Page 1** appears. **Drag the blue corners** on the preview, or type the **Margins to remove (mm)**: **Top**, **Bottom**, **Left** and **Right**.
+3. Under **Apply to**, choose **All pages** or **Only this page**.
+4. Use **Reset crop** to start again.
+5. Press **Crop PDF**, then **Download**. The file ends in "-cropped.pdf".
 
-## Tips for good results
+## A worked example
 
-- **Check a few pages** with the page arrows before cropping all pages: content sometimes sits in a different place on later pages, especially page numbers and footnotes.
-- **Leave a little space** around text. A margin of 5 to 10 mm looks tidy and avoids cutting off letters.
-- **Scanned books** often have darker edges and an off-center page; crop each odd and even page separately if needed.
-- **Reading on a phone:** trimming large margins makes text noticeably bigger when the page fits the screen width.
+You scanned a 30-page A4 booklet, but the scanner added a wide grey border, and the text looks tiny on your phone. Open the PDF and drag the corners in until they hug the text block, or type 15 mm for top and bottom and 18 mm for left and right. Keep **All pages** selected and press **Crop PDF**. On a phone, the text now appears noticeably larger because the empty margin is gone.
 
-## Cropping and printing
+## Tips
 
-When you print a cropped PDF, most printers scale the visible area to fit the paper, which makes the content larger. If you need the original size, choose "Actual size" in the print settings.
+- **Check several pages** before applying a crop to all pages; scans often shift slightly from page to page.
+- **Leave a small margin** (3 to 5 mm) so text doesn't touch the edge.
+- **Crop single pages differently** when one page has a wider table or image.
+- **Rotate first** if pages are sideways, then crop.
 
-## What cropping does not do
+## Typical margins
 
-Cropping changes what is shown, not what is stored. It is perfect for presentation and reading, but it is not a way to remove sensitive information. If parts of a page must be removed for privacy, delete the whole page with [Delete PDF Pages](/delete-pdf-pages) or use proper redaction software. Pages that are turned the wrong way can be fixed with [Rotate PDF](/rotate-pdf).
+- **Scanned A4 or Letter pages:** 10 to 20 mm on each side removes most scanner borders.
+- **Slides exported to PDF:** often only the top and bottom need trimming.
+- **Design proofs:** trim exactly to the crop marks so the page matches the final printed size.
 
-## Cropping slides and posters
+## Common mistakes
 
-Presentation slides saved as PDF often have a lot of empty space when printed on paper of a different shape. Cropping each slide to its content and then printing several per page saves paper. For posters and diagrams, crop tightly around the area you need, then use PDF to Image if you want to paste it into a document or chat.
+- **Using crop to hide sensitive details.** The hidden area is still in the file and can be revealed. Use a redaction tool or flatten the result.
+- **Cropping too tightly,** cutting off page numbers or footnotes.
+- **Expecting a smaller file.** Cropping changes what's shown, not what's stored.
+- **Cropping a locked PDF.** Unlock it first.
 
-## Private
+## Private by design
 
-Your PDF is cropped inside your browser and never uploaded.
+Your PDF is cropped in your browser and is never uploaded.
+
+## Related tools
+
+Turn pages the right way up with [Rotate PDF](/rotate-pdf), shrink the file with [Compress PDF](/compress-pdf), or make cropping permanent with [Flatten PDF](/flatten-pdf).

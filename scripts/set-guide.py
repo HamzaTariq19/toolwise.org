@@ -8,5 +8,8 @@ keep = [l for l in fm.split('\n') if l.startswith(('seoTitle:', 'metaDescription
 faqs, body = new.split('\n---\n', 1)
 # Quote every FAQ question and answer so colons and quotes inside them are safe in YAML
 import json
-faqs = re.sub(r'^(\s*-?\s*[qa]): (.*)$', lambda m: f'{m.group(1)}: ' + json.dumps(m.group(2).strip(), ensure_ascii=False) if not m.group(2).startswith('"') else m.group(0), faqs, flags=re.M)
+def _is_json_str(v):
+    try: return isinstance(json.loads(v), str)
+    except Exception: return False
+faqs = re.sub(r'^(\s*-?\s*[qa]): (.*)$', lambda m: f'{m.group(1)}: ' + (m.group(2).strip() if _is_json_str(m.group(2).strip()) else json.dumps(m.group(2).strip(), ensure_ascii=False)), faqs, flags=re.M)
 open(path, 'w').write('---\n' + '\n'.join(keep) + '\n' + faqs.strip() + '\n---\n\n' + body.strip() + '\n')

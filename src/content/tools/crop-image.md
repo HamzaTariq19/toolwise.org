@@ -2,48 +2,54 @@
 seoTitle: "Crop Image Online: Crop Photos to 1:1, 4:5, 16:9 Free | toolwise"
 metaDescription: "Crop photos to any size or to common shapes like square, 4:5 and 16:9. Drag the crop box or type exact pixels. Free, private, no upload."
 faqs:
-  - q: How do I crop a photo to a square?
-    a: Choose Square 1:1 in the Shape list. The crop box locks to a square; drag it over the part you want to keep and resize it with the corners, then press Download cropped image.
-  - q: Which shape should I use for Instagram?
-    a: Use Square 1:1 for classic posts, Portrait 4:5 for posts that take up more of the feed, and Story 9:16 for stories and reels covers.
-  - q: Does cropping reduce quality?
-    a: The pixels you keep are not changed or resized. If you save as JPG, the image is re-compressed at high quality, which looks the same to the eye. Choose PNG for a pixel-perfect copy.
-  - q: Can I crop to an exact pixel size?
-    a: Yes. Type the width and height in pixels. With a fixed shape selected, the other value follows automatically. To make the final image a specific size such as 600 × 600, crop to a square first and then use Resize Image.
+  - q: "Which shape should I use for social media?"
+    a: "Square 1:1 or Portrait 4:5 for Instagram feed posts, Story 9:16 for Stories, Reels and TikTok, and 16:9 for YouTube thumbnails and widescreen slides. Free lets you crop any shape."
+  - q: "Does cropping reduce quality?"
+    a: "No. Cropping keeps the original pixels in the area you keep, so sharpness is unchanged. The image simply has fewer pixels because the rest was cut away."
+  - q: "Can I crop to an exact size in pixels?"
+    a: "Yes. Type the Width and Height in pixels. If you need the result at a specific size, such as 1080 × 1080, crop first and then use Resize Image."
+  - q: "Will my iPhone HEIC photo work?"
+    a: "Yes. HEIC photos open automatically. Save the result as JPG, PNG or WebP."
+  - q: "Is my photo uploaded?"
+    a: "No. Cropping happens in your browser."
 ---
 
-## What this tool does
+## When to use it
 
-Crop Image cuts away the parts of a photo you don't want. Remove distracting edges, straighten up your composition, cut a person out of a group photo for a profile picture, or make a picture fit the exact shape a website, social network or printer needs.
+Crop Image cuts away the parts of a photo you don't want and changes its shape. Use it to remove clutter from the edges, focus on a person or product, straighten up a composition, make a square profile picture, or fit a photo to the shape a website, marketplace or social network expects so it isn't cropped automatically in an awkward place.
 
 ## How to crop an image
 
-1. Tap **Choose image** and pick a photo. JPG, PNG, WebP and iPhone HEIC photos all work.
-2. A blue crop box appears over the picture, with the area outside it darkened.
-3. Choose a **Shape** if you need one, such as Square or 16:9, or leave it on Free.
-4. Drag the **corners** to resize the box and drag **inside** it to move it. The grid lines help you place the subject using the rule of thirds.
-5. Check the crop size under the preview, then press **Download cropped image**.
+1. Tap **Choose image**, or drag a JPG, PNG, WebP or HEIC file onto the box.
+2. **Drag the blue corners** to resize the crop, or drag inside it to move it.
+3. Pick a **Shape**: **Free**, **Square 1:1**, **Portrait 4:5**, **3:4**, **4:3**, **16:9**, **Story 9:16** or **Original**.
+4. For exact sizes, type the **Width (px)** and **Height (px)**.
+5. Choose **Save as**: **Same as original**, **JPG**, **PNG** or **WebP**.
+6. Press **Download cropped image**.
 
-## Common shapes and where they are used
+## A worked example
 
-- **1:1 square:** profile pictures, Instagram posts, product photos on marketplaces.
-- **4:5 portrait:** Instagram and Facebook feed posts that fill more of the screen.
-- **3:4 and 4:3:** standard phone and camera photos, prints and tablets.
-- **16:9 widescreen:** YouTube thumbnails, presentation slides, laptop wallpapers.
-- **9:16 vertical:** stories, reels, TikTok and phone wallpapers.
-- **Original:** keeps the photo's own shape while you trim the edges evenly.
+You want a profile photo for a professional networking site from a group photo taken on holiday. Open the photo and choose **Square 1:1**. Drag the box over your face and shoulders, leaving a little space above your head, and keep your eyes about a third of the way down the square. The size boxes show something like 1200 × 1200. Download the result: a clean, centered square that the site won't need to crop.
 
-## Tips for better crops
+## Cropping tips
 
-- **Use the rule of thirds.** Place eyes, horizons or the main subject on one of the grid lines rather than dead center for a more natural look.
-- **Leave breathing room.** Don't crop right at someone's chin or the top of their head; a little space looks more professional.
-- **Avoid cropping too tightly** if you plan to print large, as fewer pixels means less detail.
-- **Check the result size.** For profile pictures and thumbnails, a crop of at least 600 pixels wide stays sharp on most screens.
+- **Use the rule of thirds:** place eyes, horizons or the main subject about a third of the way in from an edge rather than dead center.
+- **Leave breathing room** around faces and products; very tight crops feel cramped.
+- **Don't cut at joints** like wrists, elbows or knees; crop between them.
+- **Crop before resizing,** so you keep as much detail as possible.
+- **Keep horizons level.** If the photo is tilted, straighten it first with Rotate and Flip Image.
 
-## After cropping
+## Common mistakes
 
-Need exact dimensions? Follow up with [Resize Image](/resize-image). Need a smaller file for an upload form? Use [Compress Image to KB](/compress-image-to-kb). Making an ID or passport picture? The [Passport Photo Maker](/passport-photo-maker) crops to official sizes with a face guide.
+- **Cropping too much from a small photo,** leaving too few pixels for a sharp result.
+- **Using Free shape** when the website needs a specific ratio, then finding it cropped again on upload.
+- **Saving photos as PNG,** which makes files much larger than JPG.
+- **Cutting off part of the subject** in a Story crop; check the edges before downloading.
 
-## Private
+## Private by design
 
-Photos are cropped in your browser and never uploaded to a server.
+Your photo is cropped in your browser and never uploaded.
+
+## Related tools
+
+Change the size with [Resize Image](/resize-image), straighten or rotate with [Rotate and Flip Image](/rotate-flip-image), or reduce the file size with [Compress Image](/compress-image).

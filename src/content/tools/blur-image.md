@@ -2,51 +2,63 @@
 seoTitle: "Blur Image Online: Blur Faces, Plates and Private Details | toolwise"
 metaDescription: "Blur or pixelate faces, license plates and private information in photos, or blur the whole image. Black box option for full privacy. Free."
 faqs:
-  - q: How do I blur only part of a photo?
-    a: Keep Selected areas chosen, then drag a rectangle over each face, license plate or detail you want to hide. Each area is blurred instantly. Use Undo to remove the last one.
-  - q: Is blurring safe for hiding passwords, card numbers or addresses?
-    a: For text, use Black box. Light blurring and large pixel blocks can sometimes be partly reversed, especially for short text like numbers. A solid black box removes the information completely.
-  - q: Why would I blur a whole image?
-    a: A blurred photo makes a soft background for text, slides and wallpapers, and it is a gentle way to hide a sensitive picture while still showing its colors.
-  - q: Does this change my original photo?
-    a: No. You download a new copy with the blur applied. Your original file stays as it was.
+  - q: "Is blurring safe for hiding passwords, addresses or ID numbers?"
+    a: "Not always. Blurred or pixelated text can sometimes be partly recovered with special software, especially numbers. For anything truly private, use Black box, which covers the area completely."
+  - q: "Can I blur more than one area?"
+    a: "Yes. Drag over each area in turn. Use Undo to remove the last one and Clear to start again."
+  - q: "What does Strength do?"
+    a: "It controls how strong the blur or how large the pixel blocks are. Higher strength hides more detail. It doesn't affect Black box, which always covers the area fully."
+  - q: "Can I blur the whole background?"
+    a: "\"Whole image\" blurs everything. To blur only the background behind a person, remove the background with the Background Remover instead, or select the background areas by hand."
+  - q: "Is my image uploaded?"
+    a: "No. All editing happens in your browser, which matters when the image contains private details."
 ---
 
-## What this tool does
+## When to use it
 
-Blur Image hides parts of a picture before you share it. Cover faces of people who did not agree to be photographed, license plates, house numbers, name tags, documents on a desk, or private information in a screenshot. You can blur, pixelate or black out selected areas, or soften the entire image.
+Blur Image hides parts of a picture. Use it to cover faces of people who didn't agree to be photographed, hide car number plates, conceal names, addresses or account numbers in a screenshot before sharing it, or blur a whole image for a soft background on a slide or website.
 
 ## How to blur part of an image
 
-1. Tap **Choose image** and select your photo or screenshot.
-2. Keep **Selected areas** chosen.
-3. Pick an **effect**: Blur, Pixelate or Black box.
-4. Drag a rectangle over each thing you want to hide. Adjust **Strength** if needed.
-5. Use **Undo** or **Clear** to fix mistakes, then press **Download image**.
+1. Tap **Choose image**, or drag a JPG, PNG, WebP or HEIC file onto the box.
+2. Under **What to blur**, choose **Selected areas** or **Whole image**.
+3. Choose the **Effect**: **Blur**, **Pixelate** or **Black box**.
+4. In "Selected areas" mode, **drag on the picture** to cover each face, plate or detail. Use **Undo** or **Clear** to fix mistakes.
+5. Adjust the **Strength**.
+6. Choose **Save as** and press **Download image**.
 
-To blur everything, choose **Whole image** and set the strength.
+## A worked example
 
-## Which effect should I choose?
+You want to post a screenshot of a delivery problem on a community forum, but it shows your full name, address and order number. Open the screenshot, keep **Selected areas**, choose **Black box**, and drag a box over each private line. The rest of the message stays readable. Download the image and check it once more before posting.
 
-- **Blur** looks smooth and natural, which suits faces and backgrounds in photos.
-- **Pixelate** creates the familiar mosaic look used on TV for faces and plates.
-- **Black box** is the safest option for text such as account numbers, passwords, addresses and email addresses, because nothing of the original remains.
+## Which effect to choose
 
-## Privacy checklist before sharing
-
-- **Faces** of children and bystanders, especially in photos posted publicly.
-- **License plates** in car photos you are selling or sharing.
-- **Addresses** visible on mail, packages, house numbers and street signs near your home.
-- **Screens and documents** in the background of work photos.
-- **Screenshots** containing names, phone numbers, emails or order numbers.
-- **Location details** hidden inside the file: remove them with [Remove EXIF Data](/remove-exif-data).
+- **Black box:** the safest for text, numbers and anything sensitive. Nothing can be recovered.
+- **Pixelate:** a clear "hidden" look for faces and plates in photos.
+- **Blur:** the softest, most natural look, good for backgrounds and faces in casual photos.
 
 ## Tips
 
-- Make the blurred area a little larger than the thing you are hiding.
-- Increase **Strength** for small, important details such as text.
-- Blurring large areas of a photo can look odd; for a cleaner result, crop unwanted parts away with [Crop Image](/crop-image).
+- **Cover a little more than needed,** including the edges of letters and faces.
+- **Zoom in on your browser** to cover small details accurately.
+- **Check reflections and backgrounds:** names on badges, screens, mirrors and windows are easy to miss.
+- **Save as PNG for screenshots** to keep the remaining text sharp.
+
+## Before you share
+
+Look at the downloaded image at full size, not just the preview. Small details such as a name on a lanyard, a street sign or a reflection in glasses are easy to miss.
+
+## Common mistakes
+
+- **Light blur on text,** which can leave it readable. Use high strength or Black box.
+- **Forgetting other copies.** Blur the image before sharing it anywhere, not after.
+- **Relying on cropping in apps,** which may keep the full original in the file or the cloud.
+- **Missing details in the image's metadata,** such as location. Use Remove EXIF Data too.
 
 ## Private by design
 
-Your images are edited entirely in your browser. Nothing is uploaded, which matters when the whole point is protecting private information.
+Images are edited only in your browser, so private details never leave your device.
+
+## Related tools
+
+Remove hidden location data with [Remove EXIF Data](/remove-exif-data), cover documents with [Crop Image](/crop-image), or make the subject stand out with the [Background Remover](/background-remover).

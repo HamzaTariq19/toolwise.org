@@ -2,50 +2,61 @@
 seoTitle: "Rotate and Flip Image Online: Mirror or Straighten Photos | toolwise"
 metaDescription: "Rotate a picture 90 degrees, mirror it, flip it upside down or straighten a tilted horizon. Free, private, works on phone and desktop."
 faqs:
-  - q: Why does my photo appear sideways on some websites?
-    a: Phones often save photos in one orientation and add a note telling apps how to rotate them. Some websites ignore that note. Rotating the photo here and saving it bakes the correct orientation into the pixels, so it looks right everywhere.
-  - q: What is the difference between mirror and upside down?
-    a: Mirror flips the image left to right, like a reflection, which is handy for selfies where text appears backwards. Upside down flips it top to bottom.
-  - q: How does straightening work?
-    a: The Straighten slider rotates the photo by small amounts, up to 45 degrees either way, to fix a tilted horizon or building. The edges are trimmed automatically so there are no empty corners.
-  - q: Will rotating reduce quality?
-    a: Rotating by 90 or 180 degrees and flipping keep every pixel. Straightening by a small angle slightly resamples the image, which is normal and barely visible. Save as PNG for the highest quality.
+  - q: "My photo shows the right way up on my phone but sideways on my computer. Why?"
+    a: "Phones often save photos sideways with a hidden note telling apps how to turn them. Some programs ignore that note. Open the photo here, check it looks right, and download it; the saved image is stored the right way up for everyone."
+  - q: "What's the difference between Mirror and Upside down?"
+    a: "Mirror flips the picture left to right, like a reflection; selfies often need this so text reads correctly. Upside down flips it top to bottom."
+  - q: "How much can I straighten a photo?"
+    a: "Up to 45 degrees either way, in half-degree steps. The edges are trimmed slightly so no empty corners show, so the result is a little smaller."
+  - q: "Does rotating lose quality?"
+    a: "Quarter turns and flips keep every pixel. Straightening by a small angle needs a tiny amount of smoothing and trimming, which is barely noticeable."
+  - q: "Is my photo uploaded?"
+    a: "No. Everything happens in your browser."
 ---
 
-## What this tool does
+## When to use it
 
-Rotate and Flip Image turns pictures the right way up, mirrors them and fixes slightly tilted shots. It is the quick fix for sideways phone photos, scanned pages that came out upside down, backwards text in selfies and crooked horizons in landscape photos.
+Rotate and Flip Image turns photos the right way up, mirrors them, and straightens tilted shots. Use it for sideways phone photos that look wrong on a computer or website, mirrored selfies where text appears backwards, scans of documents that went into the scanner at a slant, and holiday photos with a sloping horizon.
 
-## How to rotate or flip an image
+## How to rotate, flip or straighten an image
 
-1. Tap **Choose image** and select a photo.
-2. Press **Left** or **Right** to rotate by 90 degrees. Press twice for 180 degrees.
-3. Press **Mirror** to flip left to right, or **Upside down** to flip top to bottom. The buttons stay highlighted while a flip is active.
-4. Drag **Straighten** to fix a tilt. Watch a horizon or the edge of a building in the preview and line it up.
-5. Press **Download image**.
+1. Tap **Choose image**, or drag a JPG, PNG, WebP or HEIC file onto the box.
+2. Under **Rotate**, press **Left** or **Right** to turn it a quarter turn.
+3. Under **Flip**, choose **Mirror** (left to right) or **Upside down** (top to bottom).
+4. Drag **Straighten** to fix a slight tilt. The edges are trimmed so no empty corners show.
+5. Press **Reset** to undo everything.
+6. Choose **Save as** and press **Download image**.
 
-## Everyday uses
+## A worked example
 
-- **Sideways photos** that a website or printer displays the wrong way.
-- **Selfies with backwards writing,** fixed with Mirror.
-- **Scanned documents** that went through the scanner upside down.
-- **Crooked horizons** in travel photos, corrected with a degree or two of Straighten.
-- **Design work** where you need a mirrored version of a graphic.
+You photographed a beach sunset, but the horizon slopes down to the right. Open the photo and drag **Straighten** slowly to the left. At about −2.5° the horizon lines up with the edge of the frame. The preview trims the slanted corners automatically. Download it as JPG; the photo now looks calm and balanced instead of tilted.
 
-## Tips for straightening
+## When to use each option
 
-- Find a line in the photo that should be perfectly level, such as the sea, a table edge or a window frame, and adjust until it is parallel with the top of the preview.
-- Small corrections are usually enough; most tilted photos need between 1 and 5 degrees.
-- Straightening crops a little from each side. If something important is near the edge, take a wider shot next time.
+- **Left / Right:** sideways photos and scans.
+- **Mirror:** selfies with reversed text, or to make a subject face into the page in a layout.
+- **Upside down:** pages scanned or photographed the wrong way round.
+- **Straighten:** horizons, buildings, documents and products that are slightly crooked.
 
-## Saving
+## Tips
 
-Choose the file format under **Save as**. "Same as original" keeps JPG photos as JPG and PNG images as PNG. Choose PNG if you plan to edit the picture further.
+- **Use a straight line as a guide,** such as a horizon, door frame or table edge.
+- **Straighten before cropping** so the crop keeps as much of the picture as possible.
+- **Small angles are enough;** most tilted photos need less than 3°.
+- **Keep the original** if you're unsure; it's easy to redo.
+- **Save in the original format** unless you need a change; JPG stays JPG, so the file size stays similar.
+
+## Common mistakes
+
+- **Mirroring photos with text or logos** that should read normally.
+- **Over-straightening** wide shots, which trims more of the edges than you expect.
+- **Saving photos as PNG** when JPG would be much smaller.
+- **Rotating a photo twice** when the problem was only the hidden orientation note; check the preview first.
+
+## Private by design
+
+Your image is edited in your browser and never uploaded.
 
 ## Related tools
 
-Trim edges with [Crop Image](/crop-image), change dimensions with [Resize Image](/resize-image), or rotate the pages of a PDF with [Rotate PDF](/rotate-pdf).
-
-## Private
-
-Your photo is edited in your browser and is never uploaded.
+Cut the edges with [Crop Image](/crop-image), change the size with [Resize Image](/resize-image), or fix scanned documents with [Rotate PDF](/rotate-pdf).

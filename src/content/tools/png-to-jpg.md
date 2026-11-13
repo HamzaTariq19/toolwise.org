@@ -2,54 +2,59 @@
 seoTitle: "PNG to JPG Converter: Convert PNG to JPEG Free | toolwise"
 metaDescription: "Convert PNG images to smaller JPG files in your browser. Adjust quality, batch convert, transparent areas become white. Free and private."
 faqs:
-  - q: What happens to transparent backgrounds?
-    a: JPG cannot store transparency, so transparent areas are filled with white. That looks natural for logos and graphics placed on white documents and web pages.
-  - q: How much smaller will the JPG be?
-    a: For photos saved as PNG, the JPG is often 70 to 90% smaller. For simple graphics with few colors, the difference is smaller and PNG can even be the smaller format.
-  - q: Which quality setting should I use?
-    a: The default of 90% looks identical to the original for almost all images. Lower it to 75 to 80% when you need a smaller file, for example for an upload limit.
-  - q: Can I convert screenshots?
-    a: Yes, but text in screenshots can look slightly soft or have faint halos as JPG. Keep screenshots as PNG unless you need a smaller file, and use a high quality setting if you do convert.
+  - q: "What happens to transparent parts of a PNG?"
+    a: "JPG can't store transparency, so transparent areas become white. If you need another background colour, add it first with the Background Remover's colour option, or keep the PNG."
+  - q: "How much smaller will the JPG be?"
+    a: "For photos saved as PNG, often 70 to 90% smaller. For screenshots and simple graphics, the saving is smaller, and text may look slightly soft."
+  - q: "Which quality should I choose?"
+    a: "90% (the default) looks identical to the original for photos. 75 to 80% is plenty for email and websites. Go lower only for thumbnails."
+  - q: "Should I convert screenshots to JPG?"
+    a: "Only if file size matters more than crispness. JPG can add faint blotches around text and sharp lines. PNG or WebP are usually better for screenshots."
+  - q: "Are my images uploaded?"
+    a: "No. The conversion happens in your browser."
 ---
 
-## What this tool does
+## When to use it
 
-This converter changes PNG images into JPG (JPEG) files. JPG is the most widely accepted image format and produces much smaller files for photographs, which makes it ideal for email attachments, online forms, websites and sharing on social media.
+PNG to JPG converts PNG images into smaller JPG files. Use it when phone screenshots or exported photos are too large to email or upload, when a form or website only accepts JPG, when you're filling a slideshow or document with images and want to keep its size down, or when a camera app or editor saved photos as PNG by default.
 
 ## How to convert PNG to JPG
 
-1. Tap **Choose images** and select your PNG files, or drop them onto the box.
-2. The images are converted immediately at 90% quality.
-3. Move the **Image quality** slider if you want a smaller file or the highest quality; the files are converted again automatically.
-4. Press **Download** to save the JPG, or a ZIP if you converted several images.
+1. Tap **Choose images**, or drag one or more PNG files onto the box.
+2. The images are converted straight away. Each shows its new size and how much smaller it is.
+3. Adjust **Image quality** if you want. 90% keeps photos looking identical; lower it for smaller files. Changes apply instantly.
+4. Press **Download**. Several images come together in one ZIP file.
+5. Press **Start over** to convert another set.
 
-## Why convert PNG to JPG?
+## A worked example
 
-- **Smaller files:** photos saved as PNG are often huge. Converting can turn a 6 MB PNG into a JPG under 1 MB.
-- **Compatibility:** some upload forms, older software and printing services only accept JPG.
-- **Faster websites:** smaller images load quicker, especially on mobile data.
-- **Email limits:** many email providers limit attachments to 20 or 25 MB in total.
+You exported 12 product photos from a design app as PNG, about 6 MB each, and your online shop limits uploads to 2 MB. Drop all 12 onto the box. At 90% quality each becomes roughly 900 KB to 1.2 MB, about 80% smaller, with no visible difference. Download the ZIP and upload the JPGs. If you also needed exact dimensions, you could run them through Resize Image afterwards.
 
-## When to keep PNG
+## When to keep PNG instead
 
-- Images that need a **transparent background**, like logos placed over colored backgrounds.
-- **Screenshots, diagrams and text-heavy graphics,** which stay sharper in PNG.
-- Images you will **keep editing**, because each JPG save loses a little quality.
+- **Logos and icons** with transparent backgrounds.
+- **Screenshots of text** or user interfaces, where sharp edges matter.
+- **Diagrams and charts** with flat colours.
+- **Images you'll keep editing,** where JPG would add a little loss each time you save.
 
-## Getting the best result
+## Tips
 
-- Start with the default 90% and only go lower if you need to.
-- For images destined for a strict size limit like 100 KB, the [Compress Image to KB](/compress-image-to-kb) tool finds the right quality automatically.
-- If a logo has a transparent background and must sit on a colored page, keep it as PNG or convert it to WebP instead.
+- **Convert photos, not graphics.** JPG is designed for photographs.
+- **Use 80% quality for the web;** most people can't tell it from 90%.
+- **Check transparent images** after converting; transparent areas become white.
+- **Keep the PNG originals** if you might need them for editing later.
 
-## Batch conversion
+## Common mistakes
 
-You can convert dozens of images in one go. Each file keeps its original name with a `.jpg` extension, and the ZIP download keeps them together. Very large batches may take a little longer on older phones, so for hundreds of files it is quicker on a computer.
+- **Converting a logo with a transparent background** and getting an unexpected white box around it.
+- **Repeatedly opening and re-saving the JPG,** which slowly lowers quality.
+- **Choosing very low quality** to save space; resize the image instead.
+- **Renaming .png to .jpg** rather than converting.
+
+## Private by design
+
+Images are converted in your browser and never uploaded.
 
 ## Related tools
 
-To convert the other way, use [JPG to PNG](/jpg-to-png). To shrink JPG files further, use [Compress Image](/compress-image).
-
-## Private
-
-Conversion runs in your browser, so your images never leave your device.
+Go the other way with [JPG to PNG](/jpg-to-png), reach an exact size with [Compress Image to KB](/compress-image-to-kb), or convert iPhone photos with [HEIC to JPG](/heic-to-jpg).
