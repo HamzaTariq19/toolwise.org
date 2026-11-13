@@ -1,11 +1,13 @@
 ---
 import Icon from '../components/Icon.astro';
+import { DEFAULT_GRADES, gradeRowsHtml, gradeResult } from '../lib/grade-rows';
+const g0 = gradeResult(DEFAULT_GRADES, '30', '85');
 ---
 <div id="gr" class="grid gap-5 md:grid-cols-[1fr_300px] md:items-start">
   <div class="card p-4 sm:p-5">
     <h2 class="text-base font-semibold">Grades so far</h2>
     <div class="mt-3 hidden grid-cols-[1fr_6rem_6rem_2.75rem] gap-2 px-1 text-sm font-semibold text-muted sm:grid"><span>Assignment or test</span><span>Score %</span><span>Weight %</span><span></span></div>
-    <ul class="mt-2 space-y-3 sm:space-y-2" data-rows></ul>
+    <ul class="mt-2 space-y-3 sm:space-y-2" data-rows set:html={gradeRowsHtml(DEFAULT_GRADES)}></ul>
     <button type="button" class="btn btn-secondary mt-3" data-add><Icon name="Plus" size={18} />Add row</button>
     <div class="mt-5 grid gap-3 border-t border-line pt-5 sm:grid-cols-2">
       <div><label for="gr-final" class="label">Final exam weight</label><div class="input-group"><input id="gr-final" class="input tabular" inputmode="decimal" value="30" /><span class="addon">%</span></div></div>
@@ -13,47 +15,28 @@ import Icon from '../components/Icon.astro';
     </div>
   </div>
   <aside class="card space-y-4 p-5 md:sticky md:top-24" aria-live="polite">
-    <div><p class="text-sm font-medium text-muted">Current grade</p><p class="text-5xl font-extrabold tracking-tight tabular" data-r="cur">–</p><p class="text-sm text-muted" data-r="curnote"></p></div>
-    <div class="stat"><p class="stat-label">Needed on the final</p><p class="text-2xl font-bold tabular" data-r="need">–</p><p class="text-sm text-muted" data-r="neednote"></p></div>
+    <div><p class="text-sm font-medium text-muted">Current grade</p><p class="text-5xl font-extrabold tracking-tight tabular" data-r="cur">{g0.cur}</p><p class="text-sm text-muted" data-r="curnote">{g0.curnote}</p></div>
+    <div class="stat"><p class="stat-label">Needed on the final</p><p class="text-2xl font-bold tabular" data-r="need">{g0.need}</p><p class="text-sm text-muted" data-r="neednote">{g0.neednote}</p></div>
     <p class="alert alert-error" data-msg hidden></p>
   </aside>
 </div>
 <script>
-  import { num, fmt, store } from '../lib/ui';
-  type Row = { name: string; score: string; weight: string };
+  import { store } from '../lib/ui';
+  import { DEFAULT_GRADES, gradeRowsHtml, gradeResult, type Row } from '../lib/grade-rows';
   const root = document.getElementById('gr')!, rowsEl = root.querySelector<HTMLElement>('[data-rows]')!;
-  let rows: Row[] = store.get('tw-grades', [{ name: 'Homework', score: '92', weight: '20' }, { name: 'Midterm', score: '78', weight: '30' }, { name: 'Project', score: '88', weight: '20' }]);
+  let rows: Row[] = store.get('tw-grades', DEFAULT_GRADES);
   const set = (k: string, v: string) => (root.querySelector(`[data-r=${k}]`)!.textContent = v);
-  const letter = (p: number) => (p >= 93 ? 'A' : p >= 90 ? 'A−' : p >= 87 ? 'B+' : p >= 83 ? 'B' : p >= 80 ? 'B−' : p >= 77 ? 'C+' : p >= 73 ? 'C' : p >= 70 ? 'C−' : p >= 67 ? 'D+' : p >= 60 ? 'D' : 'F');
-  const esc = (s: string) => s.replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]!);
   function render() {
-    rowsEl.innerHTML = rows.map((r, i) => `<li class="grid grid-cols-[1fr_1fr_2.75rem] items-end gap-2 rounded-[10px] border border-line p-2 sm:grid-cols-[1fr_6rem_6rem_2.75rem] sm:border-0 sm:p-0" data-i="${i}">
-      <input class="input col-span-3 sm:col-span-1" placeholder="Name (optional)" aria-label="Row ${i + 1} name" data-f="name" value="${esc(r.name)}" />
-      <label class="block"><span class="mb-1 block text-xs font-semibold text-muted sm:sr-only">Score %</span><input class="input tabular" inputmode="decimal" placeholder="Score %" aria-label="Row ${i + 1} score percent" data-f="score" value="${esc(r.score)}" /></label>
-      <label class="block"><span class="mb-1 block text-xs font-semibold text-muted sm:sr-only">Weight %</span><input class="input tabular" inputmode="decimal" placeholder="Weight %" aria-label="Row ${i + 1} weight percent" data-f="weight" value="${esc(r.weight)}" /></label>
-      <button type="button" class="btn btn-ghost h-11 w-11 !p-0" data-del aria-label="Remove row ${i + 1}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg></button></li>`).join('');
+    rowsEl.innerHTML = gradeRowsHtml(rows);
     calc();
   }
   function calc() {
     store.set('tw-grades', rows);
-    const msg = root.querySelector<HTMLElement>('[data-msg]')!; msg.hidden = true;
-    let sw = 0, w = 0;
-    for (const [i, r] of rows.entries()) {
-      if (!r.score.trim() && !r.weight.trim()) continue;
-      const s = num(r.score), wt = num(r.weight);
-      if (!(s >= 0) || !(wt > 0)) { msg.hidden = false; msg.textContent = `Enter a score and a weight for row ${i + 1}.`; return; }
-      sw += s * wt; w += wt;
-    }
-    const fw = num((document.getElementById('gr-final') as HTMLInputElement).value) || 0, target = num((document.getElementById('gr-target') as HTMLInputElement).value);
-    if (w + fw > 100.001) { msg.hidden = false; msg.textContent = `The weights add up to ${fmt(w + fw)}%. They should total 100% or less.`; }
-    if (!w) { set('cur', '–'); set('curnote', 'Add a score and its weight.'); set('need', '–'); set('neednote', ''); return; }
-    const cur = sw / w;
-    set('cur', `${fmt(cur, 1)}%`); set('curnote', `${letter(cur)} · based on ${fmt(w)}% of the course`);
-    if (fw > 0 && target >= 0) {
-      const need = (target * (w + fw) - sw) / fw;
-      set('need', `${fmt(Math.max(0, need), 1)}%`);
-      set('neednote', need > 100 ? `Even 100% on the final would give ${fmt((sw + 100 * fw) / (w + fw), 1)}% overall, so ${target}% is out of reach.` : need <= 0 ? `You will reach ${target}% even with 0% on the final.` : `to finish with ${target}% overall (${letter(target)}).`);
-    } else { set('need', '–'); set('neednote', 'Enter the final exam weight and your target.'); }
+    const msg = root.querySelector<HTMLElement>('[data-msg]')!;
+    const r = gradeResult(rows, (document.getElementById('gr-final') as HTMLInputElement).value, (document.getElementById('gr-target') as HTMLInputElement).value);
+    msg.hidden = !r.msg; msg.textContent = r.msg;
+    if (r.msg && !r.cur && !r.need) return;
+    set('cur', r.cur); set('curnote', r.curnote); set('need', r.need); set('neednote', r.neednote);
   }
   rowsEl.addEventListener('input', (e) => { const t = e.target as HTMLInputElement, li = t.closest<HTMLElement>('li'); if (!li || !t.dataset.f) return; (rows[Number(li.dataset.i)] as Record<string, string>)[t.dataset.f] = t.value; calc(); });
   rowsEl.addEventListener('click', (e) => { const b = (e.target as HTMLElement).closest('[data-del]'); if (b) { rows.splice(Number(b.closest<HTMLElement>('li')!.dataset.i), 1); if (!rows.length) rows.push({ name: '', score: '', weight: '' }); render(); } });
